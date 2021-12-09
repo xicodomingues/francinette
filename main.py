@@ -9,8 +9,23 @@ import importlib
 import logging
 import sys
 
+
+
+def mergefolders(root_src_dir, root_dst_dir):
+    for src_dir, dirs, files in os.walk(root_src_dir):
+        dst_dir = src_dir.replace(root_src_dir, root_dst_dir, 1)
+        if not os.path.exists(dst_dir):
+            os.makedirs(dst_dir)
+        for file_ in files:
+            src_file = os.path.join(src_dir, file_)
+            dst_file = os.path.join(dst_dir, file_)
+            if os.path.exists(dst_file):
+                os.remove(dst_file)
+            shutil.copy(src_file, dst_dir)
+
+
 logger = logging.getLogger()
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.WARN)
 
 handler = logging.StreamHandler(sys.stdout)
 handler.setLevel(logging.DEBUG)
@@ -33,16 +48,24 @@ def copy_from_local(project, local, base):
     source = os.path.join(local, project)
     destination = os.path.join(base, "temp", project)
 
-    logger.info(f"copying from local repo {source} to {destination}")
-    if not os.path.exists(os.path.join(base, "temp")):
-        os.makedirs(os.path.join(base, "temp"))
-
     if os.path.exists(destination):
         logger.info(f"removing {destination} because it will be overwritten")
         shutil.rmtree(destination)
 
+    logger.info(f"copying from local repo {source} to {destination}")
+    if not os.path.exists(os.path.join(base, "temp")):
+        os.makedirs(os.path.join(base, "temp"))
+
     logger.info(f"Copying files from {source} to {destination}")
     shutil.copytree(source, destination)
+
+
+def add_files(project, base, files):
+    source = os.path.join(files, project)
+    destination = os.path.join(base, "temp", project)
+
+    logger.info(f"Copying tester files from {source} to {destination}")
+    mergefolders(source, destination)
 
 
 def execute_tests(options):
@@ -72,7 +95,7 @@ def main():
     if re.fullmatch(r"[Cc]\d{2}", current_dir):
         project = current_dir
 
-    parser = ArgumentParser("42-C-Tester",
+    parser = ArgumentParser("Francinette",
                             formatter_class=argparse.RawDescriptionHelpFormatter,
                             description=textwrap.dedent("""
             A micro framework that allows you to test your C code with more ease.
@@ -83,7 +106,6 @@ def main():
             If you pass the arguments, then the arguments take precedence.
     """))
 
-    # This argument comes from the command line to be parsed later to get the project and exercise
     parser.add_argument(
         "-t", "--exercise", nargs="?",
         help="If present, only executes the passed test"
@@ -99,7 +121,7 @@ def main():
     )
     parser.add_argument(
         "-l", "--local", nargs="?",
-        help="The local directory to get the original code from, if no repo is passed as parameter. defaults to basedir"
+        help="The local directory to get your local code from, if no repo is passed as parameter. defaults to basedir"
     )
     parser.add_argument(
         "-v", "--verbose", action="store_true",
@@ -118,10 +140,11 @@ def main():
 
     args = parser.parse_args()
 
-    base = args.base or os.path.dirname(__file__)
+    base = args.base or os.path.dirname(os.path.realpath(__file__))
     exercise = args.exercise or exercise
     if exercise:
         exercise = exercise.rjust(2, "0")
+        logger.info("Will only execute the tests for ex{exercise}")
 
     options = {
         "exercise": exercise,
@@ -129,21 +152,21 @@ def main():
         "repo": args.git_repo,
         "base": base,
         "files": args.files or os.path.join(base, "files"),
-        "local": args.base or base,
+        "local": args.local or base,
     }
 
     if not options["project"]:
         parser.print_help()
         exit(0)
 
-    logger.info(f'project:{options.get("project", "")}, '
-          f'exercise:{options.get("exercise", "")}, '
-          f'git repo:{options.get("repo", "")}')
+    logger.info(f'Options for this run: {options}')
 
     if options["repo"]:
         clone(options["repo"], options["project"], options["base"])
     else:
         copy_from_local(options["project"], options["local"], options["base"])
+
+    add_files(options["project"], options["base"], options["files"])
 
     execute_tests(options)
 
