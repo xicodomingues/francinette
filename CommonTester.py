@@ -46,9 +46,13 @@ EXERCISE_HEADER= f"{Colors.LIGHT_BLUE}" \
 
 
 TEST_PASSED = f"\n{Colors.LIGHT_GREEN}" \
-        "══» $$ passed! ══" \
+        "══════════════════════════════    #### passed!    ══════════════════════════════" \
         f"{Colors.NC}"
 
+
+TEST_FAILED = f"\n{Colors.LIGHT_RED}" \
+        "══════════════════════════════    #### failed!    ══════════════════════════════" \
+        f"{Colors.NC}"
 
 def show_banner():
     message = f"Welcome to {Colors.LIGHT_PURPLE}Francinette{Colors.LIGHT_BLUE}, a 42 tester framework!"
@@ -74,15 +78,28 @@ class CommonTester:
 
         show_banner()
 
+        test_status = {}
         for test in self.available_tests:
             test_ok = self.execute_test(test)
+            test_status[test] = test_ok
             if test_ok:
-                print()
+                print(TEST_PASSED.replace("####", test.title()))
             else:
-                print(f"\n{Colors.LIGHT_RED}══» {test.capitalize()} failed{Colors.NC}")
+                print(TEST_FAILED.replace("####", test.title()))
 
             print("\n")
             self.clean_up(test)
+
+        self.print_summary(test_status)
+
+
+    def print_summary(self, test_status):
+        ok_tests = [test for test, st in test_status.items() if st is True]
+
+        print(f"{Colors.LIGHT_GREEN}Passed tests: {' '.join(ok_tests)}{Colors.NC}")
+        failed_tests = [test for test, st in test_status.items() if st is False]
+        if failed_tests:
+            print(f"{Colors.LIGHT_RED}Failed tests: {' '.join(failed_tests)}{Colors.NC}")
 
 
     def pass_norminette(self, test):
@@ -143,6 +160,11 @@ class CommonTester:
 
 
     def compare_with_expected(self, output):
+        expected_file = os.path.join(os.getcwd(), 'expected')
+
+        if not os.path.exists(expected_file):
+            return True
+
         out_file_path = os.path.join(os.getcwd(), 'out')
 
         logger.info(f"Creating out file: {out_file_path} with content {output}")
