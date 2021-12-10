@@ -81,34 +81,49 @@ In case you are using this directory structure, you can tweak the functionality 
 
 ```
 $> francinette -h
-
+```
 This shows the help message.
 
-
+```
 francinette/c00 $> francinette
+```
 
 This will execute the tests for the project c00
 
-
+```
 $> francinette c00
-
+```
 This will execute the tests for the project c00 no matter wich direcotry I'm in
 
+```
+$> francinette c00 <a git repo with the c00 solved exercises>
+```
 
+It clones the git, and executes the tests from the files folder in the code clonned.
+
+```
 $> francinette --base ~/my/custom/temp/dir
 or
 $> francinette -b ~/my/custom/temp/dir
-
-
-francinette will use this as the directory where it will put the temp files. The temp files are the files used for execution of the tests. By default this is in ~/francinette/temp/
-
-
-$> francinette --files ~/where/the/main.c/and/expected/files/are
-
-francinette will get the main.c's and the expected files from this directory instead of the default one. The default one is located in ~/francinette/files/
-
-
-$> francinette --local ~/where/you/solve/the/exercises
-
-francinette will get your implementations for the exercises from this folder. By default it is in located in ~/francinette/
 ```
+
+francinette will use this as the directory where it will put the temp files. The temp files are the files used for execution of the tests. By default this is in `~/francinette/temp/`
+
+
+```
+$> francinette --files ~/where/the/main.c/and/expected/files/are
+or
+$> francinette -f ~/where/the/main.c/and/expected/files/are
+```
+
+francinette will get the main.c's and the expected files from this directory instead of the default one. The default one is located in `~/francinette/files/`
+
+
+```
+$> francinette --local ~/where/you/solve/the/exercises
+or
+$> francinette -l ~/where/you/solve/the/exercises
+```
+
+
+francinette will get your implementations for the exercises from this folder. By default it is in located in `~/francinette/`
