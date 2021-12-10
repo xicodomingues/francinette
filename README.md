@@ -93,13 +93,13 @@ This will execute the tests for the project c00
 ```
 $> francinette c00
 ```
-This will execute the tests for the project c00 no matter wich direcotry I'm in
+This will execute the tests for the project c00 no matter wich directory I'm in
 
 ```
 $> francinette c00 <a git repo with the c00 solved exercises>
 ```
 
-It clones the git, and executes the tests from the files folder in the code clonned.
+It clones the git, and executes the tests from the `files` folder in the code clonned.
 
 ```
 $> francinette --base ~/my/custom/temp/dir
@@ -127,3 +127,13 @@ $> francinette -l ~/where/you/solve/the/exercises
 
 
 francinette will get your implementations for the exercises from this folder. By default it is in located in `~/francinette/`
+
+
+## How to add tests
+
+Each project, should have a corresponding `CXX_Tester.py` file. This file is simple to configure, and I leave the `C00_Tester` as guideline. With time I may add more features, but for now only the shown options in the `test_ex00` are available.
+
+
+## FAQ
+
+If you have any questions you know where to find me. Also, on slack under 'fsoares-'
