@@ -1,5 +1,7 @@
 #!/bin/bash
 
+cd ~
+
 # clone repo
 git clone git@github.com:xicodomingues/francinette.git francinette
 
