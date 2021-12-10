@@ -117,7 +117,7 @@ def main():
     parser.add_argument(
         "-f", "--files", nargs="?",
         help="The directory from where to get the extra files needed to run the tests (main.c, expected, etc)"
-             "If defaults to the 'files' folder inside basedir"
+             " If defaults to the 'files' folder inside basedir"
     )
     parser.add_argument(
         "-l", "--local", nargs="?",

@@ -24,16 +24,6 @@ class Colors:
     NC = '\033[0m'  # No Color
 
 
-    # Check norminette output
-
-    # Copy prepared files (main.c, expected, etc)
-
-    # Get the files that need to be compiled from the implementation
-
-    # Compile and check for errors
-
-    # Execute and compare with the expected values
-
 
 DEFAULT_COMPILE_FLAGS = ["-Wall", "-Wextra", "-Werror"]
 IGNORED_EXERCISE_HEADER = f"{Colors.YELLOW}" \
