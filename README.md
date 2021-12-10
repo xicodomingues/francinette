@@ -7,7 +7,7 @@ Francinette has an automatic installer.
 Copy the line bellow to your console and execute it. It will automatically download the repo, create the necessary folders and alias, and install a python virtual environment dedicated to running this tool
 
 ```
-sh -c "$(curl -fsSL https://raw.github.com/francinette/install.sh)"
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/xicodomingues/francinette/master/install.sh)"
 ```
 
 The francinette folder will be under your `$HOME` directory (`/User/<you_username>/`)
@@ -77,7 +77,7 @@ If you have the folder structure as indicated above you just need to navigate to
 project folder, like for example `~/francinette/c00` and execute the `francinette` command.
 
 
-In case you are using this directory structure, you can tweak the functionality with the following parameters:
+In case you are not using this directory structure, you can tweak the functionality with the following parameters:
 
 ```
 $> francinette -h
