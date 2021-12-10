@@ -23,3 +23,5 @@ fi
 
 # print help
 ~/francinette/tester.sh
+
+echo "Please close this terminal windown and open it again"

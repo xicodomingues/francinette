@@ -1,10 +1,6 @@
 from CommonTester import CommonTester
 
 
-C00_BASE_DIR = '/path/to/your/base/c00/where/inside/it/has/ex0X'
-C00_TEST_FILES_DIR = '/path/to/where/your/mains/and/expected/are'
-
-
 class C00_Tester(CommonTester):
 
     def ex00(self):

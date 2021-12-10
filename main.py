@@ -95,7 +95,7 @@ def main():
     if re.fullmatch(r"[Cc]\d{2}", current_dir):
         project = current_dir
 
-    parser = ArgumentParser("Francinette",
+    parser = ArgumentParser("francinette",
                             formatter_class=argparse.RawDescriptionHelpFormatter,
                             description=textwrap.dedent("""
             A micro framework that allows you to test your C code with more ease.
