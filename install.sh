@@ -3,7 +3,7 @@
 cd ~
 
 # clone repo
-git clone git@github.com:xicodomingues/francinette.git francine
+git clone https://github.com/xicodomingues/francinette.git francinette
 
 cd ~/francinette
 
