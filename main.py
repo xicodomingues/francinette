@@ -89,7 +89,7 @@ def add_files(project, base, files):
         shutil.rmtree(os.path.join(base, "temp", project))
 
     logger.info(f"Copying tester files from {source} to {destination}")
-    shutil.copy(source, destination)
+    shutil.copytree(source, destination)
 
 
 def execute_tests(options):
