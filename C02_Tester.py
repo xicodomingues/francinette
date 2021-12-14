@@ -23,6 +23,3 @@ class C02_Tester(CommonTester):
         self.compile = ["main.c", "ft_str_is_lowercase.c"]
         self.norm_ignore = ["main.c"]
 
-    def ex09(self):
-        self.compile = ["main.c", "ft_str_is_uppercase.c"]
-        self.norm_ignore = ["main.c"]

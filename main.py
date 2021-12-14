@@ -32,8 +32,8 @@ def mergefolders_not_overwriting(root_src_dir, root_dst_dir):
         for file_ in files:
             src_file = os.path.join(src_dir, file_)
             dst_file = os.path.join(dst_dir, file_)
-            #if not os.path.exists(dst_file):
-            shutil.copy(src_file, dst_dir)
+            if not os.path.exists(dst_file):
+                shutil.copy(src_file, dst_dir)
 
 
 logger = logging.getLogger()
@@ -74,10 +74,6 @@ def copy_from_local(project, local, base):
     source = local
     destination = os.path.join(base, "temp", project)
 
-    logger.info(f"copying from local repo {source} to {destination}")
-    if not os.path.exists(os.path.join(base, "temp")):
-        os.makedirs(os.path.join(base, "temp"))
-
     logger.info(f"Copying files from {source} to {destination}")
     mergefolders(source, destination)
 
@@ -86,8 +82,14 @@ def add_files(project, base, files):
     source = os.path.join(files, project)
     destination = os.path.join(base, "temp", project)
 
+    if not os.path.exists(os.path.join(base, "temp")):
+        os.makedirs(os.path.join(base, "temp"))
+
+    if os.path.exists(os.path.join(base, "temp", project)):
+        os.makedirs(os.path.join(base, "temp", project))
+
     logger.info(f"Copying tester files from {source} to {destination}")
-    mergefolders(source, destination)
+    shutil.copy(source, destination)
 
 
 def execute_tests(options):

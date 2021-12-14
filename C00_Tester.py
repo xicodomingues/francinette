@@ -43,7 +43,3 @@ class C00_Tester(CommonTester):
     def ex08(self):
         self.compile = ["main.c", "ft_print_combn.c"]
         self.norm_ignore = ["main.c"]
-
-    def ex09(self):
-        self.compile = ["main.c", "ft_print_combn.c"]
-        self.norm_ignore = ["main.c"]
