@@ -10,7 +10,6 @@ import logging
 import sys
 
 
-
 def mergefolders(root_src_dir, root_dst_dir):
     for src_dir, dirs, files in os.walk(root_src_dir):
         dst_dir = src_dir.replace(root_src_dir, root_dst_dir, 1)
@@ -90,7 +89,7 @@ def main():
 
     if re.fullmatch(r"ex\d{2}", current_dir):
         exercise = current_dir
-        current_dir = os.path.dirname(pwd)
+        current_dir = os.path.basename(os.path.abspath(os.path.join(current_dir, "../..")))
 
     if re.fullmatch(r"[Cc]\d{2}", current_dir):
         project = current_dir
@@ -99,9 +98,9 @@ def main():
                             formatter_class=argparse.RawDescriptionHelpFormatter,
                             description=textwrap.dedent("""
             A micro framework that allows you to test your C code with more ease.
-            
+
             If this command is executed inside a project (c##) or an exercise (ex##),
-            then it knows automatically which tests to execute, and does. No need to pass 
+            then it knows automatically which tests to execute, and does. No need to pass
             arguments.
             If you pass the arguments, then the arguments take precedence.
     """))

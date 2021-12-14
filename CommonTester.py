@@ -72,9 +72,9 @@ class CommonTester:
         for test in self.available_tests:
             test_ok = self.execute_test(test)
             test_status[test] = test_ok
-            if test_ok:
+            if test_ok == True:
                 print(TEST_PASSED.replace("####", test.title()))
-            else:
+            elif test_ok == False:
                 print(TEST_FAILED.replace("####", test.title()))
 
             print("\n")
@@ -178,7 +178,7 @@ class CommonTester:
     def execute_test(self, test_to_execute):
         logger.info(f"starting execution of {test_to_execute}")
         ex_number = test_to_execute[-2:]
-        if self.selected_test and selected_test != ex_number:
+        if self.selected_test and self.selected_test[-2:] != ex_number:
             # If a test is specified, then it only executes the matching test
             print(IGNORED_EXERCISE_HEADER.replace("##", ex_number))
             return
@@ -190,7 +190,7 @@ class CommonTester:
         status = self.compile_files()
         if status != 0:
             return False
-         
+
         output = self.execute_program()
         return self.compare_with_expected(output) and norm_passed
 

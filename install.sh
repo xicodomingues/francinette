@@ -38,4 +38,4 @@ fi
 # print help
 ~/francinette/tester.sh
 
-echo "Please close this terminal windown and open it again"
+echo "Please close this terminal windown and open it again for francinette to work"
