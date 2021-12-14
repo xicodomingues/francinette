@@ -44,6 +44,10 @@ TEST_FAILED = f"\n{Colors.LIGHT_RED}" \
         "══════════════════════════════    #### failed!    ══════════════════════════════" \
         f"{Colors.NC}"
 
+TEST_NOT_PRESENT = f"\n{Colors.YELLOW}" \
+        "══════════════════════════════  #### not present  ══════════════════════════════" \
+        f"{Colors.NC}"
+
 def show_banner():
     message = f"Welcome to {Colors.LIGHT_PURPLE}Francinette{Colors.LIGHT_BLUE}, a 42 tester framework!"
     print(f"{Colors.LIGHT_BLUE}")
@@ -76,6 +80,8 @@ class CommonTester:
                 print(TEST_PASSED.replace("####", test.title()))
             elif test_ok == False:
                 print(TEST_FAILED.replace("####", test.title()))
+            elif test_ok == "Test Not Present":
+                print(TEST_NOT_PRESENT.replace("####", test.title()))
 
             print("\n")
             self.clean_up(test)
@@ -95,6 +101,9 @@ class CommonTester:
     def pass_norminette(self, test):
         norm_files = [file for file in self.compile if file not in self.norm_ignore]
 
+        norm_path = os.path.join(self.base, "temp", self.project, test)
+        if (not os.path.exists(norm_path)):
+            return "Test Not Present"
         os.chdir(os.path.join(self.base, "temp", self.project, test))
         logger.info(f"On directory { os.getcwd() }")
         logger.info(f"Executing norminette on files: {norm_files}")
@@ -187,6 +196,8 @@ class CommonTester:
         test_fn = getattr(self, test_to_execute)()
 
         norm_passed = self.pass_norminette(test_to_execute)
+        if norm_passed == "Test Not Present":
+            return "Test Not Present"
         status = self.compile_files()
         if status != 0:
             return False

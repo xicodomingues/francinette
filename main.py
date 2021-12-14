@@ -23,6 +23,18 @@ def mergefolders(root_src_dir, root_dst_dir):
             shutil.copy(src_file, dst_dir)
 
 
+def mergefolders_not_overwriting(root_src_dir, root_dst_dir):
+    for src_dir, dirs, files in os.walk(root_src_dir):
+        dst_dir = src_dir.replace(root_src_dir, root_dst_dir, 1)
+        if not os.path.exists(dst_dir):
+            os.makedirs(dst_dir)
+        for file_ in files:
+            src_file = os.path.join(src_dir, file_)
+            dst_file = os.path.join(dst_dir, file_)
+            #if not os.path.exists(dst_file):
+            shutil.copy(src_file, dst_dir)
+
+
 logger = logging.getLogger()
 logger.setLevel(logging.WARN)
 
@@ -34,29 +46,35 @@ logger.addHandler(handler)
 
 
 def clone(repo, project, basedir):
-    logger.info(f"Cloning {project} from {repo} to {basedir} and creating clean copy in {project}_orig")
-
     repo_dir = os.path.join(basedir, "temp", project)
+    if os.path.exists(repo_dir):
+        logger.info(f"removing {repo_dir} because it will be overwritten")
+        shutil.rmtree(repo_dir)
+
+    logger.info(f"Cloning {project} from {repo} to {repo_dir} and creating clean copy in {project}_orig")
+
     cloned = Repo.clone_from(repo, repo_dir)
 
     repo_copy_dir = os.path.join(basedir, "temp", project + "_orig")
+    shutil.rmtree(repo_copy_dir)
     cloned.clone(repo_copy_dir)
 
 
-def copy_from_local(project, local, base):
-    source = os.path.join(local, project)
+def add_missing_files(project, base, files):
     destination = os.path.join(base, "temp", project)
+    source = os.path.join(files, project)
+    mergefolders_not_overwriting(source, destination)
 
-    if os.path.exists(destination):
-        logger.info(f"removing {destination} because it will be overwritten")
-        shutil.rmtree(destination)
+def copy_from_local(project, local, base):
+    source = local
+    destination = os.path.join(base, "temp", project)
 
     logger.info(f"copying from local repo {source} to {destination}")
     if not os.path.exists(os.path.join(base, "temp")):
         os.makedirs(os.path.join(base, "temp"))
 
     logger.info(f"Copying files from {source} to {destination}")
-    shutil.copytree(source, destination)
+    mergefolders(source, destination)
 
 
 def add_files(project, base, files):
@@ -76,6 +94,7 @@ def execute_tests(options):
 
     # execute the tests
     module.__getattribute__(module_name)(options)
+
 
 
 def main():
@@ -120,7 +139,7 @@ def main():
     )
     parser.add_argument(
         "-l", "--local", nargs="?",
-        help="The local directory to get your local code from, if no repo is passed as parameter. defaults to basedir"
+        help="The local directory to get your local code from. It should point to the inside of the 'C0X' folder"
     )
     parser.add_argument(
         "-v", "--verbose", action="store_true",
@@ -138,6 +157,9 @@ def main():
     )
 
     args = parser.parse_args()
+
+    if args.verbose:
+        logger.setLevel(logging.INFO)
 
     base = args.base or os.path.dirname(os.path.realpath(__file__))
     exercise = args.exercise or exercise
@@ -158,14 +180,18 @@ def main():
         parser.print_help()
         exit(0)
 
+    if not os.path.exists(os.path.join(options["local"], "ex01")):
+        options["local"] = os.path.join(options["local"], options["project"])
+
     logger.info(f'Options for this run: {options}')
+    destination = os.path.join(options["base"], "temp", options["project"])
 
     if options["repo"]:
         clone(options["repo"], options["project"], options["base"])
+        add_missing_files(options["project"], options["base"], options["files"])
     else:
+        add_files(options["project"], options["base"], options["files"])
         copy_from_local(options["project"], options["local"], options["base"])
-
-    add_files(options["project"], options["base"], options["files"])
 
     execute_tests(options)
 

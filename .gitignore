@@ -131,3 +131,5 @@ dmypy.json
 .idea/
 
 /temp/
+/c??/
+/files/

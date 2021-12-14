@@ -19,3 +19,31 @@ class C00_Tester(CommonTester):
     def ex02(self):
         self.compile = ["main.c", "ft_print_reverse_alphabet.c"]
         self.norm_ignore = ["main.c"]
+
+    def ex03(self):
+        self.compile = ["main.c", "ft_print_numbers.c"]
+        self.norm_ignore = ["main.c"]
+
+    def ex04(self):
+        self.compile = ["main.c", "ft_is_negative.c"]
+        self.norm_ignore = ["main.c"]
+
+    def ex05(self):
+        self.compile = ["main.c", "ft_print_comb.c"]
+        self.norm_ignore = ["main.c"]
+
+    def ex06(self):
+        self.compile = ["main.c", "ft_print_comb2.c"]
+        self.norm_ignore = ["main.c"]
+
+    def ex07(self):
+        self.compile = ["main.c", "ft_putnbr.c"]
+        self.norm_ignore = ["main.c"]
+
+    def ex08(self):
+        self.compile = ["main.c", "ft_print_combn.c"]
+        self.norm_ignore = ["main.c"]
+
+    def ex09(self):
+        self.compile = ["main.c", "ft_print_combn.c"]
+        self.norm_ignore = ["main.c"]
