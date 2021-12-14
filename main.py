@@ -86,7 +86,7 @@ def add_files(project, base, files):
         os.makedirs(os.path.join(base, "temp"))
 
     if os.path.exists(os.path.join(base, "temp", project)):
-        os.makedirs(os.path.join(base, "temp", project))
+        shutil.rmtree(os.path.join(base, "temp", project))
 
     logger.info(f"Copying tester files from {source} to {destination}")
     shutil.copy(source, destination)
