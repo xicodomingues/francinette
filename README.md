@@ -12,9 +12,21 @@ sh -c "$(curl -fsSL https://raw.github.com/xicodomingues/francinette/master/inst
 
 The francinette folder will be under your `$HOME` directory (`/User/<you_username>/`)
 
+## Update:
+To update francinette run the command bellow
+
+```
+sh -c "$(curl -fsSL https://raw.github.com/xicodomingues/francinette/master/update.sh)"
+```
 
 ## Runnning:
 If you have the following folder structure inside francinette you just need to write `francinette` inside the project / exercise that you wish to run, and it will automatically run.
+
+For other folder structures, use for example:
+```
+$> francinette --local ~/excercises/c00 c00
+```
+The above command assumes that in the folder `~/excercises/c00` the folder for the exercises (`ex00`, `ex01`, ...) are there, and that the `main.c` files are inside the `files` folder under `francinette`
 
 ### Folder Structure:
 ```
@@ -27,8 +39,8 @@ francinette
 │   │   └── ft_print_alphabet.c
 │   └── ex02
 │       └── ft_print_reverse_alphabet.c
-├── c01 
-│   └── ex00     
+├── c01
+│   └── ex00
 │
 ├── files                    # This is the directory where the main.c and expected files
 │   │                        # should be located for them to be used without configuration
@@ -42,7 +54,7 @@ francinette
 │       │   └── main.c
 │       └── ex03
 │           ├── expected
-│           └── main.c 
+│           └── main.c
 │
 ├── temp                     # Where the magic happens. In where it will copy the files
 │   └── c00                  # from your exercises dir, from the files dir, execute the
