@@ -28,6 +28,16 @@ $> francinette --local ~/excercises/c00 c00
 ```
 The above command assumes that in the folder `~/excercises/c00` the folder for the exercises (`ex00`, `ex01`, ...) are there, and that the `main.c` files are inside the `files` folder under `francinette`
 
+
+To use francinete on a repository code use:
+
+```
+$> francinette c00 git@repository.42.com/intra-uuid-8e9b82a1-59b4-43cd-ah34-639a79beeb5f-391f552
+                v                      v
+        project to evaluate      git url to clone the project from
+```
+
+
 ### Folder Structure:
 ```
 francinette

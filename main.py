@@ -1,5 +1,6 @@
 import argparse
 from argparse import ArgumentParser
+from CommonTester import Colors
 from git import Repo
 import os
 import re
@@ -51,14 +52,18 @@ def clone(repo, project, basedir):
         logger.info(f"removing {repo_dir} because it will be overwritten")
         shutil.rmtree(repo_dir)
 
-    logger.info(f"Cloning {project} from {repo} to {repo_dir} and creating clean copy in {project}_orig")
+    logger.info(f"Cloning {project} from {repo} to {repo_dir} and creating a copy of the repo under the username")
 
     cloned = Repo.clone_from(repo, repo_dir)
+    master = cloned.head.reference
+    author_name = str(master.commit.author.email).split('@')[0].replace(" ", "_")
 
-    repo_copy_dir = os.path.join(basedir, "temp", project + "_orig")
-    shutil.rmtree(repo_copy_dir)
+    repo_copy_dir = os.path.join(basedir, author_name + "_" + project)
+    if os.path.exists(repo_copy_dir):
+        shutil.rmtree(repo_copy_dir)
     cloned.clone(repo_copy_dir)
-
+    logger.info(f"Created a copy of the repository in {repo_copy_dir}")
+    return repo_copy_dir
 
 def add_missing_files(project, base, files):
     destination = os.path.join(base, "temp", project)
@@ -184,10 +189,10 @@ def main():
         options["local"] = os.path.join(options["local"], options["project"])
 
     logger.info(f'Options for this run: {options}')
-    destination = os.path.join(options["base"], "temp", options["project"])
 
+    repo_dir = None
     if options["repo"]:
-        clone(options["repo"], options["project"], options["base"])
+        repo_dir = clone(options["repo"], options["project"], options["base"])
         add_missing_files(options["project"], options["base"], options["files"])
     else:
         add_files(options["project"], options["base"], options["files"])
@@ -195,6 +200,8 @@ def main():
 
     execute_tests(options)
 
+    if repo_dir:
+        print(f"You can see the cloned repository in {Colors.WHITE}{repo_dir}{Colors.NC}")
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
