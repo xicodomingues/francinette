@@ -46,3 +46,11 @@ class C02_Tester(CommonTester):
     def ex10(self):
         self.exercise_files = ["ft_strlcpy.c"]
         self.test_files = ["main.c"]
+
+    def ex11(self):
+        self.exercise_files = ["ft_putstr_non_printable.c"]
+        self.test_files = ["main.c"]
+
+    def ex12(self):
+        self.exercise_files = ["ft_print_memory.c"]
+        self.test_files = ["main.c"]
