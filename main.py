@@ -1,14 +1,15 @@
 import argparse
-from argparse import ArgumentParser
-from CommonTester import Colors
-from git import Repo
-import os
-import re
-import textwrap
-import shutil
 import importlib
 import logging
+import os
+import re
+import shutil
 import sys
+import textwrap
+from argparse import ArgumentParser
+from dataclasses import dataclass
+
+from git import Repo
 
 
 def mergefolders(root_src_dir, root_dst_dir):
@@ -39,11 +40,6 @@ def mergefolders_not_overwriting(root_src_dir, root_dst_dir):
 logger = logging.getLogger()
 logger.setLevel(logging.WARN)
 
-handler = logging.StreamHandler(sys.stdout)
-handler.setLevel(logging.DEBUG)
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-handler.setFormatter(formatter)
-logger.addHandler(handler)
 
 
 def clone(repo, project, basedir):
@@ -58,6 +54,9 @@ def clone(repo, project, basedir):
     master = cloned.head.reference
     author_name = str(master.commit.author.email).split('@')[0].replace(" ", "_")
 
+    if '+' in author_name:
+        author_name = author_name.split('+')[1]
+
     repo_copy_dir = os.path.join(basedir, author_name + "_" + project)
     if os.path.exists(repo_copy_dir):
         shutil.rmtree(repo_copy_dir)
@@ -65,43 +64,35 @@ def clone(repo, project, basedir):
     logger.info(f"Created a copy of the repository in {repo_copy_dir}")
     return repo_copy_dir
 
-def add_missing_files(project, base, files):
-    destination = os.path.join(base, "temp", project)
-    source = os.path.join(files, project)
-    mergefolders_not_overwriting(source, destination)
-
-def copy_from_local(project, local, base):
-    source = local
-    destination = os.path.join(base, "temp", project)
-
-    logger.info(f"Copying files from {source} to {destination}")
-    mergefolders(source, destination)
-
-
-def add_files(project, base, files):
-    source = os.path.join(files, project)
-    destination = os.path.join(base, "temp", project)
-
-    if not os.path.exists(os.path.join(base, "temp")):
-        os.makedirs(os.path.join(base, "temp"))
-
-    if os.path.exists(os.path.join(base, "temp", project)):
-        shutil.rmtree(os.path.join(base, "temp", project))
-
-    logger.info(f"Copying tester files from {source} to {destination}")
-    shutil.copytree(source, destination)
-
-
-def execute_tests(options):
-    # at this point we should have the directory created before copying stuff into it
-
+def execute_tests(info):
     # Get the correct tester
-    module_name = options["project"].upper() + "_Tester"
+    module_name = info.project.upper() + "_Tester"
     module = importlib.import_module(module_name)
 
     # execute the tests
-    module.__getattribute__(module_name)(options)
+    module.__getattribute__(module_name)(info)
 
+@dataclass
+class TestRunInfo():
+    project: str
+    source_dir: str
+    tests_dir: str
+    temp_dir: str
+    ex_to_execute: str
+    verbose: bool
+
+
+class Colors:
+    WHITE = '\033[1;37m'
+    RED = '\033[0;31m'
+    GREEN = '\033[0;32m'
+    LIGHT_GREEN = '\033[1;32m'
+    LIGHT_BLUE = '\033[1;36m'
+    PURPLE = '\033[0;35m'
+    LIGHT_PURPLE = '\033[1;35m'
+    YELLOW = '\033[0;33m'
+    LIGHT_RED = '\033[1;31m'
+    NC = '\033[0m'  # No Color
 
 
 def main():
@@ -112,13 +103,7 @@ def main():
     current_dir = os.path.basename(pwd)
     exercise = None
     project = None
-
-    if re.fullmatch(r"ex\d{2}", current_dir):
-        exercise = current_dir
-        current_dir = os.path.basename(os.path.abspath(os.path.join(current_dir, "../..")))
-
-    if re.fullmatch(r"[Cc]\d{2}", current_dir):
-        project = current_dir
+    local = None
 
     parser = ArgumentParser("francinette",
                             formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -168,43 +153,61 @@ def main():
     if args.verbose:
         logger.setLevel(logging.INFO)
 
+    logger.info(f"current_dir: {current_dir}")
+    if re.fullmatch(r"ex\d{2}", current_dir):
+        exercise = current_dir
+        current_dir = os.path.basename(os.path.abspath(os.path.join(current_dir, "../..")))
+        logger.info(f"Found exXX in the current dir '{exercise}'. Saving the exercise and going up a dir: '{current_dir}'")
+
+    if re.fullmatch(r"[Cc]\d{2}", current_dir):
+        project = current_dir
+        local = os.path.abspath(".")
+        logger.info(f"Was inside a C project dir'{project}'. Setting the local to the current directory: '{local}'")
+
     base = args.base or os.path.dirname(os.path.realpath(__file__))
     exercise = args.exercise or exercise
     if exercise:
         exercise = exercise.rjust(2, "0")
         logger.info("Will only execute the tests for ex{exercise}")
 
-    options = {
-        "exercise": exercise,
-        "project": args.project or project,
-        "repo": args.git_repo,
-        "base": base,
-        "files": args.files or os.path.join(base, "files"),
-        "local": args.local or base,
-    }
+    project = args.project or project
 
-    if not options["project"]:
+    if not project:
         parser.print_help()
         exit(0)
 
-    if not os.path.exists(os.path.join(options["local"], "ex01")):
-        options["local"] = os.path.join(options["local"], options["project"])
+    logger.info(f"local: {local}, args.local: {args.local}, base: {base}")
+    source_dir = local or args.local or base
+    is_git_repo = False
 
-    logger.info(f'Options for this run: {options}')
+    if not os.path.exists(os.path.join(source_dir, "ex01")):
+        source_dir = os.path.join(source_dir, project)
 
-    repo_dir = None
-    if options["repo"]:
-        repo_dir = clone(options["repo"], options["project"], options["base"])
-        add_missing_files(options["project"], options["base"], options["files"])
-    else:
-        add_files(options["project"], options["base"], options["files"])
-        copy_from_local(options["project"], options["local"], options["base"])
+    if args.git_repo:
+        source_dir = clone(args.git_repo, project, base)
+        is_git_repo = True
 
-    execute_tests(options)
+    info = TestRunInfo(
+        project,
+        source_dir,
+        os.path.join(args.files or os.path.join(base, "files"), project),
+        os.path.join(base, "temp", project),
+        exercise,
+        args.verbose)
 
-    if repo_dir:
-        print(f"You can see the cloned repository in {Colors.WHITE}{repo_dir}{Colors.NC}")
+    logger.info(f"Executing tests with info: {info}")
+
+    execute_tests(info)
+
+    if is_git_repo:
+        print(f"You can see the cloned repository in {Colors.WHITE}{source_dir}{Colors.NC}")
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
+    handler = logging.StreamHandler(sys.stdout)
+    handler.setLevel(logging.DEBUG)
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+
     main()

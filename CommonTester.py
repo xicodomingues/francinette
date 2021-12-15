@@ -1,44 +1,28 @@
 import os
 import re
 import logging
+import shutil
 import subprocess
-import pty
-import sys
-import difflib
-from pathlib import Path
 
+from main import TestRunInfo
+from main import Colors
+from pathlib import Path
 
 logger = logging.getLogger()
 
 
-class Colors:
-    WHITE = '\033[1;37m'
-    RED = '\033[0;31m'
-    GREEN = '\033[0;32m'
-    LIGHT_GREEN = '\033[1;32m'
-    LIGHT_BLUE = '\033[1;36m'
-    PURPLE = '\033[0;35m'
-    LIGHT_PURPLE = '\033[1;35m'
-    YELLOW = '\033[0;33m'
-    LIGHT_RED = '\033[1;31m'
-    NC = '\033[0m'  # No Color
-
-
-
 DEFAULT_COMPILE_FLAGS = ["-Wall", "-Wextra", "-Werror"]
 IGNORED_EXERCISE_HEADER = f"{Colors.YELLOW}" \
-        "═════════════════════════════════ Ex## Ignored ═════════════════════════════════" \
+        "═════════════════════════════════ #### Ignored ═════════════════════════════════" \
         f"{Colors.NC}"
 
 EXERCISE_HEADER= f"{Colors.LIGHT_BLUE}" \
-        "═════════════════════════════════ Testing Ex## ═════════════════════════════════" \
+        "═════════════════════════════════ Testing #### ═════════════════════════════════" \
         f"{Colors.NC}"
-
 
 TEST_PASSED = f"\n{Colors.LIGHT_GREEN}" \
         "══════════════════════════════    #### passed!    ══════════════════════════════" \
         f"{Colors.NC}"
-
 
 TEST_FAILED = f"\n{Colors.LIGHT_RED}" \
         "══════════════════════════════    #### failed!    ══════════════════════════════" \
@@ -48,29 +32,42 @@ TEST_NOT_PRESENT = f"\n{Colors.YELLOW}" \
         "══════════════════════════════  #### not present  ══════════════════════════════" \
         f"{Colors.NC}"
 
-def show_banner():
+
+def show_banner(project):
     message = f"Welcome to {Colors.LIGHT_PURPLE}Francinette{Colors.LIGHT_BLUE}, a 42 tester framework!"
+    project_message = f"{Colors.LIGHT_PURPLE}Executing {project.upper()}{Colors.LIGHT_BLUE}"
     print(f"{Colors.LIGHT_BLUE}")
     print(f"╔══════════════════════════════════════════════════════════════════════════════╗")
     print(f"║                {message}                ║")
-    print(f"╚══════════════════════════════════════════════════════════════════════════════╝")
+    print(f"╚═══════════════════════╦══════════════════════════════╦═══════════════════════╝")
+    print(f"                        ║         {project_message}        ║")
+    print(f"                        ╚══════════════════════════════╝")
     print(f"{Colors.NC}")
 
 
 class CommonTester:
 
-    def __init__(self, options):
-        self.compile = []
-        self.norm_ignore = []
+    def __init__(self, info: TestRunInfo):
         self.compile_flags = []
-        self.base = options["base"]
-        self.project = options["project"]
-        self.selected_test = options["exercise"]
+        self.exercise_files = []
+        self.test_files = []
+        self.temp_dir = info.temp_dir
+        self.source_dir = info.source_dir
+        self.tests_dir = info.tests_dir
+        self.project = info.project
+        self.selected_test = info.ex_to_execute
+
+        if info.verbose:
+            logger.setLevel(logging.INFO)
 
         self.available_tests = [test for test in dir(self) if re.match(r"ex\d{2}", test)]
         logger.info("tests found: %s", self.available_tests)
 
-        show_banner()
+        if self.selected_test:
+            self.execute_test(self.selected_test)
+            return
+
+        show_banner(info.project)
 
         test_status = {}
         for test in self.available_tests:
@@ -99,15 +96,10 @@ class CommonTester:
 
 
     def pass_norminette(self, test):
-        norm_files = [file for file in self.compile if file not in self.norm_ignore]
-
-        norm_path = os.path.join(self.base, "temp", self.project, test)
-        if (not os.path.exists(norm_path)):
-            return "Test Not Present"
-        os.chdir(os.path.join(self.base, "temp", self.project, test))
+        os.chdir(os.path.join(self.temp_dir, test))
         logger.info(f"On directory { os.getcwd() }")
-        logger.info(f"Executing norminette on files: {norm_files}")
-        norm_exec = ["norminette", "-R", "CheckForbiddenSourceHeader"] + norm_files
+        logger.info(f"Executing norminette on files: {self.exercise_files}")
+        norm_exec = ["norminette", "-R", "CheckForbiddenSourceHeader"] + self.exercise_files
 
         result = subprocess.run(norm_exec, capture_output=True, text=True)
 
@@ -121,12 +113,12 @@ class CommonTester:
 
 
     def compile_files(self):
-        files = self.compile
+        files = self.test_files + self.exercise_files
         flags = self.compile_flags if self.compile_flags else DEFAULT_COMPILE_FLAGS
 
-        logger.info(f"compiling files: {self.compile} with flags: {flags}")
+        logger.info(f"compiling files: {files} with flags: {flags}")
         #result = os.system(f"gcc { " ".join(flags) } { " ".join(files) }")
-        gcc_exec = ["gcc"] + flags + self.compile
+        gcc_exec = ["gcc"] + flags + files
 
         print(f"Executing: {Colors.WHITE}{' '.join(gcc_exec)}{Colors.NC}:")
         p = subprocess.Popen(gcc_exec);
@@ -185,25 +177,59 @@ class CommonTester:
 
 
     def execute_test(self, test_to_execute):
+        test_to_execute = "ex" + test_to_execute[-2:]
         logger.info(f"starting execution of {test_to_execute}")
-        ex_number = test_to_execute[-2:]
-        if self.selected_test and self.selected_test[-2:] != ex_number:
-            # If a test is specified, then it only executes the matching test
-            print(IGNORED_EXERCISE_HEADER.replace("##", ex_number))
-            return
 
-        print(EXERCISE_HEADER.replace("##", ex_number))
-        test_fn = getattr(self, test_to_execute)()
+        print(EXERCISE_HEADER.replace("####", test_to_execute))
+        getattr(self, test_to_execute)()
+
+        logger.info("Preparing the test")
+        ready = self.prepare_test(test_to_execute)
+        if not ready:
+            return "Test Not Present"
 
         norm_passed = self.pass_norminette(test_to_execute)
-        if norm_passed == "Test Not Present":
-            return "Test Not Present"
         status = self.compile_files()
         if status != 0:
             return False
 
         output = self.execute_program()
         return self.compare_with_expected(output) and norm_passed
+
+
+    def prepare_test(self, test):
+        try:
+            # delete destination folder if already present
+            temp_dir = os.path.join(self.temp_dir, test)
+            if os.path.exists(temp_dir):
+                logger.info(f"Removing already present directory {temp_dir}")
+                shutil.rmtree(temp_dir)
+
+            Path(temp_dir).mkdir()
+
+            # copy exercise files from source folder
+            for filename in self.exercise_files:
+                source_path = os.path.join(self.source_dir, test, filename)
+                dest_path = os.path.join(temp_dir, filename)
+                logger.info(f"Copying source file: {source_path} to {dest_path}")
+                shutil.copy(source_path, dest_path)
+
+            # copy files from test folder and the expected files
+            for filename in self.test_files:
+                source_path = os.path.join(self.tests_dir, test, filename)
+                dest_path = os.path.join(temp_dir, filename)
+                logger.info(f"Copying test file: {source_path} to {dest_path}")
+                shutil.copy(source_path, dest_path)
+
+            expected_path = os.path.join(self.tests_dir, test, "expected")
+            if os.path.exists(expected_path):
+                logger.info(f"Copying expected file: {source_path} to {dest_path}")
+                shutil.copy(expected_path, temp_dir)
+
+            return True
+        except Exception as ex:
+            logger.info("Problem creating the files structure: ", ex)
+            return False
 
 
     def clean_up(self, test):
