@@ -185,6 +185,7 @@ def main():
 
     if args.git_repo:
         source_dir = clone(args.git_repo, project, base)
+        exercise = None
         is_git_repo = True
 
     info = TestRunInfo(
