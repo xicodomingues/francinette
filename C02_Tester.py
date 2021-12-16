@@ -1,4 +1,7 @@
-from CommonTester import CommonTester
+import os
+import re
+from typing import Match
+from CommonTester import CommonTester, VeriOut
 
 
 class C02_Tester(CommonTester):
@@ -54,3 +57,30 @@ class C02_Tester(CommonTester):
     def ex12(self):
         self.exercise_files = ["ft_print_memory.c"]
         self.test_files = ["main.c"]
+
+    def ex12_verification(self):
+        def get_replacement(first_value):
+            def replace(match: Match):
+                return f"{(int(match.group(1), 16) - first_value):0>16x}"
+            return replace
+
+        def truncate(lines):
+            return lines[:2] + ["..."] + lines[-2:]
+
+        with open("out") as outfile, open("expected") as expfile:
+            outlines = outfile.readlines()
+            explines = expfile.readlines()
+
+            if (len(outlines) != len(explines)):
+                return VeriOut(-1, f"The out and expected files "
+                    f"do not hace the same number of lines:"
+                    f" {truncate(outlines)}, {truncate(outlines)}")
+
+            first_value_out = int(outlines[1].split(":")[0], 16);
+            first_value_exp = int(explines[1].split(":")[0], 16);
+            for i in range(len(outlines)):
+                line2 = re.sub(r"^([0-9a-f]{16}):", get_replacement(first_value_exp), explines[i])
+                line1 = re.sub(r"^([0-9a-f]{16}):", get_replacement(first_value_out), outlines[i])
+                if (line1 != line2):
+                    return VeriOut(-2, f"These lines should be equal:\n{repr(line1)}\n{repr(line2)}")
+            return VeriOut(0, "Ok")

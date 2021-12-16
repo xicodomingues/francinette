@@ -1,8 +1,11 @@
+from dataclasses import dataclass
 import os
 import re
 import logging
 import shutil
 import subprocess
+
+import pexpect
 
 from main import TestRunInfo
 from main import Colors
@@ -11,7 +14,7 @@ from pathlib import Path
 logger = logging.getLogger()
 
 
-DEFAULT_COMPILE_FLAGS = ["-Wall", "-Wextra", "-Werror"]
+DEFAULT_COMPILE_FLAGS = ["-Wall", "-Wextra"]
 IGNORED_EXERCISE_HEADER = f"{Colors.YELLOW}" \
         "═════════════════════════════════ #### Ignored ═════════════════════════════════" \
         f"{Colors.NC}"
@@ -45,6 +48,12 @@ def show_banner(project):
     print(f"{Colors.NC}")
 
 
+@dataclass
+class VeriOut:
+    returncode: int
+    stdout: str
+
+
 class CommonTester:
 
     def __init__(self, info: TestRunInfo):
@@ -60,12 +69,14 @@ class CommonTester:
         if info.verbose:
             logger.setLevel(logging.INFO)
 
-        self.available_tests = [test for test in dir(self) if re.match(r"ex\d{2}", test)]
-        logger.info("tests found: %s", self.available_tests)
-
         if self.selected_test:
-            self.execute_test(self.selected_test)
+            test = "ex" + self.selected_test[-2:]
+            test_ok = self.execute_test(test)
+            self.show_result(self.selected_test, test_ok)
             return
+
+        self.available_tests = [test for test in dir(self) if re.match(r"^ex\d{2}$", test)]
+        logger.info("tests found: %s", self.available_tests)
 
         show_banner(info.project)
 
@@ -73,18 +84,20 @@ class CommonTester:
         for test in self.available_tests:
             test_ok = self.execute_test(test)
             test_status[test] = test_ok
-            if test_ok == True:
-                print(TEST_PASSED.replace("####", test.title()))
-            elif test_ok == False:
-                print(TEST_FAILED.replace("####", test.title()))
-            elif test_ok == "Test Not Present":
-                print(TEST_NOT_PRESENT.replace("####", test.title()))
+            self.show_result(test, test_ok)
 
             print("\n")
             self.clean_up(test)
 
         self.print_summary(test_status)
 
+    def show_result(self, test, test_ok):
+        if test_ok == True:
+            print(TEST_PASSED.replace("####", test.title()))
+        elif test_ok == False:
+            print(TEST_FAILED.replace("####", test.title()))
+        elif test_ok == "Test Not Present":
+            print(TEST_NOT_PRESENT.replace("####", test.title()))
 
     def print_summary(self, test_status):
         ok_tests = [test for test, st in test_status.items() if st is True]
@@ -103,7 +116,7 @@ class CommonTester:
 
         result = subprocess.run(norm_exec, capture_output=True, text=True)
 
-        print(f"Executing: {Colors.WHITE}{' '.join(norm_exec)}{Colors.NC}:")
+        print(f"{Colors.CYAN}Executing: {Colors.WHITE}{' '.join(norm_exec)}{Colors.NC}:")
         if result.returncode == 0:
             print(f"{Colors.GREEN}{result.stdout}{Colors.NC}")
         else:
@@ -120,7 +133,7 @@ class CommonTester:
         #result = os.system(f"gcc { " ".join(flags) } { " ".join(files) }")
         gcc_exec = ["gcc"] + flags + files
 
-        print(f"Executing: {Colors.WHITE}{' '.join(gcc_exec)}{Colors.NC}:")
+        print(f"{Colors.CYAN}Executing: {Colors.WHITE}{' '.join(gcc_exec)}{Colors.NC}:")
         p = subprocess.Popen(gcc_exec);
         p.wait()
 
@@ -134,23 +147,51 @@ class CommonTester:
 
     def execute_program(self):
         logger.info(f"Running the output of the compilation: ")
-        #result = os.system(f"gcc { " ".join(flags) } { " ".join(files) }")
         logger.info(f"On directory { os.getcwd() }")
         main_exec = ["./a.out"]
 
-        print(f"\nExecuting: {Colors.WHITE}{' '.join(main_exec)}{Colors.NC}:")
+        print(f"\n{Colors.CYAN}Executing: {Colors.WHITE}{' '.join(main_exec)}{Colors.NC}:")
         result = subprocess.run(main_exec, capture_output=True, text=True)
 
         if result.returncode == 0:
             logger.info("Executed program successfully main")
             print(result.stdout)
         else:
-            print(f"{Colors.LIGHT_RED}{result.stderr}{Colors.NC}")
+            if result.stderr:
+                print(f"{Colors.LIGHT_RED}{result.stderr}{Colors.NC}")
+            else:
+                print(f"{Colors.LIGHT_RED}Error Executing the program! (Most likely SegFault){Colors.NC}")
 
         return result.stdout
 
 
-    def compare_with_expected(self, output):
+    def do_diff(self):
+        diff_exec = ["diff", "expected", "out"]
+        print(f"\n{Colors.CYAN}Executing: {Colors.WHITE}{' '.join(diff_exec)}{Colors.NC}:")
+
+        result = subprocess.run(diff_exec, capture_output=True, text=True)
+        if result.returncode == 0:
+            print(f"{Colors.GREEN}diff: No differences{Colors.NC}")
+        else:
+            print(f"{Colors.LIGHT_PURPLE}< expected, > your result{Colors.NC}")
+            print(f"{Colors.RED}{result.stdout}{Colors.NC}")
+
+        return result.returncode == 0
+
+
+    def do_verification_fn(self, verification_fn):
+        print(f"\n{Colors.CYAN}Executing function: {Colors.WHITE}{verification_fn.__name__}{Colors.NC}:")
+
+        result = verification_fn()
+        if result.returncode == 0:
+            print(f"{Colors.GREEN}Everything OK!{Colors.NC}")
+        else:
+            print(f"{Colors.RED}{result.stdout}{Colors.NC}")
+
+        return result.returncode == 0
+
+
+    def compare_with_expected(self, output, test):
         expected_file = os.path.join(os.getcwd(), 'expected')
 
         if not os.path.exists(expected_file):
@@ -163,24 +204,18 @@ class CommonTester:
             out_file.write(output)
             out_file.close();
 
-            diff_exec = ["diff", "expected", "out"]
-            print(f"\nExecuting: {Colors.WHITE}{' '.join(diff_exec)}{Colors.NC}:")
-
-            result = subprocess.run(diff_exec, capture_output=True, text=True)
-            if result.returncode == 0:
-                print(f"{Colors.GREEN}diff: No differences{Colors.NC}")
+            verification_fn = getattr(self, f"{test}_verification", None)
+            if verification_fn:
+                return self.do_verification_fn(verification_fn)
             else:
-                print(f"{Colors.LIGHT_PURPLE}< expected, > your result{Colors.NC}")
-                print(f"{Colors.RED}{result.stdout}{Colors.NC}")
-
-            return result.returncode == 0
+                return self.do_diff()
 
 
     def execute_test(self, test_to_execute):
-        test_to_execute = "ex" + test_to_execute[-2:]
         logger.info(f"starting execution of {test_to_execute}")
 
         print(EXERCISE_HEADER.replace("####", test_to_execute))
+        print()
         getattr(self, test_to_execute)()
 
         logger.info("Preparing the test")
@@ -194,7 +229,7 @@ class CommonTester:
             return False
 
         output = self.execute_program()
-        return self.compare_with_expected(output) and norm_passed
+        return self.compare_with_expected(output, test_to_execute) and norm_passed
 
 
     def prepare_test(self, test):
