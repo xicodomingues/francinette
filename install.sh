@@ -34,6 +34,12 @@ if [[ $? != 0 ]]; then
 	echo "\nalias francinette=~/francinette/tester.sh" >> ~/.zshrc
 fi
 
+grep "fran" ~/.zshrc &> /dev/null
+if [[ $? != 0 ]]; then
+	echo "Short alias not present. Adding it"
+	echo "\nalias fnt=$HOME/francinette/tester.sh" >> ~/.zshrc
+fi
+
 # print help
 ~/francinette/tester.sh
 

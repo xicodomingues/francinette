@@ -148,14 +148,15 @@ def main():
     logger.info(f"current_dir: {current_dir}")
     if re.fullmatch(r"ex\d{2}", current_dir):
         exercise = current_dir
-        current_dir = os.path.basename(os.path.abspath(os.path.join(current_dir, "../..")))
+        current_dir = os.path.basename(os.path.abspath(os.path.join(current_dir, "..", "..")))
         logger.info(f"Found exXX in the current dir '{exercise}'. Saving the exercise and going up a dir: '{current_dir}'")
+        os.chdir("..")
 
     base = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
     exercise = args.exercise or exercise
     if exercise:
-        exercise = exercise.rjust(2, "0")
-        logger.info("Will only execute the tests for ex{exercise}")
+        exercise = "ex" + exercise.rjust(2, "0")[-2:]
+        logger.info(f"Will only execute the tests for {exercise}")
 
     try:
         from_git = False

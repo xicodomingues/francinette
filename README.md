@@ -29,6 +29,8 @@ able to tell which project it is and execute the corresponding tests.
 in: /C00 $> francinette
 ```
 
+you can also use the shorter version of the command: `fran`
+
 In the case above, francinette should run the tests in C00.
 
 You can also use francinette to evaluate a project from github.

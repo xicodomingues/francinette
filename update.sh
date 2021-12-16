@@ -22,4 +22,10 @@ cp -r francinette ..
 cd $HOME
 rm -rf temp_____
 
+grep "fran" ~/.zshrc &> /dev/null
+if [[ $? != 0 ]]; then
+	echo "Short alias not present. Adding it"
+	echo "\nalias fnt=$HOME/francinette/tester.sh" >> ~/.zshrc
+fi
+
 echo "\033[1;37mFrancinette is updated. You can use it again!\033[0m"
