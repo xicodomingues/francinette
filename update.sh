@@ -16,17 +16,10 @@ rm -rf francinette/files
 
 cd $HOME/francinette
 
-find $HOME/francinette -name "C??_Tester.py" -print0 | while read -d $'\0' file
-do
-    name=$(basename "$file")
-    echo "Backing up $name to $name.backup"
-	mv "$file" "$name.backup"
-done
-
 cd $HOME/temp_____
 cp -r francinette ..
 
 cd $HOME
 rm -rf temp_____
 
-echo "Francinette is updated. You can use it again!"
+echo "\033[1;37mFrancinette is updated. You can use it again!\033[0m"

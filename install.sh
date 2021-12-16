@@ -37,4 +37,4 @@ fi
 # print help
 ~/francinette/tester.sh
 
-echo "Please close this terminal windown and open it again for francinette to work"
+echo "\033[1;37mPlease close this terminal windown and open the terminal again for francinette to work\033[0m"

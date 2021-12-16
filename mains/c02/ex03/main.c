@@ -1,23 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putchar.c                                       :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fsoares- <fsoares-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fsoares- <fsoares-@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/12/05 19:09:16 by fsoares-          #+#    #+#             */
-/*   Updated: 2021/12/14 18:39:31 by fsoares-         ###   ########.fr       */
+/*   Created: 2021/12/08 21:49:12 by fsoares-          #+#    #+#             */
+/*   Updated: 2021/12/08 22:03:47 by fsoares-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>
+#include <stdio.h>
 
-/**
- * Writes a character to the stdout
- *
- * @param c the character to print
- */
-void	ft_putchar(char c)
+int	ft_str_is_numeric(char *str);
+
+int main(void)
 {
-	write(1, &c, 1);
+	printf("\"123\": %i\n", ft_str_is_numeric("123"));
+	printf("\"\": %i\n", ft_str_is_numeric(""));
+	printf("\"1234567a89\": %i\n", ft_str_is_numeric("1234567a89"));
 }

@@ -11,64 +11,8 @@ from dataclasses import dataclass
 
 from git import Repo
 
-def mergefolders(root_src_dir, root_dst_dir):
-    for src_dir, dirs, files in os.walk(root_src_dir):
-        dst_dir = src_dir.replace(root_src_dir, root_dst_dir, 1)
-        if not os.path.exists(dst_dir):
-            os.makedirs(dst_dir)
-        for file_ in files:
-            src_file = os.path.join(src_dir, file_)
-            dst_file = os.path.join(dst_dir, file_)
-            if os.path.exists(dst_file):
-                os.remove(dst_file)
-            shutil.copy(src_file, dst_dir)
-
-
-def mergefolders_not_overwriting(root_src_dir, root_dst_dir):
-    for src_dir, dirs, files in os.walk(root_src_dir):
-        dst_dir = src_dir.replace(root_src_dir, root_dst_dir, 1)
-        if not os.path.exists(dst_dir):
-            os.makedirs(dst_dir)
-        for file_ in files:
-            src_file = os.path.join(src_dir, file_)
-            dst_file = os.path.join(dst_dir, file_)
-            if not os.path.exists(dst_file):
-                shutil.copy(src_file, dst_dir)
-
-
 logger = logging.getLogger()
 logger.setLevel(logging.WARN)
-
-
-def clone(repo, project, basedir):
-    repo_dir = os.path.join(basedir, "temp", project)
-    if os.path.exists(repo_dir):
-        logger.info(f"removing {repo_dir} because it will be overwritten")
-        shutil.rmtree(repo_dir)
-
-    logger.info(f"Cloning {project} from {repo} to {repo_dir} and creating a copy of the repo under the username")
-
-    cloned = Repo.clone_from(repo, repo_dir)
-    master = cloned.head.reference
-    author_name = str(master.commit.author.email).split('@')[0].replace(" ", "_")
-
-    if '+' in author_name:
-        author_name = author_name.split('+')[1]
-
-    repo_copy_dir = os.path.join(basedir, author_name + "_" + project)
-    if os.path.exists(repo_copy_dir):
-        shutil.rmtree(repo_copy_dir)
-    cloned.clone(repo_copy_dir)
-    logger.info(f"Created a copy of the repository in {repo_copy_dir}")
-    return repo_copy_dir
-
-def execute_tests(info):
-    # Get the correct tester
-    module_name = info.project.upper() + "_Tester"
-    module = importlib.import_module(module_name)
-
-    # execute the tests
-    module.__getattribute__(module_name)(info)
 
 @dataclass
 class TestRunInfo():
@@ -95,6 +39,69 @@ class Colors:
     NC = '\033[0m'  # No Color
 
 
+def guess_project(current_dir):
+    logger.info(f"Current dir: {current_dir}")
+    ex_path = os.path.abspath("ex00")
+    logger.info(f"Testing path: {ex_path}")
+    if (os.path.exists(ex_path)):
+
+        path = os.path.join(ex_path, "ft_putchar.c")
+        logger.info(f"Testing path: {path}")
+        if (os.path.exists(path)):
+            return "C00";
+
+        path = os.path.join(ex_path, "ft_ft.c")
+        logger.info(f"Testing path: {path}")
+        if (os.path.exists(path)):
+            return "C01"
+
+        path = os.path.join(ex_path, "ft_strcpy.c")
+        logger.info(f"Testing path: {path}")
+        if (os.path.exists(path)):
+            return "C02";
+
+        path = os.path.join(ex_path, "ft_strcmp.c")
+        logger.info(f"Testing path: {path}")
+        if (os.path.exists(path)):
+            return "C03";
+
+    raise Exception("The project was not identified. There is a possibility that it is a valid project, but hasn't been added yet.")
+
+
+def clone(repo, basedir, current_dir):
+    repo_dir_temp = os.path.abspath(os.path.join(basedir, "temp", "temp_clone"))
+    if os.path.exists(repo_dir_temp):
+        logger.info(f"removing {repo_dir_temp} because it will be overwritten")
+        shutil.rmtree(repo_dir_temp)
+
+    logger.info(f"Cloning repo {repo} to {repo_dir_temp} and creating a copy of the repo under the username")
+    cloned = Repo.clone_from(repo, repo_dir_temp)
+    os.chdir(repo_dir_temp)
+
+    project = guess_project(os.getcwd())
+    master = cloned.head.reference
+    author_name = str(master.commit.author.email).split('@')[0].replace(" ", "_")
+
+    if '+' in author_name:
+        author_name = author_name.split('+')[1]
+
+    repo_copy_dir = os.path.join(current_dir, author_name + "_" + project)
+    if os.path.exists(repo_copy_dir):
+        shutil.rmtree(repo_copy_dir)
+    cloned.clone(repo_copy_dir)
+    logger.info(f"Created a copy of the repository in {repo_copy_dir}")
+    return repo_copy_dir
+
+
+def execute_tests(info):
+    # Get the correct tester
+    module_name = info.project.upper() + "_Tester"
+    module = importlib.import_module(module_name)
+
+    # execute the tests
+    module.__getattribute__(module_name)(info)
+
+
 def main():
     """
     Executes the test framework with the given args
@@ -113,34 +120,19 @@ def main():
             If this command is executed inside a project (c##) or an exercise (ex##),
             then it knows automatically which tests to execute, and does. No need to pass
             arguments.
-            If you pass the arguments, then the arguments take precedence.
     """))
-
     parser.add_argument(
-        "-t", "--exercise", nargs="?",
+        "-m", "--mains", nargs="?",
+        help="Sets this directory as the directory where the main.c and expected files are present. "
+            "If this parameter is present, the default main.c files will be ignored"
+    )
+    parser.add_argument(
+        "-t", "-e", "--exercise", nargs="?",
         help="If present, only executes the passed test"
-    )
-    parser.add_argument(
-        "-b", "--base", nargs="?",
-        help="The base directory where the temp files are stored. It defaults to the one where this python file is"
-    )
-    parser.add_argument(
-        "-f", "--files", nargs="?",
-        help="The directory from where to get the extra files needed to run the tests (main.c, expected, etc)"
-             " If defaults to the 'files' folder inside basedir"
-    )
-    parser.add_argument(
-        "-l", "--local", nargs="?",
-        help="The local directory to get your local code from. It should point to the inside of the 'C0X' folder"
     )
     parser.add_argument(
         "-v", "--verbose", action="store_true",
         help="activates verbose mode, showing more internal details of the execution"
-    )
-    parser.add_argument(
-        "project",
-        nargs="?",
-        help="If present, it sets the project to be executed under testing"
     )
     parser.add_argument(
         "git_repo",
@@ -153,59 +145,47 @@ def main():
     if args.verbose:
         logger.setLevel(logging.INFO)
 
-    files_env = os.getenv("MAIN_FILES_DIR")
-    projects_env = os.getenv("PROJECTS_FILES_DIR")
-
     logger.info(f"current_dir: {current_dir}")
     if re.fullmatch(r"ex\d{2}", current_dir):
         exercise = current_dir
         current_dir = os.path.basename(os.path.abspath(os.path.join(current_dir, "../..")))
         logger.info(f"Found exXX in the current dir '{exercise}'. Saving the exercise and going up a dir: '{current_dir}'")
 
-    if re.fullmatch(r".*[Cc]\d{2}\w*", current_dir):
-        project = re.sub(r".*([Cc]\d{2})\w*", r"\1", current_dir)
-        local = os.path.abspath(".")
-        logger.info(f"Was inside a C project dir'{project}'. Setting the local to the current directory: '{local}'")
-
-    base = args.base or os.path.dirname(os.path.realpath(__file__))
+    base = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
     exercise = args.exercise or exercise
     if exercise:
         exercise = exercise.rjust(2, "0")
         logger.info("Will only execute the tests for ex{exercise}")
 
-    project = args.project or project
+    try:
+        from_git = False
+        if args.git_repo:
+            source_dir = clone(args.git_repo, base, current_dir)
+            exercise = None
+            from_git = True
 
-    if not project:
-        parser.print_help()
-        exit(0)
+        project = guess_project(current_dir);
 
-    logger.info(f"local: {local}, args.local: {args.local}, base: {base}")
-    source_dir = projects_env or local or args.local or base
-    is_git_repo = False
+        mains_dir = os.path.join(base, "mains", project)
+        if args.mains:
+            mains_dir = os.path.join(args.mains, project)
 
-    if not os.path.exists(os.path.join(source_dir, "ex01")) \
-            and re.match(r".*[cC]\d{2}\w*$", os.path.dirname(source_dir)):
-        source_dir = os.path.join(source_dir, project)
+        info = TestRunInfo(project,
+                os.path.abspath(os.path.join(current_dir, "..")),
+                mains_dir,
+                os.path.join(base, "temp", project),
+                exercise,
+                args.verbose)
 
-    if args.git_repo:
-        source_dir = clone(args.git_repo, project, base)
-        exercise = None
-        is_git_repo = True
+        logger.info(f"Test params: {info}")
 
-    info = TestRunInfo(
-        project,
-        source_dir,
-        os.path.join(files_env or args.files or os.path.join(base, "files"), project),
-        os.path.join(base, "temp", project),
-        exercise,
-        args.verbose)
+        execute_tests(info)
 
-    logger.info(f"Executing tests with info: {info}")
-
-    execute_tests(info)
-
-    if is_git_repo:
-        print(f"You can see the cloned repository in {Colors.WHITE}{source_dir}{Colors.NC}")
+        if from_git:
+            print(f"You can see the cloned repository in {Colors.WHITE}{source_dir}{Colors.NC}")
+    except Exception as ex:
+        print(f"{Colors.RED}", ex)
+        sys.exit()
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':

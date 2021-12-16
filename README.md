@@ -4,7 +4,8 @@ A small and easy to use testing framework for the 42 C module
 ## Install:
 Francinette has an automatic installer.
 
-Copy the line bellow to your console and execute it. It will automatically download the repo, create the necessary folders and alias, and install a python virtual environment dedicated to running this tool
+Copy the line bellow to your console and execute it. It will automatically download the repo,
+create the necessary folders and alias, and install a python virtual environment dedicated to running this tool
 
 ```
 sh -c "$(curl -fsSL https://raw.github.com/xicodomingues/francinette/master/install.sh)"
@@ -20,47 +21,32 @@ sh -c "$(curl -fsSL https://raw.github.com/xicodomingues/francinette/master/upda
 ```
 
 ## Runnning:
-If you have the following folder structure inside francinette you just need to write `francinette` inside the project / exercise that you wish to run, and it will automatically run.
 
-For other folder structures, use for example:
-```
-$> francinette --local ~/excercises/c00 c00
-```
-The above command assumes that in the folder `~/excercises/c00` the folder for the exercises (`ex00`, `ex01`, ...) are there, and that the `main.c` files are inside the `files` folder under `francinette`
-
-
-To use francinete on a repository code use:
+If you are on a root of a project and under it you have the exercises, francinette should be
+able to tell which project it is and execute the corresponding tests.
 
 ```
-$> francinette c00 git@repository.42.com/intra-uuid-8e9b82a1-59b4-43cd-ah34-639a79beeb5f-391f552
-                v                      v
-        project to evaluate      git url to clone the project from
+in: /C00 $> francinette
 ```
 
-## Configuration:
+In the case above, francinette should run the tests in C00.
 
-In the `tester.sh` there are two variables: `MAIN_FILES_DIR` and `PROJECTS_FILES_DIR`. These variables should point to where you have the main files in the structure: `/projects/c01/ex03/main.c`. It needs to be with this name in the folders (except project). So if your mains in your home on a folder named `aaaa`, then you need to set `MAIN_FILES_DIR=$HOME/aaaa`.
+You can also use francinette to evaluate a project from github.
 
-The same goes for the projects. If you have you projects under `projectos` with the structure `projectos/c01/ex01/ft_ultimate_ft.c`, then you need to set it to `PROJECTS_FILES_DIR/projectos`.
+```
+$> francinette git@repository.42.com/intra-uuid-8e9b82a1-59b4-43cd-ah34-639a79beeb5f-391f552
+                             v
+                  git url to clone the project from
+```
+
+It should also know to which project of this repo and run the corresponding tests
 
 ### Folder Structure:
-This is the folder structure for francinette to work without any configuraton.
-
 ```
 francinette
-├── c00                      # This is the repository where you will deliver the files.
-│   │                        # The project names need to folow cXX convention.
-│   ├── ex00                 # same for exercises
-│   │   └── ft_putchar.c
-│   ├── ex01
-│   │   └── ft_print_alphabet.c
-│   └── ex02
-│       └── ft_print_reverse_alphabet.c
-├── c01
-│   └── ex00
 │
-├── files                    # This is the directory where the main.c and expected files
-│   │                        # should be located for them to be used without configuration
+├── files                    # This is the directory where the main.c and expected files are
+│   │                        # You can change the mains or the expected files to improve the tests
 │   └── c00
 │       ├── ex00
 │       │   └── main.c
@@ -87,6 +73,9 @@ francinette
 │           └── out
 │
 ├── C00_Tester.py          # Each project needs to have a corresponding tester
+├── C01_Tester.py
+├── C02_Tester.py
+├── C03_Tester.py
 ├── CommonTester.py        # Contains the common parts to all the testers (comile, norm, etc)
 ├── LICENSE
 ├── README.md              # This document
@@ -97,16 +86,7 @@ francinette
 └── venv                   # The python virtual environment, not really relevant
 ```
 
-I would recommend using this structure, because it automates many of the configurations. But you can specify your own folders. Explained in the `Configuration` part of this document
-
-
 ## Configuration / Usage
-
-If you have the folder structure as indicated above you just need to navigate to the desired
-project folder, like for example `~/francinette/c00` and execute the `francinette` command.
-
-
-In case you are not using this directory structure, you can tweak the functionality with the following parameters:
 
 ```
 $> francinette -h
@@ -114,55 +94,42 @@ $> francinette -h
 This shows the help message.
 
 ```
-francinette/c00 $> francinette
+in: francinette/c00 $> francinette
 ```
 
 This will execute the tests for the project c00
 
 ```
-$> francinette c00
+in: francinette/c00/ex00 $> francinette
 ```
-This will execute the tests for the project c00 no matter wich directory I'm in
+
+This will execute the test only for ex00 of the project c00
+
 
 ```
-$> francinette c00 <a git repo with the c00 solved exercises>
+in: francinette/c00 $> francinette -e ex01
+```
+
+This will execute the test only for ex01 of the project c00
+
+```
+$> francinette <a git repo with the c00 solved exercises>
 ```
 
 It clones the git, and executes the tests from the `files` folder in the code clonned.
-
-```
-$> francinette --base ~/my/custom/temp/dir
-or
-$> francinette -b ~/my/custom/temp/dir
-```
-
-francinette will use this as the directory where it will put the temp files. The temp files are the files used for execution of the tests. By default this is in `~/francinette/temp/`
-
-
-```
-$> francinette --files ~/where/the/main.c/and/expected/files/are
-or
-$> francinette -f ~/where/the/main.c/and/expected/files/are
-```
-
-francinette will get the main.c's and the expected files from this directory instead of the default one. The default one is located in `~/francinette/files/`
-
-
-```
-$> francinette --local ~/where/you/solve/the/exercises
-or
-$> francinette -l ~/where/you/solve/the/exercises
-```
-
-
-francinette will get your implementations for the exercises from this folder. By default it is in located in `~/francinette/`
-
-
-## How to add tests
-
-Each project, should have a corresponding `CXX_Tester.py` file. This file is simple to configure, and I leave the `C00_Tester` as guideline. With time I may add more features, but for now only the shown options in the `test_ex00` are available.
 
 
 ## FAQ
 
 If you have any questions you know where to find me. Also, on slack under 'fsoares-'
+
+#### I'm more advanced than the tests you have available. When are you adding more tests?
+
+When I reach that exercise. You can also add them yourself. But for that you need to also
+create a `C0X_Tester.py` file. (Also there is a need to change the function `guess_project`
+in `main.py` to recognize the files for the that project)
+
+#### This test that you put up is incorrect!
+
+Well, you can change it yourself and create a pull request, or you can contact me so we can
+change it together and be friends :)

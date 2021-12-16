@@ -132,4 +132,4 @@ dmypy.json
 
 /temp/
 /c??/
-/files/
+.DS_Store

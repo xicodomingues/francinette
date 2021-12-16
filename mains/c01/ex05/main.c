@@ -1,25 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_print_alphabet.c                                :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fsoares- <fsoares-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/12/06 11:23:23 by fsoares-          #+#    #+#             */
-/*   Updated: 2021/12/06 14:26:45 by fsoares-         ###   ########.fr       */
+/*   Created: 2021/12/08 13:46:16 by fsoares-          #+#    #+#             */
+/*   Updated: 2021/12/08 14:18:34 by fsoares-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 #include <unistd.h>
 
-void	ft_print_alphabet(void)
-{
-	char	c;
+void	ft_putstr(char *str);
 
-	c = 'a';
-	while (c <= 'z')
-	{
-		write(1, &c, 1);
-		c++;
-	}
+int	main(void)
+{
+	ft_putstr("hello");
+	write(1, "\n", 1);
+	ft_putstr("holla\noutro");
 }
