@@ -11,7 +11,6 @@ from dataclasses import dataclass
 
 from git import Repo
 
-
 def mergefolders(root_src_dir, root_dst_dir):
     for src_dir, dirs, files in os.walk(root_src_dir):
         dst_dir = src_dir.replace(root_src_dir, root_dst_dir, 1)
@@ -39,7 +38,6 @@ def mergefolders_not_overwriting(root_src_dir, root_dst_dir):
 
 logger = logging.getLogger()
 logger.setLevel(logging.WARN)
-
 
 
 def clone(repo, project, basedir):
@@ -92,6 +90,7 @@ class Colors:
     PURPLE = '\033[0;35m'
     LIGHT_PURPLE = '\033[1;35m'
     YELLOW = '\033[0;33m'
+    LIGHT_YELLOW = '\033[1;33m'
     LIGHT_RED = '\033[1;31m'
     NC = '\033[0m'  # No Color
 
@@ -154,14 +153,17 @@ def main():
     if args.verbose:
         logger.setLevel(logging.INFO)
 
+    files_env = os.getenv("MAIN_FILES_DIR")
+    projects_env = os.getenv("PROJECTS_FILES_DIR")
+
     logger.info(f"current_dir: {current_dir}")
     if re.fullmatch(r"ex\d{2}", current_dir):
         exercise = current_dir
         current_dir = os.path.basename(os.path.abspath(os.path.join(current_dir, "../..")))
         logger.info(f"Found exXX in the current dir '{exercise}'. Saving the exercise and going up a dir: '{current_dir}'")
 
-    if re.fullmatch(r"[Cc]\d{2}", current_dir):
-        project = current_dir
+    if re.fullmatch(r".*[Cc]\d{2}\w*", current_dir):
+        project = re.sub(r".*([Cc]\d{2})\w*", r"\1", current_dir)
         local = os.path.abspath(".")
         logger.info(f"Was inside a C project dir'{project}'. Setting the local to the current directory: '{local}'")
 
@@ -178,10 +180,11 @@ def main():
         exit(0)
 
     logger.info(f"local: {local}, args.local: {args.local}, base: {base}")
-    source_dir = local or args.local or base
+    source_dir = projects_env or local or args.local or base
     is_git_repo = False
 
-    if not os.path.exists(os.path.join(source_dir, "ex01")):
+    if not os.path.exists(os.path.join(source_dir, "ex01")) \
+            and re.match(r".*[cC]\d{2}\w*$", os.path.dirname(source_dir)):
         source_dir = os.path.join(source_dir, project)
 
     if args.git_repo:
@@ -192,7 +195,7 @@ def main():
     info = TestRunInfo(
         project,
         source_dir,
-        os.path.join(args.files or os.path.join(base, "files"), project),
+        os.path.join(files_env or args.files or os.path.join(base, "files"), project),
         os.path.join(base, "temp", project),
         exercise,
         args.verbose)

@@ -37,8 +37,15 @@ $> francinette c00 git@repository.42.com/intra-uuid-8e9b82a1-59b4-43cd-ah34-639a
         project to evaluate      git url to clone the project from
 ```
 
+## Configuration:
+
+In the `tester.sh` there are two variables: `MAIN_FILES_DIR` and `PROJECTS_FILES_DIR`. These variables should point to where you have the main files in the structure: `/projects/c01/ex03/main.c`. It needs to be with this name in the folders (except project). So if your mains in your home on a folder named `aaaa`, then you need to set `MAIN_FILES_DIR=$HOME/aaaa`.
+
+The same goes for the projects. If you have you projects under `projectos` with the structure `projectos/c01/ex01/ft_ultimate_ft.c`, then you need to set it to `PROJECTS_FILES_DIR/projectos`.
 
 ### Folder Structure:
+This is the folder structure for francinette to work without any configuraton.
+
 ```
 francinette
 ├── c00                      # This is the repository where you will deliver the files.

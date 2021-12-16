@@ -5,8 +5,6 @@ import logging
 import shutil
 import subprocess
 
-import pexpect
-
 from main import TestRunInfo
 from main import Colors
 from pathlib import Path
@@ -38,7 +36,7 @@ TEST_NOT_PRESENT = f"\n{Colors.YELLOW}" \
 
 def show_banner(project):
     message = f"Welcome to {Colors.LIGHT_PURPLE}Francinette{Colors.LIGHT_BLUE}, a 42 tester framework!"
-    project_message = f"{Colors.LIGHT_PURPLE}Executing {project.upper()}{Colors.LIGHT_BLUE}"
+    project_message = f"{Colors.LIGHT_YELLOW}Executing {project.upper()}{Colors.LIGHT_BLUE}"
     print(f"{Colors.LIGHT_BLUE}")
     print(f"╔══════════════════════════════════════════════════════════════════════════════╗")
     print(f"║                {message}                ║")
@@ -159,8 +157,9 @@ class CommonTester:
         else:
             if result.stderr:
                 print(f"{Colors.LIGHT_RED}{result.stderr}{Colors.NC}")
-            else:
-                print(f"{Colors.LIGHT_RED}Error Executing the program! (Most likely SegFault){Colors.NC}")
+            if result.stdout:
+                print(f"{Colors.RED}{result.stdout}{Colors.NC}")
+            print(f"{Colors.LIGHT_RED}Error Executing the program! (Most likely SegFault){Colors.NC}")
 
         return result.stdout
 
@@ -240,7 +239,7 @@ class CommonTester:
                 logger.info(f"Removing already present directory {temp_dir}")
                 shutil.rmtree(temp_dir)
 
-            Path(temp_dir).mkdir()
+            os.makedirs(temp_dir)
 
             # copy exercise files from source folder
             for filename in self.exercise_files:
@@ -260,6 +259,18 @@ class CommonTester:
             if os.path.exists(expected_path):
                 logger.info(f"Copying expected file: {source_path} to {dest_path}")
                 shutil.copy(expected_path, temp_dir)
+
+            # remove a.out
+            program_path = os.path.join(self.tests_dir, test, "a.out")
+            if os.path.exists(program_path):
+                logger.info(f"Removing file: {program_path}")
+                shutil.rmtree(program_path)
+
+            # remove out
+            program_path = os.path.join(self.tests_dir, test, "out")
+            if os.path.exists(program_path):
+                logger.info(f"Removing file: {program_path}")
+                shutil.rmtree(program_path)
 
             return True
         except Exception as ex:
