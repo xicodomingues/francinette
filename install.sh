@@ -28,13 +28,13 @@ source venv/bin/activate
 pip3 install -r requirements.txt
 
 # set up the alias
-grep "francinette" ~/.zshrc &> /dev/null
+grep "francinette=" ~/.zshrc &> /dev/null
 if [[ $? != 0 ]]; then
 	echo "not present"
 	echo "\nalias francinette=~/francinette/tester.sh" >> ~/.zshrc
 fi
 
-grep "fran" ~/.zshrc &> /dev/null
+grep "fran=" ~/.zshrc &> /dev/null
 if [[ $? != 0 ]]; then
 	echo "Short alias not present. Adding it"
 	echo "\nalias fnt=$HOME/francinette/tester.sh" >> ~/.zshrc

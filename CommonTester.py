@@ -12,7 +12,7 @@ from pathlib import Path
 logger = logging.getLogger()
 
 
-DEFAULT_COMPILE_FLAGS = ["-Wall", "-Wextra"]
+DEFAULT_COMPILE_FLAGS = ["-Wall", "-Wextra", "-Werror"]
 IGNORED_EXERCISE_HEADER = f"{Colors.YELLOW}" \
         "═════════════════════════════════ #### Ignored ═════════════════════════════════" \
         f"{Colors.NC}"
