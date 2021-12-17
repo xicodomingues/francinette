@@ -29,7 +29,7 @@ able to tell which project it is and execute the corresponding tests.
 in: /C00 $> francinette
 ```
 
-you can also use the shorter version of the command: `fran`
+you can also use the shorter version of the command: `paco`
 
 In the case above, francinette should run the tests in C00.
 
