@@ -45,6 +45,39 @@ $> francinette git@repository.42.com/intra-uuid-8e9b82a1-59b4-43cd-ah34-639a79be
 
 It should also know to which project is this repo and run the corresponding tests
 
+## Configuration / Usage
+
+```
+$> francinette -h
+```
+This shows the help message.
+
+```
+in: francinette/c00 $> francinette
+```
+
+This will execute the tests for the project c00
+
+```
+in: francinette/c00/ex00 $> francinette
+```
+
+This will execute the test only for ex00 of the project c00
+
+
+```
+in: francinette/c00 $> francinette -e ex01
+```
+
+This will execute the test only for ex01 of the project c00
+
+```
+$> francinette <a git repo with the c00 solved exercises>
+```
+
+It clones the git, and executes the tests in `francinette/mains` against the clonned code.
+
+
 ### Folder Structure:
 ```
 francinette
@@ -89,38 +122,6 @@ francinette
 ├── tester.sh              # The script that will execute the tests
 └── venv                   # The python virtual environment, not really relevant
 ```
-
-## Configuration / Usage
-
-```
-$> francinette -h
-```
-This shows the help message.
-
-```
-in: francinette/c00 $> francinette
-```
-
-This will execute the tests for the project c00
-
-```
-in: francinette/c00/ex00 $> francinette
-```
-
-This will execute the test only for ex00 of the project c00
-
-
-```
-in: francinette/c00 $> francinette -e ex01
-```
-
-This will execute the test only for ex01 of the project c00
-
-```
-$> francinette <a git repo with the c00 solved exercises>
-```
-
-It clones the git, and executes the tests in `francinette/mains` against the clonned code.
 
 
 ## FAQ
