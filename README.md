@@ -41,7 +41,7 @@ $> francinette git@repository.42.com/intra-uuid-8e9b82a1-59b4-43cd-ah34-639a79be
                   git url to clone the project from
 ```
 
-It should also know to which project of this repo and run the corresponding tests
+It should also know to which project is this repo and run the corresponding tests
 
 ### Folder Structure:
 ```
@@ -118,7 +118,7 @@ This will execute the test only for ex01 of the project c00
 $> francinette <a git repo with the c00 solved exercises>
 ```
 
-It clones the git, and executes the tests from the `files` folder in the code clonned.
+It clones the git, and executes the tests in `francinette/mains` against the clonned code.
 
 
 ## FAQ
