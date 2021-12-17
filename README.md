@@ -1,5 +1,7 @@
 # Francinette
-A small and easy to use testing framework for the 42 C module
+A small and easy to use testing framework for the 42 C module.
+
+It is designed to automate checking `norminette`, compiling the code and executing the tests, to give you more time to look at the code itself.
 
 ## Install:
 Francinette has an automatic installer.
