@@ -65,7 +65,7 @@ def guess_project(current_dir):
         if (os.path.exists(path)):
             return "C03";
 
-    raise Exception("The project was not identified. There is a possibility that it is a valid project, but hasn't been added yet.")
+    raise Exception("Francinette needs to be executed inside a project folder")
 
 
 def clone(repo, basedir, current_dir):
@@ -185,7 +185,7 @@ def main():
         if from_git:
             print(f"You can see the cloned repository in {Colors.WHITE}{source_dir}{Colors.NC}")
     except Exception as ex:
-        print(f"{Colors.RED}", ex)
+        print(f"{Colors.RED}{ex}")
         sys.exit()
 
 # Press the green button in the gutter to run the script.
