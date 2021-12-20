@@ -28,4 +28,4 @@ if [[ $? != 0 ]]; then
 	echo "\nalias paco=$HOME/francinette/tester.sh" >> ~/.zshrc
 fi
 
-echo "\033[1;37mFrancinette is updated. You can use it again!\033[0m"
+echo -e "\033[1;37mFrancinette is updated. You can use it again!\033[0m"
