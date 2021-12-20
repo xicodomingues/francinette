@@ -18,3 +18,11 @@ class C04_Tester(CommonTester):
     def ex03(self):
         self.exercise_files = ["ft_atoi.c"]
         self.test_files = ["main.c"]
+
+    def ex04(self):
+        self.exercise_files = ["ft_putnbr_base.c"]
+        self.test_files = ["main.c"]
+
+    def ex05(self):
+        self.exercise_files = ["ft_atoi_base.c"]
+        self.test_files = ["main.c"]
