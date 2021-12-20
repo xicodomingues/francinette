@@ -143,29 +143,32 @@ class CommonTester:
         return p.returncode
 
 
-    def execute_program(self):
+    def execute_program(self, test):
         logger.info(f"Running the output of the compilation: ")
         logger.info(f"On directory { os.getcwd() }")
-        main_exec = ["./a.out"]
 
-        print(f"\n{Colors.CYAN}Executing: {Colors.WHITE}{' '.join(main_exec)}{Colors.NC}:")
-        result = subprocess.run(main_exec, capture_output=True, text=True)
+        print(f"\n{Colors.CYAN}Executing: {Colors.WHITE}./a.out | cat -e{Colors.NC}:")
 
-        if result.returncode == 0:
+        ps = subprocess.Popen(('./a.out'), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        output = subprocess.check_output(('cat', '-e'), stdin=ps.stdout)
+        ps.wait()
+        output = output.decode('ascii', errors="replace")
+
+        if ps.returncode == 0:
             logger.info("Executed program successfully main")
-            print(result.stdout)
+            print(output)
         else:
-            if result.stderr:
-                print(f"{Colors.LIGHT_RED}{result.stderr}{Colors.NC}")
-            if result.stdout:
-                print(f"{Colors.RED}{result.stdout}{Colors.NC}")
+            print(f"{Colors.RED}{output}{Colors.NC}")
             print(f"{Colors.LIGHT_RED}Error Executing the program! (Most likely SegFault){Colors.NC}")
+            location = os.path.join(self.temp_dir, test)
+            print(f"The {Colors.WHITE}main.c{Colors.NC} and {Colors.WHITE}a.out{Colors.NC} used in this "
+                    f"test are located at:\n{Colors.WHITE}{location}{Colors.NC}")
 
-        return result.stdout
+        return output
 
 
     def do_diff(self):
-        diff_exec = ["diff", "expected", "out"]
+        diff_exec = ["diff", "--text", "expected", "out"]
         print(f"\n{Colors.CYAN}Executing: {Colors.WHITE}{' '.join(diff_exec)}{Colors.NC}:")
 
         result = subprocess.run(diff_exec, capture_output=True, text=True)
@@ -227,7 +230,7 @@ class CommonTester:
         if status != 0:
             return False
 
-        output = self.execute_program()
+        output = self.execute_program(test_to_execute)
         return self.compare_with_expected(output, test_to_execute) and norm_passed
 
 

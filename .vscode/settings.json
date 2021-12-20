@@ -1,6 +1,7 @@
 {
 	"files.associations": {
 		"unistd.h": "c",
-		"stdint.h": "c"
+		"stdint.h": "c",
+		"expected": "text"
 	}
 }
