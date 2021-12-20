@@ -2,3 +2,5 @@ return the same positon: 1 (mine: '0', std: '0')$
 return the same positon: 1 (mine: '2', std: '2')$
 return NULL on no match: 1, 1$
 return the first position on empty string: 1 (mine: '0', std: '0')$
+return same position on both empty strings: 1$
+return NULL if src is empty: 1 (mine: '0x0', std: '0x0')$

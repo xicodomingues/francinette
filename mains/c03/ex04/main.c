@@ -6,7 +6,7 @@
 /*   By: fsoares- <fsoares-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/16 19:01:09 by fsoares-          #+#    #+#             */
-/*   Updated: 2021/12/20 14:16:55 by fsoares-         ###   ########.fr       */
+/*   Updated: 2021/12/20 18:38:07 by fsoares-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,14 +60,12 @@ void reset_strs(char *a, char *b, char *value)
 }
 
 int main() {
-	char *s2 = "aaaaa";
-	char *s1 = "";
+	char *s1 = "xxxxxxxx";
+	char *s2 = "";
 
-	s1 = "xyzaaaa";
-	s2 = "xyz";
 	char *res = ft_strstr(s1, s2);
 	char *std_res = strstr(s1, s2);
-	printf("return the same positon: %i (mine: '%lu', std: '%lu')\n", res == std_res, (res - s1), (std_res - s1));
+	printf("return the same positon: %i (mine: '%lu', std: '%lu')\n", res == std_res, res - s1, std_res - s1);
 
 	s1 = "xyxyza";
 	s2 = "xyz";
@@ -86,4 +84,16 @@ int main() {
 	res = ft_strstr(s1, s2);
 	std_res = strstr(s1, s2);
 	printf("return the first position on empty string: %i (mine: '%lu', std: '%lu')\n", res == std_res, (res - s1), (std_res - s1));
+
+	s1 = "";
+	s2 = "";
+	res = ft_strstr(s1, s2);
+	std_res = strstr(s1, s2);
+	printf("return same position on both empty strings: %i\n", res == std_res);
+
+	s1 = "";
+	s2 = "xxx";
+	res = ft_strstr(s1, s2);
+	std_res = strstr(s1, s2);
+	printf("return NULL if src is empty: %i (mine: '%p', std: '%p')\n", res == std_res, res , std_res);
 }

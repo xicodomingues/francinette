@@ -6,7 +6,7 @@
 /*   By: fsoares- <fsoares-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/16 19:01:09 by fsoares-          #+#    #+#             */
-/*   Updated: 2021/12/20 16:07:40 by fsoares-         ###   ########.fr       */
+/*   Updated: 2021/12/20 18:48:29 by fsoares-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,15 +41,9 @@ bool	same_str(char *expected, char *output, int len)
 		char e = expected[pos];
 		char o = output[pos];
 		if (e != o)
-		{
-			printf("in pos %d, expected: %d and got: %d\n",
-					pos, e, o);
 			res = 0;
-		}
 		pos++;
 	}
-	if (!res)
-		printf("different strings: '%s' : '%s' \n", expected, output);
 	return res;
 }
 
@@ -112,4 +106,12 @@ int main() {
 	res = ft_strlcat(s1, s2, n);
 	std_res = strlcat(std_s1, s2, n);
 	printf("n: %i, same string: mine: '%s':%i, std: '%s':%i, %i\n", n, s1, res, std_s1, std_res, same_str(std_s1, s1, 10));
+
+	n = 2;
+	s2 = "xyqwerrturerettw";
+	reset_strs(std_s1, s1, "aaaaaaa");
+	res = ft_strlcat(s1, s2, n);
+	std_res = strlcat(std_s1, s2, n);
+	printf("n: %i, same string: mine: '%s':%i, std: '%s':%i, %i\n", n, s1, res, std_s1, std_res, same_str(std_s1, s1, 10));
+
 }

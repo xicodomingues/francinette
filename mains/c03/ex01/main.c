@@ -6,7 +6,7 @@
 /*   By: fsoares- <fsoares-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/16 14:45:28 by fsoares-          #+#    #+#             */
-/*   Updated: 2021/12/20 12:34:20 by fsoares-         ###   ########.fr       */
+/*   Updated: 2021/12/20 18:15:21 by fsoares-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@
 int	ft_strncmp(char *s1, char *s2, unsigned int n);
 
 int main() {
-	char *str1 = (char *)"abcadef";
-	char *str2 = (char *)"abcadef";
+	char *str1 = (char *)"xxxxxx";
+	char *str2 = (char *)"yyyyyy";
 	printf("std: %i, mine: %i\n", strncmp(str1, str2, 20), ft_strncmp(str1, str2, 20));
 	printf("std: %i, mine: %i\n", strncmp(str1, str2, 0), ft_strncmp(str1, str2, 0));
 	printf("std: %i, mine: %i\n", strncmp(str1, str2, 1), ft_strncmp(str1, str2, 1));

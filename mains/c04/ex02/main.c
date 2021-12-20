@@ -6,21 +6,26 @@
 /*   By: fsoares- <fsoares-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/16 14:45:28 by fsoares-          #+#    #+#             */
-/*   Updated: 2021/12/20 17:57:05 by fsoares-         ###   ########.fr       */
+/*   Updated: 2021/12/20 16:46:56 by fsoares-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <string.h>
 #include <stdio.h>
+#include <unistd.h>
+#include <limits.h>
 
-int	ft_strlen(char *str);
+void	ft_putnbr(int nb);
 
 int main() {
-	char *s = "";
-	printf("len of: '%s': %i\n", s, ft_strlen(s));
-	s = "sggdsdsg";
-	printf("len of: '%s': %i\n", s, ft_strlen(s));
-	char s1[10] = "asdfsfg";
-	s1[3] = 11;
-	printf("len of: '%s': %i\n", s1, ft_strlen(s1));
+	ft_putnbr(0);
+	write(1, "\n", 1);
+	ft_putnbr(10);
+	write(1, "\n", 1);
+	ft_putnbr(-10);
+	write(1, "\n", 1);
+	ft_putnbr(INT_MAX);
+	write(1, "\n", 1);
+	ft_putnbr(INT_MIN);
+	write(1, "\n", 1);
 }
