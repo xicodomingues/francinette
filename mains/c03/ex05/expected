@@ -1,0 +1,7 @@
+n: 0, same string: mine: 'aaaa':3, std: 'aaaa':3, 1$
+n: 2, same string: mine: 'aaaa':5, std: 'aaaa':5, 1$
+n: 3, same string: mine: 'aaaa':6, std: 'aaaa':6, 1$
+n: 4, same string: mine: 'aaaa':7, std: 'aaaa':7, 1$
+n: 5, same string: mine: 'aaaa':7, std: 'aaaa':7, 1$
+n: 6, same string: mine: 'aaaax':7, std: 'aaaax':7, 1$
+n: 20, same string: mine: 'aaaaxyz':7, std: 'aaaaxyz':7, 1$

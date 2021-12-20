@@ -1,0 +1,5 @@
+n: 0, same string: mine: 'aaaa', std: 'aaaa', 1$
+n: 2, same string: mine: 'aaaaxy', std: 'aaaaxy', 1$
+n: 3, same string: mine: 'aaaaxyz', std: 'aaaaxyz', 1$
+n: 4, same string: mine: 'aaaaxyz', std: 'aaaaxyz', 1$
+n: 5, same string: mine: 'aaaaxyz', std: 'aaaaxyz', 1$
