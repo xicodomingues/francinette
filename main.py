@@ -65,6 +65,11 @@ def guess_project(current_dir):
         if (os.path.exists(path)):
             return "C03";
 
+        path = os.path.join(ex_path, "ft_strlen.c")
+        logger.info(f"Testing path: {path}")
+        if (os.path.exists(path)):
+            return "C04";
+
     raise Exception("Francinette needs to be executed inside a project folder")
 
 
