@@ -106,6 +106,7 @@ def main():
     """
     pwd = os.getcwd()
     current_dir = os.path.basename(pwd)
+    original_dir = os.path.abspath(os.path.join(os.path.basename(pwd), ".."))
     exercise = None
     project = None
 
@@ -158,7 +159,8 @@ def main():
     try:
         from_git = False
         if args.git_repo:
-            source_dir = clone(args.git_repo, base, current_dir)
+            print(original_dir)
+            source_dir = clone(args.git_repo, base, original_dir)
             exercise = None
             from_git = True
 
