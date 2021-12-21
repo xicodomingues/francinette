@@ -6,7 +6,7 @@
 /*   By: fsoares- <fsoares-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/16 19:01:09 by fsoares-          #+#    #+#             */
-/*   Updated: 2021/12/20 14:02:32 by fsoares-         ###   ########.fr       */
+/*   Updated: 2021/12/21 07:22:27 by fsoares-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,33 +69,33 @@ int main() {
 	reset_strs(std_s1, s1, "aaaa");
 	char *res = ft_strncat(s1, s2, n);
 	char *std_res = strncat(std_s1, s2, n);
-	printf("n: %i, same string: mine: '%s', std: '%s', %i\n", n, res, std_res, same_str(std_s1, s1, 10));
+	printf("n: %i, same string: yours: '%s', std: '%s', %i\n", n, res, std_res, same_str(std_s1, s1, 10));
 
 	n = 2;
 	s2 = "xyz";
 	reset_strs(std_s1, s1, "aaaa");
 	res = ft_strncat(s1, s2, n);
 	std_res = strncat(std_s1, s2, n);
-	printf("n: %i, same string: mine: '%s', std: '%s', %i\n", n, res, std_res, same_str(std_s1, s1, 10));
+	printf("n: %i, same string: yours: '%s', std: '%s', %i\n", n, res, std_res, same_str(std_s1, s1, 10));
 
 	n = 3;
 	s2 = "xyz";
 	reset_strs(std_s1, s1, "aaaa");
 	res = ft_strncat(s1, s2, n);
 	std_res = strncat(std_s1, s2, n);
-	printf("n: %i, same string: mine: '%s', std: '%s', %i\n", n, res, std_res, same_str(std_s1, s1, 10));
+	printf("n: %i, same string: yours: '%s', std: '%s', %i\n", n, res, std_res, same_str(std_s1, s1, 10));
 
 	n = 4;
 	s2 = "xyz";
 	reset_strs(std_s1, s1, "aaaa");
 	res = ft_strncat(s1, s2, n);
 	std_res = strncat(std_s1, s2, n);
-	printf("n: %i, same string: mine: '%s', std: '%s', %i\n", n, res, std_res, same_str(std_s1, s1, 10));
+	printf("n: %i, same string: yours: '%s', std: '%s', %i\n", n, res, std_res, same_str(std_s1, s1, 10));
 
 	n = 5;
 	s2 = "xyz";
 	reset_strs(std_s1, s1, "aaaa");
 	res = ft_strncat(s1, s2, n);
 	std_res = strncat(std_s1, s2, n);
-	printf("n: %i, same string: mine: '%s', std: '%s', %i\n", n, res, std_res, same_str(std_s1, s1, 10));
+	printf("n: %i, same string: yours: '%s', std: '%s', %i\n", n, res, std_res, same_str(std_s1, s1, 10));
 }

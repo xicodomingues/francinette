@@ -6,7 +6,7 @@
 /*   By: fsoares- <fsoares-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/08 20:37:38 by fsoares-          #+#    #+#             */
-/*   Updated: 2021/12/16 18:35:53 by fsoares-         ###   ########.fr       */
+/*   Updated: 2021/12/21 07:22:14 by fsoares-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ int	main(void)
 	set_str("efgh", std_dest);
 	cpy = strlcpy(std_dest, std_src, 0);
 	std_cpy = ft_strlcpy(dest, src, 0);
-	printf("std: %i, mine: %i, same string: %d\n", cpy, std_cpy, same_str(std_dest, dest, 3));
+	printf("std: %i, yours: %i, same string: %d\n", cpy, std_cpy, same_str(std_dest, dest, 3));
 
 	reset_strs(src, std_src, dest, std_dest);
 	set_str("abcd", src);
@@ -85,7 +85,7 @@ int	main(void)
 	set_str("efgh", std_dest);
 	cpy = strlcpy(std_dest, std_src, 1);
 	std_cpy = ft_strlcpy(dest, src, 1);
-	printf("std: %i, mine: %i, same string: %d\n", cpy, std_cpy, same_str(std_dest, dest, 3));
+	printf("std: %i, yours: %i, same string: %d\n", cpy, std_cpy, same_str(std_dest, dest, 3));
 
 	reset_strs(src, std_src, dest, std_dest);
 	set_str("abcsssd", src);
@@ -94,7 +94,7 @@ int	main(void)
 	set_str("eh\0xxxxx", std_dest);
 	cpy = strlcpy(std_dest, std_src, 6);
 	std_cpy = ft_strlcpy(dest, src, 6);
-	printf("std: %i, mine: %i, same string: %d\n", cpy, std_cpy, same_str(std_dest, dest, 10));
+	printf("std: %i, yours: %i, same string: %d\n", cpy, std_cpy, same_str(std_dest, dest, 10));
 
 	reset_strs(src, std_src, dest, std_dest);
 	set_str("ab\0asdf", src);
@@ -103,7 +103,7 @@ int	main(void)
 	set_str("efghijklm", std_dest);
 	cpy = strlcpy(std_dest, std_src, 8);
 	std_cpy = ft_strlcpy(dest, src, 8);
-	printf("std: %i, mine: %i, same string: %d\n", cpy, std_cpy, same_str(std_dest, dest, 10));
+	printf("std: %i, yours: %i, same string: %d\n", cpy, std_cpy, same_str(std_dest, dest, 10));
 
 	reset_strs(src, std_src, dest, std_dest);
 	set_str("abasdf", src);
@@ -112,5 +112,5 @@ int	main(void)
 	set_str("efghijklm", std_dest);
 	cpy = strlcpy(std_dest, std_src, 7);
 	std_cpy = ft_strlcpy(dest, src, 7);
-	printf("std: %i, mine: %i, same string: %d\n", cpy, std_cpy, same_str(std_dest, dest, 10));
+	printf("std: %i, yours: %i, same string: %d\n", cpy, std_cpy, same_str(std_dest, dest, 10));
 }

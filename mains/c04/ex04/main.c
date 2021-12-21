@@ -6,7 +6,7 @@
 /*   By: fsoares- <fsoares-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/20 20:06:11 by fsoares-          #+#    #+#             */
-/*   Updated: 2021/12/20 20:40:05 by fsoares-         ###   ########.fr       */
+/*   Updated: 2021/12/21 07:16:37 by fsoares-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,12 @@ int		main(void)
 	ft_putnbr_base(0, "0123456789abcdef");
 	write(1, "\nINT_MAX:", 9);
 	ft_putnbr_base(INT_MAX, "0123456789abcdef");
+	write(1, "\nINT_MAX:", 9);
+	ft_putnbr_base(INT_MAX, "ZYXWVUTSRQPONMLKJIHGFEDCBAzyxwvutsrqponmlkjihgfedcba9876543210");
 	write(1, "\nINT_MIN:", 9);
 	ft_putnbr_base(INT_MIN, "0123456789abcdef");
+	write(1, "\n-2143247366 : ", 15);
+	ft_putnbr_base(INT_MIN + 4236282, "'~");
 	write(1, "\n-1:", 4);
 	ft_putnbr_base(-1, "0123456789abcdef");
 	write(1, "\n:", 2);
