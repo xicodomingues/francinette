@@ -8,7 +8,7 @@ version=8
 
 cd "$HOME"/francinette
 
-curl -sS "https://raw.githubusercontent.com/xicodomingues/francinette/master/tester.sh$(date +%s)" -o new_tester
+curl -sS "https://raw.githubusercontent.com/xicodomingues/francinette/master/tester.sh?$(date +%s)" -o new_tester
 
 new_version=$(grep -E '^version=\d+' new_tester)
 rm new_tester
