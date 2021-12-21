@@ -6,7 +6,7 @@
 /*   By: fsoares- <fsoares-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/16 14:45:28 by fsoares-          #+#    #+#             */
-/*   Updated: 2021/12/21 07:22:21 by fsoares-         ###   ########.fr       */
+/*   Updated: 2021/12/21 17:17:58 by fsoares-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,16 +31,4 @@ int main() {
 	str2 = "abcadtg";
 	printf("std: %i, yours: %i\n", strncmp(str1, str2, 5), ft_strncmp(str1, str2, 5));
 	printf("std: %i, yours: %i\n", strncmp(str1, str2, 6), ft_strncmp(str1, str2, 6));
-
-	unsigned char str3[10];
-	unsigned char str4[10];
-	for (int i = 0; i < 10; i++)
-	{
-		str3[i] = i + 1;
-		str4[i] = i + 1;
-	}
-	str3[7] = 200;
-	printf("std: %i, yours: %i\n",
-		strncmp((char *)str3, (char *)str4, 8),
-		ft_strncmp((char *)str3, (char *)str4, 8));
 }
