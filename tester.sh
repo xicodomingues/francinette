@@ -4,9 +4,9 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 current_dir=$PWD
 
 # check for updates
-version=7
+version=8
 
-cd $HOME/francinette
+cd "$HOME"/francinette
 
 curl -sS "https://raw.githubusercontent.com/xicodomingues/francinette/master/tester.sh$(date +%s)" -o new_tester 2>&1 > /dev/null
 
@@ -15,7 +15,7 @@ rm new_tester
 
 new_version="${new_version:8}"
 
-cd $HOME/francinette
+cd "$HOME"/francinette
 if [[ (! -e donotupdate) && ($new_version -gt $version) ]]; then
 	while true; do
 		read -p "There is a new version of francinette, do you wish to update? ([Y]es/[N]o/[D]on't ask again): " yn
@@ -28,7 +28,7 @@ if [[ (! -e donotupdate) && ($new_version -gt $version) ]]; then
 	done
 fi
 
-cd $current_dir
+cd "$current_dir"
 source $DIR/venv/bin/activate
 
 python $DIR/main.py "$@"

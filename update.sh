@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd $HOME
+cd "$HOME"
 
 mkdir temp_____
 
@@ -14,17 +14,17 @@ mv francinette-master francinette
 rm -rf francinette/c00
 rm -rf francinette/files
 
-cd $HOME/francinette
+cd "$HOME"/francinette
 
-cd $HOME/temp_____
+cd "$HOME"/temp_____
 cp -r francinette ..
 
-cd $HOME
+cd "$HOME"
 rm -rf temp_____
 
 grep "paco=" ~/.zshrc &> /dev/null
 if [[ $? != 0 ]]; then
-	echo "Short alias not present. Adding it"
+	echo "Short alias 'paco' not present. Adding it"
 	echo "\nalias paco=$HOME/francinette/tester.sh" >> ~/.zshrc
 fi
 

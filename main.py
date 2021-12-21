@@ -39,36 +39,29 @@ class Colors:
     NC = '\033[0m'  # No Color
 
 
+def has_file(ex_path, file):
+    path = os.path.join(ex_path, file)
+    logger.info(f"Testing path: {path}")
+    return os.path.exists(path)
+
 def guess_project(current_dir):
     logger.info(f"Current dir: {current_dir}")
     ex_path = os.path.abspath("ex00")
     logger.info(f"Testing path: {ex_path}")
     if (os.path.exists(ex_path)):
 
-        path = os.path.join(ex_path, "ft_putchar.c")
-        logger.info(f"Testing path: {path}")
-        if (os.path.exists(path)):
-            return "C00";
-
-        path = os.path.join(ex_path, "ft_ft.c")
-        logger.info(f"Testing path: {path}")
-        if (os.path.exists(path)):
+        if (has_file(ex_path, "ft_putchar.c")):
+            return "C00"
+        if (has_file(ex_path, "ft_ft.c")):
             return "C01"
-
-        path = os.path.join(ex_path, "ft_strcpy.c")
-        logger.info(f"Testing path: {path}")
-        if (os.path.exists(path)):
-            return "C02";
-
-        path = os.path.join(ex_path, "ft_strcmp.c")
-        logger.info(f"Testing path: {path}")
-        if (os.path.exists(path)):
-            return "C03";
-
-        path = os.path.join(ex_path, "ft_strlen.c")
-        logger.info(f"Testing path: {path}")
-        if (os.path.exists(path)):
-            return "C04";
+        if (has_file(ex_path, "ft_strcpy.c")):
+            return "C02"
+        if (has_file(ex_path, "ft_strcmp.c")):
+            return "C03"
+        if (has_file(ex_path, "ft_strlen.c")):
+            return "C04"
+        if (has_file(ex_path, "ft_iterative_factorial.c")):
+            return "C05"
 
     raise Exception("Francinette needs to be executed inside a project folder")
 
@@ -115,7 +108,6 @@ def main():
     current_dir = os.path.basename(pwd)
     exercise = None
     project = None
-    local = None
 
     parser = ArgumentParser("francinette",
                             formatter_class=argparse.RawDescriptionHelpFormatter,

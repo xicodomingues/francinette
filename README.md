@@ -132,9 +132,9 @@ If you have any questions you know where to find me. Also, on slack under 'fsoar
 
 When I reach that exercise. You can also add them yourself. But for that you need to also
 create a `C0X_Tester.py` file. (Also there is a need to change the function `guess_project`
-in `main.py` to recognize the files for the that project)
+in `main.py` to recognize the files for that project)
 
 #### This test that you put up is incorrect!
 
 Well, you can change it yourself and create a pull request, or you can contact me so we can
-change it together and be friends :)
+change it together and be friends 😜

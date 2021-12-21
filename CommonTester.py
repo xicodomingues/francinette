@@ -14,7 +14,7 @@ logger = logging.getLogger()
 
 DEFAULT_COMPILE_FLAGS = ["-Wall", "-Wextra", "-Werror"]
 IGNORED_EXERCISE_HEADER = f"{Colors.YELLOW}" \
-        "═════════════════════════════════ #### Ignored ═════════════════════════════════" \
+        "═════════════════════════════════ #### ignored ═════════════════════════════════" \
         f"{Colors.NC}"
 
 EXERCISE_HEADER= f"{Colors.LIGHT_BLUE}" \
@@ -31,6 +31,10 @@ TEST_FAILED = f"\n{Colors.LIGHT_RED}" \
 
 TEST_NOT_PRESENT = f"\n{Colors.YELLOW}" \
         "══════════════════════════════  #### not present  ══════════════════════════════" \
+        f"{Colors.NC}"
+
+TEST_ONLY_EXECUTED = f"\n{Colors.PURPLE}" \
+        "══════════════════════════════   ####  executed   ══════════════════════════════" \
         f"{Colors.NC}"
 
 
@@ -96,6 +100,8 @@ class CommonTester:
             print(TEST_FAILED.replace("####", test.title()))
         elif test_ok == "Test Not Present":
             print(TEST_NOT_PRESENT.replace("####", test.title()))
+        elif test_ok == "No expected file":
+            print(TEST_ONLY_EXECUTED.replace("####", test.title()))
 
     def print_summary(self, test_status):
         ok_tests = [test for test, st in test_status.items() if st is True]
@@ -104,7 +110,12 @@ class CommonTester:
         failed_tests = [test for test, st in test_status.items() if st is False]
         if failed_tests:
             print(f"{Colors.LIGHT_RED}Failed tests: {' '.join(failed_tests)}{Colors.NC}")
-
+        not_present = [test for test, st in test_status.items() if st == "Test Not Present"]
+        if not_present:
+            print(f"{Colors.YELLOW}Files not present: {' '.join(not_present)}{Colors.NC}")
+        not_present = [test for test, st in test_status.items() if st == "No expected file"]
+        if not_present:
+            print(f"{Colors.PURPLE}Need manual validation: {' '.join(not_present)}{Colors.NC}")
 
     def pass_norminette(self, test):
         os.chdir(os.path.join(self.temp_dir, test))
@@ -197,7 +208,7 @@ class CommonTester:
         expected_file = os.path.join(os.getcwd(), 'expected')
 
         if not os.path.exists(expected_file):
-            return True
+            return "No expected file"
 
         out_file_path = os.path.join(os.getcwd(), 'out')
 
@@ -231,7 +242,7 @@ class CommonTester:
             return False
 
         output = self.execute_program(test_to_execute)
-        return self.compare_with_expected(output, test_to_execute) and norm_passed
+        return norm_passed and self.compare_with_expected(output, test_to_execute)
 
 
     def prepare_test(self, test):

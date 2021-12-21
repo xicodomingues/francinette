@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd $HOME
+cd "$HOME"
 
 mkdir temp_____
 
@@ -13,10 +13,10 @@ unzip -qq francinette.zip
 mv francinette-master francinette
 cp -r francinette ..
 
-cd $HOME
+cd "$HOME"
 rm -rf temp_____
 
-cd $HOME/francinette
+cd "$HOME"/francinette
 
 # start a venv inside francinette
 python3 -m venv venv
@@ -41,6 +41,6 @@ if [[ $? != 0 ]]; then
 fi
 
 # print help
-~/francinette/tester.sh
+"$HOME"/francinette/tester.sh --help
 
 echo "\033[1;37mPlease close this terminal windown and open the terminal again for francinette to work\033[0m"
