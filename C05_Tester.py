@@ -16,7 +16,7 @@ class C05_Tester(CommonTester):
         self.test_files = ["main.c"]
 
     def ex03(self):
-        self.exercise_files = ["ft_recursive_power.c.c"]
+        self.exercise_files = ["ft_recursive_power.c"]
         self.test_files = ["main.c"]
 
     def ex04(self):
