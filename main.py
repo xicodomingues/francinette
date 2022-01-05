@@ -16,7 +16,7 @@ logger.setLevel(logging.WARN)
 
 
 @dataclass
-class TestRunInfo():
+class TestRunInfo:
     project: str
     source_dir: str
     tests_dir: str
@@ -53,17 +53,17 @@ def guess_project(current_dir):
     if os.path.exists(ex_path):
 
         if has_file(ex_path, "ft_putchar.c"):
-            return "C00"
+            return "c00"
         if has_file(ex_path, "ft_ft.c"):
-            return "C01"
+            return "c01"
         if has_file(ex_path, "ft_strcpy.c"):
-            return "C02"
+            return "c02"
         if has_file(ex_path, "ft_strcmp.c"):
-            return "C03"
+            return "c03"
         if has_file(ex_path, "ft_strlen.c"):
-            return "C04"
+            return "c04"
         if has_file(ex_path, "ft_iterative_factorial.c"):
-            return "C05"
+            return "c05"
 
     raise Exception("Francinette needs to be executed inside a project folder")
 
@@ -167,7 +167,7 @@ def main():
             exercise = None
             from_git = True
 
-        project = guess_project(current_dir);
+        project = guess_project(current_dir)
 
         mains_dir = os.path.join(base, "mains", project)
         if args.mains:

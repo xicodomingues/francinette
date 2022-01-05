@@ -1,7 +1,10 @@
 # Francinette
 A small and easy to use testing framework for the 42 C module.
 
-It is designed to automate checking `norminette`, compiling the code and executing the tests, to give you more time to look at the code itself.
+It is designed to automate checking `norminette`, compiling the code and executing the tests, to give you more 
+time to look at the code itself.
+
+Use `francinette` or `paco` inside a project folder to run it.
 
 ## Install:
 Francinette has an automatic installer.
@@ -24,18 +27,18 @@ sh -c "$(curl -fsSL https://raw.github.com/xicodomingues/francinette/master/upda
 
 ## Runnning:
 
-If you are on a root of a project and under it you have the exercises, francinette should be
-able to tell which project it is and execute the corresponding tests.
+If you are on a root of a project, francinette should be able to tell which project 
+it is and execute the corresponding tests.
 
 ```
 in: /C00 $> francinette
 ```
 
-you can also use the shorter version of the command: `paco`
+You can also use the shorter version of the command: `paco`
 
 In the case above, francinette should run the tests in C00.
 
-You can also use francinette to evaluate a project from github.
+You can also use francinette to evaluate a project from GitHub.
 
 ```
 $> francinette git@repository.42.com/intra-uuid-8e9b82a1-59b4-43cd-ah34-639a79beeb5f-391f552
@@ -136,5 +139,5 @@ in `main.py` to recognize the files for that project)
 
 #### This test that you put up is incorrect!
 
-Well, you can change it yourself and create a pull request, or you can contact me so we can
-change it together and be friends 😜
+Well, you can change it yourself and create a pull request, or you can contact me indicating 
+for what exercise which test fails, and a description of what you think is wrong
