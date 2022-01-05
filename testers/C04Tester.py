@@ -1,7 +1,7 @@
 from CommonTester import CommonTester
 
 
-class C04_Tester(CommonTester):
+class C04Tester(CommonTester):
 
     def ex00(self):
         self.exercise_files = ["ft_strlen.c"]

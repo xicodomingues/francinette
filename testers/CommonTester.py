@@ -7,17 +7,15 @@ import subprocess
 
 from main import TestRunInfo
 from main import Colors
-from pathlib import Path
 
 logger = logging.getLogger()
-
 
 DEFAULT_COMPILE_FLAGS = ["-Wall", "-Wextra", "-Werror"]
 IGNORED_EXERCISE_HEADER = f"{Colors.YELLOW}" \
         "═════════════════════════════════ #### ignored ═════════════════════════════════" \
         f"{Colors.NC}"
 
-EXERCISE_HEADER= f"{Colors.LIGHT_BLUE}" \
+EXERCISE_HEADER = f"{Colors.LIGHT_BLUE}" \
         "═════════════════════════════════ Testing #### ═════════════════════════════════" \
         f"{Colors.NC}"
 
@@ -62,6 +60,8 @@ class CommonTester:
         self.compile_flags = []
         self.exercise_files = []
         self.test_files = []
+        self.compile = []
+        self.norm_ignore = []
         self.temp_dir = info.temp_dir
         self.source_dir = info.source_dir
         self.tests_dir = info.tests_dir
@@ -89,21 +89,23 @@ class CommonTester:
             self.show_result(test, test_ok)
 
             print("\n")
-            self.clean_up(test)
+            self.clean_up()
 
         self.print_summary(test_status)
 
-    def show_result(self, test, test_ok):
-        if test_ok == True:
+    @staticmethod
+    def show_result(test, test_ok):
+        if test_ok:
             print(TEST_PASSED.replace("####", test.title()))
-        elif test_ok == False:
+        elif not test_ok:
             print(TEST_FAILED.replace("####", test.title()))
         elif test_ok == "Test Not Present":
             print(TEST_NOT_PRESENT.replace("####", test.title()))
         elif test_ok == "No expected file":
             print(TEST_ONLY_EXECUTED.replace("####", test.title()))
 
-    def print_summary(self, test_status):
+    @staticmethod
+    def print_summary(test_status):
         ok_tests = [test for test, st in test_status.items() if st is True]
 
         print(f"{Colors.LIGHT_GREEN}Passed tests: {' '.join(ok_tests)}{Colors.NC}")
@@ -119,7 +121,7 @@ class CommonTester:
 
     def pass_norminette(self, test):
         os.chdir(os.path.join(self.temp_dir, test))
-        logger.info(f"On directory { os.getcwd() }")
+        logger.info(f"On directory {os.getcwd()}")
         logger.info(f"Executing norminette on files: {self.exercise_files}")
         norm_exec = ["norminette", "-R", "CheckForbiddenSourceHeader"] + self.exercise_files
 
@@ -133,17 +135,16 @@ class CommonTester:
 
         return result.returncode == 0
 
-
     def compile_files(self):
         files = self.test_files + self.exercise_files
         flags = self.compile_flags if self.compile_flags else DEFAULT_COMPILE_FLAGS
 
         logger.info(f"compiling files: {files} with flags: {flags}")
-        #result = os.system(f"gcc { " ".join(flags) } { " ".join(files) }")
+        # result = os.system(f"gcc { " ".join(flags) } { " ".join(files) }")
         gcc_exec = ["gcc"] + flags + files
 
         print(f"{Colors.CYAN}Executing: {Colors.WHITE}{' '.join(gcc_exec)}{Colors.NC}:")
-        p = subprocess.Popen(gcc_exec);
+        p = subprocess.Popen(gcc_exec)
         p.wait()
 
         if p.returncode == 0:
@@ -153,14 +154,13 @@ class CommonTester:
 
         return p.returncode
 
-
     def execute_program(self, test):
         logger.info(f"Running the output of the compilation: ")
-        logger.info(f"On directory { os.getcwd() }")
+        logger.info(f"On directory {os.getcwd()}")
 
         print(f"\n{Colors.CYAN}Executing: {Colors.WHITE}./a.out | cat -e{Colors.NC}:")
 
-        ps = subprocess.Popen(('./a.out'), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        ps = subprocess.Popen('./a.out', stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         output = subprocess.check_output(('cat', '-e'), stdin=ps.stdout)
         ps.wait()
         output = output.decode('ascii', errors="replace")
@@ -173,12 +173,12 @@ class CommonTester:
             print(f"{Colors.LIGHT_RED}Error Executing the program! (Most likely SegFault){Colors.NC}")
             location = os.path.join(self.temp_dir, test)
             print(f"The {Colors.WHITE}main.c{Colors.NC} and {Colors.WHITE}a.out{Colors.NC} used in this "
-                    f"test are located at:\n{Colors.WHITE}{location}{Colors.NC}")
+                  f"test are located at:\n{Colors.WHITE}{location}{Colors.NC}")
 
         return output
 
-
-    def do_diff(self):
+    @staticmethod
+    def do_diff():
         diff_exec = ["diff", "--text", "expected", "out"]
         print(f"\n{Colors.CYAN}Executing: {Colors.WHITE}{' '.join(diff_exec)}{Colors.NC}:")
 
@@ -191,8 +191,8 @@ class CommonTester:
 
         return result.returncode == 0
 
-
-    def do_verification_fn(self, verification_fn):
+    @staticmethod
+    def do_verification_fn(verification_fn):
         print(f"\n{Colors.CYAN}Executing function: {Colors.WHITE}{verification_fn.__name__}{Colors.NC}:")
 
         result = verification_fn()
@@ -202,7 +202,6 @@ class CommonTester:
             print(f"{Colors.RED}{result.stdout}{Colors.NC}")
 
         return result.returncode == 0
-
 
     def compare_with_expected(self, output, test):
         expected_file = os.path.join(os.getcwd(), 'expected')
@@ -215,14 +214,13 @@ class CommonTester:
         logger.info(f"Creating out file: {out_file_path} with content {output}")
         with open(out_file_path, 'w') as out_file:
             out_file.write(output)
-            out_file.close();
+            out_file.close()
 
             verification_fn = getattr(self, f"{test}_verification", None)
             if verification_fn:
                 return self.do_verification_fn(verification_fn)
             else:
                 return self.do_diff()
-
 
     def execute_test(self, test_to_execute):
         logger.info(f"starting execution of {test_to_execute}")
@@ -243,7 +241,6 @@ class CommonTester:
 
         output = self.execute_program(test_to_execute)
         return norm_passed and self.compare_with_expected(output, test_to_execute)
-
 
     def prepare_test(self, test):
         try:
@@ -271,7 +268,7 @@ class CommonTester:
 
             expected_path = os.path.join(self.tests_dir, test, "expected")
             if os.path.exists(expected_path):
-                logger.info(f"Copying expected file: {source_path} to {dest_path}")
+                logger.info(f"Copying expected file: {expected_path} to {temp_dir}")
                 shutil.copy(expected_path, temp_dir)
 
             # remove a.out
@@ -291,8 +288,7 @@ class CommonTester:
             logger.info("Problem creating the files structure: ", ex)
             return False
 
-
-    def clean_up(self, test):
+    def clean_up(self):
         self.compile_flags = []
         self.compile = []
         self.norm_ignore = []

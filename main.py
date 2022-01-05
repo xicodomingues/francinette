@@ -14,6 +14,7 @@ from git import Repo
 logger = logging.getLogger()
 logger.setLevel(logging.WARN)
 
+
 @dataclass
 class TestRunInfo():
     project: str
@@ -44,23 +45,24 @@ def has_file(ex_path, file):
     logger.info(f"Testing path: {path}")
     return os.path.exists(path)
 
+
 def guess_project(current_dir):
     logger.info(f"Current dir: {current_dir}")
     ex_path = os.path.abspath("ex00")
     logger.info(f"Testing path: {ex_path}")
-    if (os.path.exists(ex_path)):
+    if os.path.exists(ex_path):
 
-        if (has_file(ex_path, "ft_putchar.c")):
+        if has_file(ex_path, "ft_putchar.c"):
             return "C00"
-        if (has_file(ex_path, "ft_ft.c")):
+        if has_file(ex_path, "ft_ft.c"):
             return "C01"
-        if (has_file(ex_path, "ft_strcpy.c")):
+        if has_file(ex_path, "ft_strcpy.c"):
             return "C02"
-        if (has_file(ex_path, "ft_strcmp.c")):
+        if has_file(ex_path, "ft_strcmp.c"):
             return "C03"
-        if (has_file(ex_path, "ft_strlen.c")):
+        if has_file(ex_path, "ft_strlen.c"):
             return "C04"
-        if (has_file(ex_path, "ft_iterative_factorial.c")):
+        if has_file(ex_path, "ft_iterative_factorial.c"):
             return "C05"
 
     raise Exception("Francinette needs to be executed inside a project folder")
@@ -93,7 +95,7 @@ def clone(repo, basedir, current_dir):
 
 def execute_tests(info):
     # Get the correct tester
-    module_name = info.project.upper() + "_Tester"
+    module_name = info.project.upper() + "Tester"
     module = importlib.import_module(module_name)
 
     # execute the tests
@@ -108,7 +110,6 @@ def main():
     current_dir = os.path.basename(pwd)
     original_dir = os.path.abspath(os.path.join(os.path.basename(pwd), ".."))
     exercise = None
-    project = None
 
     parser = ArgumentParser("francinette",
                             formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -122,7 +123,7 @@ def main():
     parser.add_argument(
         "-m", "--mains", nargs="?",
         help="Sets this directory as the directory where the main.c and expected files are present. "
-            "If this parameter is present, the default main.c files will be ignored"
+             "If this parameter is present, the default main.c files will be ignored"
     )
     parser.add_argument(
         "-t", "-e", "--exercise", nargs="?",
@@ -147,7 +148,8 @@ def main():
     if re.fullmatch(r"ex\d{2}", current_dir):
         exercise = current_dir
         current_dir = os.path.basename(os.path.abspath(os.path.join(current_dir, "..", "..")))
-        logger.info(f"Found exXX in the current dir '{exercise}'. Saving the exercise and going up a dir: '{current_dir}'")
+        logger.info(
+            f"Found exXX in the current dir '{exercise}'. Saving the exercise and going up a dir: '{current_dir}'")
         os.chdir("..")
 
     base = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
@@ -158,9 +160,10 @@ def main():
 
     try:
         from_git = False
+        git_dir = None
         if args.git_repo:
             print(original_dir)
-            source_dir = clone(args.git_repo, base, original_dir)
+            git_dir = clone(args.git_repo, base, original_dir)
             exercise = None
             from_git = True
 
@@ -171,21 +174,22 @@ def main():
             mains_dir = os.path.join(args.mains, project)
 
         info = TestRunInfo(project,
-                os.path.abspath(os.path.join(current_dir, "..")),
-                mains_dir,
-                os.path.join(base, "temp", project),
-                exercise,
-                args.verbose)
+                           os.path.abspath(os.path.join(current_dir, "..")),
+                           mains_dir,
+                           os.path.join(base, "temp", project),
+                           exercise,
+                           args.verbose)
 
         logger.info(f"Test params: {info}")
 
         execute_tests(info)
 
         if from_git:
-            print(f"You can see the cloned repository in {Colors.WHITE}{source_dir}{Colors.NC}")
+            print(f"You can see the cloned repository in {Colors.WHITE}{git_dir}{Colors.NC}")
     except Exception as ex:
         print(f"{Colors.RED}{ex}")
         sys.exit()
+
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':

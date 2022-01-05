@@ -1,7 +1,7 @@
 from CommonTester import CommonTester
 
 
-class C05_Tester(CommonTester):
+class C05Tester(CommonTester):
 
     def ex00(self):
         self.exercise_files = ["ft_iterative_factorial.c"]

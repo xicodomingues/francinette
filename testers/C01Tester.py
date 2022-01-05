@@ -1,8 +1,7 @@
 from CommonTester import CommonTester
 
 
-class C01_Tester(CommonTester):
-
+class C01Tester(CommonTester):
 
     def ex00(self):
         self.exercise_files = ["ft_ft.c"]

@@ -1,7 +1,7 @@
 from CommonTester import CommonTester
 
 
-class C00_Tester(CommonTester):
+class C00Tester(CommonTester):
 
     def ex00(self):
         # The files that you should deliver in the git repo
