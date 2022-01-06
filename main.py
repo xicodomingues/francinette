@@ -1,4 +1,6 @@
 import argparse
+from argparse import ArgumentParser
+from dataclasses import dataclass
 import importlib
 import logging
 import os
@@ -6,8 +8,6 @@ import re
 import shutil
 import sys
 import textwrap
-from argparse import ArgumentParser
-from dataclasses import dataclass
 
 from git import Repo
 
