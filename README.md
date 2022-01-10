@@ -1,10 +1,20 @@
 # Francinette
-A small and easy to use testing framework for the 42 C module.
 
-It is designed to automate checking `norminette`, compiling the code and executing the tests, to give you more 
-time to look at the code itself.
+A small and easy to use testing framework for the 42 projects.
 
 Use `francinette` or `paco` inside a project folder to run it.
+
+
+## Purpose:
+
+This is designed to function as a kind of moulinette that you can execute in local.
+
+That means that by executing `francinette` it will check `norminette`, compile the
+code and execute the tests. This will give you more time to look at the code itself,
+instead of worrying about compiling the cloned code.
+
+You can also use it as local tests, that you can check your own code against it.
+
 
 ## Install:
 Francinette has an automatic installer.
@@ -27,21 +37,25 @@ sh -c "$(curl -fsSL https://raw.github.com/xicodomingues/francinette/master/upda
 
 ## Runnning:
 
-If you are on a root of a project, francinette should be able to tell which project 
+If you are on a root of a project, francinette should be able to tell which project
 it is and execute the corresponding tests.
 
 ```
-in: /C00 $> francinette
+in: /C00 $> francinette               # This will execute the tests for C00
+
+in: /libft $> francinette             # This will execute the tests for libft
 ```
+
+The name of the folder is not important. What is important is that you should have a `Makefile`
+that contains the value 'libft' somewhere inside. If there is no `Makefile` `francinette` will
+not know what project to execute.
 
 You can also use the shorter version of the command: `paco`
 
-In the case above, francinette should run the tests in C00.
-
-You can also use francinette to evaluate a project from GitHub.
+You can also use francinette to evaluate a project directly from a git repository link.
 
 ```
-$> francinette git@repository.42.com/intra-uuid-8e9b82a1-59b4-43cd-ah34-639a79beeb5f-391f552
+$> francinette git@repository.42.com/intra-uuid-391f552
                              v
                   git url to clone the project from
 ```
@@ -56,76 +70,22 @@ $> francinette -h
 This shows the help message.
 
 ```
-in: francinette/c00 $> francinette
+in: francinette/folder_with_libft $> francinette
 ```
 
-This will execute the tests for the project c00
+This will execute the tests for `libft` project
 
 ```
-in: francinette/c00/ex00 $> francinette
+in: libft $> francinette -t memset
 ```
 
-This will execute the test only for ex00 of the project c00
-
-
-```
-in: francinette/c00 $> francinette -e ex01
-```
-
-This will execute the test only for ex01 of the project c00
+This will execute only the test for `memset`
 
 ```
-$> francinette <a git repo with the c00 solved exercises>
+$> francinette git@repo42.com/intra-uuid-234
 ```
 
-It clones the git, and executes the tests in `francinette/mains` against the clonned code.
-
-
-### Folder Structure:
-```
-francinette
-│
-├── files                    # This is the directory where the main.c and expected files are
-│   │                        # You can change the mains or the expected files to improve the tests
-│   └── c00
-│       ├── ex00
-│       │   └── main.c
-│       ├── ex01
-│       │   ├── expected
-│       │   └── main.c
-│       ├── ex02
-│       │   └── main.c
-│       └── ex03
-│           ├── expected
-│           └── main.c
-│
-├── temp                     # Where the magic happens. In where it will copy the files
-│   └── c00                  # from your exercises dir, from the files dir, execute the
-│       ├── ex00             # norminette, compile, execute the C program and if there
-│       │   ├── a.out        # is an expected file, it will compare the output from the
-│       │   ├── ft_putchar.c # main.c and this expected file
-│       │   └── main.c
-│       └── ex01
-│           ├── a.out
-│           ├── expected
-│           ├── ft_print_alphabet.c
-│           ├── main.c
-│           └── out
-│
-├── C00_Tester.py          # Each project needs to have a corresponding tester
-├── C01_Tester.py
-├── C02_Tester.py
-├── C03_Tester.py
-├── CommonTester.py        # Contains the common parts to all the testers (comile, norm, etc)
-├── LICENSE
-├── README.md              # This document
-├── install.sh             # The script to install francinette
-├── main.py                # The point of entry for the francinette
-├── requirements.txt       # python things
-├── tester.sh              # The script that will execute the tests
-└── venv                   # The python virtual environment, not really relevant
-```
-
+It clones the git present in `git@repo42.com/intra-uuid-234` and executes the tests for the downloaded project
 
 ## FAQ
 
@@ -139,5 +99,5 @@ in `main.py` to recognize the files for that project)
 
 #### This test that you put up is incorrect!
 
-Well, you can change it yourself and create a pull request, or you can contact me indicating 
+Well, you can change it yourself and create a pull request, or you can contact me indicating
 for what exercise which test fails, and a description of what you think is wrong

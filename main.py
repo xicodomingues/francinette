@@ -46,6 +46,19 @@ def has_file(ex_path, file):
     return os.path.exists(path)
 
 
+def is_library(path):
+    # check for makefile
+    make_path = os.path.join(path, "makefile")
+    # check for name of makefile
+    if not os.path.exists(make_path):
+        return False
+    with open(make_path, "r") as mk:
+        if 'libft' in mk.read():
+            return True
+        else:
+            return False
+
+
 def guess_project(current_dir):
     logger.info(f"Current dir: {current_dir}")
     ex_path = os.path.abspath("ex00")
@@ -64,6 +77,9 @@ def guess_project(current_dir):
             return "c04"
         if has_file(ex_path, "ft_iterative_factorial.c"):
             return "c05"
+
+    if is_library(os.path.abspath('.')):
+        return "libft"
 
     raise Exception("Francinette needs to be executed inside a project folder")
 
@@ -95,8 +111,8 @@ def clone(repo, basedir, current_dir):
 
 def execute_tests(info):
     # Get the correct tester
-    module_name = info.project.upper() + "Tester"
-    module = importlib.import_module(module_name)
+    module_name = info.project.capitalize() + "Tester"
+    module = importlib.import_module('testers.' + module_name)
 
     # execute the tests
     module.__getattribute__(module_name)(info)
@@ -155,7 +171,8 @@ def main():
     base = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
     exercise = args.exercise or exercise
     if exercise:
-        exercise = "ex" + exercise.rjust(2, "0")[-2:]
+        if (re.match(".*\d+", exercise)):
+            exercise = "ex" + exercise.rjust(2, "0")[-2:]
         logger.info(f"Will only execute the tests for {exercise}")
 
     try:
