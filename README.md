@@ -29,7 +29,9 @@ sh -c "$(curl -fsSL https://raw.github.com/xicodomingues/francinette/master/inst
 The francinette folder will be under your `$HOME` directory (`/User/<you_username>/`)
 
 ## Update:
-To update francinette run the command bellow
+Normally francinette will prompt you when there is a new version, and you can then update it.
+
+If you disabled this functionality or need to update for other reasons run the command bellow:
 
 ```
 sh -c "$(curl -fsSL https://raw.github.com/xicodomingues/francinette/master/update.sh)"
