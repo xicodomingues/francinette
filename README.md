@@ -107,4 +107,4 @@ for what exercise which test fails, and a description of what you think is wrong
 ## Acknowledgments
 
 * To 42 for providing me this opportunity
-* To [Tripouille](https://github.com/Tripouille) for their excellent (libftTester)[https://github.com/Tripouille/libftTester]
+* To [Tripouille](https://github.com/Tripouille) for their excellent [libftTester](https://github.com/Tripouille/libftTester)
