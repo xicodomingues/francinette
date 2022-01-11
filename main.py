@@ -204,7 +204,7 @@ def main():
         if from_git:
             print(f"You can see the cloned repository in {Colors.WHITE}{git_dir}{Colors.NC}")
     except Exception as ex:
-        print(f"{Colors.RED}{ex}")
+        print(ex.with_traceback())
         sys.exit()
 
 

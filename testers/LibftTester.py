@@ -48,11 +48,15 @@ FUNCTIONS_UNDER_TEST = [
     "putnbr_fd"
 ]
 
+
 def intersection(lst1, lst2):
     lst3 = [value for value in lst1 if value in lst2]
     return lst3
 
+
 func_regex = re.compile(r"\w+\s+\*?ft_(\w+)\(.*")
+norm_func_regex = re.compile(r"^([\w\\]+\.c): Error!")
+
 
 class LibftTester():
 
@@ -78,20 +82,40 @@ class LibftTester():
         self.prepare_tests(test)
 
         if info.ex_to_execute:
-            tx = ExecuteTripouille(info.temp_dir, [info.ex_to_execute])
-            tx.prepare_tests()
-            tx.execute(self.temp_dir, info.ex_to_execute)
+            tx = ExecuteTripouille(self.tests_dir, info.temp_dir, [info.ex_to_execute])
+            tx.execute()
         else:
             present = self.get_present()
             to_execute = intersection(present, FUNCTIONS_UNDER_TEST)
 
-            tx = ExecuteTripouille(info.temp_dir, to_execute)
-            tx.prepare_tests()
-            tx.compile_test()
-            tx.execute_test()
+            tx = ExecuteTripouille(self.tests_dir, info.temp_dir, to_execute)
+            funcs_error = tx.execute()
 
-            missing = [f for f in FUNCTIONS_UNDER_TEST if f not in present]
-            print(f"\n{Colors.LIGHT_RED}Missing functions: {Colors.NC}{' '.join(missing)}")
+            self.show_summary(norm_res, present, funcs_error)
+
+    def show_summary(self, norm: str, present, errors):
+        def get_norm_errors():
+            def get_fname(line):
+                return norm_func_regex.match(line).group(1)
+
+            def is_file(line):
+                return norm_func_regex.match(line)
+
+            return [get_fname(line) for line in norm.splitlines() if is_file(line)]
+
+        norm_errors = get_norm_errors()
+        if norm_errors:
+            print(f"{Colors.LIGHT_RED}Norminette Errors:{Colors.NC}")
+            print(', '.join(norm_errors))
+
+        missing = [f for f in FUNCTIONS_UNDER_TEST if f not in present]
+        if (missing):
+            print(f"\n{Colors.LIGHT_RED}Missing functions: {Colors.NC}{', '.join(missing)}")
+
+        print(f"\n{Colors.LIGHT_RED}Failed tests: {Colors.NC}{', '.join(errors)}")
+
+        if not missing and not norm_errors and not errors:
+            print(f"🎉🥳{Colors.LIGHT_GREEN}All tests passed! Congratulations!{Colors.NC}🥳🎉")
 
     def prepare_ex_files(self):
         if os.path.exists(self.temp_dir):
@@ -109,21 +133,19 @@ class LibftTester():
 
         result = subprocess.run(norm_exec, capture_output=True, text=True)
 
-        print(
-            f"{Colors.CYAN}Executing: {Colors.WHITE}{' '.join(norm_exec)}{Colors.NC}:")
+        print(f"{Colors.CYAN}Executing: {Colors.WHITE}{' '.join(norm_exec)}{Colors.NC}:")
         if result.returncode != 0:
             print(f"{Colors.YELLOW}{result.stdout}{Colors.NC}")
         else:
             print(f"{Colors.GREEN}Norminette OK!{Colors.NC}")
 
-        return result.returncode == 0
+        return result.stdout
 
     def create_library(self):
         logger.info(f"On directory {os.getcwd()}")
         make_exec = ["make"]
 
-        print(
-            f"{Colors.CYAN}Executing: {Colors.WHITE}{' '.join(make_exec)}{Colors.NC}:")
+        print(f"{Colors.CYAN}Executing: {Colors.WHITE}{' '.join(make_exec)}{Colors.NC}:")
         subprocess.run(["make", "fclean"], capture_output=True, text=True)
         p = subprocess.run(make_exec, capture_output=True, text=True)
 

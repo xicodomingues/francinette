@@ -2,12 +2,16 @@ import logging
 import os
 import re
 import subprocess
-import shutil
 import sys
-from main import Colors, TestRunInfo
-from testers.CommonTester import DEFAULT_COMPILE_FLAGS, show_banner
+from main import Colors
 
 logger = logging.getLogger()
+ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
+
+
+def remove_ansi_colors(text):
+    return ansi_escape.sub('', text)
+
 
 def create_main(funcs):
     with open('main.cpp', 'w') as f:
@@ -22,13 +26,29 @@ def create_main(funcs):
         f.write("}\n")
 
 
+def parse_line(line):
+    match = re.match(r"^(\w+)\s+:.*", line)
+    if (match):
+        func_name = match.group(1)
+        res = [(int(m.group(1)), m.group(2))
+               for m in re.finditer(r"(\d+)\.(\w+)", line)]
+        return (func_name, res)
+
+
 class ExecuteTripouille:
 
-    def __init__(self, temp_dir, to_execute) -> None:
+    def __init__(self, tests_dir, temp_dir, to_execute) -> None:
         self.temp_dir = temp_dir
         self.to_execute = to_execute
+        self.tests_dir = tests_dir
         self.folder = "Tripouille"
         self.git_url = "https://github.com/Tripouille/libftTester"
+
+    def execute(self):
+        self.prepare_tests()
+        self.compile_test()
+        res = self.execute_test()
+        return self.show_failed_tests(res)
 
     def prepare_tests(self):
         os.chdir(os.path.join(self.temp_dir, self.folder, 'tests'))
@@ -53,7 +73,6 @@ class ExecuteTripouille:
         logger.info(f"On directory {os.getcwd()}")
         print(f"\n{Colors.CYAN}Compiling tests from: {Colors.WHITE}{self.folder}{Colors.NC} ({self.git_url}):")
 
-        # -g3 (for debug???)
         command = (f"clang++ -g3 -ldl -std=c++11 -I utils/ -I . utils/sigsegv.cpp utils/color.cpp " +
                    f"utils/check.cpp utils/leaks.cpp tests/main.cpp -o main.out").split(" ")
 
@@ -75,13 +94,62 @@ class ExecuteTripouille:
         print(f"\n{Colors.CYAN}Executing: {Colors.WHITE}{' '.join(execute)}{Colors.NC}:")
 
         p = subprocess.run(execute, capture_output=True, text=True)
-        print(p.stdout)
+        print(p.stdout, Colors.NC)
 
-        res = [(int(m.group(1)), m.group(2))
-               for m in re.finditer("(\d+)\.(\w+)", p.stdout)]
-        for r in res:
-            color = Colors.GREEN if r[1] == 'OK' else Colors.RED
-            #print(f"{color}{r[0]}.{r[1]} ", end="")
-        print(Colors.NC)
-        return res
+        return [parse_line(remove_ansi_colors(line)) for line in p.stdout.splitlines()]
 
+    def show_failed_tests(self, result):
+        def is_failed(test):
+            return test[1] != 'OK' and test[1] != 'MOK'
+
+        def match_failed(line, failed_tests):
+            for test in failed_tests:
+                if (re.match(rf"\s+/\* {test[0]} \*/ .*", line)):
+                    return test
+            return False
+
+        def print_error_lines(lines):
+            for i, line, test in lines:
+                print(f"{Colors.RED}{test[1].ljust(3)} {Colors.YELLOW}{i}: {Colors.NC}{line}", end="")
+
+        def show_failed_lines(file, failed_tests):
+            with open(file) as f:
+                lines = f.readlines()
+                result = []
+                for i, line in enumerate(lines):
+                    test = match_failed(line, failed_tests)
+                    if test:
+                        result.append((i, line, test))
+                print_error_lines(result)
+
+        def get_file_path(func):
+            return os.path.join(self.tests_dir, "tests", f"{func}_test.cpp")
+
+        def has_failed(res):
+            failed = False
+            for func, tests in res:
+                for test in tests:
+                    if (test[1] == "MKO"):
+                        return "MKO"
+                    if (is_failed(test)):
+                        failed = True
+            return failed
+
+        errors = has_failed(result)
+        if errors:
+            if str(errors) == "MKO":
+                print(f"{Colors.RED}MKO{Colors.NC}: test about your malloc size (this shouldn't be tested by moulinette)")
+            print(f"{Colors.LIGHT_RED}Errors in:{Colors.NC}")
+            print()
+
+        funcs_error = []
+        for func, tests in result:
+            failed = [test for test in tests if is_failed(test)]
+            if failed:
+                test_file = get_file_path(func)
+                print(f"For {Colors.WHITE}{test_file}{Colors.NC}:")
+                show_failed_lines(test_file, failed)
+                print()
+                funcs_error.append(func)
+
+        return funcs_error
