@@ -81,7 +81,8 @@ def guess_project(current_dir):
     if is_library(os.path.abspath('.')):
         return "libft"
 
-    raise Exception("Francinette needs to be executed inside a project folder")
+    raise Exception("Francinette needs to be executed inside a project folder\n" +
+                    "If you are inside a folder, please make sure that you have a valid Makefile")
 
 
 def clone(repo, basedir, current_dir):
