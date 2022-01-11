@@ -5,6 +5,14 @@ A small and easy to use testing framework for the 42 projects.
 Use `francinette` or `paco` inside a project folder to run it.
 
 
+## Table of Contents
+1. [Purpose](#purpose)
+2. [Install](#install)
+3. [Update](#update)
+4. [Running](#Running)
+5. [Configuration](#Configuration)
+5. [FAQ](#faq)
+
 ## Purpose:
 
 This is designed to function as a kind of moulinette that you can execute in local.
@@ -64,7 +72,7 @@ $> francinette git@repository.42.com/intra-uuid-391f552
 
 It should also know to which project is this repo and run the corresponding tests
 
-## Configuration / Usage
+## Configuration
 
 ```
 $> francinette -h
