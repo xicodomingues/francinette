@@ -38,14 +38,16 @@ TEST_ONLY_EXECUTED = f"\n{Colors.PURPLE}" \
 
 def show_banner(project):
     message = f"Welcome to {Colors.LIGHT_PURPLE}Francinette{Colors.LIGHT_BLUE}, a 42 tester framework!"
-    project_message = f"{Colors.LIGHT_YELLOW}Executing {project.upper()}{Colors.LIGHT_BLUE}"
+    submessage = f"{project}"
+    project_message = f"{Colors.LIGHT_YELLOW}{project}{Colors.LIGHT_BLUE}"
+    size = 30 - len(submessage)
+    project_message = " " * (size - (size // 2)) + project_message + " " * (size // 2)
     print(f"{Colors.LIGHT_BLUE}")
     print(f"╔══════════════════════════════════════════════════════════════════════════════╗")
     print(f"║                {message}                ║")
     print(f"╚═══════════════════════╦══════════════════════════════╦═══════════════════════╝")
-    print(f"                        ║         {project_message}        ║")
-    print(f"                        ╚══════════════════════════════╝")
-    print(f"{Colors.NC}")
+    print(f"                        ║{project_message}║")
+    print(f"                        ╚══════════════════════════════╝{Colors.NC}")
 
 
 @dataclass

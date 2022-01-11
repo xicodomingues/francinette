@@ -4,6 +4,7 @@ import re
 import shutil
 import subprocess
 from main import Colors, TestRunInfo
+from testers.CommonTester import show_banner
 from testers.ExecuteTripouille import ExecuteTripouille
 
 logger = logging.getLogger()
@@ -58,6 +59,8 @@ class LibftTester():
     def __init__(self, info: TestRunInfo) -> None:
         if info.verbose:
             logger.setLevel("INFO")
+
+        show_banner("libft")
         self.test_using(info, AVAILABLE_TESTS[0])
 
     def test_using(self, info: TestRunInfo, test):
@@ -74,26 +77,18 @@ class LibftTester():
 
         self.prepare_tests(test)
 
-        tx = ExecuteTripouille(info.temp_dir)
         if info.ex_to_execute:
-            tx.execute(self.temp_dir, test, info.ex_to_execute)
+            tx = ExecuteTripouille(info.temp_dir, [info.ex_to_execute])
+            tx.prepare_tests()
+            tx.execute(self.temp_dir, info.ex_to_execute)
         else:
             present = self.get_present()
             to_execute = intersection(present, FUNCTIONS_UNDER_TEST)
-            print(f"\n{Colors.CYAN}Compiling tests for {Colors.WHITE}{test}{Colors.NC}: ", end="", flush=True)
-            compiled = []
-            for func in to_execute:
-                res = tx.compile_test(test, func)
-                if (res.returncode != 0):
-                    print("Problem compiling:")
-                    print(res.stdout)
-                    print(res.stderr)
-                else:
-                    compiled.append(func)
 
-            print(f"\n\n{Colors.CYAN}Executing {Colors.WHITE}{test}{Colors.NC} tests: ")
-            for func in compiled:
-                tx.execute_test(func)
+            tx = ExecuteTripouille(info.temp_dir, to_execute)
+            tx.prepare_tests()
+            tx.compile_test()
+            tx.execute_test()
 
             missing = [f for f in FUNCTIONS_UNDER_TEST if f not in present]
             print(f"\n{Colors.LIGHT_RED}Missing functions: {Colors.NC}{' '.join(missing)}")
@@ -129,6 +124,7 @@ class LibftTester():
 
         print(
             f"{Colors.CYAN}Executing: {Colors.WHITE}{' '.join(make_exec)}{Colors.NC}:")
+        subprocess.run(["make", "fclean"], capture_output=True, text=True)
         p = subprocess.run(make_exec, capture_output=True, text=True)
 
         if p.returncode == 0:
@@ -136,6 +132,7 @@ class LibftTester():
         else:
             print(f"{Colors.LIGHT_RED}Problem creating library{Colors.NC}")
             print(f"{Colors.YELLOW}{p.stdout}{Colors.NC}")
+            print(f"{Colors.RED}{p.stderr}{Colors.NC}")
 
         return p.returncode == 0
 
@@ -154,13 +151,13 @@ class LibftTester():
             # copy compiled library
             library = os.path.join(self.temp_dir, "libft.a")
             logger.info(
-                f"Copying compiled library from {library} to {temp_dir}")
+                f"Copying libft.a from {library} to {temp_dir}")
             shutil.copy(library, temp_dir)
 
             # copy header
             header = os.path.join(self.temp_dir, "libft.h")
             logger.info(
-                f"Copying compiled library from {header} to {temp_dir}")
+                f"Copying libft.h from {header} to {temp_dir}")
             shutil.copy(header, temp_dir)
 
             return True
