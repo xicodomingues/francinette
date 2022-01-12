@@ -3,7 +3,7 @@ import os
 import re
 import subprocess
 import sys
-from main import Colors
+from main import CT
 from testers.libft.BaseExecutor import BaseExecutor
 
 logger = logging.getLogger()
@@ -31,8 +31,7 @@ def parse_line(line):
 	match = re.match(r"^(\w+)\s+:.*", line)
 	if (match):
 		func_name = match.group(1)
-		res = [(int(m.group(1)), m.group(2))
-			   for m in re.finditer(r"(\d+)\.(\w+)", line)]
+		res = [(int(m.group(1)), m.group(2)) for m in re.finditer(r"(\d+)\.(\w+)", line)]
 		return (func_name, res)
 
 
@@ -58,9 +57,8 @@ class ExecuteTripouille(BaseExecutor):
 		for file in os.listdir("."):
 			with open(file, "r") as f:
 				fname = file.replace('ft_', '').replace('_test.cpp', '')
-				content = f.read()  \
-					.replace("main(void)", f"main_{fname}(void)")  \
-					.replace("int iTest = 1;", 'extern int iTest;')
+				content = f.read().replace("main(void)",
+				                           f"main_{fname}(void)").replace("int iTest = 1;", 'extern int iTest;')
 
 			logger.info(f"Saving file {file}")
 			with open(file, "w") as f2:
@@ -70,21 +68,14 @@ class ExecuteTripouille(BaseExecutor):
 		create_main(self.to_execute)
 
 	def compile_test(self):
-		os.chdir(os.path.join(self.temp_dir, self.folder))
-		logger.info(f"On directory {os.getcwd()}")
-		print(f"\n{Colors.CYAN}Compiling tests from: {Colors.WHITE}{self.folder}{Colors.NC} ({self.git_url}):")
-
 		command = (f"clang++ -g3 -ldl -std=c++11 -I utils/ -I . utils/sigsegv.cpp utils/color.cpp " +
-				   f"utils/check.cpp utils/leaks.cpp tests/main.cpp -o main.out").split(" ")
-
+		           f"utils/check.cpp utils/leaks.cpp tests/main.cpp -o main.out").split(" ")
 		for file in self.to_execute:
 			command.append(f"tests/ft_{file}_test.cpp")
 
 		command += ["-L.", "-lft"]
-		print(" ".join(command))
-		p = subprocess.Popen(command)
-		p.wait()
-		return p
+
+		return self.compile_with(command)
 
 	def execute_test(self):
 		if sys.platform.startswith("linux"):
@@ -92,14 +83,15 @@ class ExecuteTripouille(BaseExecutor):
 		else:
 			execute = ["./main.out"]
 
-		print(f"\n{Colors.CYAN}Executing: {Colors.WHITE}{' '.join(execute)}{Colors.NC}:")
+		print(f"\n{CT.CYAN}Executing: {CT.WHITE}{' '.join(execute)}{CT.NC}:")
 
 		p = subprocess.run(execute, capture_output=True, text=True)
-		print(p.stdout, Colors.NC)
+		print(p.stdout, CT.NC)
 
 		return [parse_line(remove_ansi_colors(line)) for line in p.stdout.splitlines()]
 
 	def show_failed_tests(self, result):
+
 		def is_failed(test):
 			return test[1] != 'OK' and test[1] != 'MOK'
 
@@ -111,7 +103,7 @@ class ExecuteTripouille(BaseExecutor):
 
 		def print_error_lines(lines):
 			for i, line, test in lines:
-				print(f"{Colors.RED}{test[1].ljust(3)} {Colors.YELLOW}{i}: {Colors.NC}{line}", end="")
+				print(f"{CT.RED}{test[1].ljust(3)} {CT.YELLOW}{i}: {CT.NC}{line}", end="")
 
 		def show_failed_lines(file, failed_tests):
 			with open(file) as f:
@@ -139,8 +131,9 @@ class ExecuteTripouille(BaseExecutor):
 		errors = has_failed(result)
 		if errors:
 			if str(errors) == "MKO":
-				print(f"{Colors.RED}MKO{Colors.NC}: test about your malloc size (this shouldn't be tested by moulinette)")
-			print(f"{Colors.LIGHT_RED}Errors in:{Colors.NC}")
+				print(f"{CT.RED}MKO{CT.NC}: test about your malloc " +
+				      "size (this shouldn't be tested by moulinette)")
+			print(f"{CT.L_RED}Errors in:{CT.NC}")
 			print()
 
 		funcs_error = []
@@ -148,7 +141,7 @@ class ExecuteTripouille(BaseExecutor):
 			failed = [test for test in tests if is_failed(test)]
 			if failed:
 				test_file = get_file_path(func)
-				print(f"For {Colors.WHITE}{test_file}{Colors.NC}:")
+				print(f"For {CT.WHITE}{test_file}{CT.NC}:")
 				show_failed_lines(test_file, failed)
 				print()
 				funcs_error.append(func)

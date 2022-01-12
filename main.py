@@ -25,18 +25,18 @@ class TestRunInfo:
     verbose: bool
 
 
-class Colors:
+class CT:
     WHITE = '\033[1;37m'
     RED = '\033[0;31m'
     GREEN = '\033[0;32m'
     CYAN = '\033[0;36m'
-    LIGHT_GREEN = '\033[1;32m'
-    LIGHT_BLUE = '\033[1;36m'
+    L_GREEN = '\033[1;32m'
+    L_BLUE = '\033[1;36m'
     PURPLE = '\033[0;35m'
-    LIGHT_PURPLE = '\033[1;35m'
+    L_PURPLE = '\033[1;35m'
     YELLOW = '\033[0;33m'
-    LIGHT_YELLOW = '\033[1;33m'
-    LIGHT_RED = '\033[1;31m'
+    L_YELLOW = '\033[1;33m'
+    L_RED = '\033[1;31m'
     NC = '\033[0m'  # No Color
 
 
@@ -203,9 +203,9 @@ def main():
         execute_tests(info)
 
         if from_git:
-            print(f"You can see the cloned repository in {Colors.WHITE}{git_dir}{Colors.NC}")
+            print(f"You can see the cloned repository in {CT.WHITE}{git_dir}{CT.NC}")
     except Exception as ex:
-        print(f"{Colors.RED}{ex}")
+        print(f"{CT.RED}{ex}")
         if args.verbose:
             print(ex.with_traceback())
         sys.exit()

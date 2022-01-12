@@ -6,48 +6,48 @@ import shutil
 import subprocess
 
 from main import TestRunInfo
-from main import Colors
+from main import CT
 
 logger = logging.getLogger()
 
 DEFAULT_COMPILE_FLAGS = ["-Wall", "-Wextra", "-Werror"]
-IGNORED_EXERCISE_HEADER = f"{Colors.YELLOW}" \
+IGNORED_EXERCISE_HEADER = f"{CT.YELLOW}" \
         "═════════════════════════════════ #### ignored ═════════════════════════════════" \
-        f"{Colors.NC}"
+        f"{CT.NC}"
 
-EXERCISE_HEADER = f"{Colors.LIGHT_BLUE}" \
+EXERCISE_HEADER = f"{CT.L_BLUE}" \
         "═════════════════════════════════ Testing #### ═════════════════════════════════" \
-        f"{Colors.NC}"
+        f"{CT.NC}"
 
-TEST_PASSED = f"\n{Colors.LIGHT_GREEN}" \
+TEST_PASSED = f"\n{CT.L_GREEN}" \
         "══════════════════════════════    #### passed!    ══════════════════════════════" \
-        f"{Colors.NC}"
+        f"{CT.NC}"
 
-TEST_FAILED = f"\n{Colors.LIGHT_RED}" \
+TEST_FAILED = f"\n{CT.L_RED}" \
         "══════════════════════════════    #### failed!    ══════════════════════════════" \
-        f"{Colors.NC}"
+        f"{CT.NC}"
 
-TEST_NOT_PRESENT = f"\n{Colors.YELLOW}" \
+TEST_NOT_PRESENT = f"\n{CT.YELLOW}" \
         "══════════════════════════════  #### not present  ══════════════════════════════" \
-        f"{Colors.NC}"
+        f"{CT.NC}"
 
-TEST_ONLY_EXECUTED = f"\n{Colors.PURPLE}" \
+TEST_ONLY_EXECUTED = f"\n{CT.PURPLE}" \
         "══════════════════════════════   ####  executed   ══════════════════════════════" \
-        f"{Colors.NC}"
+        f"{CT.NC}"
 
 
 def show_banner(project):
-    message = f"Welcome to {Colors.LIGHT_PURPLE}Francinette{Colors.LIGHT_BLUE}, a 42 tester framework!"
+    message = f"Welcome to {CT.L_PURPLE}Francinette{CT.L_BLUE}, a 42 tester framework!"
     submessage = f"{project}"
-    project_message = f"{Colors.LIGHT_YELLOW}{project}{Colors.LIGHT_BLUE}"
+    project_message = f"{CT.L_YELLOW}{project}{CT.L_BLUE}"
     size = 30 - len(submessage)
     project_message = " " * (size - (size // 2)) + project_message + " " * (size // 2)
-    print(f"{Colors.LIGHT_BLUE}")
+    print(f"{CT.L_BLUE}")
     print(f"╔══════════════════════════════════════════════════════════════════════════════╗")
     print(f"║                {message}                ║")
     print(f"╚═══════════════════════╦══════════════════════════════╦═══════════════════════╝")
     print(f"                        ║{project_message}║")
-    print(f"                        ╚══════════════════════════════╝{Colors.NC}")
+    print(f"                        ╚══════════════════════════════╝{CT.NC}")
 
 
 @dataclass
@@ -110,16 +110,16 @@ class CommonTester:
     def print_summary(test_status):
         ok_tests = [test for test, st in test_status.items() if st is True]
 
-        print(f"{Colors.LIGHT_GREEN}Passed tests: {' '.join(ok_tests)}{Colors.NC}")
+        print(f"{CT.L_GREEN}Passed tests: {' '.join(ok_tests)}{CT.NC}")
         failed_tests = [test for test, st in test_status.items() if st is False]
         if failed_tests:
-            print(f"{Colors.LIGHT_RED}Failed tests: {' '.join(failed_tests)}{Colors.NC}")
+            print(f"{CT.L_RED}Failed tests: {' '.join(failed_tests)}{CT.NC}")
         not_present = [test for test, st in test_status.items() if st == "Test Not Present"]
         if not_present:
-            print(f"{Colors.YELLOW}Files not present: {' '.join(not_present)}{Colors.NC}")
+            print(f"{CT.YELLOW}Files not present: {' '.join(not_present)}{CT.NC}")
         not_present = [test for test, st in test_status.items() if st == "No expected file"]
         if not_present:
-            print(f"{Colors.PURPLE}Need manual validation: {' '.join(not_present)}{Colors.NC}")
+            print(f"{CT.PURPLE}Need manual validation: {' '.join(not_present)}{CT.NC}")
 
     def pass_norminette(self, test):
         os.chdir(os.path.join(self.temp_dir, test))
@@ -129,11 +129,11 @@ class CommonTester:
 
         result = subprocess.run(norm_exec, capture_output=True, text=True)
 
-        print(f"{Colors.CYAN}Executing: {Colors.WHITE}{' '.join(norm_exec)}{Colors.NC}:")
+        print(f"{CT.CYAN}Executing: {CT.WHITE}{' '.join(norm_exec)}{CT.NC}:")
         if result.returncode == 0:
-            print(f"{Colors.GREEN}{result.stdout}{Colors.NC}")
+            print(f"{CT.GREEN}{result.stdout}{CT.NC}")
         else:
-            print(f"{Colors.YELLOW}{result.stdout}{Colors.NC}")
+            print(f"{CT.YELLOW}{result.stdout}{CT.NC}")
 
         return result.returncode == 0
 
@@ -145,14 +145,14 @@ class CommonTester:
         # result = os.system(f"gcc { " ".join(flags) } { " ".join(files) }")
         gcc_exec = ["gcc"] + flags + files
 
-        print(f"{Colors.CYAN}Executing: {Colors.WHITE}{' '.join(gcc_exec)}{Colors.NC}:")
+        print(f"{CT.CYAN}Executing: {CT.WHITE}{' '.join(gcc_exec)}{CT.NC}:")
         p = subprocess.Popen(gcc_exec)
         p.wait()
 
         if p.returncode == 0:
-            print(f"{Colors.GREEN}gcc: OK!{Colors.NC}")
+            print(f"{CT.GREEN}gcc: OK!{CT.NC}")
         else:
-            print(f"{Colors.LIGHT_RED}Problem compiling files{Colors.NC}")
+            print(f"{CT.L_RED}Problem compiling files{CT.NC}")
 
         return p.returncode
 
@@ -160,7 +160,7 @@ class CommonTester:
         logger.info(f"Running the output of the compilation: ")
         logger.info(f"On directory {os.getcwd()}")
 
-        print(f"\n{Colors.CYAN}Executing: {Colors.WHITE}./a.out | cat -e{Colors.NC}:")
+        print(f"\n{CT.CYAN}Executing: {CT.WHITE}./a.out | cat -e{CT.NC}:")
 
         ps = subprocess.Popen('./a.out', stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         output = subprocess.check_output(('cat', '-e'), stdin=ps.stdout)
@@ -171,37 +171,37 @@ class CommonTester:
             logger.info("Executed program successfully main")
             print(output)
         else:
-            print(f"{Colors.RED}{output}{Colors.NC}")
-            print(f"{Colors.LIGHT_RED}Error Executing the program! (Most likely SegFault){Colors.NC}")
+            print(f"{CT.RED}{output}{CT.NC}")
+            print(f"{CT.L_RED}Error Executing the program! (Most likely SegFault){CT.NC}")
             location = os.path.join(self.temp_dir, test)
-            print(f"The {Colors.WHITE}main.c{Colors.NC} and {Colors.WHITE}a.out{Colors.NC} used in this "
-                  f"test are located at:\n{Colors.WHITE}{location}{Colors.NC}")
+            print(f"The {CT.WHITE}main.c{CT.NC} and {CT.WHITE}a.out{CT.NC} used in this "
+                  f"test are located at:\n{CT.WHITE}{location}{CT.NC}")
 
         return output
 
     @staticmethod
     def do_diff():
         diff_exec = ["diff", "--text", "expected", "out"]
-        print(f"\n{Colors.CYAN}Executing: {Colors.WHITE}{' '.join(diff_exec)}{Colors.NC}:")
+        print(f"\n{CT.CYAN}Executing: {CT.WHITE}{' '.join(diff_exec)}{CT.NC}:")
 
         result = subprocess.run(diff_exec, capture_output=True, text=True)
         if result.returncode == 0:
-            print(f"{Colors.GREEN}diff: No differences{Colors.NC}")
+            print(f"{CT.GREEN}diff: No differences{CT.NC}")
         else:
-            print(f"{Colors.LIGHT_PURPLE}< expected, > your result{Colors.NC}")
-            print(f"{Colors.RED}{result.stdout}{Colors.NC}")
+            print(f"{CT.L_PURPLE}< expected, > your result{CT.NC}")
+            print(f"{CT.RED}{result.stdout}{CT.NC}")
 
         return result.returncode == 0
 
     @staticmethod
     def do_verification_fn(verification_fn):
-        print(f"\n{Colors.CYAN}Executing function: {Colors.WHITE}{verification_fn.__name__}{Colors.NC}:")
+        print(f"\n{CT.CYAN}Executing function: {CT.WHITE}{verification_fn.__name__}{CT.NC}:")
 
         result = verification_fn()
         if result.returncode == 0:
-            print(f"{Colors.GREEN}Everything OK!{Colors.NC}")
+            print(f"{CT.GREEN}Everything OK!{CT.NC}")
         else:
-            print(f"{Colors.RED}{result.stdout}{Colors.NC}")
+            print(f"{CT.RED}{result.stdout}{CT.NC}")
 
         return result.returncode == 0
 
