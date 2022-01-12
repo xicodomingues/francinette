@@ -11,11 +11,9 @@ from testers.libft.ExecuteTripouille import ExecuteTripouille
 
 logger = logging.getLogger()
 
-Tester = namedtuple("Test", "name executable")
+Tester = namedtuple("Test", "name constructor")
 
-AVAILABLE_TESTERS = [  #Tester('Tripouille', ExecuteTripouille),
-    Tester('fsoares', ExecuteFsoares)
-]
+AVAILABLE_TESTERS = [Tester('Tripouille', ExecuteTripouille)] #, Tester('fsoares', ExecuteFsoares)]
 
 FUNCTIONS_UNDER_TEST = [
     "isalpha", "isdigit", "isalnum", "isascii", "isprint", "strlen", "memset", "bzero", "memcpy", "memmove", "strlcpy",
@@ -66,24 +64,29 @@ class LibftTester():
 		if info.ex_to_execute:
 			to_execute = [info.ex_to_execute]
 
-		for tester in AVAILABLE_TESTERS:
-			funcs_error = self.test_using(info, to_execute, tester)
-			self.show_summary(norm_res, present, funcs_error)
+		missing = [f for f in FUNCTIONS_UNDER_TEST if f not in to_execute]
+		logger.info(f"To execute: {to_execute}")
+		logger.info(f"Missing: {missing}")
 
-	def test_using(self, info: TestRunInfo, to_execute, tester: Tester):
+		for tester in AVAILABLE_TESTERS:
+			funcs_error = self.test_using(info, to_execute, missing, tester)
+			if not info.ex_to_execute:
+				self.show_summary(norm_res, present, missing, funcs_error)
+
+	def test_using(self, info: TestRunInfo, to_execute, missing, tester: Tester):
 		self.prepare_tests(tester.name)
 
 		if info.ex_to_execute:
-			tx = tester.executable(self.tests_dir, info.temp_dir, [info.ex_to_execute])
+			tx = tester.constructor(self.tests_dir, info.temp_dir, [info.ex_to_execute], missing)
 			tx.execute()
 		else:
 			present = self.get_present()
 			to_execute = intersection(present, FUNCTIONS_UNDER_TEST)
 
-			tx = tester.executable(self.tests_dir, info.temp_dir, to_execute)
+			tx = tester.constructor(self.tests_dir, info.temp_dir, to_execute, missing)
 			return tx.execute()
 
-	def show_summary(self, norm: str, present, errors):
+	def show_summary(self, norm: str, present, missing, errors):
 
 		def get_norm_errors():
 
@@ -100,7 +103,6 @@ class LibftTester():
 			print(f"{CT.L_RED}Norminette Errors:{CT.NC}")
 			print(', '.join(norm_errors))
 
-		missing = [f for f in FUNCTIONS_UNDER_TEST if f not in present]
 		if missing:
 			print(f"\n{CT.L_RED}Missing functions: {CT.NC}{', '.join(missing)}")
 
@@ -162,8 +164,7 @@ class LibftTester():
 		# copy compiled library
 		library = os.path.join(self.temp_dir, "libft.a")
 		if not os.path.exists(library):
-			raise Exception(f"{CT.L_RED}libft.a{CT.RED} was not created. " +
-			                "Please create it in the Makefile.")
+			raise Exception(f"{CT.L_RED}libft.a{CT.RED} was not created. " + "Please create it in the Makefile.")
 		logger.info(f"Copying libft.a from {library} to {temp_dir}")
 		shutil.copy(library, temp_dir)
 

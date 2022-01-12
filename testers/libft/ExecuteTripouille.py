@@ -4,14 +4,9 @@ import re
 import subprocess
 import sys
 from main import CT
-from testers.libft.BaseExecutor import BaseExecutor
+from testers.libft.BaseExecutor import BaseExecutor, remove_ansi_colors
 
 logger = logging.getLogger()
-ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
-
-
-def remove_ansi_colors(text):
-	return ansi_escape.sub('', text)
 
 
 def create_main(funcs):
@@ -27,21 +22,16 @@ def create_main(funcs):
 		f.write("}\n")
 
 
-def parse_line(line):
-	match = re.match(r"^(\w+)\s+:.*", line)
-	if (match):
-		func_name = match.group(1)
-		res = [(int(m.group(1)), m.group(2)) for m in re.finditer(r"(\d+)\.(\w+)", line)]
-		return (func_name, res)
 
 
 class ExecuteTripouille(BaseExecutor):
 
-	def __init__(self, tests_dir, temp_dir, to_execute) -> None:
-		self.temp_dir = temp_dir
-		self.to_execute = to_execute
-		self.tests_dir = tests_dir
+	def __init__(self, tests_dir, temp_dir, to_execute, missing) -> None:
 		self.folder = "Tripouille"
+		self.temp_dir = os.path.join(temp_dir, self.folder)
+		self.to_execute = to_execute
+		self.missing = missing
+		self.tests_dir = os.path.join(tests_dir, self.folder)
 		self.git_url = "https://github.com/Tripouille/libftTester"
 
 	def execute(self):
@@ -51,7 +41,7 @@ class ExecuteTripouille(BaseExecutor):
 		return self.show_failed_tests(res)
 
 	def prepare_tests(self):
-		os.chdir(os.path.join(self.temp_dir, self.folder, 'tests'))
+		os.chdir(os.path.join(self.temp_dir, 'tests'))
 
 		logger.info("Rewriting the mains to create a super main.cpp")
 		for file in os.listdir("."):
@@ -78,6 +68,14 @@ class ExecuteTripouille(BaseExecutor):
 		return self.compile_with(command)
 
 	def execute_test(self):
+
+		def parse_line(line):
+			match = re.match(r"^(\w+)\s+:.*", line)
+			if (match):
+				func_name = match.group(1)
+				res = [(int(m.group(1)), m.group(2)) for m in re.finditer(r"(\d+)\.(\w+)", line)]
+				return (func_name, res)
+
 		if sys.platform.startswith("linux"):
 			execute = f"valgrind -q --leak-check=full ./main.out".split(" ")
 		else:

@@ -1,8 +1,11 @@
 {
 	"files.associations": {
+		"expected": "text",
 		"unistd.h": "c",
 		"stdint.h": "c",
-		"expected": "text"
+		"signal.h": "c",
+		"cdefs.h": "c",
+		"csignal": "c"
 	},
 	"python.linting.enabled": true,
     "python.linting.pylintPath": "pylint",
@@ -12,6 +15,7 @@
 	  ],
 	"cSpell.words": [
 		"francinette",
+		"inplace",
 		"norminette",
 		"Popen",
 		"Tripouille"
