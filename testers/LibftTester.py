@@ -3,55 +3,60 @@ import os
 import re
 import shutil
 import subprocess
+from collections import namedtuple
 from main import Colors, TestRunInfo
 from testers.CommonTester import show_banner
-from testers.ExecuteTripouille import ExecuteTripouille
+from testers.libft.ExecuteFsoares import ExecuteFsoares
+from testers.libft.ExecuteTripouille import ExecuteTripouille
 
 logger = logging.getLogger()
 
-AVAILABLE_TESTS = ['Tripouille']
+Tester = namedtuple("Test", "name executable")
+
+AVAILABLE_TESTERS = [#Tester('Tripouille', ExecuteTripouille),
+				   Tester('fsoares', ExecuteFsoares)]
 
 FUNCTIONS_UNDER_TEST = [
-    "isalpha",
-    "isdigit",
-    "isalnum",
-    "isascii",
-    "isprint",
-    "strlen",
-    "memset",
-    "bzero",
-    "memcpy",
-    "memmove",
-    "strlcpy",
-    "strlcat",
-    "toupper",
-    "tolower",
-    "strchr",
-    "strrchr",
-    "strncmp",
-    "memchr",
-    "memcmp",
-    "strnstr",
-    "atoi",
-    "calloc",
-    "strdup",
-    "substr",
-    "strjoin",
-    "strtrim",
-    "split",
-    "itoa",
-    "strmapi",
-    "striteri",
-    "putchar_fd",
-    "putstr_fd",
-    "putendl_fd",
-    "putnbr_fd"
+	"isalpha",
+	"isdigit",
+	"isalnum",
+	"isascii",
+	"isprint",
+	"strlen",
+	"memset",
+	"bzero",
+	"memcpy",
+	"memmove",
+	"strlcpy",
+	"strlcat",
+	"toupper",
+	"tolower",
+	"strchr",
+	"strrchr",
+	"strncmp",
+	"memchr",
+	"memcmp",
+	"strnstr",
+	"atoi",
+	"calloc",
+	"strdup",
+	"substr",
+	"strjoin",
+	"strtrim",
+	"split",
+	"itoa",
+	"strmapi",
+	"striteri",
+	"putchar_fd",
+	"putstr_fd",
+	"putendl_fd",
+	"putnbr_fd"
 ]
 
 
 def intersection(lst1, lst2):
-    lst3 = [value for value in lst1 if value in lst2]
-    return lst3
+	lst3 = [value for value in lst1 if value in lst2]
+	return lst3
 
 
 func_regex = re.compile(r"\w+\s+\*?ft_(\w+)\(.*")
@@ -60,135 +65,143 @@ norm_func_regex = re.compile(r"^([\w\\]+\.c): Error!")
 
 class LibftTester():
 
-    def __init__(self, info: TestRunInfo) -> None:
-        if info.verbose:
-            logger.setLevel("INFO")
+	def __init__(self, info: TestRunInfo) -> None:
+		if info.verbose:
+			logger.setLevel("INFO")
 
-        show_banner("libft")
-        self.test_using(info, AVAILABLE_TESTS[0])
+		show_banner("libft")
+		self.temp_dir = info.temp_dir
+		self.tests_dir = info.tests_dir
+		self.source_dir = info.source_dir
 
-    def test_using(self, info: TestRunInfo, test):
-        self.temp_dir = info.temp_dir
-        self.tests_dir = os.path.join(info.tests_dir, test)
-        self.source_dir = info.source_dir
+		self.prepare_ex_files()
+		norm_res = self.check_norminette()
+		compile_res = self.create_library()
 
-        self.prepare_ex_files()
-        norm_res = self.check_norminette()
-        compile_res = self.create_library()
+		if not compile_res:
+			return "Project failed to create library"
 
-        if not compile_res:
-            return "Project failed to create library"
+		present = self.get_present()
+		to_execute = intersection(present, FUNCTIONS_UNDER_TEST)
 
-        self.prepare_tests(test)
+		if info.ex_to_execute:
+			to_execute = [info.ex_to_execute]
 
-        if info.ex_to_execute:
-            tx = ExecuteTripouille(self.tests_dir, info.temp_dir, [info.ex_to_execute])
-            tx.execute()
-        else:
-            present = self.get_present()
-            to_execute = intersection(present, FUNCTIONS_UNDER_TEST)
+		for tester in AVAILABLE_TESTERS:
+			funcs_error = self.test_using(info, to_execute, tester)
+			self.show_summary(norm_res, present, funcs_error)
 
-            tx = ExecuteTripouille(self.tests_dir, info.temp_dir, to_execute)
-            funcs_error = tx.execute()
+	def test_using(self, info: TestRunInfo, to_execute, tester: Tester):
+		self.prepare_tests(tester.name)
 
-            self.show_summary(norm_res, present, funcs_error)
+		if info.ex_to_execute:
+			tx = tester.executable(self.tests_dir, info.temp_dir, [info.ex_to_execute])
+			tx.execute()
+		else:
+			present = self.get_present()
+			to_execute = intersection(present, FUNCTIONS_UNDER_TEST)
 
-    def show_summary(self, norm: str, present, errors):
-        def get_norm_errors():
-            def get_fname(line):
-                return norm_func_regex.match(line).group(1)
+			tx = tester.executable(self.tests_dir, info.temp_dir, to_execute)
+			return tx.execute()
 
-            def is_file(line):
-                return norm_func_regex.match(line)
+	def show_summary(self, norm: str, present, errors):
+		def get_norm_errors():
+			def get_fname(line):
+				return norm_func_regex.match(line).group(1)
 
-            return [get_fname(line) for line in norm.splitlines() if is_file(line)]
+			def is_file(line):
+				return norm_func_regex.match(line)
 
-        norm_errors = get_norm_errors()
-        if norm_errors:
-            print(f"{Colors.LIGHT_RED}Norminette Errors:{Colors.NC}")
-            print(', '.join(norm_errors))
+			return [get_fname(line) for line in norm.splitlines() if is_file(line)]
 
-        missing = [f for f in FUNCTIONS_UNDER_TEST if f not in present]
-        if (missing):
-            print(f"\n{Colors.LIGHT_RED}Missing functions: {Colors.NC}{', '.join(missing)}")
+		norm_errors = get_norm_errors()
+		if norm_errors:
+			print(f"{Colors.LIGHT_RED}Norminette Errors:{Colors.NC}")
+			print(', '.join(norm_errors))
 
-        print(f"\n{Colors.LIGHT_RED}Failed tests: {Colors.NC}{', '.join(errors)}")
+		missing = [f for f in FUNCTIONS_UNDER_TEST if f not in present]
+		if missing:
+			print(f"\n{Colors.LIGHT_RED}Missing functions: {Colors.NC}{', '.join(missing)}")
 
-        if not missing and not norm_errors and not errors:
-            print(f"🎉🥳{Colors.LIGHT_GREEN}All tests passed! Congratulations!{Colors.NC}🥳🎉")
+		if errors:
+			print(f"\n{Colors.LIGHT_RED}Failed tests: {Colors.NC}{', '.join(errors)}")
 
-    def prepare_ex_files(self):
-        if os.path.exists(self.temp_dir):
-            logger.info(f"Removing already present directory {self.temp_dir}")
-            shutil.rmtree(self.temp_dir)
+		if not missing and not norm_errors and not errors:
+			print(f"🎉🥳{Colors.LIGHT_GREEN}All tests passed! Congratulations!{Colors.NC}🥳🎉")
 
-        # os.makedirs(self.temp_dir)
-        shutil.copytree(self.source_dir, self.temp_dir)
+	def prepare_ex_files(self):
+		if os.path.exists(self.temp_dir):
+			logger.info(f"Removing already present directory {self.temp_dir}")
+			shutil.rmtree(self.temp_dir)
 
-    def check_norminette(self):
-        os.chdir(os.path.join(self.temp_dir))
-        logger.info(f"On directory {os.getcwd()}")
-        logger.info(f"Executing norminette")
-        norm_exec = ["norminette", "-R", "CheckForbiddenSourceHeader"]
+		# os.makedirs(self.temp_dir)
+		shutil.copytree(self.source_dir, self.temp_dir)
 
-        result = subprocess.run(norm_exec, capture_output=True, text=True)
+	def check_norminette(self):
+		os.chdir(os.path.join(self.temp_dir))
+		logger.info(f"On directory {os.getcwd()}")
+		logger.info(f"Executing norminette")
+		norm_exec = ["norminette", "-R", "CheckForbiddenSourceHeader"]
 
-        print(f"{Colors.CYAN}Executing: {Colors.WHITE}{' '.join(norm_exec)}{Colors.NC}:")
-        if result.returncode != 0:
-            print(f"{Colors.YELLOW}{result.stdout}{Colors.NC}")
-        else:
-            print(f"{Colors.GREEN}Norminette OK!{Colors.NC}")
+		result = subprocess.run(norm_exec, capture_output=True, text=True)
 
-        return result.stdout
+		print(f"{Colors.CYAN}Executing: {Colors.WHITE}{' '.join(norm_exec)}{Colors.NC}:")
+		if result.returncode != 0:
+			print(f"{Colors.YELLOW}{result.stdout}{Colors.NC}")
+		else:
+			print(f"{Colors.GREEN}Norminette OK!{Colors.NC}")
 
-    def create_library(self):
-        logger.info(f"On directory {os.getcwd()}")
-        make_exec = ["make"]
+		return result.stdout
 
-        print(f"{Colors.CYAN}Executing: {Colors.WHITE}{' '.join(make_exec)}{Colors.NC}:")
-        subprocess.run(["make", "fclean"], capture_output=True, text=True)
-        p = subprocess.run(make_exec, capture_output=True, text=True)
+	def create_library(self):
+		logger.info(f"Calling make on directory {os.getcwd()}")
+		make_exec = ["make"]
 
-        if p.returncode == 0:
-            print(f"{Colors.GREEN}make: OK!{Colors.NC}")
-        else:
-            print(f"{Colors.LIGHT_RED}Problem creating library{Colors.NC}")
-            print(f"{Colors.YELLOW}{p.stdout}{Colors.NC}")
-            print(f"{Colors.RED}{p.stderr}{Colors.NC}")
+		print(f"{Colors.CYAN}Executing: {Colors.WHITE}{' '.join(make_exec)}{Colors.NC}:")
+		subprocess.run(["make", "fclean"], capture_output=True, text=True)
+		p = subprocess.run(make_exec, capture_output=True, text=True)
 
-        return p.returncode == 0
+		if p.returncode == 0:
+			print(f"{Colors.GREEN}make: OK!{Colors.NC}")
+		else:
+			print(f"{Colors.LIGHT_RED}Problem creating library{Colors.NC}")
+			print(f"{Colors.YELLOW}{p.stdout}{Colors.NC}")
+			print(f"{Colors.RED}{p.stderr}{Colors.NC}")
 
-    def prepare_tests(self, test):
-        try:
-            # delete destination folder if already present
-            temp_dir = os.path.join(self.temp_dir, test)
-            if os.path.exists(temp_dir):
-                logger.info(f"Removing already present directory {temp_dir}")
-                shutil.rmtree(temp_dir)
+		return p.returncode == 0
 
-            # copy test framework
-            logger.info(f"Copying {test} from {self.tests_dir} to {temp_dir}")
-            shutil.copytree(self.tests_dir, temp_dir)
+	def prepare_tests(self, testname):
+		try:
+			# delete destination folder if already present
+			temp_dir = os.path.join(self.temp_dir, testname)
+			if os.path.exists(temp_dir):
+				logger.info(f"Removing already present directory {temp_dir}")
+				shutil.rmtree(temp_dir)
 
-            # copy compiled library
-            library = os.path.join(self.temp_dir, "libft.a")
-            logger.info(
-                f"Copying libft.a from {library} to {temp_dir}")
-            shutil.copy(library, temp_dir)
+			# copy test framework
+			tester_dir = os.path.join(self.tests_dir, testname)
+			logger.info(f"Copying from {tester_dir} to {temp_dir}")
+			shutil.copytree(tester_dir, temp_dir)
 
-            # copy header
-            header = os.path.join(self.temp_dir, "libft.h")
-            logger.info(
-                f"Copying libft.h from {header} to {temp_dir}")
-            shutil.copy(header, temp_dir)
+			# copy compiled library
+			library = os.path.join(self.temp_dir, "libft.a")
+			logger.info(
+				f"Copying libft.a from {library} to {temp_dir}")
+			shutil.copy(library, temp_dir)
 
-            return True
-        except Exception as ex:
-            logger.info("Problem creating the files structure: ", ex)
-            return False
+			# copy header
+			header = os.path.join(self.temp_dir, "libft.h")
+			logger.info(
+				f"Copying libft.h from {header} to {temp_dir}")
+			shutil.copy(header, temp_dir)
 
-    def get_present(self):
-        header = os.path.join(self.temp_dir, "libft.h")
-        with open(header, "r") as h:
-            funcs_str = [line for line in h.readlines() if func_regex.match(line)]
-            return [func_regex.match(line).group(1) for line in funcs_str]
+			return True
+		except Exception as ex:
+			logger.info("Problem creating the files structure: ", ex)
+			return False
+
+	def get_present(self):
+		header = os.path.join(self.temp_dir, "libft.h")
+		with open(header, "r") as h:
+			funcs_str = [line for line in h.readlines() if func_regex.match(line)]
+			return [func_regex.match(line).group(1) for line in funcs_str]
