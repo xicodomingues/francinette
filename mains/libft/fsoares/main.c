@@ -72,7 +72,7 @@ void rand_bytes(char *dest, int len)
 	dest[len - 1] = '\0';
 	for (int i = 0; i < len - 1; i++)
 	{
-		dest[i] = rand() % 0xff;
+		dest[i] = rand() % 0x100;
 	}
 }
 
@@ -107,11 +107,13 @@ char *escape_str(char *src)
 
 char *escape_chr(char ch)
 {
-	if (ch == '\0') {
+	if (ch == '\0')
+	{
 		strcpy(escaped, "'\\0'");
 		return escaped;
 	}
-	else {
+	else
+	{
 		char to_escape[20] = "' '";
 		to_escape[1] = ch;
 		return escape_str(to_escape);
@@ -132,7 +134,7 @@ void reset_with(void *m1, void *m2, char *content, int size)
 	strcpy(m2, content);
 }
 
-void error(const char* format, ...)
+void error(const char *format, ...)
 {
 	printf(RED "Error" NC ": " CYN "%s" NC ": ", function);
 	va_list args;
@@ -165,7 +167,7 @@ int same_mem(void *s, void *r, int size)
 	}
 	if (!equal)
 	{
-		error("Different memory" NC "\n");
+		error("different memory" NC "\n");
 		printf(YEL "res" NC ":\n");
 		print_mem(res, size);
 		printf(YEL "std" NC ":\n");
@@ -220,7 +222,7 @@ int single_test_memset(char *m, char *ms, int c, int size)
 	reset(m, ms, MEM_SIZE);
 	res_std = memset(ms, c, size);
 	res = ft_memset(m, c, size);
-	sprintf(function, "memset(ptr, %i, %i)", c, size);
+	sprintf(function, "ft_memset(ptr, %i, %i)", c, size);
 	return (same_ptr(res, m) && same_mem(res_std, res, MEM_SIZE));
 }
 
@@ -243,7 +245,7 @@ int test_memset(void)
 	int *rs = memset(ms2 + 1, 143562, 4);
 	int *r = ft_memset(m2 + 1, 143562, 4);
 
-	sprintf(function, "memset(ptr, %i, %i)", 143562, 4);
+	sprintf(function, "ft_memset(ptr, %i, %i)", 143562, 4);
 	res = (same_ptr(r, m2 + 1) && same_mem(rs - 1, r - 1, 0x10)) && res;
 	return res;
 }
@@ -255,7 +257,7 @@ int single_test_bzero(char *m, char *ms, int size)
 	reset(m, ms, MEM_SIZE);
 	bzero(ms, size);
 	ft_bzero(m, size);
-	sprintf(function, "bzero(ptr, %i)", size);
+	sprintf(function, "ft_bzero(ptr, %i)", size);
 	return (same_mem(ms, m, MEM_SIZE));
 }
 
@@ -286,7 +288,7 @@ int single_test_memcpy(char *dest, char *dest_std, char *src, char *src_std)
 	char *res = ft_memcpy(dest, src, 100);
 	char *res_std = memcpy(dest_std, src_std, 100);
 
-	sprintf(function, "memcpy(dest, src, %i)", 100);
+	sprintf(function, "ft_memcpy(dest, src, %i)", 100);
 	return (same_ptr(res, dest) && same_mem(res_std, res, MEM_SIZE));
 }
 
@@ -317,7 +319,7 @@ int single_test_memmove(char *dest, char *dest_std, char *src, char *src_std)
 
 	char *r = ft_memmove(dest, src, 100);
 	char *rs = memmove(dest_std, src_std, 100);
-	sprintf(function, "memmove(dest, src, %i)", 100);
+	sprintf(function, "ft_memmove(dest, src, %i)", 100);
 	return (same_ptr(r, dest) && same_mem(rs, r, MEM_SIZE));
 }
 
@@ -403,7 +405,7 @@ int test_strlcat(void)
 #ifdef TEST_STRCHR
 int single_test_strchr(char *str, int ch)
 {
-	sprintf(function, "strchr((at: %p): \"%s\", %s)", str, str, escape_chr(ch));
+	sprintf(function, "ft_strchr((at: %p): \"%s\", %s)", str, str, escape_chr(ch));
 	char *res = ft_strchr(str, ch);
 	char *res_std = strchr(str, ch);
 
@@ -414,10 +416,101 @@ int test_strchr(void)
 {
 	int res = 1;
 
-	res = single_test_strchr("teste", 'e');
-	res = single_test_strchr("teste", '\0');
-	res = single_test_strchr("teste", 'a');
+	res = single_test_strchr("teste", 't') && res;
+	res = single_test_strchr("teste", 'e') && res;
+	res = single_test_strchr("teste", '\0') && res;
+	res = single_test_strchr("teste", 'a') && res;
 
+	return res;
+}
+#endif
+
+#ifdef TEST_STRRCHR
+int single_test_strrchr(char *str, int ch)
+{
+	sprintf(function, "ft_strrchr((at: %p): \"%s\", %s)", str, str, escape_chr(ch));
+	char *res = ft_strrchr(str, ch);
+	char *res_std = strrchr(str, ch);
+
+	return same_ptr(res, res_std);
+}
+
+int test_strrchr(void)
+{
+	int res = 1;
+
+	res = single_test_strrchr("teste", 'e') && res;
+	res = single_test_strrchr("teste", '\0') && res;
+	res = single_test_strrchr("xteste", 'x') && res;
+	res = single_test_strrchr("teste", 'x') && res;
+
+	res = single_test_strrchr("teste", 1024 + 'e') && res;
+
+	return res;
+}
+#endif
+
+#ifdef TEST_STRNCMP
+int single_test_strncmp(char *str1, char *str2, size_t n)
+{
+	sprintf(function, "ft_strncmp(\"%s\", \"%s\", %lu)", escape_str(str1), escape_str(str2), n);
+	int res = ft_strncmp(str1, str2, n);
+	int res_std = strncmp(str1, str2, n);
+
+	return same_value(res, res_std);
+}
+
+int test_strncmp(void)
+{
+	int res = 1;
+
+	res = single_test_strncmp("teste", "teste", 0) && res;
+	res = single_test_strncmp("teste", "teste", 1) && res;
+	res = single_test_strncmp("teste", "teste", 5) && res;
+	res = single_test_strncmp("teste", "teste", 6) && res;
+	res = single_test_strncmp("teste", "teste", 7) && res;
+	res = single_test_strncmp("teste", "testex", 6) && res;
+	res = single_test_strncmp("teste", "test", 10) && res;
+	res = single_test_strncmp("test", "teste", 10) && res;
+
+	unsigned char s1[10] = "abcdef";
+	unsigned char s2[10] = "abcdxx";
+	s2[3] = 200;
+	res = single_test_strncmp((char *)s1, (char *)s2, 5) && res;
+
+	s1[3] = 0;
+	s2[3] = 0;
+	int other = single_test_strncmp((char *)s1, (char *)s2, 7);
+	if (!other) {
+		printf(RED "You are not stoping at the '\\0'" NC);
+		res = 0;
+	}
+	return res;
+}
+#endif
+
+#ifdef TEST_MEMCHR
+int single_test_memchr(char *str, int ch)
+{
+	sprintf(function, "ft_memchr(mem, 0x%X)", ch);
+	char *res = ft_strchr(str, ch);
+	char *res_std = strchr(str, ch);
+
+	int result = same_ptr(res, res_std);
+	if (!result) {
+		print_mem(str, 0x30);
+	}
+	return result;
+}
+
+int test_memchr(void)
+{
+	int res = 1;
+	char str[100];
+
+	for (int i = 0; i < REPETITIONS && res; i=++) {
+		res = single_test_memchr(rand_bytes(str, 0x31), rand() % 0x110) && res;
+	}
 	return res;
 }
 #endif
@@ -455,6 +548,8 @@ int main()
 	test(strlcpy);
 	test(strlcat);
 	test(strchr);
+	test(strrchr);
+	test(strncmp);
 
 	return 0;
 }

@@ -6,3 +6,5 @@
 #define TEST_STRLCPY
 #define TEST_STRLCAT
 #define TEST_STRCHR
+#define TEST_STRRCHR
+#define TEST_STRNCMP
