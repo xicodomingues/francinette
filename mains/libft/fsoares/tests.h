@@ -8,3 +8,5 @@
 #define TEST_STRCHR
 #define TEST_STRRCHR
 #define TEST_STRNCMP
+#define TEST_MEMCHR
+#define TEST_MEMCMP

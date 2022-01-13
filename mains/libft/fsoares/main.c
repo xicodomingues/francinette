@@ -102,7 +102,7 @@ char *escape_str(char *src)
 		}
 		else
 		{
-			sprintf(my_bf + j, "\\%02x", (unsigned char)src[i]);
+			sprintf(my_bf + j, "\\x%02x", (unsigned char)src[i]);
 			j += 2;
 		}
 	}
@@ -114,7 +114,7 @@ char *escape_chr(char ch)
 {
 	if (ch == '\0')
 	{
-		strcpy(escaped, "'\\0'");
+		strcpy(escaped, "'\\x0'");
 		return escaped;
 	}
 	else
@@ -491,8 +491,7 @@ int test_strncmp(void)
 	res = single_test_strncmp("test", "teste", 10) && res;
 
 	unsigned char s1[10] = "abcdef";
-	unsigned char s2[10] = "abcdxx";
-	s2[3] = 200;
+	unsigned char s2[10] = "abc\xfdxx";
 	res = single_test_strncmp((char *)s1, (char *)s2, 5) && res;
 
 	s1[3] = 0;
@@ -556,7 +555,7 @@ int test_memcmp(void)
 	res = single_test_memcmp("test", "teste", 10) && res;
 
 	unsigned char s1[10] = "abcdef";
-	unsigned char s2[10] = "abc\200xx";
+	unsigned char s2[10] = "abc\xfdxx";
 	res = single_test_memcmp((char *)s1, (char *)s2, 5) && res;
 
 	s1[3] = 0;
