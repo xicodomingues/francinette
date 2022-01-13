@@ -5,7 +5,8 @@
 		"stdint.h": "c",
 		"signal.h": "c",
 		"cdefs.h": "c",
-		"csignal": "c"
+		"csignal": "c",
+		"libft.h": "c"
 	},
 	"python.linting.enabled": true,
     "python.linting.pylintPath": "pylint",
