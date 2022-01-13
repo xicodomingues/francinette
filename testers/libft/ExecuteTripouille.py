@@ -22,8 +22,6 @@ def create_main(funcs):
 		f.write("}\n")
 
 
-
-
 class ExecuteTripouille(BaseExecutor):
 
 	def __init__(self, tests_dir, temp_dir, to_execute, missing) -> None:
@@ -35,37 +33,29 @@ class ExecuteTripouille(BaseExecutor):
 		self.git_url = "https://github.com/Tripouille/libftTester"
 
 	def execute(self):
-		self.prepare_tests()
 		self.compile_test()
 		res = self.execute_test()
 		return self.show_failed_tests(res)
 
-	def prepare_tests(self):
-		os.chdir(os.path.join(self.temp_dir, 'tests'))
-
-		logger.info("Rewriting the mains to create a super main.cpp")
-		for file in os.listdir("."):
-			with open(file, "r") as f:
-				fname = file.replace('ft_', '').replace('_test.cpp', '')
-				content = f.read().replace("main(void)",
-				                           f"main_{fname}(void)").replace("int iTest = 1;", 'extern int iTest;')
-
-			logger.info(f"Saving file {file}")
-			with open(file, "w") as f2:
-				f2.write(content)
-
-		logger.info("Creating the super main!")
-		create_main(self.to_execute)
-
 	def compile_test(self):
-		command = (f"clang++ -g3 -ldl -std=c++11 -I utils/ -I . utils/sigsegv.cpp utils/color.cpp " +
-		           f"utils/check.cpp utils/leaks.cpp tests/main.cpp -o main.out").split(" ")
+		def compile_executable(function):
+			command = (f"clang++ -ldl check.o color.o leaks.o sigsegv.o ft_{function}_test.o" +
+					f" -o ft_{function}.out -L. -lft -I. -I utils").split(" ");
+			res = subprocess.Popen(command)
+			res.wait()
+			if res.returncode != 0:
+				raise Exception(f"Problem creating executable for {function}");
+
+		command = (f"clang++ -c -std=c++11 -I utils/ -I . utils/sigsegv.cpp utils/color.cpp " +
+		           f"utils/check.cpp utils/leaks.cpp").split(" ")
 		for file in self.to_execute:
 			command.append(f"tests/ft_{file}_test.cpp")
 
-		command += ["-L.", "-lft"]
-
-		return self.compile_with(command)
+		res = self.compile_with(command)
+		if res.returncode != 0:
+			raise Exception("Problem compiling tests");
+		for function in self.to_execute:
+			compile_executable(function)
 
 	def execute_test(self):
 
@@ -76,17 +66,16 @@ class ExecuteTripouille(BaseExecutor):
 				res = [(int(m.group(1)), m.group(2)) for m in re.finditer(r"(\d+)\.(\w+)", line)]
 				return (func_name, res)
 
-		if sys.platform.startswith("linux"):
-			execute = f"valgrind -q --leak-check=full ./main.out".split(" ")
-		else:
-			execute = ["./main.out"]
+		def execute_single_test(function):
+			if sys.platform.startswith("linux"):
+				execute = f"valgrind -q --leak-check=full ./ft_{function}.out".split(" ")
+			else:
+				execute = [f"./ft_{function}.out"]
+			p = subprocess.run(execute, capture_output=True, text=True)
+			print(p.stdout + CT.NC, end="")
+			return parse_line(remove_ansi_colors(p.stdout))
 
-		print(f"\n{CT.CYAN}Executing: {CT.WHITE}{' '.join(execute)}{CT.NC}:")
-
-		p = subprocess.run(execute, capture_output=True, text=True)
-		print(p.stdout, CT.NC)
-
-		return [parse_line(remove_ansi_colors(line)) for line in p.stdout.splitlines()]
+		return [execute_single_test(func) for func in self.to_execute]
 
 	def show_failed_tests(self, result):
 

@@ -24,7 +24,7 @@ class BaseExecutor:
 
 		print(f"\n{CT.CYAN}Compiling tests from: {CT.WHITE}{self.folder}{CT.NC}", end="")
 		if self.git_url:
-			print(f" {self.git_url}):", end="")
+			print(f" ({self.git_url}):", end="")
 		print()
 
 		print(" ".join(command))
