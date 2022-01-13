@@ -63,17 +63,19 @@
 		printf("%-10s: " GRN "OK" NC "\n", #fn);
 
 void print_mem(void *ptr, int size);
+void print_mem_full(void *ptr, int size);
 
 char function[1000];
 char escaped[1000];
 
-void rand_bytes(char *dest, int len)
+char *rand_bytes(char *dest, int len)
 {
 	dest[len - 1] = '\0';
 	for (int i = 0; i < len - 1; i++)
 	{
 		dest[i] = rand() % 0x100;
 	}
+	return dest;
 }
 
 create_test_ctype(isalpha);
@@ -84,25 +86,28 @@ create_test_ctype(isprint);
 create_test_val(toupper);
 create_test_val(tolower);
 
-#define REPETITIONS 100
+#define REPETITIONS 1000
 
+int where_buffer = 0;
 char *escape_str(char *src)
 {
 	int i, j;
+	where_buffer = (where_buffer + 1) % 5;
+	char *my_bf = escaped + where_buffer * 200;
 	for (i = 0, j = 0; src[i]; i++, j++)
 	{
 		if (isprint(src[i]))
 		{
-			escaped[j] = src[i];
+			my_bf[j] = src[i];
 		}
 		else
 		{
-			sprintf(escaped + j, "\\%02x", (unsigned char)src[i]);
+			sprintf(my_bf + j, "\\%02x", (unsigned char)src[i]);
 			j += 2;
 		}
 	}
-	escaped[j] = '\0';
-	return escaped;
+	my_bf[j] = '\0';
+	return my_bf;
 }
 
 char *escape_chr(char ch)
@@ -186,6 +191,18 @@ int same_value(int res, int res_std)
 	return 1;
 }
 
+int same_sign(int res, int res_std)
+{
+	int rs = (res > 0 ? 1 : (res < 0 ? -1 : 0));
+	int rss = (res_std > 0 ? 1 : (res_std < 0 ? -1 : 0));
+	if (rs != rss)
+	{
+		error("yours: %i (%i), std: %i (%i)\n", rs, res, rss, res_std);
+		return 0;
+	}
+	return 1;
+}
+
 #define MEM_SIZE 0x100
 
 #ifdef TEST_STRLEN
@@ -222,7 +239,7 @@ int single_test_memset(char *m, char *ms, int c, int size)
 	reset(m, ms, MEM_SIZE);
 	res_std = memset(ms, c, size);
 	res = ft_memset(m, c, size);
-	sprintf(function, "ft_memset(ptr, %i, %i)", c, size);
+	sprintf(function, "ft_memset(mem, %i, %i)", c, size);
 	return (same_ptr(res, m) && same_mem(res_std, res, MEM_SIZE));
 }
 
@@ -405,7 +422,7 @@ int test_strlcat(void)
 #ifdef TEST_STRCHR
 int single_test_strchr(char *str, int ch)
 {
-	sprintf(function, "ft_strchr((at: %p): \"%s\", %s)", str, str, escape_chr(ch));
+	sprintf(function, "ft_strchr(%p: \"%s\", %s)", str, str, escape_chr(ch));
 	char *res = ft_strchr(str, ch);
 	char *res_std = strchr(str, ch);
 
@@ -428,7 +445,7 @@ int test_strchr(void)
 #ifdef TEST_STRRCHR
 int single_test_strrchr(char *str, int ch)
 {
-	sprintf(function, "ft_strrchr((at: %p): \"%s\", %s)", str, str, escape_chr(ch));
+	sprintf(function, "ft_strrchr(%p: \"%s\", %s)", str, str, escape_chr(ch));
 	char *res = ft_strrchr(str, ch);
 	char *res_std = strrchr(str, ch);
 
@@ -457,7 +474,7 @@ int single_test_strncmp(char *str1, char *str2, size_t n)
 	int res = ft_strncmp(str1, str2, n);
 	int res_std = strncmp(str1, str2, n);
 
-	return same_value(res, res_std);
+	return same_sign(res, res_std);
 }
 
 int test_strncmp(void)
@@ -482,7 +499,7 @@ int test_strncmp(void)
 	s2[3] = 0;
 	int other = single_test_strncmp((char *)s1, (char *)s2, 7);
 	if (!other) {
-		printf(RED "You are not stoping at the '\\0'" NC);
+		printf(RED "You are not stoping at the '\\0'\n" NC);
 		res = 0;
 	}
 	return res;
@@ -492,13 +509,13 @@ int test_strncmp(void)
 #ifdef TEST_MEMCHR
 int single_test_memchr(char *str, int ch)
 {
-	sprintf(function, "ft_memchr(mem, 0x%X)", ch);
+	sprintf(function, "ft_memchr(%p, 0x%X)", str, ch);
 	char *res = ft_strchr(str, ch);
 	char *res_std = strchr(str, ch);
 
 	int result = same_ptr(res, res_std);
 	if (!result) {
-		print_mem(str, 0x30);
+		print_mem_full(str, 0x30);
 	}
 	return result;
 }
@@ -508,8 +525,46 @@ int test_memchr(void)
 	int res = 1;
 	char str[100];
 
-	for (int i = 0; i < REPETITIONS && res; i=++) {
-		res = single_test_memchr(rand_bytes(str, 0x31), rand() % 0x110) && res;
+	for (int i = 0; i < REPETITIONS && res; i++) {
+		res = single_test_memchr(rand_bytes(str, 0x31), rand() % 0x200) && res;
+	}
+	return res;
+}
+#endif
+
+
+#ifdef TEST_MEMCMP
+int single_test_memcmp(char *str1, char *str2, size_t n)
+{
+	sprintf(function, "ft_memcmp(\"%s\", \"%s\", %lu)", escape_str(str1), escape_str(str2), n);
+	int res = ft_memcmp(str1, str2, n);
+	int res_std = memcmp(str1, str2, n);
+
+	return same_sign(res, res_std);
+}
+
+int test_memcmp(void)
+{
+	int res = 1;
+
+	res = single_test_memcmp("teste", "teste", 0) && res;
+	res = single_test_memcmp("teste", "teste", 1) && res;
+	res = single_test_memcmp("teste", "teste", 5) && res;
+	res = single_test_memcmp("teste", "teste", 6) && res;
+	res = single_test_memcmp("teste", "testex", 6) && res;
+	res = single_test_memcmp("teste", "test", 10) && res;
+	res = single_test_memcmp("test", "teste", 10) && res;
+
+	unsigned char s1[10] = "abcdef";
+	unsigned char s2[10] = "abc\200xx";
+	res = single_test_memcmp((char *)s1, (char *)s2, 5) && res;
+
+	s1[3] = 0;
+	s2[3] = 0;
+	int other = single_test_memcmp((char *)s1, (char *)s2, 7);
+	if (!other) {
+		printf(RED "You are stoping at the '\\0'\n" NC);
+		res = 0;
 	}
 	return res;
 }
@@ -543,6 +598,8 @@ int main()
 	test(bzero);
 	test(memcpy);
 	test(memmove);
+	test(memchr);
+	test(memcmp);
 
 	test(strlen);
 	test(strlcpy);
