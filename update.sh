@@ -22,9 +22,4 @@ cp -r francinette ..
 cd "$HOME" || exit
 rm -rf temp_____
 
-if ! grep "paco=" ~/.zshrc &> /dev/null; then
-	echo "Short alias 'paco' not present. Adding it"
-	printf "\nalias paco=%s/francinette/tester.sh\n" "$HOME">> ~/.zshrc
-fi
-
 echo -e "\033[1;37mFrancinette is updated. You can use it again!\033[0m"

@@ -9,7 +9,7 @@ curl -L0 https://github.com/xicodomingues/francinette/archive/refs/heads/master.
 cd temp_____ || exit
 
 if ! unzip -qq francinette.zip ; then
-	echo -e "\033[1;37mPlease install unzip in your system\033[0m"
+	echo "Please install unzip in your system"
 	exit 1
 fi
 
@@ -33,18 +33,25 @@ if ! pip3 install -r requirements.txt ; then
 	exit 1
 fi
 
-# set up the alias
-if ! grep "francinette=" ~/.zshrc &> /dev/null; then
-	echo "francinette alias not present"
-	printf "\nalias francinette=~/francinette/tester.sh\n" >> ~/.zshrc
+RC_FILE="$HOME/.bashrc"
+if [[ -f "$HOME/.zshrc" ]]; then
+	RC_FILE="$HOME/.zshrc"
 fi
 
-if ! grep "paco=" ~/.zshrc &> /dev/null; then
+echo "try to add alias in file: $RC_FILE"
+
+# set up the alias
+if ! grep "francinette=" "$RC_FILE" &> /dev/null; then
+	echo "francinette alias not present"
+	printf "\nalias francinette=%s/francinette/tester.sh\n" "$HOME" >> "$RC_FILE"
+fi
+
+if ! grep "paco=" "$RC_FILE" &> /dev/null; then
 	echo "Short alias not present. Adding it"
-	printf "\nalias paco=%s/francinette/tester.sh\n" "$HOME" >> ~/.zshrc
+	printf "\nalias paco=%s/francinette/tester.sh\n" "$HOME" >> "$RC_FILE"
 fi
 
 # print help
 "$HOME"/francinette/tester.sh --help
 
-echo -e "\033[1;37mPlease close this terminal window and open the terminal again for francinette to work\033[0m"
+echo "Please close this terminal window and open the terminal again for francinette to work"
