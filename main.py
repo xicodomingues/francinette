@@ -171,7 +171,7 @@ def main():
 
     base = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
     exercises = args.exercise or [exercises]
-    if not is_repo(args.git_repo):
+    if args.git_repo and not is_repo(args.git_repo):
         exercises.append(args.git_repo)
         args.git_repo = None
 
