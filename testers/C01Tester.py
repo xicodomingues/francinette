@@ -1,4 +1,4 @@
-from CommonTester import CommonTester
+from testers.CommonTester import CommonTester
 
 
 class C01Tester(CommonTester):

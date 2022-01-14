@@ -1,6 +1,6 @@
 import re
 from typing import Match
-from CommonTester import CommonTester, VeriOut
+from testers.CommonTester import CommonTester, VeriOut
 
 
 class C02Tester(CommonTester):
