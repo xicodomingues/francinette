@@ -4,7 +4,8 @@ import re
 import subprocess
 import sys
 from main import CT
-from testers.libft.BaseExecutor import BaseExecutor, remove_ansi_colors
+from testers.libft.BaseExecutor import remove_ansi_colors
+from halo import Halo
 
 logger = logging.getLogger()
 
@@ -22,7 +23,7 @@ def create_main(funcs):
 		f.write("}\n")
 
 
-class ExecuteTripouille(BaseExecutor):
+class ExecuteTripouille():
 
 	def __init__(self, tests_dir, temp_dir, to_execute, missing) -> None:
 		self.folder = "Tripouille"
@@ -38,25 +39,32 @@ class ExecuteTripouille(BaseExecutor):
 		return self.show_failed_tests(res)
 
 	def compile_test(self):
-		def compile_executable(function):
+		def compile_executable(function, spinner):
 			command = (f"clang++ -ldl check.o color.o leaks.o sigsegv.o ft_{function}_test.o" +
-					f" -o ft_{function}.out -L. -lft -I. -I utils").split(" ");
-			print(" ".join(command))
-			res = subprocess.Popen(command)
-			res.wait()
+					f" -o ft_{function}.out -L. -lft -I. -I utils");
+			res = subprocess.run(command, shell=True, capture_output=True, text=True)
 			if res.returncode != 0:
+				spinner.fail()
+				print(res.stdout)
 				raise Exception(f"Problem creating executable for {function}");
 
-		command = (f"clang++ -c -std=c++11 -I utils/ -I . utils/sigsegv.cpp utils/color.cpp " +
-		           f"utils/check.cpp utils/leaks.cpp").split(" ")
-		for file in self.to_execute:
-			command.append(f"tests/ft_{file}_test.cpp")
+		os.chdir(self.temp_dir)
+		logger.info(f"On directory {os.getcwd()}")
 
-		res = self.compile_with(command)
-		if res.returncode != 0:
-			raise Exception("Problem compiling tests");
-		for function in self.to_execute:
-			compile_executable(function)
+		text = f"{CT.CYAN}Compiling tests: {CT.WHITE}{self.folder}{CT.NC} ({self.git_url})"
+		with Halo(text=text) as spinner:
+			command = f"clang++ -c -std=c++11 -I utils/ -I . utils/*.cpp "
+			for file in self.to_execute:
+				command += f"tests/ft_{file}_test.cpp "
+
+			res = subprocess.run(command, shell=True, capture_output=True, text=True)
+			if res.returncode != 0:
+				spinner.fail()
+				print(res.stderr)
+				raise Exception("Problem compiling tests");
+			for function in self.to_execute:
+				compile_executable(function, spinner)
+			spinner.succeed()
 
 	def execute_test(self):
 

@@ -29,7 +29,7 @@ python3 -m venv venv
 
 # install requirements
 if ! pip3 install -r requirements.txt ; then
-	echo "Problem launching the installer. Contact me"
+	echo "Problem launching the installer. Contact me (fsoares- on slack)"
 	exit 1
 fi
 

@@ -1,72 +1,4 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <ctype.h>
-#include <string.h>
-#include <signal.h>
-#include <stdarg.h>
-
-#include "libft.h"
-#include "tests.h"
-#include "color.h"
-
-#define create_test_ctype(fn)                              \
-	int test_##fn(void)                                    \
-	{                                                      \
-		int c;                                             \
-		int res = 1;                                       \
-		for (c = 0; c <= 0xff; c++)                        \
-		{                                                  \
-			if (!fn(c) != !ft_##fn(c))                     \
-			{                                              \
-				printf(#fn "(%i) std: %i, yours: %i\n", c, \
-					   fn(c), ft_##fn(c));                 \
-				res = 0;                                   \
-			}                                              \
-		}                                                  \
-		if (!fn(EOF) != !ft_##fn(EOF))                     \
-		{                                                  \
-			printf(#fn "(EOF) std: %i, yours: %i\n",       \
-				   fn(EOF), ft_##fn(EOF));                 \
-			res = 0;                                       \
-		}                                                  \
-		return res;                                        \
-	}
-
-#define create_test_val(fn)                                \
-	int test_##fn(void)                                    \
-	{                                                      \
-		int c;                                             \
-		int res = 1;                                       \
-		for (c = 0; c <= 0xff; c++)                        \
-		{                                                  \
-			if (fn(c) != ft_##fn(c))                       \
-			{                                              \
-				printf(#fn "(%i) std: %i, yours: %i\n", c, \
-					   fn(c), ft_##fn(c));                 \
-				res = 0;                                   \
-			}                                              \
-		}                                                  \
-		if (fn(EOF) != ft_##fn(EOF))                       \
-		{                                                  \
-			printf(#fn "(EOF) std: %i, yours: %i\n",       \
-				   fn(EOF), ft_##fn(EOF));                 \
-			res = 0;                                       \
-		}                                                  \
-		return res;                                        \
-	}
-
-#define test(fn)                                   \
-	strcpy(function, #fn);                         \
-	if (!test_##fn())                              \
-		printf("%-10s: " RED "KO" NC "\n\n", #fn); \
-	else                                           \
-		printf("%-10s: " GRN "OK" NC "\n", #fn);
-
-void print_mem(void *ptr, int size);
-void print_mem_full(void *ptr, int size);
-
-char function[1000];
-char escaped[1000];
+#include "utils.h"
 
 char *rand_bytes(char *dest, int len)
 {
@@ -78,7 +10,6 @@ char *rand_bytes(char *dest, int len)
 	return dest;
 }
 
-create_test_ctype(isalpha);
 create_test_ctype(isdigit);
 create_test_ctype(isalnum);
 create_test_ctype(isascii);
@@ -569,23 +500,11 @@ int test_memcmp(void)
 }
 #endif
 
-void handler(int nSignum, struct __siginfo *a, void *b)
-{
-	nSignum = 3;
-	a = (struct __siginfo *)b;
-	printf("%-10s: " RED "Segmentation Fault!" RED, function);
-	exit(EXIT_FAILURE);
-}
+
 
 int main()
 {
-	struct sigaction action;
-	memset(&action, 0, sizeof(struct sigaction));
-	action.sa_flags = SA_SIGINFO;
-	action.sa_sigaction = handler;
-	sigaction(SIGSEGV, &action, NULL);
 
-	test(isalpha);
 	test(isdigit);
 	test(isalnum);
 	test(isascii);
