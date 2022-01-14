@@ -163,14 +163,14 @@ def main():
 
     logger.info(f"current_dir: {current_dir}")
     if re.fullmatch(r"ex\d{2}", current_dir):
-        exercises = current_dir
+        exercises = [current_dir]
         current_dir = os.path.basename(os.path.abspath(os.path.join(current_dir, "..", "..")))
         logger.info(
             f"Found exXX in the current dir '{exercises}'. Saving the exercise and going up a dir: '{current_dir}'")
         os.chdir("..")
 
     base = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
-    exercises = args.exercise or [exercises]
+    exercises = args.exercise or exercises
     if args.git_repo and not is_repo(args.git_repo):
         exercises.append(args.git_repo)
         args.git_repo = None
