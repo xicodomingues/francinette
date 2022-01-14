@@ -42,12 +42,11 @@ def show_banner(project):
     project_message = f"{CT.L_YELLOW}{project}{CT.L_BLUE}"
     size = 30 - len(submessage)
     project_message = " " * (size - (size // 2)) + project_message + " " * (size // 2)
-    print(f"{CT.L_BLUE}")
-    print(f"╔══════════════════════════════════════════════════════════════════════════════╗")
-    print(f"║                {message}                ║")
-    print(f"╚═══════════════════════╦══════════════════════════════╦═══════════════════════╝")
-    print(f"                        ║{project_message}║")
-    print(f"                        ╚══════════════════════════════╝{CT.NC}")
+    print(f"{CT.L_BLUE}╔══════════════════════════════════════════════════════════════════════════════╗")
+    print(f"{CT.L_BLUE}║                {message}                ║")
+    print(f"{CT.L_BLUE}╚═══════════════════════╦══════════════════════════════╦═══════════════════════╝")
+    print(f"{CT.L_BLUE}                        ║{project_message}║")
+    print(f"{CT.L_BLUE}                        ╚══════════════════════════════╝{CT.NC}")
 
 
 @dataclass

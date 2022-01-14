@@ -8,6 +8,7 @@ from main import CT, TestRunInfo
 from testers.CommonTester import show_banner
 from testers.libft.ExecuteFsoares import ExecuteFsoares
 from testers.libft.ExecuteTripouille import ExecuteTripouille
+from halo import Halo
 
 logger = logging.getLogger()
 
@@ -28,15 +29,12 @@ def intersection(lst1, lst2):
 	return lst3
 
 
-def run_command(command: str):
+def run_command(command: str, spinner: Halo):
 	to_execute = command.split(" ")
-	print(f"{CT.CYAN}Executing: {CT.WHITE}{' '.join(to_execute)}{CT.NC}: ", end='')
 	process = subprocess.run(to_execute, capture_output=True, text=True)
 
-	if process.returncode == 0:
-		print(f"{CT.L_GREEN}OK!{CT.NC}")
-	else:
-		print(f"{CT.L_RED}KO!{CT.NC}")
+	if process.returncode != 0:
+		spinner.fail()
 		print(process.stderr)
 		raise Exception("Problem creating the library")
 	return process
@@ -129,22 +127,26 @@ class LibftTester():
 		logger.info(f"Executing norminette")
 		norm_exec = ["norminette", "-R", "CheckForbiddenSourceHeader"]
 
-		result = subprocess.run(norm_exec, capture_output=True, text=True)
+		text = f"{CT.CYAN}Executing: {CT.WHITE}{' '.join(norm_exec)}{CT.NC}"
+		with Halo(text=text) as spinner:
+			result = subprocess.run(norm_exec, capture_output=True, text=True)
 
-		print(f"{CT.CYAN}\nExecuting: {CT.WHITE}{' '.join(norm_exec)}{CT.NC}: ", end="")
-		if result.returncode != 0:
-			print(f"{CT.L_RED}KO!{CT.NC}")
-			print(f"{CT.YELLOW}{result.stdout}{CT.NC}")
-		else:
-			print(f"{CT.L_GREEN}OK!{CT.NC}")
+			if result.returncode != 0:
+				spinner.fail()
+				print(f"{CT.YELLOW}{result.stdout}{CT.NC}")
+			else:
+				spinner.succeed()
 
-		return result.stdout
+			return result.stdout
 
 	def create_library(self):
 		logger.info(f"Calling make on directory {os.getcwd()}")
 
-		run_command("make fclean")
-		run_command("make")
+		text = f"{CT.CYAN}Executing: {CT.WHITE}make{CT.NC}"
+		with Halo(text=text) as spinner:
+			run_command("make fclean", spinner)
+			run_command("make", spinner)
+			spinner.succeed()
 
 
 	def prepare_tests(self, testname):
