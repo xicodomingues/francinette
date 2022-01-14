@@ -28,11 +28,17 @@ def intersection(lst1, lst2):
 	return lst3
 
 
-def run_popen(command: str):
+def run_command(command: str):
 	to_execute = command.split(" ")
-	print(f"\n{CT.CYAN}Executing: {CT.WHITE}{' '.join(to_execute)}{CT.NC}:")
-	process = subprocess.Popen(to_execute)
-	process.wait()
+	print(f"{CT.CYAN}Executing: {CT.WHITE}{' '.join(to_execute)}{CT.NC}: ", end='')
+	process = subprocess.run(to_execute, capture_output=True, text=True)
+
+	if process.returncode == 0:
+		print(f"{CT.L_GREEN}OK!{CT.NC}")
+	else:
+		print(f"{CT.L_RED}KO!{CT.NC}")
+		print(process.stderr)
+		raise Exception("Problem creating the library")
 	return process
 
 
@@ -55,14 +61,11 @@ class LibftTester():
 		norm_res = self.check_norminette()
 		compile_res = self.create_library()
 
-		if not compile_res:
-			return
-
 		present = self.get_present()
 		to_execute = intersection(present, FUNCTIONS_UNDER_TEST)
 
 		if info.ex_to_execute:
-			to_execute = [info.ex_to_execute]
+			to_execute = info.ex_to_execute
 
 		missing = [f for f in FUNCTIONS_UNDER_TEST if f not in to_execute]
 		logger.info(f"To execute: {to_execute}")
@@ -77,7 +80,7 @@ class LibftTester():
 		self.prepare_tests(tester.name)
 
 		if info.ex_to_execute:
-			tx = tester.constructor(self.tests_dir, info.temp_dir, [info.ex_to_execute], missing)
+			tx = tester.constructor(self.tests_dir, info.temp_dir, info.ex_to_execute, missing)
 			tx.execute()
 		else:
 			present = self.get_present()
@@ -128,26 +131,21 @@ class LibftTester():
 
 		result = subprocess.run(norm_exec, capture_output=True, text=True)
 
-		print(f"{CT.CYAN}\nExecuting: {CT.WHITE}{' '.join(norm_exec)}{CT.NC}:")
+		print(f"{CT.CYAN}\nExecuting: {CT.WHITE}{' '.join(norm_exec)}{CT.NC}: ", end="")
 		if result.returncode != 0:
+			print(f"{CT.L_RED}KO!{CT.NC}")
 			print(f"{CT.YELLOW}{result.stdout}{CT.NC}")
 		else:
-			print(f"{CT.GREEN}Norminette OK!{CT.NC}")
+			print(f"{CT.L_GREEN}OK!{CT.NC}")
 
 		return result.stdout
 
 	def create_library(self):
 		logger.info(f"Calling make on directory {os.getcwd()}")
 
-		run_popen("make fclean")
-		make = run_popen("make")
+		run_command("make fclean")
+		run_command("make")
 
-		if make.returncode == 0:
-			print(f"{CT.GREEN}make: OK!{CT.NC}")
-		else:
-			print(f"{CT.L_RED}Problem creating library{CT.NC}")
-
-		return make.returncode == 0
 
 	def prepare_tests(self, testname):
 		# delete destination folder if already present

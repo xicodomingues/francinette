@@ -60,7 +60,7 @@ it is and execute the corresponding tests.
 
 ~ $> francinette -h              # Shows the help message
 
-libft $> francinette -t memset   # Execute only the test for memset
+libft $> francinette memset isalpha ... memcpy  # Executes only the corresponding tests
 
 ~ $> francinette git@repo42.com/intra-uuid-234
     # Clones the git present in `git@repo42.com/intra-uuid-234`

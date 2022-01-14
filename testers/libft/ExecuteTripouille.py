@@ -41,6 +41,7 @@ class ExecuteTripouille(BaseExecutor):
 		def compile_executable(function):
 			command = (f"clang++ -ldl check.o color.o leaks.o sigsegv.o ft_{function}_test.o" +
 					f" -o ft_{function}.out -L. -lft -I. -I utils").split(" ");
+			print(" ".join(command))
 			res = subprocess.Popen(command)
 			res.wait()
 			if res.returncode != 0:
@@ -71,10 +72,12 @@ class ExecuteTripouille(BaseExecutor):
 				execute = f"valgrind -q --leak-check=full ./ft_{function}.out".split(" ")
 			else:
 				execute = [f"./ft_{function}.out"]
+			logger.info(f"Executing: {' '.join(execute)}")
 			p = subprocess.run(execute, capture_output=True, text=True)
 			print(p.stdout + CT.NC, end="")
 			return parse_line(remove_ansi_colors(p.stdout))
 
+		print(f"{CT.CYAN}Executing Tests:{CT.NC}")
 		return [execute_single_test(func) for func in self.to_execute]
 
 	def show_failed_tests(self, result):

@@ -74,9 +74,9 @@ class CommonTester:
             logger.setLevel(logging.INFO)
 
         if self.selected_test:
-            test = "ex" + self.selected_test[-2:]
+            test = "ex" + self.selected_test[0].ljust(2, '0')[-2:]
             test_ok = self.execute_test(test)
-            self.show_result(self.selected_test, test_ok)
+            self.show_result(test, test_ok)
             return
 
         self.available_tests = [test for test in dir(self) if re.match(r"^ex\d{2}$", test)]

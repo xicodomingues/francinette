@@ -8,6 +8,7 @@ import re
 import shutil
 import sys
 import textwrap
+from typing import List
 
 from git import Repo
 
@@ -21,7 +22,7 @@ class TestRunInfo:
     source_dir: str
     tests_dir: str
     temp_dir: str
-    ex_to_execute: str
+    ex_to_execute: List[str]
     verbose: bool
 
 
@@ -57,6 +58,10 @@ def is_library(path):
             return True
         else:
             return False
+
+
+def is_repo(string: str):
+    return string.startswith("git@")
 
 
 def guess_project(current_dir):
@@ -126,34 +131,29 @@ def main():
     pwd = os.getcwd()
     current_dir = os.path.basename(pwd)
     original_dir = os.path.abspath(os.path.join(os.path.basename(pwd), ".."))
-    exercise = None
+    exercises = None
 
     parser = ArgumentParser("francinette",
                             formatter_class=argparse.RawDescriptionHelpFormatter,
                             description=textwrap.dedent("""
-            A micro framework that allows you to test your C code with more ease.
+            A micro framework that allows you to test your code with more ease.
 
-            If this command is executed inside a project (c##) or an exercise (ex##),
+            If this command is executed inside a project or an exercise (ex##),
             then it knows automatically which tests to execute, and does. No need to pass
             arguments.
     """))
     parser.add_argument(
-        "-m", "--mains", nargs="?",
-        help="Sets this directory as the directory where the main.c and expected files are present. "
-             "If this parameter is present, the default main.c files will be ignored"
+        "git_repo",
+        nargs="?",
+        help="If present, it uses this repository to clone the exercises from"
     )
     parser.add_argument(
-        "-t", "-e", "--exercise", nargs="?",
-        help="If present, only executes the passed test"
+        "exercise", nargs="*",
+        help="If present, it executes the passed tests"
     )
     parser.add_argument(
         "-v", "--verbose", action="store_true",
         help="activates verbose mode, showing more internal details of the execution"
-    )
-    parser.add_argument(
-        "git_repo",
-        nargs="?",
-        help="If present, it uses this repository to clone the exercises from"
     )
 
     args = parser.parse_args()
@@ -163,18 +163,20 @@ def main():
 
     logger.info(f"current_dir: {current_dir}")
     if re.fullmatch(r"ex\d{2}", current_dir):
-        exercise = current_dir
+        exercises = current_dir
         current_dir = os.path.basename(os.path.abspath(os.path.join(current_dir, "..", "..")))
         logger.info(
-            f"Found exXX in the current dir '{exercise}'. Saving the exercise and going up a dir: '{current_dir}'")
+            f"Found exXX in the current dir '{exercises}'. Saving the exercise and going up a dir: '{current_dir}'")
         os.chdir("..")
 
     base = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
-    exercise = args.exercise or exercise
-    if exercise:
-        if (re.match(".*\d+", exercise)):
-            exercise = "ex" + exercise.rjust(2, "0")[-2:]
-        logger.info(f"Will only execute the tests for {exercise}")
+    exercises = args.exercise or [exercises]
+    if not is_repo(args.git_repo):
+        exercises.append(args.git_repo)
+        args.git_repo = None
+
+    if exercises:
+        logger.info(f"Will only execute the tests for {exercises}")
 
     try:
         from_git = False
@@ -182,20 +184,17 @@ def main():
         if args.git_repo:
             print(original_dir)
             git_dir = clone(args.git_repo, base, original_dir)
-            exercise = None
+            exercises = None
             from_git = True
 
         project = guess_project(current_dir)
-
         mains_dir = os.path.join(base, "mains", project)
-        if args.mains:
-            mains_dir = os.path.join(args.mains, project)
 
         info = TestRunInfo(project,
                            os.path.abspath(os.path.join(current_dir, "..")),
                            mains_dir,
                            os.path.join(base, "temp", project),
-                           exercise,
+                           exercises,
                            args.verbose)
 
         logger.info(f"Test params: {info}")

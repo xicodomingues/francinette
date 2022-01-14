@@ -8,7 +8,10 @@ mkdir temp_____
 curl -L0 https://github.com/xicodomingues/francinette/archive/refs/heads/master.zip -o ~/temp_____/francinette.zip
 cd temp_____ || exit
 
-unzip -qq francinette.zip
+if ! unzip -qq francinette.zip ; then
+	echo -e "\033[1;37mPlease install unzip in your system\033[0m"
+	exit 1
+fi
 
 mv francinette-master francinette
 cp -r francinette ..
@@ -22,10 +25,13 @@ cd "$HOME"/francinette || exit
 python3 -m venv venv
 
 # activate venv
-source venv/bin/activate
+. venv/bin/activate
 
 # install requirements
-pip3 install -r requirements.txt
+if ! pip3 install -r requirements.txt ; then
+	echo "Problem launching the installer. Contact me"
+	exit 1
+fi
 
 # set up the alias
 if ! grep "francinette=" ~/.zshrc &> /dev/null; then
