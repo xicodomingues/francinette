@@ -13,12 +13,7 @@ int single_test_memcpy(char *dest, char *dest_std, char *src, char *src_std)
 	char *res_std = memcpy(dest_std, src_std, 100);
 
 	sprintf(function, "ft_memcpy(dest: %p, src: %s, n: %i)", 100);
-	int result = 1;
-	if (res != dest)
-	{
-		result = error("should return: %p, but returned: %p", dest, res);
-	}
-	return (same_mem(res_std, res, MEM_SIZE) && result);
+	return (same_return(res, dest) && same_mem(res_std, res, MEM_SIZE));
 }
 
 int test_memcpy(void)

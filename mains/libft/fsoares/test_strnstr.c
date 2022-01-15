@@ -29,7 +29,7 @@ int test_strnstr(void)
 
 	unsigned char s1[10] = "abcdef";
 	unsigned char s2[10] = "abc\xfdxx";
-	res = single_test_strstr((char *)s1, (char *)s2, 5) && res;
+	res = single_test_strnstr((char *)s1, (char *)s2, 5) && res;
 
 	s1[3] = 0;
 	s2[3] = 0;

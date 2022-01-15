@@ -14,8 +14,7 @@ logger = logging.getLogger()
 
 Tester = namedtuple("Test", "name constructor")
 
-AVAILABLE_TESTERS = [#Tester('Tripouille', ExecuteTripouille),
- Tester('fsoares', ExecuteFsoares)]
+AVAILABLE_TESTERS = [Tester('Tripouille', ExecuteTripouille)] #,Tester('fsoares', ExecuteFsoares)]
 
 FUNCTIONS_UNDER_TEST = [
     "isalpha", "isdigit", "isalnum", "isascii", "isprint", "strlen", "memset", "bzero", "memcpy", "memmove", "strlcpy",

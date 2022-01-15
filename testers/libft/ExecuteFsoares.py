@@ -39,10 +39,10 @@ class ExecuteFsoares():
 					raise Exception("Problem compiling the tests")
 
 	def execute_tests(self):
-		print(f"\n{CT.CYAN}Executing Tests: {CT.NC}:")
+		print(f"\n{CT.CYAN}Executing Tests:{CT.NC}")
 
 		for func in self.to_execute:
-			p = subprocess.run(f"test_{func}.out", capture_output=True, text=True)
-			print(p.stdout, CT.NC)
+			p = subprocess.run(f"./test_{func}.out", capture_output=True, text=True)
+			print(p.stdout, CT.NC, end="", sep="")
 
 		return [remove_ansi_colors(line) for line in p.stdout.splitlines()]

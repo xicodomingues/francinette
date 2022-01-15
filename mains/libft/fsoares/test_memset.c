@@ -9,8 +9,8 @@ int single_test_memset(char *m, char *ms, int c, int size)
 	reset(m, ms, MEM_SIZE);
 	res_std = memset(ms, c, size);
 	res = ft_memset(m, c, size);
-	sprintf(function, "ft_memset(mem, %i, %i)", c, size);
-	return (same_ptr(res, m) && same_mem(res_std, res, MEM_SIZE));
+	sprintf(function, "ft_memset(%p, %i, %i)", m, c, size);
+	return (same_return(res, m) && same_mem(res_std, res, MEM_SIZE));
 }
 
 int test_memset(void)

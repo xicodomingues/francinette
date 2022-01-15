@@ -3,7 +3,7 @@
 
 int single_test_memchr(char *str, int ch)
 {
-	sprintf(function, "ft_memchr(%p, 0x%X)", str, ch);
+	sprintf(function, "ft_memchr(%p, %i: %s)", str, ch, escape_chr(ch));
 	char *res = ft_strchr(str, ch);
 	char *res_std = strchr(str, ch);
 
@@ -20,7 +20,7 @@ int test_memchr(void)
 	char str[100];
 
 	for (int i = 0; i < REPETITIONS && res; i++) {
-		res = single_test_memchr(rand_bytes(str, 0x31), rand() % 0x200) && res;
+		res = single_test_memchr(rand_bytes(str, 0x31), rand() % 0x400) && res;
 	}
 	return res;
 }

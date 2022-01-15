@@ -6,7 +6,7 @@ void handler(int nSignum, struct __siginfo *a, void *b)
 {
 	nSignum = 3;
 	a = (struct __siginfo *)b;
-	printf("%-10s: " RED "Segmentation Fault!" RED, function);
+	printf("%-10s: " RED "Segmentation Fault!\n" NC, function);
 	exit(EXIT_FAILURE);
 }
 
@@ -231,4 +231,13 @@ int same_offset(void *start, void *start_std, void *res, void *res_std)
 		return error("yours: %p, std: %p\n");
 
 	return error("offset: yours: %i, std: %i\n", diff, diff_std);
+}
+
+int same_return(void *res, void *dest)
+{
+	if (res != dest)
+	{
+		return error("should return: %p, but returned: %p", dest, res);
+	}
+	return 1;
 }
