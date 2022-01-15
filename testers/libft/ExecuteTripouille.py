@@ -45,7 +45,7 @@ class ExecuteTripouille():
 			res = subprocess.run(command, shell=True, capture_output=True, text=True)
 			if res.returncode != 0:
 				spinner.fail()
-				print(res.stdout)
+				print(res.stderr)
 				raise Exception(f"Problem creating executable for {function}");
 
 		os.chdir(self.temp_dir)

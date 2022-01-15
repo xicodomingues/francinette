@@ -117,6 +117,12 @@ class LibftTester():
 			print(f"🎉🥳 {CT.L_GREEN}All tests passed! Congratulations!{CT.NC} 🥳🎉")
 
 	def prepare_ex_files(self):
+
+		def	check_and_delete(repo, file):
+			if os.path.isfile(file) and repo.ignored(file):
+				logger.info("removing ignored: {file}")
+				os.remove(file)
+
 		if os.path.exists(self.temp_dir):
 			logger.info(f"Removing already present directory {self.temp_dir}")
 			shutil.rmtree(self.temp_dir)
@@ -125,10 +131,13 @@ class LibftTester():
 		shutil.copytree(self.source_dir, self.temp_dir)
 
 		repo = git.Repo(self.temp_dir)
-		for file in Path(self.temp_dir).rglob('*'):
-			if os.path.isfile(file) and repo.ignored(file):
-				logger.info("removing ignored: {file}")
-				os.remove(file)
+		for path in Path(self.temp_dir).glob("*"):
+			if not path.match(".git") and path.is_dir():
+				for file in path.rglob("*"):
+					check_and_delete(repo, file)
+			if path.is_file():
+				check_and_delete(repo, path)
+
 
 	def check_norminette(self):
 		os.chdir(os.path.join(self.temp_dir))
