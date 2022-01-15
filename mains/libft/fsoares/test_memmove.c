@@ -20,9 +20,9 @@ int test_memmove(void)
 	char dest_std[MEM_SIZE + 10];
 
 	int res = 1;
-	res = single_test_memmove(dest, dest_std, dest + 2, dest_std + 2, "abcde", 4) && res;
-	res = single_test_memmove(dest + 2, dest_std + 2, dest, dest_std, "abcde", 4) && res;
-	res = single_test_memmove(dest, dest_std, dest, dest_std, "abcde", 4) && res;
+	res = single_test_memmove(dest, dest_std, dest + 2, dest_std + 2, "123456", 4) && res;
+	res = single_test_memmove(dest + 2, dest_std + 2, dest, dest_std, "123456", 4) && res;
+	res = single_test_memmove(dest, dest_std, dest, dest_std, "123456", 4) && res;
 
 	return res;
 }
