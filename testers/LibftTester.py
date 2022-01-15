@@ -1,6 +1,7 @@
 from glob import glob
 import logging
 import os
+from pathlib import Path
 import re
 import shutil
 import subprocess
@@ -123,12 +124,10 @@ class LibftTester():
 		# os.makedirs(self.temp_dir)
 		shutil.copytree(self.source_dir, self.temp_dir)
 
-		os.chdir(os.path.join(self.temp_dir))
-		files = glob("*") + glob("**/*")
-		repo = git.Repo(".")
-		for file in files:
+		repo = git.Repo(self.temp_dir)
+		for file in Path(self.temp_dir).rglob('*'):
 			if os.path.isfile(file) and repo.ignored(file):
-				logger.info("removing ignored: ", file)
+				logger.info("removing ignored: {file}")
 				os.remove(file)
 
 	def check_norminette(self):

@@ -1,11 +1,14 @@
 import argparse
 from argparse import ArgumentParser
+
 from dataclasses import dataclass
 import importlib
 import logging
 import os
+from pathlib import Path
 import re
 import shutil
+import subprocess
 import sys
 import textwrap
 from typing import List
@@ -155,8 +158,18 @@ def main():
         "-v", "--verbose", action="store_true",
         help="activates verbose mode, showing more internal details of the execution"
     )
+    parser.add_argument(
+        "-u", "--update", action="store_true",
+        help="forces francinette to update"
+    )
 
     args = parser.parse_args()
+
+    if args.update:
+        file = os.path.join(os.path.dirname(os.path.realpath(__file__)), "update.sh")
+        print(file)
+        subprocess.run(file, shell=True)
+        exit(0)
 
     if args.verbose:
         logger.setLevel(logging.INFO)

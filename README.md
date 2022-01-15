@@ -46,6 +46,12 @@ If you disabled this functionality or need to update for other reasons run the c
 sh -c "$(curl -fsSL https://raw.github.com/xicodomingues/francinette/master/update.sh)"
 ```
 
+You can also force it from francinette itself:
+```
+~ $> francinette -u              # Forces francinette to update
+```
+
+
 ## Runnning:
 
 If you are on a root of a project, francinette should be able to tell which project
