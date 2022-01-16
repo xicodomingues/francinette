@@ -7,20 +7,7 @@ from main import CT
 from testers.libft.BaseExecutor import remove_ansi_colors
 from halo import Halo
 
-logger = logging.getLogger()
-
-
-def create_main(funcs):
-	with open('main.cpp', 'w') as f:
-		for func in funcs:
-			f.write(f"int main_{func}(void);\n")
-
-		f.write("\nint iTest = 1;\n")
-		f.write("int main(void) {\n")
-		for func in funcs:
-			f.write(f"    iTest = 1;\n")
-			f.write(f"    main_{func}();\n")
-		f.write("}\n")
+logger = logging.getLogger("tripouille")
 
 
 class ExecuteTripouille():
@@ -35,21 +22,23 @@ class ExecuteTripouille():
 
 	def execute(self):
 		self.compile_test()
-		res = self.execute_test()
+		res = self.execute_tests()
 		return self.show_failed_tests(res)
 
 	def compile_test(self):
+
 		def compile_executable(function, spinner):
 			command = (f"clang++ -ldl check.o color.o leaks.o sigsegv.o ft_{function}_test.o" +
-					f" -o ft_{function}.out -L. -lft -I. -I utils");
+			           f" -o ft_{function}.out -L. -lft -I. -I utils")
 			res = subprocess.run(command, shell=True, capture_output=True, text=True)
+			logger.info(res)
 			if res.returncode != 0:
 				spinner.fail()
 				print(res.stderr)
-				raise Exception(f"Problem creating executable for {function}");
+				raise Exception(f"Problem creating executable for {function}")
 
 		os.chdir(self.temp_dir)
-		logger.info(f"On directory {os.getcwd()}")
+		logger.info(f"On directory {os.getcwd()} compiling tests for Tripouille")
 
 		text = f"{CT.CYAN}Compiling tests: {CT.WHITE}{self.folder}{CT.NC} ({self.git_url})"
 		with Halo(text=text) as spinner:
@@ -58,15 +47,19 @@ class ExecuteTripouille():
 				command += f"tests/ft_{file}_test.cpp "
 
 			res = subprocess.run(command, shell=True, capture_output=True, text=True)
+			logger.info(res)
 			if res.returncode != 0:
 				spinner.fail()
 				print(res.stderr)
-				raise Exception("Problem compiling tests");
+				raise Exception("Problem compiling tests")
 			for function in self.to_execute:
 				compile_executable(function, spinner)
 			spinner.succeed()
 
-	def execute_test(self):
+	def execute_tests(self):
+
+		print(f"{CT.CYAN}Testing:{CT.NC}")
+		spinner = Halo(placement="right")
 
 		def get_output(p):
 			output = p.stdout
@@ -77,7 +70,9 @@ class ExecuteTripouille():
 				else:
 					output += f"{CT.YELLOW}{int(match[-1][0]) + 1}."
 				output += f"INFINITE_LOOP{CT.NC}\n"
+			spinner.stop()
 			print(output, end="")
+			spinner.start()
 			return output
 
 		def parse_line(line):
@@ -88,21 +83,24 @@ class ExecuteTripouille():
 				return (func_name, res)
 
 		def get_command(function):
-			timeout = "$HOME/francinette/utils/timeout.sh 3s ";
+			timeout = "$HOME/francinette/utils/timeout.sh 3s "
 			if sys.platform.startswith("linux"):
 				return timeout + f"valgrind -q --leak-check=full ./ft_{function}.out"
 			else:
 				return timeout + f"./ft_{function}.out"
 
 		def execute_single_test(function):
+			spinner.start(f"ft_{function.ljust(13)}:")
 			command = get_command(function)
-			logger.info(f"Executing: {command}")
 			p = subprocess.run(command, capture_output=True, text=True, shell=True)
+			logger.info(p)
 			output = get_output(p)
 			return parse_line(remove_ansi_colors(output))
 
-		print(f"{CT.CYAN}Executing Tests:{CT.NC}")
-		return [execute_single_test(func) for func in self.to_execute]
+		results = [execute_single_test(func) for func in self.to_execute]
+		spinner.stop()
+		logger.info(f"results: {results}")
+		return results
 
 	def show_failed_tests(self, result):
 
@@ -145,10 +143,8 @@ class ExecuteTripouille():
 		errors = has_failed(result)
 		if errors:
 			if str(errors) == "MKO":
-				print(f"{CT.RED}MKO{CT.NC}: test about your malloc " +
-				      "size (this shouldn't be tested by moulinette)")
-			print(f"{CT.L_RED}Errors in:{CT.NC}")
-			print()
+				print(f"{CT.RED}MKO{CT.NC}: test about your malloc size (this shouldn't be tested by moulinette)")
+			print(f"\n{CT.L_RED}Errors in:{CT.NC}\n")
 
 		funcs_error = []
 		for func, tests in result:

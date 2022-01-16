@@ -133,3 +133,4 @@ dmypy.json
 /temp/
 /c??/
 .DS_Store
+/logs/

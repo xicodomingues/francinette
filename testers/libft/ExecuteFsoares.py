@@ -6,7 +6,7 @@ from main import CT
 from testers.libft.BaseExecutor import remove_ansi_colors
 from halo import Halo
 
-logger = logging.getLogger()
+logger = logging.getLogger("fsoares")
 
 
 class ExecuteFsoares():
@@ -21,7 +21,8 @@ class ExecuteFsoares():
 
 	def execute(self):
 		self.compile_test()
-		self.execute_tests()
+		result = self.execute_tests()
+		logger.info(f"result: {result}")
 
 	def compile_test(self):
 		os.chdir(self.temp_dir)
@@ -31,8 +32,8 @@ class ExecuteFsoares():
 		with Halo(text=text) as spinner:
 			for func in self.to_execute:
 				command = f"gcc -Wall -Wextra utils.c test_{func}.c -L. -lft -o test_{func}.out"
-				logger.info(f"Executing: {command}")
 				res = subprocess.run(command, shell=True, capture_output=True, text=True)
+				logger.info(res)
 				if res.returncode != 0:
 					spinner.fail()
 					print(res.stderr)
@@ -43,6 +44,7 @@ class ExecuteFsoares():
 
 		for func in self.to_execute:
 			p = subprocess.run(f"./test_{func}.out", capture_output=True, text=True)
+			logger.info(p)
 			print(p.stdout, CT.NC, end="", sep="")
 
 		return [remove_ansi_colors(line) for line in p.stdout.splitlines()]

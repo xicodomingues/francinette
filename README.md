@@ -89,6 +89,8 @@ norminette is checked, the code compiled and the tests executed. Normally you do
 access this directory for anything. But if you run into unexpected problems, this is where
 the magic happens.
 
+Log files can be found in: `~/francinette/logs`
+
 ## FAQ
 
 If you have any questions I am probably in the barcelona cluster. Also, you can reach me on

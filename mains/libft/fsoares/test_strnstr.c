@@ -29,6 +29,8 @@ int test_strnstr(void)
 
 	unsigned char s1[10] = "abcdef";
 	unsigned char s2[10] = "abc\xfdxx";
+	res = single_test_strnstr((char *)s1, (char *)s2, 3) && res;
+	res = single_test_strnstr((char *)s1, (char *)s2, 4) && res;
 	res = single_test_strnstr((char *)s1, (char *)s2, 5) && res;
 
 	s1[3] = 0;

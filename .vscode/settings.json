@@ -9,11 +9,11 @@
 		"libft.h": "c"
 	},
 	"python.linting.enabled": true,
-    "python.linting.pylintPath": "pylint",
+	"python.linting.pylintPath": "pylint",
 	"python.formatting.provider": "yapf",
 	"python.formatting.yapfArgs": [
 		"--style={based_on_style: google, column_limit: 120, indent_width: 4, use_tabs: true}"
-	  ],
+	],
 	"cSpell.words": [
 		"francinette",
 		"inplace",

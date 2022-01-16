@@ -1,7 +1,7 @@
 
 #include "utils.h"
 
-int single_test_memcpy(char *dest, char *dest_std, char *src, char *src_std)
+int single_test_memcpy(char *dest, char *dest_std, char *src, char *src_std, int n)
 {
 	reset(dest, dest_std, MEM_SIZE);
 	reset(src, src_std, MEM_SIZE);
@@ -9,10 +9,10 @@ int single_test_memcpy(char *dest, char *dest_std, char *src, char *src_std)
 	rand_bytes(src + 6, rand() % 55 + 1);
 	memcpy(src_std + 6, src + 6, 100);
 
-	char *res = ft_memcpy(dest, src, 100);
-	char *res_std = memcpy(dest_std, src_std, 100);
+	char *res = ft_memcpy(dest, src, n);
+	char *res_std = memcpy(dest_std, src_std, n);
 
-	sprintf(function, "ft_memcpy(dest: %p, src: %s, n: %i)", 100);
+	sprintf(function, "ft_memcpy(dest: %p, src: %s, n: %i)", n);
 	return (same_return(res, dest) && same_mem(res_std, res, MEM_SIZE));
 }
 
@@ -26,7 +26,8 @@ int test_memcpy(void)
 
 	int res = 1;
 	for (int n = 0; n < REPETITIONS && res; n++)
-		res = single_test_memcpy(dest, dest_std, src, src_std) && res;
+		res = single_test_memcpy(dest, dest_std, src, src_std, rand() % 70) && res;
+	res = single_test_memcpy(dest, dest_std, src, src_std, 0);
 
 	return res;
 }

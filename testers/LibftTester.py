@@ -13,11 +13,11 @@ from testers.libft.ExecuteFsoares import ExecuteFsoares
 from testers.libft.ExecuteTripouille import ExecuteTripouille
 from halo import Halo
 
-logger = logging.getLogger()
+logger = logging.getLogger("libft")
 
 Tester = namedtuple("Test", "name constructor")
 
-AVAILABLE_TESTERS = [Tester('Tripouille', ExecuteTripouille)] #,Tester('fsoares', ExecuteFsoares)]
+AVAILABLE_TESTERS = [Tester('Tripouille', ExecuteTripouille), Tester('fsoares', ExecuteFsoares)]
 
 FUNCTIONS_UNDER_TEST = [
     "isalpha", "isdigit", "isalnum", "isascii", "isprint", "strlen", "memset", "bzero", "memcpy", "memmove", "strlcpy",
@@ -25,6 +25,10 @@ FUNCTIONS_UNDER_TEST = [
     "strdup", "substr", "strjoin", "strtrim", "split", "itoa", "strmapi", "striteri", "putchar_fd", "putstr_fd",
     "putendl_fd", "putnbr_fd"
 ]
+
+func_regex = re.compile(r"\w+\s+\*?ft_(\w+)\(.*")
+
+norm_func_regex = re.compile(r"^([\w\\]+\.c): Error!")
 
 
 def intersection(lst1, lst2):
@@ -35,6 +39,7 @@ def intersection(lst1, lst2):
 def run_command(command: str, spinner: Halo):
 	to_execute = command.split(" ")
 	process = subprocess.run(to_execute, capture_output=True, text=True)
+	logger.info(process)
 
 	if process.returncode != 0:
 		spinner.fail()
@@ -43,15 +48,9 @@ def run_command(command: str, spinner: Halo):
 	return process
 
 
-func_regex = re.compile(r"\w+\s+\*?ft_(\w+)\(.*")
-norm_func_regex = re.compile(r"^([\w\\]+\.c): Error!")
-
-
 class LibftTester():
 
 	def __init__(self, info: TestRunInfo) -> None:
-		if info.verbose:
-			logger.setLevel("INFO")
 
 		show_banner("libft")
 		self.temp_dir = info.temp_dir
@@ -60,7 +59,7 @@ class LibftTester():
 
 		self.prepare_ex_files()
 		norm_res = self.check_norminette()
-		compile_res = self.create_library()
+		self.create_library()
 
 		present = self.get_present()
 		to_execute = intersection(present, FUNCTIONS_UNDER_TEST)
@@ -72,10 +71,13 @@ class LibftTester():
 		logger.info(f"To execute: {to_execute}")
 		logger.info(f"Missing: {missing}")
 
+		everything_ok = False
 		for tester in AVAILABLE_TESTERS:
 			funcs_error = self.test_using(info, to_execute, missing, tester)
 			if not info.ex_to_execute:
-				self.show_summary(norm_res, present, missing, funcs_error)
+				everything_ok = self.show_summary(norm_res, present, missing, funcs_error)
+			if not everything_ok:
+				break
 
 	def test_using(self, info: TestRunInfo, to_execute, missing, tester: Tester):
 		self.prepare_tests(tester.name)
@@ -103,31 +105,37 @@ class LibftTester():
 			return [get_fname(line) for line in norm.splitlines() if is_file(line)]
 
 		norm_errors = get_norm_errors()
+		logger.warn(f"norminette errors: {norm_errors}")
 		if norm_errors:
 			print(f"{CT.L_RED}Norminette Errors:{CT.NC}")
 			print(', '.join(norm_errors))
 
+		logger.warn(f"missing functions: {missing}")
 		if missing:
 			print(f"\n{CT.L_RED}Missing functions: {CT.NC}{', '.join(missing)}")
 
+		logger.warn(f"errors in functions: {errors}")
 		if errors:
 			print(f"\n{CT.L_RED}Failed tests: {CT.NC}{', '.join(errors)}")
 
 		if not missing and not norm_errors and not errors:
 			print(f"🎉🥳 {CT.L_GREEN}All tests passed! Congratulations!{CT.NC} 🥳🎉")
+			logger.info("All tests ok!")
+			return True
+		return False
 
 	def prepare_ex_files(self):
 
-		def	check_and_delete(repo, file):
+		def check_and_delete(repo, file):
 			if os.path.isfile(file) and repo.ignored(file):
-				logger.info("removing ignored: {file}")
+				logger.info("removing ignored file: {file}")
 				os.remove(file)
 
 		if os.path.exists(self.temp_dir):
 			logger.info(f"Removing already present directory {self.temp_dir}")
 			shutil.rmtree(self.temp_dir)
 
-		# os.makedirs(self.temp_dir)
+		logger.info(f"copying {self.source_dir} to {self.temp_dir}")
 		shutil.copytree(self.source_dir, self.temp_dir)
 
 		repo = git.Repo(self.temp_dir)
@@ -138,17 +146,15 @@ class LibftTester():
 			if path.is_file():
 				check_and_delete(repo, path)
 
-
 	def check_norminette(self):
 		os.chdir(os.path.join(self.temp_dir))
 		logger.info(f"On directory {os.getcwd()}")
-		logger.info(f"Executing norminette")
 		norm_exec = ["norminette", "-R", "CheckForbiddenSourceHeader"]
 
 		text = f"{CT.CYAN}Executing: {CT.WHITE}{' '.join(norm_exec)}{CT.NC}"
 		with Halo(text=text) as spinner:
 			result = subprocess.run(norm_exec, capture_output=True, text=True)
-
+			logger.info(result)
 			if result.returncode != 0:
 				spinner.fail()
 				print(f"{CT.YELLOW}{result.stdout}{CT.NC}")
@@ -158,14 +164,12 @@ class LibftTester():
 			return result.stdout
 
 	def create_library(self):
-		logger.info(f"Calling make on directory {os.getcwd()}")
+		logger.info(f"Calling 'make re' on directory {os.getcwd()}")
 
-		text = f"{CT.CYAN}Executing: {CT.WHITE}make{CT.NC}"
+		text = f"{CT.CYAN}Executing: {CT.WHITE}make re{CT.NC}"
 		with Halo(text=text) as spinner:
-			run_command("make fclean", spinner)
-			run_command("make", spinner)
+			run_command("make re", spinner)
 			spinner.succeed()
-
 
 	def prepare_tests(self, testname):
 		# delete destination folder if already present
@@ -182,7 +186,7 @@ class LibftTester():
 		# copy compiled library
 		library = os.path.join(self.temp_dir, "libft.a")
 		if not os.path.exists(library):
-			raise Exception(f"{CT.L_RED}libft.a{CT.RED} was not created. " + "Please create it in the Makefile.")
+			raise Exception(f"{CT.L_RED}libft.a{CT.RED} was not created. Please create it in the Makefile.")
 		logger.info(f"Copying libft.a from {library} to {temp_dir}")
 		shutil.copy(library, temp_dir)
 
