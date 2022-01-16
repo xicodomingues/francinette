@@ -68,6 +68,18 @@ class ExecuteTripouille():
 
 	def execute_test(self):
 
+		def get_output(p):
+			output = p.stdout
+			if p.returncode != 0 and p.stderr.startswith("Alarm clock"):
+				match = re.findall(r"(\d+)\.(\w+)", output)
+				if not match:
+					output += f"{CT.YELLOW}1."
+				else:
+					output += f"{CT.YELLOW}{int(match[-1][0]) + 1}."
+				output += f"INFINITE_LOOP{CT.NC}\n"
+			print(output, end="")
+			return output
+
 		def parse_line(line):
 			match = re.match(r"^(\w+)\s+:.*", line)
 			if (match):
@@ -75,15 +87,19 @@ class ExecuteTripouille():
 				res = [(int(m.group(1)), m.group(2)) for m in re.finditer(r"(\d+)\.(\w+)", line)]
 				return (func_name, res)
 
-		def execute_single_test(function):
+		def get_command(function):
+			timeout = "$HOME/francinette/utils/timeout.sh 3s ";
 			if sys.platform.startswith("linux"):
-				execute = f"valgrind -q --leak-check=full ./ft_{function}.out".split(" ")
+				return timeout + f"valgrind -q --leak-check=full ./ft_{function}.out"
 			else:
-				execute = [f"./ft_{function}.out"]
-			logger.info(f"Executing: {' '.join(execute)}")
-			p = subprocess.run(execute, capture_output=True, text=True)
-			print(p.stdout + CT.NC, end="")
-			return parse_line(remove_ansi_colors(p.stdout))
+				return timeout + f"./ft_{function}.out"
+
+		def execute_single_test(function):
+			command = get_command(function)
+			logger.info(f"Executing: {command}")
+			p = subprocess.run(command, capture_output=True, text=True, shell=True)
+			output = get_output(p)
+			return parse_line(remove_ansi_colors(output))
 
 		print(f"{CT.CYAN}Executing Tests:{CT.NC}")
 		return [execute_single_test(func) for func in self.to_execute]

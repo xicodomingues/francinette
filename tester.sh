@@ -20,7 +20,7 @@ if [[ (! -e donotupdate) && ($new_version -gt $version) ]]; then
 	while true; do
 		read -r -p "There is a new version of francinette, do you wish to update? ([Y]es/[N]o/[D]on't ask again): " yn
 		case $yn in
-			[Yy]* ) . update.sh; break;;
+			[Yy]* ) . utils/update.sh; break;;
 			[Dd]* ) touch donotupdate; break;;
 			[Nn]* ) break;;
 			* ) echo "Please answer yes, no or don't ask again.";;

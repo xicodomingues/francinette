@@ -52,7 +52,7 @@ def has_file(ex_path, file):
 
 def is_library(path):
     # check for makefile
-    make_path = os.path.join(path, "makefile")
+    make_path = os.path.join(path, "Makefile")
     # check for name of makefile
     if not os.path.exists(make_path):
         return False
@@ -166,7 +166,7 @@ def main():
     args = parser.parse_args()
 
     if args.update:
-        file = os.path.join(os.path.dirname(os.path.realpath(__file__)), "update.sh")
+        file = os.path.join(os.path.dirname(os.path.realpath(__file__)), "utils", "update.sh")
         print(file)
         subprocess.run(file, shell=True)
         exit(0)
