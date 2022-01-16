@@ -72,7 +72,6 @@ You can also use the shorter version of the command: `paco`
 ~ $> francinette -h                  # Shows the help message
 
 libft $> paco memset isalpha memcpy  # Executes only the specified tests
-
 ```
 
 The name of the folder is not important. What is important is that you have a `Makefile`
@@ -81,9 +80,9 @@ that contains the name of the project (for example `libft`). If there is no `Mak
 
 ```
 ~ $> francinette git@repo42.com/intra-uuid-234
-    # Clones the git repository present in `git@repo42.com/intra-uuid-234`
-    # and executes the corresponding tests
 ```
+This command clones the git repository present in `git@repo42.com/intra-uuid-234` into the
+current folder and executes the corresponding tests
 
 All the files are copied to the folder `~/francinette/temp/<project>`. In here is where the
 norminette is checked, the code compiled and the tests executed. Normally you do not need to
