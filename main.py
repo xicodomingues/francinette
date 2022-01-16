@@ -89,8 +89,9 @@ def guess_project(current_dir):
     if is_library(os.path.abspath('.')):
         return "libft"
 
-    raise Exception("Francinette needs to be executed inside a project folder\n" +
-                    "If you are inside a folder, please make sure that you have a valid Makefile")
+    raise Exception(f"Francinette needs to be executed inside a project folder\n" +
+                    f"{CT.NC}If you are in a project folder, please make sure that you have a valid Makefile " +
+                    f"and that you are creating the expected turn in files (for example 'libft.a')")
 
 
 def clone(repo, basedir, current_dir):
@@ -219,9 +220,10 @@ def main():
         if from_git:
             print(f"You can see the cloned repository in {CT.WHITE}{git_dir}{CT.NC}")
     except Exception as ex:
-        print(f"{CT.RED}{ex}")
+        print(f"{CT.L_RED}{ex}")
         if args.verbose:
             print(ex.with_traceback())
+        print(CT.NC, end="")
         sys.exit()
 
 

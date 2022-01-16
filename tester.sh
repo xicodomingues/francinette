@@ -4,11 +4,11 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 current_dir=$PWD
 
 # check for updates
-version=25
+version=26
 
 cd "$HOME"/francinette || exit
 
-curl -sS "https://raw.githubusercontent.com/xicodomingues/francinette/master/tester.sh?t=$(date +%s)" -o new_tester
+curl -sS "https://raw.githubusercontent.com/xicodomingues/francinette/master/tester.sh" -o new_tester
 
 new_version=$(grep -E '^version=\d+' new_tester)
 rm new_tester
