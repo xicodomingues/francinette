@@ -138,13 +138,17 @@ class LibftTester():
 		logger.info(f"copying {self.source_dir} to {self.temp_dir}")
 		shutil.copytree(self.source_dir, self.temp_dir)
 
-		repo = git.Repo(self.temp_dir)
-		for path in Path(self.temp_dir).glob("*"):
-			if not path.match(".git") and path.is_dir():
-				for file in path.rglob("*"):
-					check_and_delete(repo, file)
-			if path.is_file():
-				check_and_delete(repo, path)
+		try:
+			repo = git.Repo(self.temp_dir)
+			for path in Path(self.temp_dir).glob("*"):
+				if not path.match(".git") and path.is_dir():
+					for file in path.rglob("*"):
+						check_and_delete(repo, file)
+				if path.is_file():
+					check_and_delete(repo, path)
+		except Exception as ex:
+			logger.exception(ex)
+
 
 	def check_norminette(self):
 		os.chdir(os.path.join(self.temp_dir))
