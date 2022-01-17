@@ -2,21 +2,26 @@
 
 int where_buffer = 0;
 
+void show_segfault()
+{
+	printf(CYN "%s" NC ": " RED "Segmentation Fault!\n" NC, signature);
+	printf("ft_%-13s: " YEL "Segmentation fault" NC "\n", function);
+	exit(EXIT_FAILURE);
+}
+
 #ifdef __APPLE__
 void handler(int nSignum, struct __siginfo *a, void *b)
 {
 	nSignum = 3;
 	a = (struct __siginfo *)b;
-	printf(CYN "%s" NC ": " RED "Segmentation Fault!\n" NC, function);
-	exit(EXIT_FAILURE);
+	show_segfault();
 }
 #endif
 
 void sigsegv(int signal)
 {
 	(void)signal;
-	printf("%-10s: " RED "Segmentation Fault!\n" NC, function);
-	exit(EXIT_SUCCESS);
+	show_segfault();
 }
 
 void set_sigsev()
@@ -184,7 +189,7 @@ void reset_with(void *m1, void *m2, char *content, int size)
 
 int error(const char *format, ...)
 {
-	printf(RED "Error" NC ": " CYN "%s" NC ": ", function);
+	printf(RED "Error" NC ": " CYN "%s" NC ": ", signature);
 	va_list args;
 	va_start(args, format);
 	vprintf(format, args);
@@ -321,22 +326,28 @@ size_t strlcpy(char *dst, const char *src, size_t dsize)
 
 #ifndef HAVE_STRNSTR
 
-char *strnstr(const char *haystack, const char *needle, size_t len)
+char *strnstr(const char *s1, const char *s2, size_t n)
 {
-	int i;
-	size_t needle_len;
+	size_t i, len;
+	char c = *s2;
 
-	if (0 == (needle_len = strnlen(needle, len)))
-		return (char *)haystack;
+	if (c == '\0')
+		return (char *)s1;
 
-	for (i = 0; i <= (int)(len - needle_len); i++)
+	for (len = strlen(s2); len <= n && *s1; n--, s1++)
 	{
-		if ((haystack[0] == needle[0]) &&
-			(0 == strncmp(haystack, needle, needle_len)))
-			return (char *)haystack;
-
-		haystack++;
+		if (*s1 == c)
+		{
+			for (i = 1;; i++)
+			{
+				if (i == len)
+					return (char *)s1;
+				if (s1[i] != s2[i])
+					break;
+			}
+		}
 	}
 	return NULL;
 }
+
 #endif

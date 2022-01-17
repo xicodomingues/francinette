@@ -9,7 +9,7 @@ int single_test_memset(char *m, char *ms, int c, int size)
 	reset(m, ms, MEM_SIZE);
 	res_std = memset(ms, c, size);
 	res = ft_memset(m, c, size);
-	sprintf(function, "ft_memset(%p, %i, %i)", m, c, size);
+	sprintf(signature, "ft_memset(%p, %i, %i)", m, c, size);
 	return (same_return(res, m) && same_mem(res_std, res, MEM_SIZE));
 }
 
@@ -32,7 +32,7 @@ int test_memset(void)
 	int *rs = memset(ms2 + 1, 143562, 4);
 	int *r = ft_memset(m2 + 1, 143562, 4);
 
-	sprintf(function, "ft_memset(ptr, %i, %i)", 143562, 4);
+	sprintf(signature, "ft_memset(ptr, %i, %i)", 143562, 4);
 	res = (same_ptr(r, m2 + 1) && same_mem(rs - 1, r - 1, 0x10)) && res;
 	return res;
 }

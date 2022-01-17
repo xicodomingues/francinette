@@ -6,7 +6,7 @@
 /*   By: fsoares- <fsoares-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 13:40:02 by fsoares-          #+#    #+#             */
-/*   Updated: 2022/01/17 22:37:58 by fsoares-         ###   ########.fr       */
+/*   Updated: 2022/01/17 23:15:26 by fsoares-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,16 +20,9 @@
 #include <signal.h>
 #include <stdarg.h>
 #include <limits.h>
-#include <dlfcn.h>
-
-#ifdef __unix__
-#include <malloc.h>
-#endif
-#ifdef __APPLE__
+#include <unistd.h>
 #include <stdlib.h>
-#include <malloc/malloc.h>
-#endif
-
+#include <dlfcn.h>
 #include "libft.h"
 #include "color.h"
 
@@ -37,6 +30,7 @@
 #define REPETITIONS 1000
 
 char function[1000];
+char signature[1000];
 char escaped[1000];
 
 #define create_test_ctype(fn)                                                \
@@ -85,11 +79,11 @@ char escaped[1000];
 		return res;                                                          \
 	}
 
-#define test(fn)                                         \
-	strcpy(function, #fn);                               \
-	if (!test_##fn())                                    \
-		printf("%-16s: " RED "KO" NC "\n\n", "ft_" #fn); \
-	else                                                 \
+#define test(fn)                                       \
+	strcpy(function, #fn);                             \
+	if (!test_##fn())                                  \
+		printf("%-16s: " RED "KO" NC "\n", "ft_" #fn); \
+	else                                               \
 		printf("%-16s: " GRN "OK" NC "\n", "ft_" #fn);
 
 #define no_test(fn) \

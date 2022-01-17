@@ -3,7 +3,7 @@
 
 int single_test_atoi(char *str)
 {
-	sprintf(function, "atoi(\"%s\")", escape_str(str));
+	sprintf(signature, "atoi(\"%s\")", escape_str(str));
 	return same_value(ft_atoi(str), atoi(str));
 }
 

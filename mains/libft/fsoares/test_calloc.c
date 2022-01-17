@@ -3,7 +3,7 @@
 
 int test_single_calloc(size_t count, size_t size)
 {
-	sprintf(function, "ft_calloc(%zu, %zu)", count, size);
+	sprintf(signature, "ft_calloc(%zu, %zu)", count, size);
 
 	reset_malloc_mock();
 	void *p = ft_calloc(count, size);

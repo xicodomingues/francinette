@@ -3,7 +3,7 @@
 
 int single_test_strdup(char *str)
 {
-	sprintf(function, "ft_strdup(\"%s\")", escape_str(str));
+	sprintf(signature, "ft_strdup(\"%s\")", escape_str(str));
 	reset_malloc_mock();
 
 	char *res = ft_strdup(str);
@@ -24,7 +24,7 @@ int test_strdup()
 	res = single_test_strdup("sadfvbf") && res;
 	res = single_test_strdup("fdfjkdf\01235346") && res;
 
-	sprintf(function, CYN "ft_strdup(\"aaa\")" NC " when out of memory should return 'NULL'");
+	sprintf(signature, CYN "ft_strdup(\"aaa\")" NC " when out of memory should return 'NULL'");
 	reset_malloc_mock();
 	malloc_set_result(NULL);
 

@@ -6,7 +6,7 @@ int single_test_bzero(char *m, char *ms, int size)
 	reset(m, ms, MEM_SIZE);
 	bzero(ms, size);
 	ft_bzero(m, size);
-	sprintf(function, "ft_bzero(%p, %i)", m, size);
+	sprintf(signature, "ft_bzero(%p, %i)", m, size);
 	return (same_mem(ms, m, MEM_SIZE));
 }
 

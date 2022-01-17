@@ -6,7 +6,7 @@ int single_test_strlcpy(char *dest, char *dest_std, char *src, int n)
 	int result = 1;
 	reset(dest, dest_std, MEM_SIZE);
 
-	sprintf(function, "ft_strlcpy(dest, \"%s\", %i)", src, n);
+	sprintf(signature, "ft_strlcpy(dest, \"%s\", %i)", src, n);
 
 	int res = ft_strlcpy(dest, src, n);
 	int res_std = strlcpy(dest_std, src, n);

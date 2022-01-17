@@ -3,7 +3,7 @@
 
 int compare_strlen(char *str)
 {
-	sprintf(function, "ft_strlen(\"%s\")", escape_str(str));
+	sprintf(signature, "ft_strlen(\"%s\")", escape_str(str));
 	return same_value(ft_strlen(str), strlen(str));
 }
 

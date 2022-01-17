@@ -3,7 +3,7 @@
 
 int single_test_strchr(char *str, int ch)
 {
-	sprintf(function, "ft_strchr(%p: \"%s\", %s)", str, str, escape_chr(ch));
+	sprintf(signature, "ft_strchr(%p: \"%s\", %s)", str, str, escape_chr(ch));
 	char *res = ft_strchr(str, ch);
 	char *res_std = strchr(str, ch);
 

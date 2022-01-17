@@ -6,7 +6,7 @@ int single_test_strlcat(char *dest, char *dest_std, char *orig, char *src, int n
 {
 	int result = 1;
 
-	sprintf(function, "ft_strlcat(\"%s\", \"%s\", %i)", orig, src, n);
+	sprintf(signature, "ft_strlcat(\"%s\", \"%s\", %i)", orig, src, n);
 	reset_with(dest, dest_std, orig, MEM_SIZE);
 
 	int res = ft_strlcat(dest, src, n);

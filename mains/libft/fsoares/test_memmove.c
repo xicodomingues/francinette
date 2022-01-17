@@ -10,7 +10,7 @@ int single_test_memmove(char *dest, char *dest_std, char *src, char *src_std, ch
 
 	char *r = ft_memmove(dest, src, n);
 	char *rs = memmove(dest_std, src_std, n);
-	sprintf(function, "ft_memmove(%p: \"%s\", %p: \"%s\", %i)", dest, dest, src, src, n);
+	sprintf(signature, "ft_memmove(%p: \"%s\", %p: \"%s\", %i)", dest, dest, src, src, n);
 	return (same_return(r, dest) && same_mem(rs, r, MEM_SIZE));
 }
 
