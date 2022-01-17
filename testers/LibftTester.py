@@ -17,13 +17,17 @@ logger = logging.getLogger("libft")
 
 Tester = namedtuple("Test", "name constructor")
 
-AVAILABLE_TESTERS = [Tester('Tripouille', ExecuteTripouille) Tester('fsoares', ExecuteFsoares)]
+AVAILABLE_TESTERS = [Tester('Tripouille', ExecuteTripouille), Tester('fsoares', ExecuteFsoares)]
 
 FUNCTIONS_UNDER_TEST = [
     "isalpha", "isdigit", "isalnum", "isascii", "isprint", "strlen", "memset", "bzero", "memcpy", "memmove", "strlcpy",
     "strlcat", "toupper", "tolower", "strchr", "strrchr", "strncmp", "memchr", "memcmp", "strnstr", "atoi", "calloc",
     "strdup", "substr", "strjoin", "strtrim", "split", "itoa", "strmapi", "striteri", "putchar_fd", "putstr_fd",
     "putendl_fd", "putnbr_fd"
+]
+
+BONUS_FUNCTIONS = [
+	"lstnew", "lstadd_front", "lstsize", "lstlast", "lstadd_back", "lstdelone", "lstclear", "lstiter", "lstmap"
 ]
 
 func_regex = re.compile(r"\w+\s+\**ft_(\w+)\(.*")
@@ -59,15 +63,22 @@ class LibftTester():
 
 		self.prepare_ex_files()
 		norm_res = self.check_norminette()
-		self.create_library()
+
+		all_funcs = FUNCTIONS_UNDER_TEST
+		bonus = False
+		if self.has_bonus():
+			all_funcs += BONUS_FUNCTIONS
+			bonus = True
+		self.create_library(bonus)
+
 
 		present = self.get_present()
-		to_execute = intersection(present, FUNCTIONS_UNDER_TEST)
+		to_execute = intersection(present, all_funcs)
 
 		if info.ex_to_execute:
 			to_execute = info.ex_to_execute
 
-		missing = [f for f in FUNCTIONS_UNDER_TEST if f not in to_execute]
+		missing = [f for f in all_funcs if f not in to_execute]
 		logger.info(f"To execute: {to_execute}")
 		logger.info(f"Missing: {missing}")
 
@@ -76,18 +87,18 @@ class LibftTester():
 			if not info.ex_to_execute:
 				self.show_summary(norm_res, present, missing, funcs_error)
 
+	def has_bonus(self):
+		makefile = Path(self.temp_dir, "Makefile")
+		with open(makefile, "r") as m_file:
+			bonus = [line for line in m_file.readlines() if re.match(r"^\s*bonus\s*:.*", line)]
+			logger.info(f"bonus investigation: {bonus}")
+			return len(bonus) != 0
+
 	def test_using(self, info: TestRunInfo, to_execute, missing, tester: Tester):
 		self.prepare_tests(tester.name)
 
-		if info.ex_to_execute:
-			tx = tester.constructor(self.tests_dir, info.temp_dir, info.ex_to_execute, missing)
-			tx.execute()
-		else:
-			present = self.get_present()
-			to_execute = intersection(present, FUNCTIONS_UNDER_TEST)
-
-			tx = tester.constructor(self.tests_dir, info.temp_dir, to_execute, missing)
-			return tx.execute()
+		tx = tester.constructor(self.tests_dir, info.temp_dir, to_execute, missing)
+		return tx.execute()
 
 	def show_summary(self, norm: str, present, missing, errors):
 
@@ -164,13 +175,14 @@ class LibftTester():
 
 			return result.stdout
 
-	def create_library(self):
+	def create_library(self, bonus):
 		os.chdir(os.path.join(self.temp_dir))
-		logger.info(f"Calling 'make re' on directory {os.getcwd()}")
+		command = "make re" + (" bonus" if bonus else "")
+		logger.info(f"Calling '{command}' on directory {os.getcwd()}")
 
-		text = f"{CT.CYAN}Executing: {CT.WHITE}make re{CT.NC}"
+		text = f"{CT.CYAN}Executing: {CT.WHITE}{command}{CT.NC}"
 		with Halo(text=text) as spinner:
-			run_command("make re", spinner)
+			run_command(command, spinner)
 			spinner.succeed()
 
 	def prepare_tests(self, testname):
