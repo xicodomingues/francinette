@@ -26,7 +26,7 @@ FUNCTIONS_UNDER_TEST = [
     "putendl_fd", "putnbr_fd"
 ]
 
-func_regex = re.compile(r"\w+\s+\*?ft_(\w+)\(.*")
+func_regex = re.compile(r"\w+\s+\*+ft_(\w+)\(.*")
 
 norm_func_regex = re.compile(r"^([\w\\]+\.c): Error!")
 
