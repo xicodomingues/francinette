@@ -71,7 +71,7 @@ class ExecuteTripouille():
 					output += f"{CT.YELLOW}{int(match[-1][0]) + 1}."
 				output += f"INFINITE_LOOP{CT.NC}\n"
 			spinner.stop()
-			print(output, end="")
+			print(output.replace("\n", ""))
 			spinner.start()
 			return output
 
