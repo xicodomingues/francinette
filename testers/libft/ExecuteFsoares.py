@@ -30,19 +30,21 @@ class ExecuteFsoares():
 		os.chdir(self.temp_dir)
 		logger.info(f"On directory {os.getcwd()}")
 
-		text = f"{CT.CYAN}Compiling tests from: {CT.WHITE}{self.folder}{CT.NC}"
+		print();
+		text = f"{CT.CYAN}Compiling tests: {CT.WHITE}{self.folder}{CT.NC} (my own)"
 		with Halo(text=text) as spinner:
 			for func in self.to_execute:
-				command = f"gcc -Wall -Wextra utils.c test_{func}.c -L. -lft -o test_{func}.out"
+				command = f"gcc -Wall -Wextra utils.c test_{func}.c malloc_mock.c -L. -lft -o test_{func}.out"
 				res = subprocess.run(command, shell=True, capture_output=True, text=True)
 				logger.info(res)
 				if res.returncode != 0:
 					spinner.fail()
 					print(res.stderr)
 					raise Exception("Problem compiling the tests")
+			spinner.succeed()
 
 	def execute_tests(self):
-		print(f"\n{CT.CYAN}Testing:{CT.NC}")
+		print(f"{CT.CYAN}Testing:{CT.NC}")
 		spinner = Halo(placement="right")
 
 		def get_output(func, p):

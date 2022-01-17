@@ -6,7 +6,17 @@
 		"signal.h": "c",
 		"cdefs.h": "c",
 		"csignal": "c",
-		"libft.h": "c"
+		"libft.h": "c",
+		"utils.h": "c",
+		"__split_buffer": "c",
+		"bitset": "c",
+		"initializer_list": "c",
+		"iterator": "c",
+		"string": "c",
+		"string_view": "c",
+		"utility": "c",
+		"vector": "c",
+		"sstream": "c"
 	},
 	"python.linting.enabled": true,
 	"python.linting.pylintPath": "pylint",

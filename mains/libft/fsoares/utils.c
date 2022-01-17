@@ -183,11 +183,11 @@ int same_ptr(void *res, void *res_std)
 	return 1;
 }
 
-int same_mem(void *s, void *r, int size)
+int same_mem(void *expected, void *result, int size)
 {
 	int equal = 1;
-	char *std = s;
-	char *res = r;
+	char *std = expected;
+	char *res = result;
 	for (int i = 0; i < size; i++)
 		if (std[i] != res[i])
 			equal = 0;
@@ -238,6 +238,28 @@ int same_return(void *res, void *dest)
 	if (res != dest)
 	{
 		return error("should return: %p, but returned: %p", dest, res);
+	}
+	return 1;
+}
+
+int same_size(void *ptr, void *ptr_std)
+{
+	if (ptr == NULL && ptr_std == NULL)
+		return 1;
+
+	#ifdef __unix__
+	int size = malloc_usable_size(ptr);
+	int size_std = malloc_usable_size(ptr_std);
+	#endif
+	#ifdef __APPLE__
+	size_t size = malloc_size(ptr);
+	size_t size_std = malloc_size(ptr_std);
+	#endif
+
+	if (size != size_std)
+	{
+		error("yours: %zu bytes, std: %zu bytes", size, size_std);
+		return 0;
 	}
 	return 1;
 }
