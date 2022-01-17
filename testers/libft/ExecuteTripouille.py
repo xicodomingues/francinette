@@ -63,7 +63,7 @@ class ExecuteTripouille():
 
 		def get_output(p):
 			output = p.stdout
-			if p.returncode != 0 and p.stderr.startswith("Alarm clock"):
+			if p.returncode != 0 and "Alarm clock" in p.stderr:
 				match = re.findall(r"(\d+)\.(\w+)", output)
 				if not match:
 					output += f"{CT.YELLOW}1."
