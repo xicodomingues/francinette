@@ -17,7 +17,8 @@ logger = logging.getLogger("libft")
 
 Tester = namedtuple("Test", "name constructor")
 
-AVAILABLE_TESTERS = [Tester('Tripouille', ExecuteTripouille), Tester('fsoares', ExecuteFsoares)]
+AVAILABLE_TESTERS = [#Tester('Tripouille', ExecuteTripouille),
+Tester('fsoares', ExecuteFsoares)]
 
 FUNCTIONS_UNDER_TEST = [
     "isalpha", "isdigit", "isalnum", "isascii", "isprint", "strlen", "memset", "bzero", "memcpy", "memmove", "strlcpy",
@@ -165,6 +166,7 @@ class LibftTester():
 			return result.stdout
 
 	def create_library(self):
+		os.chdir(os.path.join(self.temp_dir))
 		logger.info(f"Calling 'make re' on directory {os.getcwd()}")
 
 		text = f"{CT.CYAN}Executing: {CT.WHITE}make re{CT.NC}"

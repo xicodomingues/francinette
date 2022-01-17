@@ -2,6 +2,7 @@
 
 int where_buffer = 0;
 
+#ifdef __APPLE__
 void handler(int nSignum, struct __siginfo *a, void *b)
 {
 	nSignum = 3;
@@ -9,14 +10,27 @@ void handler(int nSignum, struct __siginfo *a, void *b)
 	printf(CYN "%s" NC ": " RED "Segmentation Fault!\n" NC, function);
 	exit(EXIT_FAILURE);
 }
+#endif
+
+void sigsegv(int signal)
+{
+	(void)signal;
+	printf("%-10s: " RED "Segmentation Fault!\n" NC, function);
+	exit(EXIT_SUCCESS);
+}
 
 void set_sigsev()
 {
+#ifdef __APPLE__
 	struct sigaction action;
 	memset(&action, 0, sizeof(struct sigaction));
 	action.sa_flags = SA_SIGINFO;
 	action.sa_sigaction = handler;
 	sigaction(SIGSEGV, &action, NULL);
+#endif
+#ifdef __unix__
+	signal(SIGSEGV, sigsegv);
+#endif
 }
 
 static int is_empty(unsigned char *p)
@@ -55,7 +69,8 @@ void print_mem_full(void *ptr, int size)
 	{
 		if (i % 16 == 0)
 		{
-			if (is_empty(ptr + i)) {
+			if (is_empty(ptr + i))
+			{
 				i += 16;
 				continue;
 			}
@@ -87,7 +102,8 @@ void print_mem(void *ptr, int size)
 	{
 		if (i % 16 == 0)
 		{
-			if (is_empty(ptr + i)) {
+			if (is_empty(ptr + i))
+			{
 				i += 16;
 				continue;
 			}
@@ -178,8 +194,12 @@ int error(const char *format, ...)
 
 int same_ptr(void *res, void *res_std)
 {
-	if (res != res_std)
-		return error("yours: %p, std: %p\n", res, res_std);
+	unsigned long bytes = (unsigned long)res;
+	unsigned long bytes_std = (unsigned long)res_std;
+	bytes &= 0xFFFFFFFFl;
+	bytes_std &= 0xFFFFFFFFl;
+	if (bytes != bytes_std)
+		return error("yours: %p, std: %p\n", bytes, bytes_std);
 	return 1;
 }
 
@@ -242,24 +262,81 @@ int same_return(void *res, void *dest)
 	return 1;
 }
 
-int same_size(void *ptr, void *ptr_std)
+#ifndef HAVE_STRLCAT
+
+size_t strlcat(char *dst, const char *src, size_t dsize)
 {
-	if (ptr == NULL && ptr_std == NULL)
-		return 1;
+	const char *odst = dst;
+	const char *osrc = src;
+	size_t n = dsize;
+	size_t dlen;
 
-	#ifdef __unix__
-	int size = malloc_usable_size(ptr);
-	int size_std = malloc_usable_size(ptr_std);
-	#endif
-	#ifdef __APPLE__
-	size_t size = malloc_size(ptr);
-	size_t size_std = malloc_size(ptr_std);
-	#endif
+	while (n-- != 0 && *dst != '\0')
+		dst++;
+	dlen = dst - odst;
+	n = dsize - dlen;
 
-	if (size != size_std)
+	if (n-- == 0)
+		return (dlen + strlen(src));
+	while (*src != '\0')
 	{
-		error("yours: %zu bytes, std: %zu bytes", size, size_std);
-		return 0;
+		if (n != 0)
+		{
+			*dst++ = *src;
+			n--;
+		}
+		src++;
 	}
-	return 1;
+	*dst = '\0';
+
+	return (dlen + (src - osrc));
 }
+
+#endif /* !HAVE_STRLCAT */
+
+#ifndef HAVE_STRLCPY
+size_t strlcpy(char *dst, const char *src, size_t dsize)
+{
+	const char *osrc = src;
+	size_t nleft = dsize;
+
+	if (nleft != 0)
+	{
+		while (--nleft != 0)
+			if ((*dst++ = *src++) == '\0')
+				break;
+	}
+	if (nleft == 0)
+	{
+		if (dsize != 0)
+			*dst = '\0';
+		while (*src++)
+			;
+	}
+
+	return (src - osrc - 1);
+}
+
+#endif /* !HAVE_STRLCPY */
+
+#ifndef HAVE_STRNSTR
+
+char *strnstr(const char *haystack, const char *needle, size_t len)
+{
+	int i;
+	size_t needle_len;
+
+	if (0 == (needle_len = strnlen(needle, len)))
+		return (char *)haystack;
+
+	for (i = 0; i <= (int)(len - needle_len); i++)
+	{
+		if ((haystack[0] == needle[0]) &&
+			(0 == strncmp(haystack, needle, needle_len)))
+			return (char *)haystack;
+
+		haystack++;
+	}
+	return NULL;
+}
+#endif

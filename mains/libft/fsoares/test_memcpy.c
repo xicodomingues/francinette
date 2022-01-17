@@ -12,7 +12,7 @@ int single_test_memcpy(char *dest, char *dest_std, char *src, char *src_std, int
 	char *res = ft_memcpy(dest, src, n);
 	char *res_std = memcpy(dest_std, src_std, n);
 
-	sprintf(function, "ft_memcpy(dest: %p, src: %s, n: %i)", n);
+	sprintf(function, "ft_memcpy(dest: %p, src: %s, n: %i)", dest, escape_str(src), n);
 	return (same_return(res, dest) && same_mem(res_std, res, MEM_SIZE));
 }
 

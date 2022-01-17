@@ -3,11 +3,11 @@
 
 int single_test_memchr(char *str, int ch)
 {
-	sprintf(function, "ft_memchr(%p, %i: %s)", str, ch, escape_chr(ch));
+	sprintf(function, "ft_memchr(%p, %i(%x): %s)", str, ch, ch % 0x100, escape_chr(ch));
 	char *res = ft_strchr(str, ch);
 	char *res_std = strchr(str, ch);
 
-	int result = same_ptr(res, res_std);
+	int result = same_ptr((void *)res, (void *)res_std);
 	if (!result) {
 		print_mem_full(str, 0x30);
 	}

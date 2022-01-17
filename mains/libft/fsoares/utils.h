@@ -6,7 +6,7 @@
 /*   By: fsoares- <fsoares-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 13:40:02 by fsoares-          #+#    #+#             */
-/*   Updated: 2022/01/17 19:16:57 by fsoares-         ###   ########.fr       */
+/*   Updated: 2022/01/17 22:37:58 by fsoares-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,15 @@
 #include <signal.h>
 #include <stdarg.h>
 #include <limits.h>
-#include <malloc/malloc.h>
 #include <dlfcn.h>
+
+#ifdef __unix__
+#include <malloc.h>
+#endif
+#ifdef __APPLE__
+#include <stdlib.h>
+#include <malloc/malloc.h>
+#endif
 
 #include "libft.h"
 #include "color.h"
@@ -37,7 +44,7 @@ char escaped[1000];
 	{                                                                        \
 		int c;                                                               \
 		int res = 1;                                                         \
-		for (c = 0; c <= 0xfff && res; c++)                                  \
+		for (c = 0; c <= 0xff && res; c++)                                   \
 		{                                                                    \
 			if (!fn(c) != !ft_##fn(c))                                       \
 			{                                                                \
@@ -60,7 +67,7 @@ char escaped[1000];
 	{                                                                        \
 		int c;                                                               \
 		int res = 1;                                                         \
-		for (c = 0; c <= 0xfff && res; c++)                                  \
+		for (c = 0; c <= 0xff && res; c++)                                   \
 		{                                                                    \
 			if (fn(c) != ft_##fn(c))                                         \
 			{                                                                \
@@ -109,5 +116,15 @@ void reset_malloc_mock();
 size_t get_malloc_size(void *ptr);
 void malloc_set_result(void *res);
 void malloc_show_inner_str();
+
+#ifndef HAVE_STRLCAT
+size_t strlcat(char *dst, const char *src, size_t size);
+#endif
+#ifndef HAVE_STRLCPY
+size_t strlcpy(char *dst, const char *src, size_t size);
+#endif
+#ifndef HAVE_STRNSTR
+char *strnstr(const char *haystack, const char *needle, size_t len);
+#endif
 
 #endif

@@ -1,6 +1,7 @@
 
 #include "utils.h"
 
+
 int single_test_strlcat(char *dest, char *dest_std, char *orig, char *src, int n)
 {
 	int result = 1;

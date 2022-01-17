@@ -39,6 +39,7 @@ class ExecuteFsoares():
 		with Halo(text=text) as spinner:
 			for func in self.to_execute:
 				command = f"gcc -Wall -Wextra utils.c test_{func}.c malloc_mock.c -L. -lft -o test_{func}.out"
+				logger.info(f"executing {command}")
 				res = subprocess.run(command, shell=True, capture_output=True, text=True)
 				logger.info(res)
 				if res.returncode != 0:
