@@ -6,7 +6,7 @@ void handler(int nSignum, struct __siginfo *a, void *b)
 {
 	nSignum = 3;
 	a = (struct __siginfo *)b;
-	printf("%-10s: " RED "Segmentation Fault!\n" NC, function);
+	printf(CYN "%s" NC ": " RED "Segmentation Fault!\n" NC, function);
 	exit(EXIT_FAILURE);
 }
 

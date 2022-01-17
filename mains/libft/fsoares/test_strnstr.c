@@ -3,7 +3,7 @@
 
 int single_test_strnstr(char *str1, char *str2, size_t n)
 {
-	sprintf(function, "ft_strnstr(\"%s\", \"%s\", %lu)", escape_str(str1), escape_str(str2), n);
+	sprintf(function, "ft_strnstr(%p: \"%s\", \"%s\", %lu)", str1, escape_str(str1), escape_str(str2), n);
 	char * res = ft_strnstr(str1, str2, n);
 	char * res_std = strnstr(str1, str2, n);
 
@@ -14,18 +14,37 @@ int test_strnstr(void)
 {
 	int res = 1;
 
+	char empty[10];
+
+	empty[0] = 0;
+	empty[1] = 'a';
+
 	res = single_test_strnstr("abc", "xyz", 0) && res;
+	res = single_test_strnstr("abc", "xyz", 1) && res;
 	res = single_test_strnstr("", "", 0) && res;
 	res = single_test_strnstr("", "", 1) && res;
-	res = single_test_strnstr("abcde", "def", 2) && res;
-	res = single_test_strnstr("abcde", "def", 3) && res;
-	res = single_test_strnstr("abc", "abcd", 3) && res;
-	res = single_test_strnstr("abc", "abcd", 4) && res;
+	res = single_test_strnstr("", "", 2) && res;
 	res = single_test_strnstr("", "teste", 0) && res;
 	res = single_test_strnstr("", "teste", 1) && res;
+	res = single_test_strnstr("", "teste", 2) && res;
 	res = single_test_strnstr("teste", "", 0) && res;
 	res = single_test_strnstr("teste", "", 1) && res;
-	res = single_test_strnstr("teste", "teste", 7) && res;
+	res = single_test_strnstr("teste", "", 2) && res;
+	res = single_test_strnstr("abcdefgh", "abc", 2) && res;
+	res = single_test_strnstr("abcdefgh", "abc", 3) && res;
+	res = single_test_strnstr("abcdefgh", "abc", 4) && res;
+	res = single_test_strnstr("abcdefgh", "abc", 5) && res;
+	res = single_test_strnstr("abc", "abcdef", 2) && res;
+	res = single_test_strnstr("abc", "abcdef", 3) && res;
+	res = single_test_strnstr("abc", "abcdef", 4) && res;
+	res = single_test_strnstr("abc", "abcdef", 5) && res;
+	res = single_test_strnstr("aaxx", "xx", 2) && res;
+	res = single_test_strnstr("aaxx", "xx", 3) && res;
+	res = single_test_strnstr("aaxx", "xx", 4) && res;
+	res = single_test_strnstr("aaxx", "xx", 5) && res;
+	res = single_test_strnstr("aaxx", "xx", 6) && res;
+
+	res = single_test_strnstr(empty, "xx", 0xffffffff) && res;
 
 	unsigned char s1[10] = "abcdef";
 	unsigned char s2[10] = "abc\xfdxx";

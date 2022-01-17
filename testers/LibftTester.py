@@ -71,11 +71,12 @@ class LibftTester():
 		logger.info(f"To execute: {to_execute}")
 		logger.info(f"Missing: {missing}")
 
-		everything_ok = False
+		everything_ok = True
 		for tester in AVAILABLE_TESTERS:
 			funcs_error = self.test_using(info, to_execute, missing, tester)
 			if not info.ex_to_execute:
 				everything_ok = self.show_summary(norm_res, present, missing, funcs_error)
+				everything_ok = False
 			if not everything_ok:
 				break
 

@@ -14,6 +14,16 @@ int test_strncmp(void)
 {
 	int res = 1;
 
+
+	res = single_test_strncmp("", "", 0) && res;
+	res = single_test_strncmp("", "", 1) && res;
+	res = single_test_strncmp("", "", 2) && res;
+	res = single_test_strncmp("test", "", 0) && res;
+	res = single_test_strncmp("test", "", 1) && res;
+	res = single_test_strncmp("test", "", 2) && res;
+	res = single_test_strncmp("", "test", 0) && res;
+	res = single_test_strncmp("", "test", 1) && res;
+	res = single_test_strncmp("", "test", 2) && res;
 	res = single_test_strncmp("teste", "teste", 0) && res;
 	res = single_test_strncmp("teste", "teste", 1) && res;
 	res = single_test_strncmp("teste", "teste", 5) && res;
