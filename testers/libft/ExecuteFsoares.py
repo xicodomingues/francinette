@@ -1,5 +1,7 @@
 import logging
 import os
+from re import I
+import re
 import subprocess
 from typing import List
 from main import CT
@@ -40,11 +42,26 @@ class ExecuteFsoares():
 					raise Exception("Problem compiling the tests")
 
 	def execute_tests(self):
-		print(f"\n{CT.CYAN}Executing Tests:{CT.NC}")
+		print(f"\n{CT.CYAN}Testing:{CT.NC}")
+		spinner = Halo(placement="right")
 
-		for func in self.to_execute:
-			p = subprocess.run(f"./test_{func}.out", capture_output=True, text=True)
+		def get_output(func, p):
+			output = p.stdout
+			if p.returncode != 0 and "Alarm clock" in p.stderr:
+				output += f"ft_{func.ljust(13)}: {CT.L_YELLOW}Infinite Loop{CT.NC}\n"
+			spinner.stop()
+			print(output, end="")
+			spinner.start()
+			return output
+
+		def execute_test(func):
+			spinner.start(f"ft_{func.ljust(13)}:")
+			p = subprocess.run(f"$HOME/francinette/utils/timeout.sh 3s ./test_{func}.out", capture_output=True, text=True, shell=True)
 			logger.info(p)
-			print(p.stdout, CT.NC, end="", sep="")
+			output = get_output(func, p);
+			return [remove_ansi_colors(line) for line in output]
 
-		return [remove_ansi_colors(line) for line in p.stdout.splitlines()]
+		result = [execute_test(func) for func in self.to_execute]
+		logger.info(result)
+		spinner.stop()
+		return result
