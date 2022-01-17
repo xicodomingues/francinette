@@ -198,7 +198,7 @@ def main():
 			print(f"You can see the cloned repository in {CT.WHITE}{git_dir}{CT.NC}")
 	except Exception as ex:
 		print(f"{CT.L_RED}{ex}{CT.NC}")
-		logger.error(ex.with_traceback())
+		logger.exception(ex)
 
 
 if __name__ == '__main__':
