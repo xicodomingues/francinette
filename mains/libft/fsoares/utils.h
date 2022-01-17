@@ -6,7 +6,7 @@
 /*   By: fsoares- <fsoares-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 13:40:02 by fsoares-          #+#    #+#             */
-/*   Updated: 2022/01/17 18:26:07 by fsoares-         ###   ########.fr       */
+/*   Updated: 2022/01/17 19:16:57 by fsoares-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,58 +32,58 @@
 char function[1000];
 char escaped[1000];
 
-#define create_test_ctype(fn)                                \
-	int test_##fn(void)                                      \
-	{                                                        \
-		int c;                                               \
-		int res = 1;                                         \
-		for (c = 0; c <= 0xfff && res; c++)                  \
-		{                                                    \
-			if (!fn(c) != !ft_##fn(c))                       \
-			{                                                \
-				printf(#fn "(%i: %s) std: %i, yours: %i\n",  \
-					   c, escape_chr(c), fn(c), ft_##fn(c)); \
-				res = 0;                                     \
-			}                                                \
-		}                                                    \
-		if (!fn(EOF) != !ft_##fn(EOF))                       \
-		{                                                    \
-			printf(#fn "(EOF) std: %i, yours: %i\n",         \
-				   fn(EOF), ft_##fn(EOF));                   \
-			res = 0;                                         \
-		}                                                    \
-		return res;                                          \
+#define create_test_ctype(fn)                                                \
+	int test_##fn(void)                                                      \
+	{                                                                        \
+		int c;                                                               \
+		int res = 1;                                                         \
+		for (c = 0; c <= 0xfff && res; c++)                                  \
+		{                                                                    \
+			if (!fn(c) != !ft_##fn(c))                                       \
+			{                                                                \
+				printf(CYN "fn_" #fn "(%i: %s)" NC ": std: %i, yours: %i\n", \
+					   c, escape_chr(c), fn(c), ft_##fn(c));                 \
+				res = 0;                                                     \
+			}                                                                \
+		}                                                                    \
+		if (!fn(EOF) != !ft_##fn(EOF))                                       \
+		{                                                                    \
+			printf(CYN "fn_" #fn "(EOF)" NC ": std: %i, yours: %i\n",        \
+				   fn(EOF), ft_##fn(EOF));                                   \
+			res = 0;                                                         \
+		}                                                                    \
+		return res;                                                          \
 	}
 
-#define create_test_val(fn)                                  \
-	int test_##fn(void)                                      \
-	{                                                        \
-		int c;                                               \
-		int res = 1;                                         \
-		for (c = 0; c <= 0xfff && res; c++)                  \
-		{                                                    \
-			if (fn(c) != ft_##fn(c))                         \
-			{                                                \
-				printf(#fn "(%i: %s) std: %i, yours: %i\n",  \
-					   c, escape_chr(c), fn(c), ft_##fn(c)); \
-				res = 0;                                     \
-			}                                                \
-		}                                                    \
-		if (fn(EOF) != ft_##fn(EOF))                         \
-		{                                                    \
-			printf(#fn "(EOF) std: %i, yours: %i\n",         \
-				   fn(EOF), ft_##fn(EOF));                   \
-			res = 0;                                         \
-		}                                                    \
-		return res;                                          \
+#define create_test_val(fn)                                                  \
+	int test_##fn(void)                                                      \
+	{                                                                        \
+		int c;                                                               \
+		int res = 1;                                                         \
+		for (c = 0; c <= 0xfff && res; c++)                                  \
+		{                                                                    \
+			if (fn(c) != ft_##fn(c))                                         \
+			{                                                                \
+				printf(CYN "ft_" #fn "(%i: %s)" NC ": std: %i, yours: %i\n", \
+					   c, escape_chr(c), fn(c), ft_##fn(c));                 \
+				res = 0;                                                     \
+			}                                                                \
+		}                                                                    \
+		if (fn(EOF) != ft_##fn(EOF))                                         \
+		{                                                                    \
+			printf(CYN "ft_" #fn "(EOF)" NC ": std: %i, yours: %i\n",        \
+				   fn(EOF), ft_##fn(EOF));                                   \
+			res = 0;                                                         \
+		}                                                                    \
+		return res;                                                          \
 	}
 
-#define test(fn)                                   \
-	strcpy(function, #fn);                         \
-	if (!test_##fn())                              \
-		printf("%-16s: " RED "KO" NC "\n\n", #fn); \
-	else                                           \
-		printf("%-16s: " GRN "OK" NC "\n", #fn);
+#define test(fn)                                         \
+	strcpy(function, #fn);                               \
+	if (!test_##fn())                                    \
+		printf("%-16s: " RED "KO" NC "\n\n", "ft_" #fn); \
+	else                                                 \
+		printf("%-16s: " GRN "OK" NC "\n", "ft_" #fn);
 
 #define no_test(fn) \
 	printf("ft_%-13s: " YEL "No test yet\n" NC, #fn)
