@@ -6,7 +6,7 @@
 /*   By: fsoares- <fsoares-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 13:40:02 by fsoares-          #+#    #+#             */
-/*   Updated: 2022/01/15 17:50:13 by fsoares-         ###   ########.fr       */
+/*   Updated: 2022/01/17 14:36:16 by fsoares-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,9 @@ char escaped[1000];
 		printf("%-10s: " RED "KO" NC "\n\n", #fn); \
 	else                                           \
 		printf("%-10s: " GRN "OK" NC "\n", #fn);
+
+#define no_test(fn) \
+	printf("%-10s: " YEL "No test yet\n" NC, #fn)
 
 void print_mem(void *ptr, int size);
 void print_mem_full(void *ptr, int size);

@@ -129,7 +129,7 @@ char *escape_str(char *src)
 		}
 		else
 		{
-			sprintf(my_bf + j, "\\x%02x", (unsigned char)src[i]);
+			sprintf(my_bf + j, "\\%02x", (unsigned char)src[i]);
 			j += 2;
 		}
 	}
@@ -141,7 +141,7 @@ char *escape_chr(char ch)
 {
 	if (ch == '\0')
 	{
-		strcpy(escaped, "'\\x0'");
+		strcpy(escaped, "'\\0'");
 		return escaped;
 	}
 	else
