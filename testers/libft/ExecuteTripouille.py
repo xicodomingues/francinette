@@ -3,9 +3,10 @@ import os
 import re
 import subprocess
 import sys
-from main import CT
-from testers.libft.BaseExecutor import remove_ansi_colors
+
 from halo import Halo
+from testers.libft.BaseExecutor import remove_ansi_colors
+from utils.TerminalColors import CT
 
 logger = logging.getLogger("tripouille")
 
@@ -40,7 +41,7 @@ class ExecuteTripouille():
 		os.chdir(self.temp_dir)
 		logger.info(f"On directory {os.getcwd()} compiling tests for Tripouille")
 
-		text = f"{CT.CYAN}Compiling tests: {CT.WHITE}{self.folder}{CT.NC} ({self.git_url})"
+		text = f"{CT.CYAN}Compiling tests: {CT.B_WHITE}{self.folder}{CT.NC} ({self.git_url})"
 		with Halo(text=text) as spinner:
 			command = f"clang++ -c -std=c++11 -I utils/ -I . utils/*.cpp "
 			for file in self.to_execute:
@@ -144,14 +145,14 @@ class ExecuteTripouille():
 		if errors:
 			if str(errors) == "MKO":
 				print(f"{CT.RED}MKO{CT.NC}: test about your malloc size (this shouldn't be tested by moulinette)")
-			print(f"\n{CT.L_RED}Errors in:{CT.NC}\n")
+			print(f"\n{CT.B_RED}Errors in:{CT.NC}\n")
 
 		funcs_error = []
 		for func, tests in result:
 			failed = [test for test in tests if is_failed(test)]
 			if failed:
 				test_file = get_file_path(func)
-				print(f"For {CT.WHITE}{test_file}{CT.NC}:")
+				print(f"For {CT.B_WHITE}{test_file}{CT.NC}:")
 				show_failed_lines(test_file, failed)
 				print()
 				funcs_error.append(func)

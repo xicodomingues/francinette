@@ -1,46 +1,21 @@
 import argparse
-from argparse import ArgumentParser
-
-from dataclasses import dataclass
 import importlib
 import logging
-from logging.handlers import RotatingFileHandler, TimedRotatingFileHandler
 import os
-from pathlib import Path
 import re
 import shutil
 import subprocess
-import sys
 import textwrap
-from typing import List
+from argparse import ArgumentParser
+from logging.handlers import TimedRotatingFileHandler
+from pathlib import Path
 
 from git import Repo
 
+from utils.ExecutionContext import TestRunInfo, set_contex
+from utils.TerminalColors import CT
+
 logger = logging.getLogger("main")
-
-
-@dataclass
-class TestRunInfo:
-	project: str
-	source_dir: str
-	tests_dir: str
-	temp_dir: str
-	ex_to_execute: List[str]
-
-
-class CT:
-	WHITE = '\033[1;37m'
-	RED = '\033[0;31m'
-	GREEN = '\033[0;32m'
-	CYAN = '\033[0;36m'
-	L_GREEN = '\033[1;32m'
-	L_BLUE = '\033[1;36m'
-	PURPLE = '\033[0;35m'
-	L_PURPLE = '\033[1;35m'
-	YELLOW = '\033[0;33m'
-	L_YELLOW = '\033[1;33m'
-	L_RED = '\033[1;31m'
-	NC = '\033[0m'  # No Color
 
 
 def has_file(ex_path, file):
@@ -146,6 +121,10 @@ def main():
 	parser.add_argument("git_repo", nargs="?", help="If present, it uses this repository to clone the exercises from")
 	parser.add_argument("exercise", nargs="*", help="If present, it executes the passed tests")
 	parser.add_argument("-u", "--update", action="store_true", help="forces francinette to update")
+	parser.add_argument("--strict",
+	                    action="store_true",
+	                    help=("It restricts the tests around memory allocation so that it reserves the correct " +
+	                          "amount of memory and that checks nulls when allocating memory"))
 
 	args = parser.parse_args()
 
@@ -188,16 +167,17 @@ def main():
 		mains_dir = os.path.join(base, "mains", project)
 
 		info = TestRunInfo(project, os.path.abspath(os.path.join(current_dir, "..")), mains_dir,
-		                   os.path.join(base, "temp", project), exercises)
+		                   os.path.join(base, "temp", project), exercises, args.strict)
 
 		logger.info(f"Test params: {info}")
 
+		set_contex(info)
 		execute_tests(info)
 
 		if from_git:
-			print(f"You can see the cloned repository in {CT.WHITE}{git_dir}{CT.NC}")
+			print(f"You can see the cloned repository in {CT.B_WHITE}{git_dir}{CT.NC}")
 	except Exception as ex:
-		print(f"{CT.L_RED}{ex}{CT.NC}")
+		print(f"{CT.B_RED}{ex}{CT.NC}")
 		logger.exception(ex)
 
 

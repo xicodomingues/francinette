@@ -5,8 +5,8 @@ import logging
 import shutil
 import subprocess
 
-from main import TestRunInfo
-from main import CT
+from utils.ExecutionContext import TestRunInfo
+from utils.TerminalColors import CT
 
 logger = logging.getLogger()
 
@@ -15,15 +15,15 @@ IGNORED_EXERCISE_HEADER = f"{CT.YELLOW}" \
         "═════════════════════════════════ #### ignored ═════════════════════════════════" \
         f"{CT.NC}"
 
-EXERCISE_HEADER = f"{CT.L_BLUE}" \
+EXERCISE_HEADER = f"{CT.B_BLUE}" \
         "═════════════════════════════════ Testing #### ═════════════════════════════════" \
         f"{CT.NC}"
 
-TEST_PASSED = f"\n{CT.L_GREEN}" \
+TEST_PASSED = f"\n{CT.B_GREEN}" \
         "══════════════════════════════    #### passed!    ══════════════════════════════" \
         f"{CT.NC}"
 
-TEST_FAILED = f"\n{CT.L_RED}" \
+TEST_FAILED = f"\n{CT.B_RED}" \
         "══════════════════════════════    #### failed!    ══════════════════════════════" \
         f"{CT.NC}"
 
@@ -37,16 +37,16 @@ TEST_ONLY_EXECUTED = f"\n{CT.PURPLE}" \
 
 
 def show_banner(project):
-    message = f"Welcome to {CT.L_PURPLE}Francinette{CT.L_BLUE}, a 42 tester framework!"
+    message = f"Welcome to {CT.B_PURPLE}Francinette{CT.B_BLUE}, a 42 tester framework!"
     submessage = f"{project}"
-    project_message = f"{CT.L_YELLOW}{project}{CT.L_BLUE}"
+    project_message = f"{CT.B_YELLOW}{project}{CT.B_BLUE}"
     size = 30 - len(submessage)
     project_message = " " * (size - (size // 2)) + project_message + " " * (size // 2)
-    print(f"{CT.L_BLUE}╔══════════════════════════════════════════════════════════════════════════════╗")
-    print(f"{CT.L_BLUE}║                {message}                ║")
-    print(f"{CT.L_BLUE}╚═══════════════════════╦══════════════════════════════╦═══════════════════════╝")
-    print(f"{CT.L_BLUE}                        ║{project_message}║")
-    print(f"{CT.L_BLUE}                        ╚══════════════════════════════╝{CT.NC}")
+    print(f"{CT.B_BLUE}╔══════════════════════════════════════════════════════════════════════════════╗")
+    print(f"{CT.B_BLUE}║                {message}                ║")
+    print(f"{CT.B_BLUE}╚═══════════════════════╦══════════════════════════════╦═══════════════════════╝")
+    print(f"{CT.B_BLUE}                        ║{project_message}║")
+    print(f"{CT.B_BLUE}                        ╚══════════════════════════════╝{CT.NC}")
 
 
 @dataclass
@@ -109,10 +109,10 @@ class CommonTester:
     def print_summary(test_status):
         ok_tests = [test for test, st in test_status.items() if st is True]
 
-        print(f"{CT.L_GREEN}Passed tests: {' '.join(ok_tests)}{CT.NC}")
+        print(f"{CT.B_GREEN}Passed tests: {' '.join(ok_tests)}{CT.NC}")
         failed_tests = [test for test, st in test_status.items() if st is False]
         if failed_tests:
-            print(f"{CT.L_RED}Failed tests: {' '.join(failed_tests)}{CT.NC}")
+            print(f"{CT.B_RED}Failed tests: {' '.join(failed_tests)}{CT.NC}")
         not_present = [test for test, st in test_status.items() if st == "Test Not Present"]
         if not_present:
             print(f"{CT.YELLOW}Files not present: {' '.join(not_present)}{CT.NC}")
@@ -128,7 +128,7 @@ class CommonTester:
 
         result = subprocess.run(norm_exec, capture_output=True, text=True)
 
-        print(f"{CT.CYAN}Executing: {CT.WHITE}{' '.join(norm_exec)}{CT.NC}:")
+        print(f"{CT.CYAN}Executing: {CT.B_WHITE}{' '.join(norm_exec)}{CT.NC}:")
         if result.returncode == 0:
             print(f"{CT.GREEN}{result.stdout}{CT.NC}")
         else:
@@ -144,14 +144,14 @@ class CommonTester:
         # result = os.system(f"gcc { " ".join(flags) } { " ".join(files) }")
         gcc_exec = ["gcc"] + flags + files
 
-        print(f"{CT.CYAN}Executing: {CT.WHITE}{' '.join(gcc_exec)}{CT.NC}:")
+        print(f"{CT.CYAN}Executing: {CT.B_WHITE}{' '.join(gcc_exec)}{CT.NC}:")
         p = subprocess.Popen(gcc_exec)
         p.wait()
 
         if p.returncode == 0:
             print(f"{CT.GREEN}gcc: OK!{CT.NC}")
         else:
-            print(f"{CT.L_RED}Problem compiling files{CT.NC}")
+            print(f"{CT.B_RED}Problem compiling files{CT.NC}")
 
         return p.returncode
 
@@ -159,7 +159,7 @@ class CommonTester:
         logger.info(f"Running the output of the compilation: ")
         logger.info(f"On directory {os.getcwd()}")
 
-        print(f"\n{CT.CYAN}Executing: {CT.WHITE}./a.out | cat -e{CT.NC}:")
+        print(f"\n{CT.CYAN}Executing: {CT.B_WHITE}./a.out | cat -e{CT.NC}:")
 
         ps = subprocess.Popen('./a.out', stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         output = subprocess.check_output(('cat', '-e'), stdin=ps.stdout)
@@ -171,30 +171,30 @@ class CommonTester:
             print(output)
         else:
             print(f"{CT.RED}{output}{CT.NC}")
-            print(f"{CT.L_RED}Error Executing the program! (Most likely SegFault){CT.NC}")
+            print(f"{CT.B_RED}Error Executing the program! (Most likely SegFault){CT.NC}")
             location = os.path.join(self.temp_dir, test)
-            print(f"The {CT.WHITE}main.c{CT.NC} and {CT.WHITE}a.out{CT.NC} used in this "
-                  f"test are located at:\n{CT.WHITE}{location}{CT.NC}")
+            print(f"The {CT.B_WHITE}main.c{CT.NC} and {CT.B_WHITE}a.out{CT.NC} used in this "
+                  f"test are located at:\n{CT.B_WHITE}{location}{CT.NC}")
 
         return output
 
     @staticmethod
     def do_diff():
         diff_exec = ["diff", "--text", "expected", "out"]
-        print(f"\n{CT.CYAN}Executing: {CT.WHITE}{' '.join(diff_exec)}{CT.NC}:")
+        print(f"\n{CT.CYAN}Executing: {CT.B_WHITE}{' '.join(diff_exec)}{CT.NC}:")
 
         result = subprocess.run(diff_exec, capture_output=True, text=True)
         if result.returncode == 0:
             print(f"{CT.GREEN}diff: No differences{CT.NC}")
         else:
-            print(f"{CT.L_PURPLE}< expected, > your result{CT.NC}")
+            print(f"{CT.B_PURPLE}< expected, > your result{CT.NC}")
             print(f"{CT.RED}{result.stdout}{CT.NC}")
 
         return result.returncode == 0
 
     @staticmethod
     def do_verification_fn(verification_fn):
-        print(f"\n{CT.CYAN}Executing function: {CT.WHITE}{verification_fn.__name__}{CT.NC}:")
+        print(f"\n{CT.CYAN}Executing function: {CT.B_WHITE}{verification_fn.__name__}{CT.NC}:")
 
         result = verification_fn()
         if result.returncode == 0:

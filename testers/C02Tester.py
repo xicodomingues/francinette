@@ -73,7 +73,7 @@ class C02Tester(CommonTester):
 
             if len(outlines) != len(explines):
                 return VeriOut(-1, f"The out and expected files "
-                                   f"do not hace the same number of lines:"
+                                   f"do not have the same number of lines:"
                                    f" {truncate(outlines)}, {truncate(outlines)}")
 
             first_value_out = int(outlines[1].split(":")[0], 16)

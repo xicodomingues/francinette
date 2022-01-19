@@ -1,13 +1,13 @@
 import logging
-from nis import match
 import os
-from re import I
 import re
 import subprocess
 from typing import List
-from main import CT
-from testers.libft.BaseExecutor import remove_ansi_colors
+
 from halo import Halo
+from testers.libft.BaseExecutor import remove_ansi_colors
+from utils.ExecutionContext import is_strict
+from utils.TerminalColors import CT
 
 logger = logging.getLogger("fsoares")
 
@@ -35,10 +35,11 @@ class ExecuteFsoares():
 		logger.info(f"On directory {os.getcwd()}")
 
 		print()
-		text = f"{CT.CYAN}Compiling tests: {CT.WHITE}{self.folder}{CT.NC} (my own)"
+		text = f"{CT.CYAN}Compiling tests: {CT.B_WHITE}{self.folder}{CT.NC} (my own)"
 		with Halo(text=text) as spinner:
 			for func in self.to_execute:
-				command = f"gcc -Wall -Wextra -Werror utils.c test_{func}.c malloc_mock.c -L. -lft -o test_{func}.out -ldl"
+				strict = "-DSTRICT_MEM" if is_strict() else ""
+				command = f"gcc {strict} -Wall -Wextra -Werror utils.c test_{func}.c malloc_mock.c -L. -lft -o test_{func}.out -ldl"
 				logger.info(f"executing {command}")
 				res = subprocess.run(command, shell=True, capture_output=True, text=True)
 				logger.info(res)
@@ -62,7 +63,7 @@ class ExecuteFsoares():
 		def get_output(func, p):
 			output = p.stdout
 			if p.returncode != 0 and "Alarm clock" in p.stderr:
-				output += f"ft_{func.ljust(13)}: {CT.L_YELLOW}Infinite Loop{CT.NC}\n"
+				output += f"ft_{func.ljust(13)}: {CT.B_YELLOW}Infinite Loop{CT.NC}\n"
 			spinner.stop()
 			print(output, end="")
 			spinner.start()
@@ -84,6 +85,7 @@ class ExecuteFsoares():
 		return result
 
 	def show_failed(self, output):
+
 		def is_error(result):
 			return result != "OK" and result != "No test yet"
 
