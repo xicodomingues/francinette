@@ -6,7 +6,7 @@
 /*   By: fsoares- <fsoares-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 13:40:02 by fsoares-          #+#    #+#             */
-/*   Updated: 2022/01/19 17:14:11 by fsoares-         ###   ########.fr       */
+/*   Updated: 2022/01/19 18:05:04 by fsoares-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 #include <stdlib.h>
 #include <dlfcn.h>
 #include <stdbool.h>
+#include <time.h>
 
 #include "libft.h"
 #include "color.h"

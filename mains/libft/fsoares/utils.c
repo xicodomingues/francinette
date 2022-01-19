@@ -32,6 +32,8 @@ void handle_signals()
 	signal(SIGSEGV, sigsegv);
 	signal(SIGABRT, sigabort);
 	signal(SIGBUS, sigbus);
+	srand((unsigned int)time(NULL));
+	srandom((unsigned int)time(NULL));
 }
 
 static int is_empty(unsigned char *p)
