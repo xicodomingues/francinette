@@ -134,7 +134,7 @@ class LibftTester():
 			print(f"\n{CT.B_RED}Failed tests: {CT.NC}{', '.join(errors)}")
 
 		if not missing and not norm_errors and not errors:
-			print(f"🎉🥳 {CT.B_GREEN}All tests passed! Congratulations!{CT.NC} 🥳🎉")
+			print(f"\n🎉🥳 {CT.B_GREEN}All tests passed! Congratulations!{CT.NC} 🥳🎉")
 			logger.info("All tests ok!")
 			return True
 		return False

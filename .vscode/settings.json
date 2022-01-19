@@ -37,7 +37,8 @@
 		"typeinfo": "c",
 		"stdbool.h": "c",
 		"__locale": "c",
-		"complex": "c"
+		"complex": "c",
+		"__config": "c"
 	},
 	"python.linting.enabled": true,
 	"python.linting.pylintPath": "pylint",

@@ -11,7 +11,7 @@ int single_test_striteri(char *str, void (*fn)(unsigned int, char *), char *func
 	ft_striteri(buffer, fn);
 	result = same_string(expected, buffer);
 	result = check_leaks(NULL) && result;
-	null_check(char *, ft_striteri(buffer, fn), result);
+	null_null_check(ft_striteri(buffer, fn), result);
 	return result;
 }
 

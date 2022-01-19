@@ -6,7 +6,7 @@
 /*   By: fsoares- <fsoares-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 13:40:02 by fsoares-          #+#    #+#             */
-/*   Updated: 2022/01/19 18:05:04 by fsoares-         ###   ########.fr       */
+/*   Updated: 2022/01/19 19:59:16 by fsoares-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <dlfcn.h>
+#include <fcntl.h>
 #include <stdbool.h>
 #include <time.h>
 
@@ -107,8 +108,20 @@ char escaped[1000];
 		if (res != NULL)                                                    \
 			rst = error("Should return NULL\n");                            \
 	}
+
+#define null_null_check(fn_call, rst)                                       \
+	reset_malloc_mock();                                                    \
+	fn_call;                                                                \
+	int malloc_calls = reset_malloc_mock();                                 \
+	for (int i = 0; i < malloc_calls; i++)                                  \
+	{                                                                       \
+		sprintf(signature + g_offset, NC " NULL check for %ith malloc", i); \
+		fn_call;                                                            \
+		malloc_set_null(i);                                                 \
+	}
 #else
 #define null_check(r_type, fn_call, result)
+#define null_null_check(fn_call, result)
 #endif
 
 /**
