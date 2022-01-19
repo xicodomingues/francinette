@@ -27,6 +27,6 @@ int test_memchr(void)
 
 int	main()
 {
-	set_sigsev();
+	handle_signals();
 	test(memchr);
 }

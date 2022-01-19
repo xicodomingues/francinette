@@ -36,6 +36,6 @@ int test_strlcat(void)
 
 int	main()
 {
-	set_sigsev();
+	handle_signals();
 	test(strlcat);
 }

@@ -4,8 +4,15 @@ int where_buffer = 0;
 
 void show_segfault()
 {
-	printf(CYN "%s" NC ": " RED "Segmentation Fault!\n" NC, signature);
+	printf(CYN "%s" NC ": " LRED "Segmentation Fault!\n" NC, signature);
 	printf("ft_%-13s: " YEL "Segmentation fault" NC "\n", function);
+	exit(EXIT_FAILURE);
+}
+
+void show_abort()
+{
+	printf(CYN "%s" NC ": " LRED "Memory problems\n" NC, signature);
+	printf("ft_%-13s: " YEL "Abort" NC "\n", function);
 	exit(EXIT_FAILURE);
 }
 
@@ -24,7 +31,13 @@ void sigsegv(int signal)
 	show_segfault();
 }
 
-void set_sigsev()
+void sigabort(int signal)
+{
+	(void)signal;
+	show_abort();
+}
+
+void handle_signals()
 {
 #ifdef __APPLE__
 	struct sigaction action;
@@ -32,9 +45,11 @@ void set_sigsev()
 	action.sa_flags = SA_SIGINFO;
 	action.sa_sigaction = handler;
 	sigaction(SIGSEGV, &action, NULL);
+	// TODO: check the abort signal in mac
 #endif
 #ifdef __unix__
 	signal(SIGSEGV, sigsegv);
+	signal(SIGABRT, sigabort);
 #endif
 }
 
@@ -187,9 +202,19 @@ void reset_with(void *m1, void *m2, char *content, int size)
 	strcpy(m2, content);
 }
 
+int set_sign(const char *format, ...)
+{
+	va_list args;
+	va_start(args, format);
+	g_offset = vsprintf(signature, format, args);
+	va_end(args);
+	reset_malloc_mock();
+	return g_offset;
+}
+
 int error(const char *format, ...)
 {
-	printf(RED "Error" NC ": " CYN "%s" NC ": ", signature);
+	printf(LRED "Error" NC ": " CYN "%s" NC ": ", signature);
 	va_list args;
 	va_start(args, format);
 	vprintf(format, args);
@@ -263,6 +288,30 @@ int same_return(void *res, void *dest)
 	if (res != dest)
 	{
 		return error("should return: %p, but returned: %p", dest, res);
+	}
+	return 1;
+}
+
+int same_string(char *expected, char *actual)
+{
+	if (strcmp(expected, actual) != 0)
+		return error("expected: \"%s\", got: \"%s\"\n", expected, actual);
+	return 1;
+}
+
+int check_mem_size(void *ptr, size_t expected_size)
+{
+	size_t res = get_malloc_size(ptr);
+
+#ifdef STRICT_MEM
+	char *message = "expected %zu bytes, got %zu bytes\n";
+	if (expected_size != res)
+#else
+	char *message = "not enough memory allocated, needed: %zu, reserved: %zu\n";
+	if (expected_size > res)
+#endif
+	{
+		return error(message, expected_size, res);
 	}
 	return 1;
 }

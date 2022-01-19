@@ -34,7 +34,8 @@
 		"streambuf": "c",
 		"cmath": "c",
 		"type_traits": "c",
-		"typeinfo": "c"
+		"typeinfo": "c",
+		"stdbool.h": "c"
 	},
 	"python.linting.enabled": true,
 	"python.linting.pylintPath": "pylint",

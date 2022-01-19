@@ -30,7 +30,7 @@ int test_memcmp(void)
 	s2[3] = 0;
 	int other = single_test_memcmp((char *)s1, (char *)s2, 7);
 	if (!other) {
-		printf(RED "You are stoping at the '\\0'\n" NC);
+		printf(LRED "You are stoping at the '\\0'\n" NC);
 		res = 0;
 	}
 	return res;
@@ -38,6 +38,6 @@ int test_memcmp(void)
 
 int	main()
 {
-	set_sigsev();
+	handle_signals();
 	test(memcmp);
 }

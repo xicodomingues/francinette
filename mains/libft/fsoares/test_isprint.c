@@ -5,6 +5,6 @@ create_test_ctype(isprint);
 
 int	main()
 {
-	set_sigsev();
+	handle_signals();
 	test(isprint);
 }

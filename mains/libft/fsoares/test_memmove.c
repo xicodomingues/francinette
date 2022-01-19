@@ -30,6 +30,6 @@ int test_memmove(void)
 
 int	main()
 {
-	set_sigsev();
+	handle_signals();
 	test(memmove);
 }

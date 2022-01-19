@@ -3,20 +3,17 @@
 
 int test_single_calloc(size_t count, size_t size)
 {
-	sprintf(signature, "ft_calloc(%zu, %zu)", count, size);
+	set_sign("ft_calloc(%zu, %zu)", count, size);
 
 	reset_malloc_mock();
 	void *p = ft_calloc(count, size);
 	void *res_std = calloc(count, size);
 
-	size_t res = get_malloc_size(p);
+	int result = check_mem_size(p, count * size);
+	result = same_mem(res_std, p, count * size) && result;
+	result = check_leaks(p) && result;
 
-	int result = 1;
-	if (count * size != res)
-		result = error("reserved: std: %zu bytes, your: %zu bytes\n", count * size, res);
-	if (count * size > 0) {
-		result = same_mem(res_std, p, count * size) & result;
-	}
+	null_check(ft_calloc(count, size), result);
 	return result;
 }
 
@@ -33,6 +30,6 @@ int test_calloc()
 
 int	main()
 {
-	set_sigsev();
+	handle_signals();
 	test(calloc);
 }

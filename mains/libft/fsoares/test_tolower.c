@@ -5,6 +5,6 @@ create_test_val(tolower);
 
 int	main()
 {
-	set_sigsev();
+	handle_signals();
 	test(tolower);
 }

@@ -3,6 +3,6 @@
 
 int	main()
 {
-	set_sigsev();
+	handle_signals();
 	no_test(lstnew);
 }

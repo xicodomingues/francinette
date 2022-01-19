@@ -34,6 +34,6 @@ int test_memcpy(void)
 
 int	main()
 {
-	set_sigsev();
+	handle_signals();
 	test(memcpy);
 }

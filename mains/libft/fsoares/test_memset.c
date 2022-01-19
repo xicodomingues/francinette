@@ -39,6 +39,6 @@ int test_memset(void)
 
 int	main()
 {
-	set_sigsev();
+	handle_signals();
 	test(memset);
 }

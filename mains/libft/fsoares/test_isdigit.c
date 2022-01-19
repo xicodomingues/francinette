@@ -5,6 +5,6 @@ create_test_ctype(isdigit);
 
 int	main()
 {
-	set_sigsev();
+	handle_signals();
 	test(isdigit);
 }

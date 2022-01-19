@@ -24,6 +24,6 @@ int test_strchr(void)
 
 int	main()
 {
-	set_sigsev();
+	handle_signals();
 	test(strstr);
 }

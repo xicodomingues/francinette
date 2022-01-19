@@ -25,7 +25,9 @@ int test_atoi(void)
 	res = single_test_atoi("- 123") && res;
 	res = single_test_atoi("+ 123") && res;
 	res = single_test_atoi("+\n123") && res;
-	res = single_test_atoi("123") && res;
+	res = single_test_atoi("1209") && res;
+	res = single_test_atoi("12/3") && res;
+	res = single_test_atoi("12;3") && res;
 	sprintf(buffer, "%i", INT_MAX);
 	res = single_test_atoi(buffer) && res;
 	sprintf(buffer, "%i", INT_MIN);
@@ -36,6 +38,6 @@ int test_atoi(void)
 
 int	main()
 {
-	set_sigsev();
+	handle_signals();
 	test(atoi);
 }
