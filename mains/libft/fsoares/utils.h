@@ -6,7 +6,7 @@
 /*   By: fsoares- <fsoares-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 13:40:02 by fsoares-          #+#    #+#             */
-/*   Updated: 2022/01/19 13:39:38 by fsoares-         ###   ########.fr       */
+/*   Updated: 2022/01/19 17:14:11 by fsoares-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ char escaped[1000];
 	printf("ft_%-13s: " YEL "No test yet\n" NC, #fn)
 
 #ifdef STRICT_MEM
-#define null_check(fn_call, rst)                                            \
+#define null_check(r_type, fn_call, rst)                                    \
 	reset_malloc_mock();                                                    \
 	fn_call;                                                                \
 	int malloc_calls = reset_malloc_mock();                                 \
@@ -101,13 +101,13 @@ char escaped[1000];
 	{                                                                       \
 		sprintf(signature + g_offset, NC " NULL check for %ith malloc", i); \
 		malloc_set_null(i);                                                 \
-		char *res = fn_call;                                                \
+		r_type res = fn_call;                                               \
 		rst = check_leaks(res) && rst;                                      \
 		if (res != NULL)                                                    \
 			rst = error("Should return NULL\n");                            \
 	}
 #else
-#define null_check(fn_call, result)
+#define null_check(r_type, fn_call, result)
 #endif
 
 /**
@@ -119,10 +119,10 @@ char escaped[1000];
 #define check_alloc_str_return(fn_call, exp)                 \
 	int result = 1;                                          \
 	char *res = fn_call;                                     \
-	result = same_string(res, exp);                          \
+	result = same_string(exp, res);                          \
 	result = check_mem_size(res, strlen(exp) + 1) && result; \
 	result = check_leaks(res) && result;                     \
-	null_check(fn_call, result);                             \
+	null_check(char *, fn_call, result);                     \
 	return result;
 
 void handle_signals();

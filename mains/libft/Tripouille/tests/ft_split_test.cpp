@@ -114,7 +114,7 @@ int main(void)
 
 	/* 42 */ check(tab[6] == NULL);
 	free(splitme); freeTab(tab); showLeaks();
-	
+
 	write(1, "\n", 1);
 	return (0);
 }
