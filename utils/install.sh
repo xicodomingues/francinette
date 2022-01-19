@@ -8,6 +8,15 @@ mkdir temp_____
 curl -L0 https://github.com/xicodomingues/francinette/archive/refs/heads/master.zip -o ~/temp_____/francinette.zip
 cd temp_____ || exit
 
+# if [ "$(uname)" != "Darwin" ]; then
+# 	sudo apt install unzip
+# 	sudo apt install gcc libpq-dev -y
+# 	sudo apt install python-dev  python-pip -y
+# 	sudo apt install python3-dev python3-pip python3-venv python3-wheel -y
+#	sudo apt install valgrind
+# 	pip3 install wheel
+# fi
+
 if ! unzip -qq francinette.zip ; then
 	echo "Please install unzip in your system"
 	exit 1
@@ -31,16 +40,24 @@ fi
 # activate venv
 . venv/bin/activate
 
+# if [ "$(uname)" != "Darwin" ]; then
+# 	python setup.py bdist_wheel
+# fi
+
 # install requirements
 if ! pip3 install -r requirements.txt ; then
 	echo 'Problem launching the installer. Contact me (fsoares- on slack)'
 	exit 1
 fi
 
-RC_FILE="$HOME/.bashrc"
-if [[ -f "$HOME/.zshrc" ]]; then
-	RC_FILE="$HOME/.zshrc"
-fi
+RC_FILE="$HOME/.zshrc"
+
+# if [ "$(uname)" != "Darwin" ]; then
+# 	RC_FILE="$HOME/.bashrc"
+# 	if [[ -f "$HOME/.zshrc" ]]; then
+# 		RC_FILE="$HOME/.zshrc"
+# 	fi
+# fi
 
 echo "try to add alias in file: $RC_FILE"
 

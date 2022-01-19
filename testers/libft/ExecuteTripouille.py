@@ -110,7 +110,7 @@ class ExecuteTripouille():
 
 		def match_failed(line, failed_tests):
 			for test in failed_tests:
-				if (re.match(rf"\s+/\* {test[0]} \*/ .*", line)):
+				if (re.match(rf"\s+/\*[ \w-]* {test[0]} [ \w-]*\*/ .*", line)):
 					return test
 			return False
 

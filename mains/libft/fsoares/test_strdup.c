@@ -5,17 +5,9 @@ int single_test_strdup(char *str)
 {
 	set_sign("ft_strdup(\"%s\")", escape_str(str));
 
-	char *res = ft_strdup(str);
 	char *res_std = strdup(str);
-
-	int result = check_mem_size(res, strlen(str) + 1);
-	result = same_mem(res, res_std, strlen(str) + 1) && result;
-
+	check_alloc_str_return(ft_strdup(str), res_std);
 	free(res_std);
-	result = check_leaks(res) && result;
-
-	null_check(ft_strdup(str), result);
-	return result;
 }
 
 int test_strdup()

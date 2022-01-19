@@ -4,15 +4,7 @@
 int test_single_substr(char *str, unsigned int start, size_t size, char *expected)
 {
 	set_sign("ft_substr(\"%s\", %u, %zu)", str, start, size);
-
-	char *res = ft_substr(str, start, size);
-
-	int result = same_string(expected, res);
-	result = check_mem_size(res, strlen(expected) + 1) && result;
-	result = check_leaks(res) && result;
-
-	null_check(ft_substr(str, start, size), result);
-	return result;
+	check_alloc_str_return(ft_substr(str, start, size), expected);
 }
 
 int test_substr()

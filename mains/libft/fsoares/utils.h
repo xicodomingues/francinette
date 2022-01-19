@@ -6,7 +6,7 @@
 /*   By: fsoares- <fsoares-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 13:40:02 by fsoares-          #+#    #+#             */
-/*   Updated: 2022/01/19 12:49:21 by fsoares-         ###   ########.fr       */
+/*   Updated: 2022/01/19 13:39:38 by fsoares-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ char escaped[1000];
 	printf("ft_%-13s: " YEL "No test yet\n" NC, #fn)
 
 #ifdef STRICT_MEM
-#define null_check(fn_call, result)                                         \
+#define null_check(fn_call, rst)                                            \
 	reset_malloc_mock();                                                    \
 	fn_call;                                                                \
 	int malloc_calls = reset_malloc_mock();                                 \
@@ -102,13 +102,28 @@ char escaped[1000];
 		sprintf(signature + g_offset, NC " NULL check for %ith malloc", i); \
 		malloc_set_null(i);                                                 \
 		char *res = fn_call;                                                \
-		result = check_leaks(res) && result;                                \
+		rst = check_leaks(res) && rst;                                      \
 		if (res != NULL)                                                    \
-			result = error("Should return NULL\n");                         \
+			rst = error("Should return NULL\n");                            \
 	}
 #else
 #define null_check(fn_call, result)
 #endif
+
+/**
+ * @brief given a function call that returns an allocated string and the
+ * expected return value, this macro will check that the string returned
+ * was the one expected as well as that there are no leaks and that it
+ * correctly handles allocation errors
+ */
+#define check_alloc_str_return(fn_call, exp)                 \
+	int result = 1;                                          \
+	char *res = fn_call;                                     \
+	result = same_string(res, exp);                          \
+	result = check_mem_size(res, strlen(exp) + 1) && result; \
+	result = check_leaks(res) && result;                     \
+	null_check(fn_call, result);                             \
+	return result;
 
 void handle_signals();
 

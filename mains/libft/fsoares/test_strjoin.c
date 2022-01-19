@@ -6,15 +6,7 @@
 int test_single_strjoin(char *str1, char *str2, char *expected)
 {
 	set_sign("ft_strjoin(\"%s\", \"%s\")", str1, str2);
-
-	char *res = ft_strjoin(str1, str2);
-
-	int result = same_string(expected, res);
-	result = check_mem_size(res, strlen(expected) + 1);
-	result = check_leaks(res) && result;
-
-	null_check(ft_strjoin(str1, str2), result);
-	return result;
+	check_alloc_str_return(ft_strjoin(str1, str2), expected);
 }
 
 int test_strjoin()

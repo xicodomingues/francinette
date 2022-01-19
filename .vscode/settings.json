@@ -35,7 +35,9 @@
 		"cmath": "c",
 		"type_traits": "c",
 		"typeinfo": "c",
-		"stdbool.h": "c"
+		"stdbool.h": "c",
+		"__locale": "c",
+		"complex": "c"
 	},
 	"python.linting.enabled": true,
 	"python.linting.pylintPath": "pylint",
