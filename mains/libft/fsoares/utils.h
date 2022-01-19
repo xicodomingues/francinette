@@ -6,7 +6,7 @@
 /*   By: fsoares- <fsoares-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 13:40:02 by fsoares-          #+#    #+#             */
-/*   Updated: 2022/01/19 03:03:12 by fsoares-         ###   ########.fr       */
+/*   Updated: 2022/01/19 11:04:37 by fsoares-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,13 +140,9 @@ void malloc_set_result(void *res);
 void malloc_set_null(int nth);
 int check_leaks(void *ptr);
 
-#ifndef HAVE_STRLCAT
+#ifndef __APPLE__
 size_t strlcat(char *dst, const char *src, size_t size);
-#endif
-#ifndef HAVE_STRLCPY
 size_t strlcpy(char *dst, const char *src, size_t size);
-#endif
-#ifndef HAVE_STRNSTR
 char *strnstr(const char *haystack, const char *needle, size_t len);
 #endif
 

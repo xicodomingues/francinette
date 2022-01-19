@@ -2,55 +2,36 @@
 
 int where_buffer = 0;
 
-void show_segfault()
+void show_signal_msg(char *message, char *resume)
 {
-	printf(CYN "%s" NC ": " LRED "Segmentation Fault!\n" NC, signature);
-	printf("ft_%-13s: " YEL "Segmentation fault" NC "\n", function);
+	printf(CYN "%s" NC ": " LRED "%s\n" NC, signature, message);
+	printf("ft_%-13s: " YEL "%s" NC "\n", function, resume);
 	exit(EXIT_FAILURE);
 }
-
-void show_abort()
-{
-	printf(CYN "%s" NC ": " LRED "Memory problems\n" NC, signature);
-	printf("ft_%-13s: " YEL "Abort" NC "\n", function);
-	exit(EXIT_FAILURE);
-}
-
-#ifdef __APPLE__
-void handler(int nSignum, struct __siginfo *a, void *b)
-{
-	nSignum = 3;
-	a = (struct __siginfo *)b;
-	show_segfault();
-}
-#endif
 
 void sigsegv(int signal)
 {
 	(void)signal;
-	show_segfault();
+	show_signal_msg("Segmentation fault!", "Segmentation fault");
 }
 
 void sigabort(int signal)
 {
 	(void)signal;
-	show_abort();
+	show_signal_msg("Memory problems, most likely double free.", "Abort");
+}
+
+void sigbus(int signal)
+{
+	(void)signal;
+	show_signal_msg("Bus error: Trying to set unwritable memory", "Bus Error");
 }
 
 void handle_signals()
 {
-#ifdef __APPLE__
-	struct sigaction action;
-	memset(&action, 0, sizeof(struct sigaction));
-	action.sa_flags = SA_SIGINFO;
-	action.sa_sigaction = handler;
-	sigaction(SIGSEGV, &action, NULL);
-	// TODO: check the abort signal in mac
-#endif
-#ifdef __unix__
 	signal(SIGSEGV, sigsegv);
 	signal(SIGABRT, sigabort);
-#endif
+	signal(SIGBUS, sigbus);
 }
 
 static int is_empty(unsigned char *p)
@@ -316,7 +297,7 @@ int check_mem_size(void *ptr, size_t expected_size)
 	return 1;
 }
 
-#ifndef HAVE_STRLCAT
+#ifndef __APPLE__
 
 size_t strlcat(char *dst, const char *src, size_t dsize)
 {
@@ -346,9 +327,6 @@ size_t strlcat(char *dst, const char *src, size_t dsize)
 	return (dlen + (src - osrc));
 }
 
-#endif /* !HAVE_STRLCAT */
-
-#ifndef HAVE_STRLCPY
 size_t strlcpy(char *dst, const char *src, size_t dsize)
 {
 	const char *osrc = src;
@@ -370,10 +348,6 @@ size_t strlcpy(char *dst, const char *src, size_t dsize)
 
 	return (src - osrc - 1);
 }
-
-#endif /* !HAVE_STRLCPY */
-
-#ifndef HAVE_STRNSTR
 
 char *strnstr(const char *s1, const char *s2, size_t n)
 {
