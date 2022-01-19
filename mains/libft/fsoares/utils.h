@@ -6,7 +6,7 @@
 /*   By: fsoares- <fsoares-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 13:40:02 by fsoares-          #+#    #+#             */
-/*   Updated: 2022/01/19 19:59:16 by fsoares-         ###   ########.fr       */
+/*   Updated: 2022/01/19 23:30:27 by fsoares-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,10 @@
 #define MEM_SIZE 0x100
 #define REPETITIONS 1000
 
-char function[1000];
-char signature[1000];
-int g_offset;
-char escaped[1000];
+extern char function[1000];
+extern char signature[1000];
+extern int g_offset;
+extern char escaped[1000];
 
 #define create_test_ctype(fn)                                                \
 	int test_##fn(void)                                                      \

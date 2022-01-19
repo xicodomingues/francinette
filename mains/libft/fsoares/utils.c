@@ -1,5 +1,9 @@
 #include "utils.h"
 
+char function[1000];
+char signature[1000];
+int g_offset;
+char escaped[1000];
 int where_buffer = 0;
 
 void show_signal_msg(char *message, char *resume)

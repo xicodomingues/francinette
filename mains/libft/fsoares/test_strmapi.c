@@ -13,7 +13,7 @@ char add(unsigned int i, char c) {
 
 char to_char_zero(unsigned int i, char c) {
 	c = (char)i;
-	return '0';
+	return '0' + c - c;
 }
 
 int test_strmapi()
