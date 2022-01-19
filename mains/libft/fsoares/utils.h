@@ -6,7 +6,7 @@
 /*   By: fsoares- <fsoares-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 13:40:02 by fsoares-          #+#    #+#             */
-/*   Updated: 2022/01/19 11:04:37 by fsoares-         ###   ########.fr       */
+/*   Updated: 2022/01/19 12:49:21 by fsoares-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,6 +132,15 @@ int same_offset(void *start, void *start_std, void *res, void *res_std);
 int same_return(void *res, void *dest);
 int same_size(void *ptr, void *ptr_std);
 int same_string(char *expected, char *actual);
+
+/**
+ * @brief In normal mode makes sure that you reserved enough space.
+ * In strict makes sure that you reserved the correct amount of space.
+ *
+ * @param ptr The pointer to check how much memory was allocated
+ * @param expected_size The expected allocated size
+ * @return If it passes or fails the test
+ */
 int check_mem_size(void *ptr, size_t expected_size);
 
 int reset_malloc_mock();
