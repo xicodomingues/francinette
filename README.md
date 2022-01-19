@@ -13,6 +13,7 @@ Use `francinette` or `paco` inside a project folder to run it.
 5. [FAQ](#faq)
 6. [Acknowledgments](#acknowledgments)
 
+
 ## Purpose:
 
 This is designed to function as a kind of `moulinette` that you can execute in local.
@@ -31,13 +32,17 @@ Francinette has an automatic installer.
 
 Copy the line bellow to your console and execute it. It will automatically download the repo,
 create the necessary folders and alias, and install a python virtual environment dedicated to
-running this tool
+running this tool.
+
+In linux it will also download and install the necessary packages for it to run. It needs
+admin permission to do that.
 
 ```
 bash -c "$(curl -fsSL https://raw.github.com/xicodomingues/francinette/master/utils/install.sh)"
 ```
 
 The francinette folder will be under your `$HOME` directory (`/User/<you_username>/`)
+
 
 ## Update:
 Normally francinette will prompt you when there is a new version, and you can then update it.
@@ -81,8 +86,17 @@ that contains the name of the project (for example `libft`). If there is no `Mak
 ```
 ~ $> francinette git@repo42.com/intra-uuid-234
 ```
+
 This command clones the git repository present in `git@repo42.com/intra-uuid-234` into the
 current folder and executes the corresponding tests
+
+```
+libft $> francinette -t 0       # disables the infinite loop protection
+
+libft $> francinette -t 30      # sets the infinite loop check timeout to 30 seconds
+
+libft $> francinette -t 1m      # sets the infinite loop check timeout to 1 minute
+```
 
 All the files are copied to the folder `~/francinette/temp/<project>`. In here is where the
 norminette is checked, the code compiled and the tests executed. Normally you do not need to
@@ -90,6 +104,7 @@ access this directory for anything. But if you run into unexpected problems, thi
 the magic happens.
 
 Log files can be found in: `~/francinette/logs`
+
 
 ## FAQ
 

@@ -6,7 +6,7 @@ from typing import List
 
 from halo import Halo
 from testers.libft.BaseExecutor import remove_ansi_colors
-from utils.ExecutionContext import is_strict
+from utils.ExecutionContext import get_timeout_script, is_strict
 from utils.TerminalColors import CT
 
 logger = logging.getLogger("fsoares")
@@ -71,7 +71,8 @@ class ExecuteFsoares():
 
 		def execute_test(func):
 			spinner.start(f"ft_{func.ljust(13)}:")
-			p = subprocess.run(f"$HOME/francinette/utils/timeout.sh 3s ./test_{func}.out",
+
+			p = subprocess.run(f"{get_timeout_script()} ./test_{func}.out",
 			                   capture_output=True,
 			                   text=True,
 			                   shell=True)

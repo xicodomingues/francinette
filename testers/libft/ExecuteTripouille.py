@@ -6,6 +6,7 @@ import sys
 
 from halo import Halo
 from testers.libft.BaseExecutor import remove_ansi_colors
+from utils.ExecutionContext import get_timeout_script
 from utils.TerminalColors import CT
 
 logger = logging.getLogger("tripouille")
@@ -84,7 +85,7 @@ class ExecuteTripouille():
 				return (func_name, res)
 
 		def get_command(function):
-			timeout = "$HOME/francinette/utils/timeout.sh 3s "
+			timeout = get_timeout_script();
 			if sys.platform.startswith("linux"):
 				return timeout + f"valgrind -q --leak-check=full ./ft_{function}.out"
 			else:
@@ -93,6 +94,7 @@ class ExecuteTripouille():
 		def execute_single_test(function):
 			spinner.start(f"ft_{function.ljust(13)}:")
 			command = get_command(function)
+			logger.info(f"executing {command}")
 			p = subprocess.run(command, capture_output=True, text=True, shell=True)
 			logger.info(p)
 			output = get_output(p)
