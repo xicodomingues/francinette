@@ -10,29 +10,24 @@ int check_allocs(void *content, t_list *expected)
 	return result;
 }
 
-int test_single_lstnew_str(char *content, t_list *expected)
+int test_single_lstnew(char *content, t_list *expected)
 {
 	set_sign("ft_lstnew(%p: %s)", content, escape_str(content));
 	expected->content = content;
 	return check_allocs(content, expected);
 }
 
-int test_single_lstnew_int(int *content, t_list *expected)
-{
-	set_sign("ft_lstnew(%p: %i)", content, *content);
-	expected->content = content;
-	return check_allocs(content, expected);
-}
-
 int test_lstnew()
 {
+	char str[20];
 	t_list expected;
 	expected.next = NULL;
-	int res = test_single_lstnew_str(NULL, &expected);
-	res = test_single_lstnew_str("hahaha", &expected) && res;
+	int res = test_single_lstnew(NULL, &expected);
+	res = test_single_lstnew("hahaha", &expected) && res;
 	for (int i = 0; i < REPETITIONS && res; i++)
 	{
-		res = test_single_lstnew_int(&i, &expected) && res;
+		sprintf(str, "%i", i);
+		res = test_single_lstnew(str, lstnew(str)) && res;
 	}
 	return res;
 }

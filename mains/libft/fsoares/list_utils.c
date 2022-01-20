@@ -3,15 +3,30 @@
 
 int same_list_elem(t_list *expected, t_list *result)
 {
+	if (expected == NULL && result == NULL)
+		return 1;
+	if ((expected == NULL && result != NULL)
+		|| (expected != NULL && result == NULL))
+	{
+		char *exp = node_to_str(expected);
+		char *res = node_to_str(result);
+		error("expected: %s, but got: %s\n", exp, res);
+		free(exp); free(res);
+		return 0;
+	}
 	if (expected->next == result->next && expected->content == result->content)
 		return 1;
-	return error("expected: {content: %p, next: %p} but got {content: %p, next: %p}\n",
-			expected->content, expected->next, result->content, result->next);
+
+	char *exp = node_to_str(expected);
+	char *res = node_to_str(result);
+	error("expected: %s, but got: %s\n", exp, res);
+	free(exp); free(res);
+	return 0;
 }
 
-t_list	*lstnew(void *content)
+t_list *lstnew(void *content)
 {
-	t_list	*new;
+	t_list *new;
 
 	new = malloc(sizeof(t_list));
 	if (new == NULL)
@@ -21,7 +36,7 @@ t_list	*lstnew(void *content)
 	return (new);
 }
 
-void	lstadd_front(t_list **list, t_list *new)
+void lstadd_front(t_list **list, t_list *new)
 {
 	new->next = *list;
 	*list = new;
@@ -62,7 +77,7 @@ t_list **create_list(int n_elems, ...)
 	t_list **header_ptr = malloc(sizeof(t_list *));
 	va_list argp;
 
-	t_list	*elements[100];
+	t_list *elements[100];
 
 	*header_ptr = NULL;
 	va_start(argp, n_elems);
@@ -92,7 +107,8 @@ int same_list(t_list **expected, t_list **result)
 	char *res_list_str = list_to_str(result);
 	char *expected_list_str = list_to_str(expected);
 	error("different lists\n" YEL "Expected" NC ": %s\n" YEL "Result  " NC ": %s\n",
-			expected_list_str, res_list_str);
-	free(res_list_str); free(expected_list_str);
+		  expected_list_str, res_list_str);
+	free(res_list_str);
+	free(expected_list_str);
 	return 0;
 }
