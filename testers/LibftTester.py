@@ -13,7 +13,7 @@ from testers.libft.ExecuteFsoares import ExecuteFsoares
 from testers.libft.ExecuteTripouille import ExecuteTripouille
 from halo import Halo
 
-from utils.ExecutionContext import is_strict
+from utils.ExecutionContext import has_bonus, is_strict, set_bonus
 
 logger = logging.getLogger("libft")
 
@@ -70,8 +70,8 @@ class LibftTester():
 		bonus = False
 		if self.has_bonus():
 			all_funcs += BONUS_FUNCTIONS
-			bonus = True
-		self.create_library(bonus)
+			set_bonus(True)
+		self.create_library()
 
 
 		present = self.get_present()
@@ -182,9 +182,9 @@ class LibftTester():
 
 			return result.stdout
 
-	def create_library(self, bonus):
+	def create_library(self):
 		os.chdir(os.path.join(self.temp_dir))
-		command = "make re" + (" bonus" if bonus else "")
+		command = "make re" + (" bonus" if has_bonus() else "")
 		logger.info(f"Calling '{command}' on directory {os.getcwd()}")
 
 		text = f"{CT.CYAN}Executing: {CT.B_WHITE}{command}{CT.NC}"

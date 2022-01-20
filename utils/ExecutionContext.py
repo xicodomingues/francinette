@@ -11,6 +11,7 @@ class TestRunInfo:
 	ex_to_execute: List[str]
 	strict: bool
 	timeout: int
+	has_bonus: bool
 
 
 _saved_context = None
@@ -29,6 +30,14 @@ def get_timeout_script() -> str:
 	if _saved_context.timeout == '0s':
 		return ""
 	return f"$HOME/francinette/utils/timeout.sh {_saved_context.timeout} "
+
+
+def set_bonus(value):
+	_saved_context.has_bonus = value
+
+
+def has_bonus():
+	return _saved_context.has_bonus
 
 
 def is_strict():

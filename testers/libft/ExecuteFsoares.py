@@ -6,7 +6,7 @@ from typing import List
 
 from halo import Halo
 from testers.libft.BaseExecutor import remove_ansi_colors
-from utils.ExecutionContext import get_timeout_script, is_strict
+from utils.ExecutionContext import get_timeout_script, has_bonus, is_strict
 from utils.TerminalColors import CT
 
 logger = logging.getLogger("fsoares")
@@ -38,8 +38,10 @@ class ExecuteFsoares():
 		text = f"{CT.CYAN}Compiling tests: {CT.B_WHITE}{self.folder}{CT.NC} (my own)"
 		with Halo(text=text) as spinner:
 			for func in self.to_execute:
-				strict = "-DSTRICT_MEM" if is_strict() else ""
-				command = f"gcc {strict} -Wall -Wextra -Werror utils.c test_{func}.c malloc_mock.c -L. -lft -o test_{func}.out -ldl"
+				strict = " -DSTRICT_MEM" if is_strict() else ""
+				bonus = " list_utils.c" if has_bonus() else ""
+				command = (f"gcc{strict} -Wall -Wextra -Werror utils.c{bonus} " +
+				           f"test_{func}.c malloc_mock.c -L. -lft -o test_{func}.out -ldl")
 				logger.info(f"executing {command}")
 				res = subprocess.run(command, shell=True, capture_output=True, text=True)
 				logger.info(res)
@@ -72,10 +74,7 @@ class ExecuteFsoares():
 		def execute_test(func):
 			spinner.start(f"ft_{func.ljust(13)}:")
 
-			p = subprocess.run(f"{get_timeout_script()} ./test_{func}.out",
-			                   capture_output=True,
-			                   text=True,
-			                   shell=True)
+			p = subprocess.run(f"{get_timeout_script()} ./test_{func}.out", capture_output=True, text=True, shell=True)
 			logger.info(p)
 			output = get_output(func, p)
 			return parse_output(remove_ansi_colors(output))

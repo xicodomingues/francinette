@@ -6,7 +6,7 @@
 /*   By: fsoares- <fsoares-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 13:40:02 by fsoares-          #+#    #+#             */
-/*   Updated: 2022/01/20 18:44:55 by fsoares-         ###   ########.fr       */
+/*   Updated: 2022/01/20 19:18:34 by fsoares-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,15 +162,6 @@ int same_offset(void *start, void *start_std, void *res, void *res_std);
 int same_return(void *res, void *dest);
 int same_size(void *ptr, void *ptr_std);
 int same_string(char *expected, char *actual);
-int same_list_elem(t_list *expected, t_list *result);
-
-t_list *lstnew(void *content);
-void lstadd_front(t_list **list, t_list *new);
-t_list **create_list(int n_elems, ...);
-int same_list(t_list **expected, t_list **result);
-
-char *node_to_str(t_list *node);
-char *list_to_str(t_list **head_ptr);
 
 /**
  * @brief In normal mode makes sure that you reserved enough space.

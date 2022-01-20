@@ -172,7 +172,8 @@ def main():
 			timeout += "s"
 
 		info = TestRunInfo(project, os.path.abspath(os.path.join(current_dir, "..")), mains_dir,
-		                   os.path.join(base, "temp", project), exercises, args.strict, timeout)
+		                   os.path.join(base, "temp", project), exercises, args.strict,
+						   timeout, False)
 
 		logger.info(f"Test params: {info}")
 
