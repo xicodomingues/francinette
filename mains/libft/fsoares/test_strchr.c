@@ -18,7 +18,7 @@ int test_strchr(void)
 	res = single_test_strchr("teste", 'e') && res;
 	res = single_test_strchr("teste", '\0') && res;
 	res = single_test_strchr("teste", 'a') && res;
-	res = single_test_strchr("teste", 256) && res;
+	res = single_test_strchr("teste", 'e' + 256) && res;
 	res = single_test_strchr("teste", 1024) && res;
 
 	return res;

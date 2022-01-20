@@ -3,7 +3,7 @@
 
 int single_test_strdup(char *str, char *expected)
 {
-	set_sign("ft_strdup(\"%s\")", escape_str(str));
+	set_sign("ft_strdup(%s)", escape_str(str));
 	check_alloc_str_return(ft_strdup(str), expected);
 }
 

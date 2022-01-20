@@ -3,7 +3,7 @@
 
 int single_test_strnstr(char *str1, char *str2, size_t n)
 {
-	sprintf(signature, "ft_strnstr(%p: \"%s\", \"%s\", %lu)", str1, escape_str(str1), escape_str(str2), n);
+	sprintf(signature, "ft_strnstr(%p: %s, %s, %lu)", str1, escape_str(str1), escape_str(str2), n);
 	char * res = ft_strnstr(str1, str2, n);
 	char * res_std = strnstr(str1, str2, n);
 

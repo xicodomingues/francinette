@@ -26,7 +26,7 @@ int main(void)
 	ft_lstadd_front(&l, ft_lstnew((void*)2));
 	/* 3 */ check(l->content == (void*)2);
 	/* 4 */ check(l->next->content == (void*)1);
-	/* 5 */ check(l->next->next == 0); 
+	/* 5 */ check(l->next->next == 0);
 	freeList(l); showLeaks();
 	write(1, "\n", 1);
 	return (0);

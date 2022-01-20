@@ -14,21 +14,6 @@ char **init_str_array(int n, ...)
 	return result;
 }
 
-int add_em_up(int count, ...)
-{
-	va_list ap;
-	int i, sum;
-
-	va_start(ap, count); /* Initialize the argument list. */
-
-	sum = 0;
-	for (i = 0; i < count; i++)
-		sum += va_arg(ap, int); /* Get the next argument value. */
-
-	va_end(ap); /* Clean up. */
-	return sum;
-}
-
 void print_string_arr(char **array)
 {
 	int i = 0;
@@ -68,7 +53,7 @@ int same_strings(char **expected, char **result)
 
 int test_single_split(char *s, char c, char **expected)
 {
-	set_sign("ft_split(\"%s\", %i:%s)", escape_str(s), c, escape_chr(c));
+	set_sign("ft_split(%s, %i:%s)", escape_str(s), c, escape_chr(c));
 
 	char **res = ft_split(s, c);
 
@@ -83,7 +68,7 @@ int test_single_split(char *s, char c, char **expected)
 	}
 	result = check_leaks(res) && result;
 
-	null_check(char **, ft_split(s, c), result)
+	null_check(ft_split(s, c), result)
 	return result;
 }
 

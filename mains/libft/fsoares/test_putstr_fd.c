@@ -3,7 +3,7 @@
 
 int single_test_putstr(char *str, int fd)
 {
-	set_sign("ft_putstr_fd(\"%s\", fd: %i)", escape_str(str), fd);
+	set_sign("ft_putstr_fd(%s, fd: %i)", escape_str(str), fd);
 
 	ft_putstr_fd(str, fd);
 	return check_leaks(NULL);
@@ -25,7 +25,7 @@ int test_putstr_fd()
 
 	char *expected = "abcdef\n1234\b567\nend!";
 	if(strcmp(content, expected) != 0)
-		res = error("expected: \"%s\", content of the file: \"%s\"\n", escape_str(expected), escape_str(content)) && res;
+		res = error("expected: %s, content of the file: %s\n", escape_str(expected), escape_str(content)) && res;
 
 	set_sign("ft_putstr_fd(\"%s\", fd: %i)", "teste", fd);
 	null_null_check(ft_putstr_fd("teste", fd), res);

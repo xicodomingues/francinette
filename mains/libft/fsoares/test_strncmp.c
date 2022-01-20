@@ -3,7 +3,7 @@
 
 int single_test_strncmp(char *str1, char *str2, size_t n)
 {
-	sprintf(signature, "ft_strncmp(\"%s\", \"%s\", %lu)", escape_str(str1), escape_str(str2), n);
+	sprintf(signature, "ft_strncmp(%s, %s, %lu)", escape_str(str1), escape_str(str2), n);
 	int res = ft_strncmp(str1, str2, n);
 	int res_std = strncmp(str1, str2, n);
 

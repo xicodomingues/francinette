@@ -27,7 +27,7 @@ int test_putnbr_fd()
 	char expected[1000];
 	sprintf(expected, "0\n10000043\n-10000043\n%i\n%i\n", INT_MAX, INT_MIN);
 	if(strcmp(content, expected) != 0)
-		res = error("expected: \"%s\", content of the file: \"%s\"\n", escape_str(expected), escape_str(content)) && res;
+		res = error("expected: %s, content of the file: %s\n", escape_str(expected), escape_str(content)) && res;
 
 	set_sign("ft_putnbr_fd(%i, fd: %i)", 10000, fd);
 	null_null_check(ft_putnbr_fd(10000, fd), res);

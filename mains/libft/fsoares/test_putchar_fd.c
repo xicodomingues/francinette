@@ -25,7 +25,7 @@ int test_putchar_fd()
 
 	char *expected = "axyz\x14";
 	if(strcmp(content, expected) != 0)
-		res = error("expected: \"%s\", content of the file: \"%s\"\n", escape_str(expected), escape_str(content)) && res;
+		res = error("expected: %s, content of the file: %s\n", escape_str(expected), escape_str(content)) && res;
 
 	set_sign("ft_putchar_fd(%i:%s, fd: %i)", 't', escape_chr('t'), fd);
 	null_null_check(ft_putchar_fd('t', fd), res);

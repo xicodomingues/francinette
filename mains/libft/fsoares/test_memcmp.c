@@ -3,7 +3,7 @@
 
 int single_test_memcmp(char *str1, char *str2, size_t n)
 {
-	sprintf(signature, "ft_memcmp(\"%s\", \"%s\", %lu)", escape_str(str1), escape_str(str2), n);
+	sprintf(signature, "ft_memcmp(%s, %s, %lu)", escape_str(str1), escape_str(str2), n);
 	int res = ft_memcmp(str1, str2, n);
 	int res_std = memcmp(str1, str2, n);
 

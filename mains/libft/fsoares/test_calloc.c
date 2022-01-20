@@ -13,7 +13,7 @@ int test_single_calloc(size_t count, size_t size)
 	result = same_mem(res_std, p, count * size) && result;
 	result = check_leaks(p) && result;
 
-	null_check(char *, ft_calloc(count, size), result);
+	null_check(ft_calloc(count, size), result);
 	return result;
 }
 

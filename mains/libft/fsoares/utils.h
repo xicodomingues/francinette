@@ -6,7 +6,7 @@
 /*   By: fsoares- <fsoares-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 13:40:02 by fsoares-          #+#    #+#             */
-/*   Updated: 2022/01/19 23:30:27 by fsoares-         ###   ########.fr       */
+/*   Updated: 2022/01/20 18:44:55 by fsoares-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@
 #define REPETITIONS 1000
 
 extern char function[1000];
-extern char signature[1000];
+extern char signature[10000];
 extern int g_offset;
 extern char escaped[1000];
 
@@ -95,7 +95,7 @@ extern char escaped[1000];
 	printf("ft_%-13s: " YEL "No test yet\n" NC, #fn)
 
 #ifdef STRICT_MEM
-#define null_check(r_type, fn_call, rst)                                    \
+#define null_check(fn_call, rst)                                            \
 	reset_malloc_mock();                                                    \
 	fn_call;                                                                \
 	int malloc_calls = reset_malloc_mock();                                 \
@@ -103,7 +103,7 @@ extern char escaped[1000];
 	{                                                                       \
 		sprintf(signature + g_offset, NC " NULL check for %ith malloc", i); \
 		malloc_set_null(i);                                                 \
-		r_type res = fn_call;                                               \
+		void *res = fn_call;                                                \
 		rst = check_leaks(res) && rst;                                      \
 		if (res != NULL)                                                    \
 			rst = error("Should return NULL\n");                            \
@@ -118,9 +118,10 @@ extern char escaped[1000];
 		sprintf(signature + g_offset, NC " NULL check for %ith malloc", i); \
 		fn_call;                                                            \
 		malloc_set_null(i);                                                 \
+		rst = check_leaks(NULL) && rst;                                     \
 	}
 #else
-#define null_check(r_type, fn_call, result)
+#define null_check(fn_call, result)
 #define null_null_check(fn_call, result)
 #endif
 
@@ -136,7 +137,7 @@ extern char escaped[1000];
 	result = same_string(exp, res);                          \
 	result = check_mem_size(res, strlen(exp) + 1) && result; \
 	result = check_leaks(res) && result;                     \
-	null_check(char *, fn_call, result);                     \
+	null_check(fn_call, result);                             \
 	return result;
 
 void handle_signals();
@@ -161,6 +162,15 @@ int same_offset(void *start, void *start_std, void *res, void *res_std);
 int same_return(void *res, void *dest);
 int same_size(void *ptr, void *ptr_std);
 int same_string(char *expected, char *actual);
+int same_list_elem(t_list *expected, t_list *result);
+
+t_list *lstnew(void *content);
+void lstadd_front(t_list **list, t_list *new);
+t_list **create_list(int n_elems, ...);
+int same_list(t_list **expected, t_list **result);
+
+char *node_to_str(t_list *node);
+char *list_to_str(t_list **head_ptr);
 
 /**
  * @brief In normal mode makes sure that you reserved enough space.

@@ -1,0 +1,30 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "cppbuild",
+			"label": "C/C++: clang build active file",
+			"command": "/usr/bin/clang",
+			"args": [
+				"-fdiagnostics-color=always",
+				"-g",
+				"utils.c",
+				"${file}",
+				"malloc_mock.c",
+				"-L.",
+				"-lft",
+				"-o",
+				"${fileBasenameNoExtension}",
+				"-ldl"
+			],
+			"options": {
+				"cwd": "${fileDirname}"
+			},
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": "build",
+			"detail": "compiler: /usr/bin/clang"
+		}
+	]
+}
