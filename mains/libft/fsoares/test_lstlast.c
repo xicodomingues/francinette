@@ -14,13 +14,14 @@ int single_test_lstlast(t_list **list, t_list *expected)
 
 int test_lstlast()
 {
-	int res = single_test_lstsize(create_list(0), NULL);
-	res = single_test_lstsize(create_list(1, "one"), 1) && res;
-	res = single_test_lstsize(
+	int res = single_test_lstlast(create_list(0), NULL);
+	res = single_test_lstlast(create_list(1, "one"), lstnew("one")) && res;
+	res = single_test_lstlast(
 		create_list(5, "one", "two", "three", "four", "five"),
-		5) && res;
+		lstnew("five")) && res;
 	return res;
 }
+
 int	main()
 {
 	handle_signals();
