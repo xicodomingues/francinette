@@ -56,7 +56,7 @@ int test_strnstr(void)
 	s2[3] = 0;
 	int other = single_test_strnstr((char *)s1, (char *)s2, 7);
 	if (!other) {
-		printf(LRED "You are not stoping at the '\\0'\n" NC);
+		printf(BRED "You are not stoping at the '\\0'\n" NC);
 		res = 0;
 	}
 	return res;

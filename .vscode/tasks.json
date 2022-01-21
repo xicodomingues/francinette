@@ -9,6 +9,7 @@
 				"-fdiagnostics-color=always",
 				"-g",
 				"utils.c",
+				"list_utils.c",
 				"${file}",
 				"malloc_mock.c",
 				"-L.",

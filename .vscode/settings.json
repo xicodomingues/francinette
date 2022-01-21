@@ -38,7 +38,8 @@
 		"stdbool.h": "c",
 		"__locale": "c",
 		"complex": "c",
-		"__config": "c"
+		"__config": "c",
+		"color.h": "c"
 	},
 	"python.linting.enabled": true,
 	"python.linting.pylintPath": "pylint",

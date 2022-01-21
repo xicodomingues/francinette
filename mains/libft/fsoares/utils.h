@@ -6,7 +6,7 @@
 /*   By: fsoares- <fsoares-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 13:40:02 by fsoares-          #+#    #+#             */
-/*   Updated: 2022/01/20 19:18:34 by fsoares-         ###   ########.fr       */
+/*   Updated: 2022/01/21 16:06:47 by fsoares-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,9 +87,9 @@ extern char escaped[1000];
 #define test(fn)                                        \
 	strcpy(function, #fn);                              \
 	if (!test_##fn())                                   \
-		printf("%-16s: " LRED "KO" NC "\n", "ft_" #fn); \
+		printf("%-16s: " BRED "KO" NC "\n", "ft_" #fn); \
 	else                                                \
-		printf("%-16s: " LGRN "OK" NC "\n", "ft_" #fn);
+		printf("%-16s: " BGRN "OK" NC "\n", "ft_" #fn);
 
 #define no_test(fn) \
 	printf("ft_%-13s: " YEL "No test yet\n" NC, #fn)
@@ -178,6 +178,7 @@ size_t get_malloc_size(void *ptr);
 void malloc_set_result(void *res);
 void malloc_set_null(int nth);
 int check_leaks(void *ptr);
+void print_mallocs();
 
 #ifndef __APPLE__
 size_t strlcat(char *dst, const char *src, size_t size);

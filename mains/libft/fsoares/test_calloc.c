@@ -23,7 +23,7 @@ int test_calloc()
 
 	res = test_single_calloc(0, 10) && res;
 	res = test_single_calloc(10, 0) && res;
-	res = test_single_calloc(10, sizeof(int)) && res;
+	res = test_single_calloc(10, sizeof(long)) && res;
 
 	return res;
 }
