@@ -1,10 +1,12 @@
 import logging
 import os
+from pipes import quote
 import re
 import subprocess
 from typing import List
 
 from halo import Halo
+from pexpect import run
 from testers.libft.BaseExecutor import remove_ansi_colors
 from utils.ExecutionContext import get_timeout_script, has_bonus, is_strict
 from utils.TerminalColors import CT
@@ -62,10 +64,9 @@ class ExecuteFsoares():
 			match = test_regex.match(lines[-1])
 			return (match.group(1), match.group(2), lines)
 
-		def get_output(func, p):
-			output = p.stdout
-			if p.returncode != 0 and "Alarm clock" in p.stderr:
-				output += f"ft_{func.ljust(13)}: {CT.B_YELLOW}Infinite Loop{CT.NC}\n"
+		def get_output(func, output):
+			if "Alarm clock" in output:
+				output = f"ft_{func.ljust(13)}: {CT.B_YELLOW}Infinite Loop{CT.NC}\n"
 			spinner.stop()
 			print(output, end="")
 			spinner.start()
@@ -73,10 +74,10 @@ class ExecuteFsoares():
 
 		def execute_test(func):
 			spinner.start(f"ft_{func.ljust(13)}:")
-
-			p = subprocess.run(f"{get_timeout_script()} ./test_{func}.out", capture_output=True, text=True, shell=True)
-			logger.info(p)
-			output = get_output(func, p)
+			out, code = run("sh -c " + quote(f"{get_timeout_script()} ./test_{func}.out"), withexitstatus=1)
+			output = out.decode('ascii', errors="backslashreplace");
+			logger.info(output)
+			output = get_output(func, output)
 			return parse_output(remove_ansi_colors(output))
 
 		result = [execute_test(func) for func in self.to_execute]

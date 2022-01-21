@@ -23,7 +23,7 @@ void sigsegv(int signal)
 void sigabort(int signal)
 {
 	(void)signal;
-	show_signal_msg("Memory problems, most likely double free.", "Abort");
+	show_signal_msg("Memory problems!", "Abort");
 }
 
 void sigbus(int signal)
