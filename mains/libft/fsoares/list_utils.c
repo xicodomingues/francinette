@@ -42,6 +42,31 @@ void lstadd_front(t_list **list, t_list *new)
 	*list = new;
 }
 
+t_list	*lstlast(t_list *lst)
+{
+	t_list	*prev;
+
+	prev = NULL;
+	while (lst != NULL)
+	{
+		prev = lst;
+		lst = lst->next;
+	}
+	return (prev);
+}
+
+void lstadd_back(t_list **list, t_list *new)
+{
+	t_list	*last;
+
+	last = lstlast(*list);
+	if (last == NULL)
+		*list = new;
+	else
+		last->next = new;
+}
+
+
 char *node_to_str(t_list *node)
 {
 	char *res = malloc(1000);
@@ -77,15 +102,10 @@ t_list **create_list(int n_elems, ...)
 	t_list **header_ptr = malloc(sizeof(t_list *));
 	va_list argp;
 
-	t_list *elements[100];
-
 	*header_ptr = NULL;
 	va_start(argp, n_elems);
 	for (int i = 0; i < n_elems; i++)
-		elements[i] = lstnew(va_arg(argp, char *));
-
-	for (int i = n_elems - 1; i >= 0; i--)
-		lstadd_front(header_ptr, elements[i]);
+		lstadd_back(header_ptr, lstnew(va_arg(argp, char *)));
 
 	va_end(argp);
 	return header_ptr;

@@ -300,7 +300,7 @@ int check_mem_size(void *ptr, size_t expected_size)
 	size_t res = get_malloc_size(ptr);
 
 #ifdef STRICT_MEM
-	char *message = "expected %zu bytes, got %zu bytes\n";
+	char *message = "expected %zu bytes, allocated %zu bytes\n";
 	if (expected_size != res)
 #else
 	char *message = "not enough memory allocated, needed: %zu, reserved: %zu\n";
@@ -310,6 +310,27 @@ int check_mem_size(void *ptr, size_t expected_size)
 		return error(message, expected_size, res);
 	}
 	return 1;
+}
+
+char	*my_strdup(const char *s1)
+{
+	return (my_strndup(s1, strlen(s1) + 1));
+}
+
+char	*my_strndup(const char *s1, size_t size)
+{
+	size_t	len;
+	char	*result;
+
+	len = strlen(s1) + 1;
+	if (size < len)
+		len = size + 1;
+	result = (char *)malloc(len * sizeof(char));
+	if (result == NULL)
+		return (result);
+	strlcpy(result, s1, len);
+	result[len] = 0;
+	return (result);
 }
 
 #ifndef __APPLE__

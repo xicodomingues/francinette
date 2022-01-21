@@ -6,7 +6,7 @@
 /*   By: fsoares- <fsoares-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 13:40:02 by fsoares-          #+#    #+#             */
-/*   Updated: 2022/01/21 16:06:47 by fsoares-         ###   ########.fr       */
+/*   Updated: 2022/01/21 18:08:46 by fsoares-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,7 +162,8 @@ int same_offset(void *start, void *start_std, void *res, void *res_std);
 int same_return(void *res, void *dest);
 int same_size(void *ptr, void *ptr_std);
 int same_string(char *expected, char *actual);
-
+char *my_strdup(const char *s1);
+char *my_strndup(const char *s1, size_t size);
 /**
  * @brief In normal mode makes sure that you reserved enough space.
  * In strict makes sure that you reserved the correct amount of space.
