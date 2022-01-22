@@ -4,15 +4,16 @@ cd "$HOME" || exit
 
 mkdir temp_____
 
-# download zip
-curl -L0 https://github.com/xicodomingues/francinette/archive/refs/heads/master.zip -o ~/temp_____/francinette.zip
 cd temp_____ || exit
+rm -rf francinette
+
+# download github
+git clone --recursive https://github.com/xicodomingues/francinette.git
 
 if [ "$(uname)" != "Darwin" ]; then
 	echo "Admin permissions needed to install C compilers, python, unzip and upgrade current packages"
 	sudo apt update
 	sudo apt upgrade
-	sudo apt install unzip
 	sudo apt install gcc clang libpq-dev -y
 	sudo apt install python-dev  python3-pip -y
 	sudo apt install python3-dev python3-venv python3-wheel -y
@@ -20,12 +21,6 @@ if [ "$(uname)" != "Darwin" ]; then
 	pip3 install wheel
 fi
 
-if ! unzip -qq francinette.zip ; then
-	echo "Please install unzip in your system"
-	exit 1
-fi
-
-mv francinette-master francinette
 cp -r francinette ..
 
 cd "$HOME" || exit

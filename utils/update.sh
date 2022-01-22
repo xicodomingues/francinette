@@ -4,17 +4,13 @@ cd "$HOME" || exit
 
 mkdir temp_____
 
-# download zip
-curl -L0 https://github.com/xicodomingues/francinette/archive/refs/heads/master.zip -o ~/temp_____/francinette.zip
+
 cd temp_____ || exit
+rm -rf francinette
 
-unzip -qq francinette.zip
+# download github
+git clone --recursive https://github.com/xicodomingues/francinette.git
 
-mv francinette-master francinette
-rm -rf francinette/c00
-rm -rf francinette/files
-
-cd "$HOME"/temp_____ || exit
 cp -r francinette ..
 
 cd "$HOME" || exit

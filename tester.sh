@@ -8,19 +8,28 @@ version=34
 
 cd "$HOME"/francinette || exit
 
-curl -sS "https://raw.githubusercontent.com/xicodomingues/francinette/master/tester.sh" -o new_tester
+git_url='https://raw.githubusercontent.com/xicodomingues/francinette/master'
+curl -sS "$git_url/tester.sh" -o new_tester
 
 new_version=$(grep -E '^version=\d+' new_tester)
 rm new_tester
 
 new_version="${new_version:8}"
 
+launch_update()
+{
+	cd "$HOME" || exit
+	curl "$git_url/utils/update.sh" -o new_francinette_update.sh
+	bash new_francinette_update.sh
+	rm -f new_francinette_update.sh
+}
+
 cd "$HOME"/francinette || exit
 if [[ (! -e donotupdate) && ($new_version -gt $version) ]]; then
 	while true; do
 		read -r -p "There is a new version of francinette, do you wish to update? ([Y]es/[N]o/[D]on't ask again): " yn
 		case $yn in
-			[Yy]* ) . utils/update.sh; break;;
+			[Yy]* ) launch_update; break;;
 			[Dd]* ) touch donotupdate; break;;
 			[Nn]* ) break;;
 			* ) echo "Please answer yes, no or don't ask again.";;
