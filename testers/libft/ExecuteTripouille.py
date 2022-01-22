@@ -6,7 +6,6 @@ import sys
 
 from halo import Halo
 from testers.libft.BaseExecutor import remove_ansi_colors
-from utils.ExecutionContext import get_timeout_script
 from utils.TerminalColors import CT
 
 logger = logging.getLogger("tripouille")
@@ -73,8 +72,7 @@ class ExecuteTripouille():
 					output += f"{CT.YELLOW}{int(match[-1][0]) + 1}."
 				output += f"INFINITE_LOOP{CT.NC}\n"
 			spinner.stop()
-			print(output.replace("\n", ""))
-			spinner.start()
+			print(output, end="")
 			return output
 
 		def parse_line(line):
@@ -85,11 +83,10 @@ class ExecuteTripouille():
 				return (func_name, res)
 
 		def get_command(function):
-			timeout = get_timeout_script();
 			if sys.platform.startswith("linux"):
-				return timeout + f"valgrind -q --leak-check=full ./ft_{function}.out"
+				return f"valgrind -q --leak-check=full ./ft_{function}.out"
 			else:
-				return timeout + f"./ft_{function}.out"
+				return f"./ft_{function}.out"
 
 		def execute_single_test(function):
 			spinner.start(f"ft_{function.ljust(13)}:")

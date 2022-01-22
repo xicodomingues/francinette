@@ -125,9 +125,6 @@ def main():
 	                    action="store_true",
 	                    help=("It restricts the tests around memory allocation so that it reserves the correct " +
 	                          "amount of memory and that checks nulls when allocating memory"))
-	parser.add_argument("-t", "--timeout", nargs="?",
-						help=("Set a timeout for the infinite loop check. By default it is 3s. " +
-							  "If set to zero, it will disable the functionality"))
 	args = parser.parse_args()
 
 	if args.update:
@@ -167,13 +164,9 @@ def main():
 
 		project = guess_project(current_dir)
 		mains_dir = os.path.join(base, "mains", project)
-		timeout = args.timeout or "3s"
-		if re.match("^\d+$", str(timeout)):
-			timeout += "s"
 
 		info = TestRunInfo(project, os.path.abspath(os.path.join(current_dir, "..")), mains_dir,
-		                   os.path.join(base, "temp", project), exercises, args.strict,
-						   timeout, False)
+		                   os.path.join(base, "temp", project), exercises, args.strict, False)
 
 		logger.info(f"Test params: {info}")
 

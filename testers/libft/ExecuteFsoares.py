@@ -8,7 +8,7 @@ from typing import List
 from halo import Halo
 from pexpect import run
 from testers.libft.BaseExecutor import remove_ansi_colors
-from utils.ExecutionContext import get_timeout_script, has_bonus, is_strict
+from utils.ExecutionContext import has_bonus, is_strict
 from utils.TerminalColors import CT
 
 logger = logging.getLogger("fsoares")
@@ -65,16 +65,13 @@ class ExecuteFsoares():
 			return (match.group(1), match.group(2), lines)
 
 		def get_output(func, output):
-			if "Alarm clock" in output:
-				output = f"ft_{func.ljust(13)}: {CT.B_YELLOW}Infinite Loop{CT.NC}\n"
 			spinner.stop()
 			print(output, end="")
-			spinner.start()
 			return output
 
 		def execute_test(func):
 			spinner.start(f"ft_{func.ljust(13)}:")
-			out, code = run("sh -c " + quote(f"{get_timeout_script()} ./test_{func}.out"), withexitstatus=1)
+			out, code = run("sh -c " + quote(f"./test_{func}.out"), withexitstatus=1)
 			output = out.decode('ascii', errors="backslashreplace");
 			logger.info(output)
 			output = get_output(func, output)

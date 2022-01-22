@@ -10,7 +10,6 @@ class TestRunInfo:
 	temp_dir: str
 	ex_to_execute: List[str]
 	strict: bool
-	timeout: int
 	has_bonus: bool
 
 
@@ -24,12 +23,6 @@ def set_contex(info: TestRunInfo):
 
 def get_context() -> TestRunInfo:
 	return _saved_context
-
-
-def get_timeout_script() -> str:
-	if _saved_context.timeout == '0s':
-		return ""
-	return f"$HOME/francinette/utils/timeout.sh {_saved_context.timeout} "
 
 
 def set_bonus(value):
