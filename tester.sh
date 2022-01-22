@@ -4,7 +4,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 current_dir=$PWD
 
 # check for updates
-version=33
+version=34
 
 cd "$HOME"/francinette || exit
 
@@ -22,7 +22,6 @@ launch_update()
 	curl "$git_url/utils/update.sh" -o new_francinette_update.sh
 	bash new_francinette_update.sh
 	rm -f new_francinette_update.sh
-	exit
 }
 
 cd "$HOME"/francinette || exit
