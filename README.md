@@ -90,14 +90,6 @@ that contains the name of the project (for example `libft`). If there is no `Mak
 This command clones the git repository present in `git@repo42.com/intra-uuid-234` into the
 current folder and executes the corresponding tests
 
-```
-libft $> francinette -t 0       # disables the infinite loop protection
-
-libft $> francinette -t 30      # sets the infinite loop check timeout to 30 seconds
-
-libft $> francinette -t 1m      # sets the infinite loop check timeout to 1 minute
-```
-
 All the files are copied to the folder `~/francinette/temp/<project>`. In here is where the
 norminette is checked, the code compiled and the tests executed. Normally you do not need to
 access this directory for anything. But if you run into unexpected problems, this is where
@@ -126,4 +118,5 @@ request for that change!
 ## Acknowledgments
 
 * To 42 for providing me this opportunity
-* To [Tripouille](https://github.com/Tripouille) for their excellent [libftTester](https://github.com/Tripouille/libftTester)
+* To [Tripouille](https://github.com/Tripouille) for [libftTester](https://github.com/Tripouille/libftTester)
+* To [jtoty](https://github.com/jtoty/Libftest) and [y3ll0w42](https://github.com/y3ll0w42) for [libft-war-machine](https://github.com/y3ll0w42/libft-war-machine)

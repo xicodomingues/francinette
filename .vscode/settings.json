@@ -51,6 +51,7 @@
 		"francinette",
 		"inplace",
 		"norminette",
+		"pexpect",
 		"Popen",
 		"Tripouille"
 	]

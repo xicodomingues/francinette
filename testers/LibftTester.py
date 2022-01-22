@@ -1,31 +1,36 @@
-from glob import glob
 import logging
 import os
-from pathlib import Path
 import re
 import shutil
 import subprocess
-import git
 from collections import namedtuple
+from pathlib import Path
+
+import git
+from halo import Halo
 from main import CT, TestRunInfo
+from utils.ExecutionContext import has_bonus, is_strict, set_bonus
+
 from testers.CommonTester import show_banner
 from testers.libft.ExecuteFsoares import ExecuteFsoares
 from testers.libft.ExecuteTripouille import ExecuteTripouille
-from halo import Halo
-
-from utils.ExecutionContext import has_bonus, is_strict, set_bonus
+from testers.libft.ExecuteWarMachine import ExecuteWarMachine
 
 logger = logging.getLogger("libft")
 
 Tester = namedtuple("Test", "name constructor")
 
-AVAILABLE_TESTERS = [Tester('Tripouille', ExecuteTripouille), Tester('fsoares', ExecuteFsoares)]
+AVAILABLE_TESTERS = [
+	Tester('war-machine', ExecuteWarMachine),
+	Tester('Tripouille', ExecuteTripouille),
+	Tester('fsoares', ExecuteFsoares)
+]
 
 FUNCTIONS_UNDER_TEST = [
-    "isalpha", "isdigit", "isalnum", "isascii", "isprint", "strlen", "memset", "bzero", "memcpy", "memmove", "strlcpy",
-    "strlcat", "toupper", "tolower", "strchr", "strrchr", "strncmp", "memchr", "memcmp", "strnstr", "atoi", "calloc",
-    "strdup", "substr", "strjoin", "strtrim", "split", "itoa", "strmapi", "striteri", "putchar_fd", "putstr_fd",
-    "putendl_fd", "putnbr_fd"
+	"isalpha", "isdigit", "isalnum", "isascii", "isprint", "strlen", "memset", "bzero", "memcpy", "memmove", "strlcpy",
+	"strlcat", "toupper", "tolower", "strchr", "strrchr", "strncmp", "memchr", "memcmp", "strnstr", "atoi", "calloc",
+	"strdup", "substr", "strjoin", "strtrim", "split", "itoa", "strmapi", "striteri", "putchar_fd", "putstr_fd",
+	"putendl_fd", "putnbr_fd"
 ]
 
 BONUS_FUNCTIONS = [
@@ -67,12 +72,10 @@ class LibftTester():
 		norm_res = self.check_norminette()
 
 		all_funcs = FUNCTIONS_UNDER_TEST
-		bonus = False
 		if self.has_bonus():
 			all_funcs += BONUS_FUNCTIONS
 			set_bonus(True)
 		self.create_library()
-
 
 		present = self.get_present()
 		to_execute = intersection(present, all_funcs)
@@ -92,7 +95,8 @@ class LibftTester():
 			else:
 				all_ok = False
 		if all_ok and not is_strict():
-			print(f"\nWant some more thorough tests? run {CT.B_CYAN}francinette{CT.NC} with {CT.B_WHITE}--strict{CT.NC}")
+			print(
+			    f"\nWant some more thorough tests? run {CT.B_CYAN}francinette{CT.NC} with {CT.B_WHITE}--strict{CT.NC}")
 
 	def has_bonus(self):
 		makefile = Path(self.temp_dir, "Makefile")
@@ -163,7 +167,6 @@ class LibftTester():
 					check_and_delete(repo, path)
 		except Exception as ex:
 			logger.exception(ex)
-
 
 	def check_norminette(self):
 		os.chdir(os.path.join(self.temp_dir))

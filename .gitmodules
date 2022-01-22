@@ -1,3 +1,6 @@
 [submodule "mains/libft/Tripouille"]
 	path = mains/libft/Tripouille
 	url = https://github.com/xicodomingues/libftTester
+[submodule "mains/libft/war-machine"]
+	path = mains/libft/war-machine
+	url = https://github.com/xicodomingues/libft-war-machine
