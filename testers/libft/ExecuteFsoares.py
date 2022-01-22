@@ -3,7 +3,7 @@ import os
 from pipes import quote
 import re
 import subprocess
-from typing import List
+from typing import Set
 
 from halo import Halo
 from pexpect import run
@@ -18,7 +18,7 @@ test_regex = re.compile(r"ft_(\w+)\s*: (.*)")
 
 class ExecuteFsoares():
 
-	def __init__(self, tests_dir, temp_dir, to_execute: List[str], missing) -> None:
+	def __init__(self, tests_dir, temp_dir, to_execute: Set[str], missing) -> None:
 		self.folder = "fsoares"
 		self.temp_dir = os.path.join(temp_dir, self.folder)
 		self.to_execute = to_execute
@@ -54,7 +54,7 @@ class ExecuteFsoares():
 			spinner.succeed()
 
 	def execute_tests(self):
-		print(f"{CT.CYAN}Testing:{CT.NC}")
+		print(f"{CT.CYAN}  Testing:{CT.NC}")
 		spinner = Halo(placement="right")
 
 		def parse_output(output: str):

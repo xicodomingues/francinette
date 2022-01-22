@@ -1,21 +1,25 @@
+from distutils import command
+import io
 import logging
 import os
 import re
 import subprocess
-from typing import List
+from time import sleep
+from typing import Set
+from utils.ExecutionContext import BONUS_FUNCTIONS, PART_1_FUNCTIONS, PART_2_FUNCTIONS
 from testers.libft.BaseExecutor import remove_ansi_colors
 
+from halo import Halo
 from utils.TerminalColors import CT
 
 logger = logging.getLogger("war-machine")
-
 
 func_line_regex = re.compile(r"^ft_(\w+).*(OK|KO)$")
 
 
 class ExecuteWarMachine():
 
-	def __init__(self, tests_dir, temp_dir, to_execute: List[str], missing) -> None:
+	def __init__(self, tests_dir, temp_dir, to_execute: Set[str], missing) -> None:
 		self.folder = "war-machine"
 		self.temp_dir = os.path.join(temp_dir, self.folder)
 		self.to_execute = to_execute
@@ -31,13 +35,43 @@ class ExecuteWarMachine():
 		os.chdir(self.temp_dir)
 		logger.info(f"On directory {os.getcwd()} Executing war-machine")
 
-		print(f"{CT.CYAN}Executing: {CT.B_WHITE}{self.folder}{CT.NC} ({self.git_url})")
-		proc = subprocess.Popen("./grademe.sh -ob -m | tee war-machine.stdout", shell=True)
+		print(f"{CT.CYAN}  Executing: {CT.B_WHITE}{self.folder}{CT.NC} ({self.git_url})")
+
+		command = self.get_command()
+		logger.info(f'executing: {command}')
+		proc = subprocess.Popen(command, shell=True)
 		proc.wait()
 		with open("war-machine.stdout") as out:
-			return [remove_ansi_colors(line) for line in out.readlines()];
+			res = [remove_ansi_colors(line) for line in out.readlines()]
+			logger.info(res)
+			return res
+
+	def get_command(self):
+		part1_inter = self.to_execute.intersection(PART_1_FUNCTIONS)
+		part2_inter = self.to_execute.intersection(PART_2_FUNCTIONS)
+		bonus_inter = self.to_execute.intersection(BONUS_FUNCTIONS)
+
+		logger.info(f"part1_funcs: {part1_inter}")
+		logger.info(f"part2_funcs: {part2_inter}")
+		logger.info(f"bonus_funcs: {bonus_inter}")
+
+		if len(self.to_execute) <= 10:
+			funcs = [f"ft_{func}" for func in self.to_execute]
+			return f"./grademe.sh -m {' '.join(funcs)} | tee war-machine.stdout"
+
+		if (part1_inter == PART_1_FUNCTIONS
+				and len(part2_inter) > 0
+				and len(bonus_inter) == 0):
+			return f"./grademe.sh -b -m | tee war-machine.stdout"
+
+		if (len(part1_inter) > 0
+				and len(part2_inter) == 0
+				and len(bonus_inter) == 0):
+			return f"./grademe.sh -op1 -m | tee war-machine.stdout"
+		return f"./grademe.sh -m | tee war-machine.stdout"
 
 	def parse_output(self, output):
+
 		def is_func(line: str):
 			return func_line_regex.match(line)
 

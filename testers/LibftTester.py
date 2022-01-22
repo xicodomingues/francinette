@@ -9,7 +9,7 @@ from pathlib import Path
 import git
 from halo import Halo
 from main import CT, TestRunInfo
-from utils.ExecutionContext import has_bonus, is_strict, set_bonus
+from utils.ExecutionContext import BONUS_FUNCTIONS, PART_1_FUNCTIONS, PART_2_FUNCTIONS, has_bonus, is_strict, set_bonus
 
 from testers.CommonTester import show_banner
 from testers.libft.ExecuteFsoares import ExecuteFsoares
@@ -21,30 +21,14 @@ logger = logging.getLogger("libft")
 Tester = namedtuple("Test", "name constructor")
 
 AVAILABLE_TESTERS = [
-	Tester('war-machine', ExecuteWarMachine),
-	Tester('Tripouille', ExecuteTripouille),
-	Tester('fsoares', ExecuteFsoares)
-]
-
-FUNCTIONS_UNDER_TEST = [
-	"isalpha", "isdigit", "isalnum", "isascii", "isprint", "strlen", "memset", "bzero", "memcpy", "memmove", "strlcpy",
-	"strlcat", "toupper", "tolower", "strchr", "strrchr", "strncmp", "memchr", "memcmp", "strnstr", "atoi", "calloc",
-	"strdup", "substr", "strjoin", "strtrim", "split", "itoa", "strmapi", "striteri", "putchar_fd", "putstr_fd",
-	"putendl_fd", "putnbr_fd"
-]
-
-BONUS_FUNCTIONS = [
-	"lstnew", "lstadd_front", "lstsize", "lstlast", "lstadd_back", "lstdelone", "lstclear", "lstiter", "lstmap"
+    Tester('war-machine', ExecuteWarMachine),
+    Tester('Tripouille', ExecuteTripouille),
+    Tester('fsoares', ExecuteFsoares)
 ]
 
 func_regex = re.compile(r"\w+\s+\**ft_(\w+)\(.*")
 
 norm_func_regex = re.compile(r"^([\w\\]+\.c): Error!")
-
-
-def intersection(lst1, lst2):
-	lst3 = [value for value in lst1 if value in lst2]
-	return lst3
 
 
 def run_command(command: str, spinner: Halo):
@@ -71,19 +55,19 @@ class LibftTester():
 		self.prepare_ex_files()
 		norm_res = self.check_norminette()
 
-		all_funcs = FUNCTIONS_UNDER_TEST
+		all_funcs = PART_1_FUNCTIONS.union(PART_2_FUNCTIONS)
 		if self.has_bonus():
-			all_funcs += BONUS_FUNCTIONS
+			all_funcs = all_funcs.union(BONUS_FUNCTIONS)
 			set_bonus(True)
 		self.create_library()
 
-		present = self.get_present()
-		to_execute = intersection(present, all_funcs)
+		present = set(self.get_present());
+		to_execute = present.intersection(all_funcs)
 
 		if info.ex_to_execute:
-			to_execute = info.ex_to_execute
+			to_execute = set(info.ex_to_execute)
 
-		missing = [f for f in all_funcs if f not in to_execute]
+		missing = {f for f in all_funcs if f not in to_execute}
 		logger.info(f"To execute: {to_execute}")
 		logger.info(f"Missing: {missing}")
 
