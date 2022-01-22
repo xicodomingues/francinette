@@ -4,7 +4,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 current_dir=$PWD
 
 # check for updates
-version=34
+version=33
 
 cd "$HOME"/francinette || exit
 
@@ -29,10 +29,10 @@ if [[ (! -e donotupdate) && ($new_version -gt $version) ]]; then
 	while true; do
 		read -r -p "There is a new version of francinette, do you wish to update? ([Y]es/[N]o/[D]on't ask again): " yn
 		case $yn in
-			[Yy]* ) launch_update; break;;
-			[Dd]* ) touch donotupdate; break;;
+			[Yy]* ) launch_update; break ;;
+			[Dd]* ) touch donotupdate; break ;;
 			[Nn]* ) break;;
-			* ) echo "Please answer yes, no or don't ask again.";;
+			* ) echo "Please answer yes, no or don't ask again." ;;
 		esac
 	done
 fi
