@@ -1,0 +1,3 @@
+[submodule "mains/libft/Tripouille"]
+	path = mains/libft/Tripouille
+	url = https://github.com/xicodomingues/libftTester
