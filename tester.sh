@@ -22,6 +22,7 @@ launch_update()
 	curl "$git_url/utils/update.sh" -o new_francinette_update.sh
 	bash new_francinette_update.sh
 	rm -f new_francinette_update.sh
+	exit
 }
 
 cd "$HOME"/francinette || exit
