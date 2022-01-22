@@ -64,13 +64,6 @@ class ExecuteTripouille():
 
 		def get_output(p):
 			output = p.stdout
-			if p.returncode != 0 and "Alarm clock" in p.stderr:
-				match = re.findall(r"(\d+)\.(\w+)", output)
-				if not match:
-					output += f"{CT.YELLOW}1."
-				else:
-					output += f"{CT.YELLOW}{int(match[-1][0]) + 1}."
-				output += f"INFINITE_LOOP{CT.NC}\n"
 			spinner.stop()
 			print(output, end="")
 			return output
