@@ -5,13 +5,13 @@ int same_list_elem(t_list *expected, t_list *result)
 {
 	if (expected == NULL && result == NULL)
 		return 1;
-	if ((expected == NULL && result != NULL)
-		|| (expected != NULL && result == NULL))
+	if ((expected == NULL && result != NULL) || (expected != NULL && result == NULL))
 	{
 		char *exp = node_to_str(expected);
 		char *res = node_to_str(result);
 		error("expected: %s, but got: %s\n", exp, res);
-		free(exp); free(res);
+		free(exp);
+		free(res);
 		return 0;
 	}
 	if (expected->next == result->next && expected->content == result->content)
@@ -20,7 +20,8 @@ int same_list_elem(t_list *expected, t_list *result)
 	char *exp = node_to_str(expected);
 	char *res = node_to_str(result);
 	error("expected: %s, but got: %s\n", exp, res);
-	free(exp); free(res);
+	free(exp);
+	free(res);
 	return 0;
 }
 
@@ -42,9 +43,9 @@ void lstadd_front(t_list **list, t_list *new)
 	*list = new;
 }
 
-t_list	*lstlast(t_list *lst)
+t_list *lstlast(t_list *lst)
 {
-	t_list	*prev;
+	t_list *prev;
 
 	prev = NULL;
 	while (lst != NULL)
@@ -57,7 +58,7 @@ t_list	*lstlast(t_list *lst)
 
 void lstadd_back(t_list **list, t_list *new)
 {
-	t_list	*last;
+	t_list *last;
 
 	last = lstlast(*list);
 	if (last == NULL)
@@ -65,7 +66,6 @@ void lstadd_back(t_list **list, t_list *new)
 	else
 		last->next = new;
 }
-
 
 char *node_to_str(t_list *node)
 {
@@ -131,4 +131,16 @@ int same_list(t_list **expected, t_list **result)
 	free(res_list_str);
 	free(expected_list_str);
 	return 0;
+}
+
+void lstclear(t_list **lst, void (*del)(void *))
+{
+	t_list *temp;
+	while (*lst != NULL)
+	{
+		temp = *lst;
+		del((*lst)->content);
+		*lst = (*lst)->next;
+		free(temp);
+	}
 }

@@ -7,36 +7,40 @@ char escaped[1000];
 char escaped_div = 2;
 int where_buffer = 0;
 
-void show_signal_msg(char *message, char *resume)
+void show_signal_msg(char *message, char *resume, int signal)
 {
 	printf(CYN "%s" NC ": " BRED "%s\n" NC, signature, message);
 	printf("ft_%-13s: " YEL "%s" NC "\n", function, resume);
-	exit(EXIT_FAILURE);
+	exit(signal);
 }
 
 void sigsegv(int signal)
 {
-	(void)signal;
-	show_signal_msg("Segmentation fault!", "Segmentation fault");
+	show_signal_msg("Segmentation fault!", "Segmentation fault", signal);
 }
 
 void sigabort(int signal)
 {
-	(void)signal;
-	show_signal_msg("Memory problems!", "Abort");
+	show_signal_msg("Memory problems!", "Abort", signal);
 }
 
 void sigbus(int signal)
 {
-	(void)signal;
-	show_signal_msg("Bus error: Trying to set unwritable memory", "Bus Error");
+	show_signal_msg("Bus error: Trying to set unwritable memory", "Bus Error", signal);
+}
+
+void sigalarm(int signal)
+{
+	show_signal_msg("Timeout occurred", "Infinite loop", signal);
 }
 
 void handle_signals()
 {
+	alarm(5);
 	signal(SIGSEGV, sigsegv);
 	signal(SIGABRT, sigabort);
 	signal(SIGBUS, sigbus);
+	signal(SIGALRM, sigalarm);
 	srand((unsigned int)time(NULL));
 	srandom((unsigned int)time(NULL));
 }

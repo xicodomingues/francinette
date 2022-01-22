@@ -12,7 +12,8 @@ int same_list(t_list **expected, t_list **result);
 
 char *node_to_str(t_list *node);
 char *list_to_str(t_list **head_ptr);
-t_list	*lstlast(t_list *lst);
+t_list *lstlast(t_list *lst);
 void lstadd_back(t_list **list, t_list *new);
+void lstclear(t_list **lst, void (*del)(void *));
 
 #endif
