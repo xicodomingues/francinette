@@ -28,4 +28,3 @@ if ! pip3 install -r requirements.txt ; then
 fi
 
 echo -e "\033[1;37mFrancinette is updated. You can use it again!\033[0m"
-exit
