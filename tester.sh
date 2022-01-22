@@ -22,6 +22,7 @@ launch_update()
 	curl "$git_url/utils/update.sh" -o new_francinette_update.sh
 	bash new_francinette_update.sh
 	rm -f new_francinette_update.sh
+	exit
 }
 
 cd "$HOME"/francinette || exit
@@ -31,7 +32,7 @@ if [[ (! -e donotupdate) && ($new_version -gt $version) ]]; then
 		case $yn in
 			[Yy]* ) launch_update; break ;;
 			[Dd]* ) touch donotupdate; break ;;
-			[Nn]* ) break;;
+			[Nn]* ) break ;;
 			* ) echo "Please answer yes, no or don't ask again." ;;
 		esac
 	done
