@@ -54,7 +54,7 @@ class ExecuteFsoares():
 			spinner.succeed()
 
 	def execute_tests(self):
-		print(f"{CT.CYAN}  Testing:{CT.NC}")
+		Halo(f"{CT.CYAN}Testing:{CT.NC}").info()
 		spinner = Halo(placement="right")
 
 		def parse_output(output: str):

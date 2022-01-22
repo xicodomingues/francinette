@@ -59,7 +59,7 @@ class ExecuteTripouille():
 
 	def execute_tests(self):
 
-		print(f"{CT.CYAN}  Testing:{CT.NC}")
+		Halo(f"{CT.CYAN}Testing:{CT.NC}").info()
 		spinner = Halo(placement="right")
 
 		def get_output(p):

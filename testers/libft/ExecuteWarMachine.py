@@ -35,7 +35,7 @@ class ExecuteWarMachine():
 		os.chdir(self.temp_dir)
 		logger.info(f"On directory {os.getcwd()} Executing war-machine")
 
-		print(f"{CT.CYAN}  Executing: {CT.B_WHITE}{self.folder}{CT.NC} ({self.git_url})")
+		Halo(f"{CT.CYAN}Executing: {CT.B_WHITE}{self.folder}{CT.NC} ({self.git_url})").info()
 
 		command = self.get_command()
 		logger.info(f'executing: {command}')
@@ -57,7 +57,7 @@ class ExecuteWarMachine():
 
 		if len(self.to_execute) <= 10:
 			funcs = [f"ft_{func}" for func in self.to_execute]
-			return f"./grademe.sh -m {' '.join(funcs)} | tee war-machine.stdout"
+			return f"./grademe.sh -l {' '.join(funcs)} | tee war-machine.stdout"
 
 		if (part1_inter == PART_1_FUNCTIONS
 				and len(part2_inter) > 0
