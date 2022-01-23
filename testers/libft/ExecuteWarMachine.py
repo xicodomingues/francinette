@@ -4,8 +4,7 @@ import logging
 import os
 import re
 import subprocess
-from time import sleep
-from typing import Set
+from typing import List
 from utils.ExecutionContext import BONUS_FUNCTIONS, PART_1_FUNCTIONS, PART_2_FUNCTIONS
 from testers.libft.BaseExecutor import remove_ansi_colors
 
@@ -19,7 +18,7 @@ func_line_regex = re.compile(r"^ft_(\w+).*(OK|KO)$")
 
 class ExecuteWarMachine():
 
-	def __init__(self, tests_dir, temp_dir, to_execute: Set[str], missing) -> None:
+	def __init__(self, tests_dir, temp_dir, to_execute: List[str], missing) -> None:
 		self.folder = "war-machine"
 		self.temp_dir = os.path.join(temp_dir, self.folder)
 		self.to_execute = to_execute
@@ -47,9 +46,10 @@ class ExecuteWarMachine():
 			return res
 
 	def get_command(self):
-		part1_inter = self.to_execute.intersection(PART_1_FUNCTIONS)
-		part2_inter = self.to_execute.intersection(PART_2_FUNCTIONS)
-		bonus_inter = self.to_execute.intersection(BONUS_FUNCTIONS)
+		to_execute_set = set(self.to_execute);
+		part1_inter = to_execute_set.intersection(PART_1_FUNCTIONS)
+		part2_inter = to_execute_set.intersection(PART_2_FUNCTIONS)
+		bonus_inter = to_execute_set.intersection(BONUS_FUNCTIONS)
 
 		logger.info(f"part1_funcs: {part1_inter}")
 		logger.info(f"part2_funcs: {part2_inter}")
@@ -59,7 +59,7 @@ class ExecuteWarMachine():
 			funcs = [f"ft_{func}" for func in self.to_execute]
 			return f"./grademe.sh -l {' '.join(funcs)} | tee war-machine.stdout"
 
-		if (part1_inter == PART_1_FUNCTIONS
+		if (len(part1_inter) == len(PART_1_FUNCTIONS)
 				and len(part2_inter) > 0
 				and len(bonus_inter) == 0):
 			return f"./grademe.sh -b -m | tee war-machine.stdout"

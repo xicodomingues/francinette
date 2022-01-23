@@ -6,14 +6,24 @@ void free_str_ptr(void *str)
 	free(*((void **)str));
 }
 
+char *node_ptr_to_str(t_list *node)
+{
+	char *res = malloc(1000);
+	if (node == NULL)
+		sprintf(res, "(null)");
+	else {
+		char *content = *((char **)node->content);
+		sprintf(res, "{node: %p -> %s}", node->content, escape_str(content));
+	}
+	return res;
+}
+
+
 int test_single_lstclear(t_list **list)
 {
 	t_list *to_func = NULL;
-	char *s = list_to_str(list);
 	char *args[10];
 	int i = 0;
-
-	set_sign("ft_lstclear(%s, [(x) => free(" RED "*" CYN "x)])", s); free(s);
 	while (*list != NULL)
 	{
 		args[i] = my_strdup((*list)->content);
@@ -21,6 +31,10 @@ int test_single_lstclear(t_list **list)
 		*list = (*list)->next;
 		i++;
 	}
+
+	char *s = list_to_str_fn(&to_func, node_ptr_to_str);
+	set_sign("ft_lstclear(%s, [(x) => free(" RED "*" CYN "x)])", s); free(s);
+
 	ft_lstclear(&to_func, free_str_ptr);
 	check_leaks(NULL);
 	if (*list != NULL)

@@ -79,6 +79,11 @@ char *node_to_str(t_list *node)
 
 char *list_to_str(t_list **head_ptr)
 {
+	return list_to_str_fn(head_ptr, node_to_str);
+}
+
+char *list_to_str_fn(t_list **head_ptr, char *(*str_node)(t_list *node))
+{
 	char *str = malloc(2000);
 	size_t offset = 0;
 	t_list *head = *head_ptr;
@@ -86,12 +91,12 @@ char *list_to_str(t_list **head_ptr)
 	char *node_str;
 	while (head != NULL)
 	{
-		node_str = node_to_str(head);
+		node_str = str_node(head);
 		offset += sprintf(str + offset, "%s -> ", node_str);
 		free(node_str);
 		head = head->next;
 	}
-	char *null = node_to_str(NULL);
+	char *null = str_node(NULL);
 	sprintf(str + offset, "%s>", null);
 	free(null);
 	return str;

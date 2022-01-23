@@ -31,6 +31,11 @@ func_regex = re.compile(r"\w+\s+\**ft_(\w+)\(.*")
 norm_func_regex = re.compile(r"^([\w\\]+\.c): Error!")
 
 
+def intersection(lst1, lst2):
+	lst3 = [value for value in lst1 if value in lst2]
+	return lst3
+
+
 def run_command(command: str, spinner: Halo):
 	to_execute = command.split(" ")
 	process = subprocess.run(to_execute, capture_output=True, text=True)
@@ -55,19 +60,19 @@ class LibftTester():
 		self.prepare_ex_files()
 		norm_res = self.check_norminette()
 
-		all_funcs = PART_1_FUNCTIONS.union(PART_2_FUNCTIONS)
+		all_funcs = PART_1_FUNCTIONS + PART_2_FUNCTIONS
 		if self.has_bonus():
-			all_funcs = all_funcs.union(BONUS_FUNCTIONS)
+			all_funcs = all_funcs + BONUS_FUNCTIONS
 			set_bonus(True)
 		self.create_library()
 
-		present = set(self.get_present());
-		to_execute = present.intersection(all_funcs)
+		present = self.get_present();
+		to_execute = intersection(present, all_funcs)
 
 		if info.ex_to_execute:
-			to_execute = set(info.ex_to_execute)
+			to_execute = info.ex_to_execute
 
-		missing = {f for f in all_funcs if f not in to_execute}
+		missing = [f for f in all_funcs if f not in to_execute]
 		logger.info(f"To execute: {to_execute}")
 		logger.info(f"Missing: {missing}")
 
