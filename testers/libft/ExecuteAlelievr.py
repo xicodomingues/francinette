@@ -28,8 +28,13 @@ class ExecuteAlelievr():
 			p = subprocess.run("make", capture_output=True)
 			logger.info(p)
 			if p.returncode != 0:
+				error = p.stderr.decode('ascii', errors="backslashreplace")
 				spinner.fail()
+				print(error)
 				raise Exception("Problem compiling tests")
 			spinner.succeed()
-		subprocess.run("./run_test")
+		Halo(text=f"{TC.CYAN}Testing:{TC.NC}").info()
+		p = subprocess.run("./run_test")
+		logger.info(p)
+		print()
 		return []

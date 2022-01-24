@@ -164,7 +164,7 @@ class CommonTester:
         ps = subprocess.Popen('./a.out', stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         output = subprocess.check_output(('cat', '-e'), stdin=ps.stdout)
         ps.wait()
-        output = output.decode('ascii', errors="replace")
+        output = output.decode('ascii', errors="backslashreplace")
 
         if ps.returncode == 0:
             logger.info("Executed program successfully main")

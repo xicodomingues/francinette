@@ -72,9 +72,13 @@ class LibftTester():
 		self.tests_dir = info.tests_dir
 		self.source_dir = info.source_dir
 
-		with Halo(text = f"{TC.CYAN}Preparing project{TC.NC}"):
-			self.prepare_ex_files()
+		self.prepare_ex_files()
 		norm_res = self.check_norminette()
+
+		srcs_path = Path(self.temp_dir, "__my_srcs")
+		logger.info(f"copying {self.source_dir} to {srcs_path}")
+		shutil.copytree(self.source_dir, srcs_path)
+
 		all_funcs = self.select_functions_to_execute(info)
 		self.create_library()
 		present = self.get_present();
@@ -183,10 +187,6 @@ class LibftTester():
 		logger.info(f"copying {self.source_dir} to {self.temp_dir}")
 		shutil.copytree(self.source_dir, self.temp_dir)
 
-		srcs_path = Path(self.temp_dir, "__my_srcs")
-		logger.info(f"copying {self.source_dir} to {srcs_path}")
-		shutil.copytree(self.source_dir, srcs_path)
-
 		try:
 			repo = git.Repo(self.temp_dir)
 			for path in Path(self.temp_dir).glob("*"):
@@ -195,6 +195,7 @@ class LibftTester():
 						check_and_delete(repo, file)
 				if path.is_file():
 					check_and_delete(repo, path)
+			os.removedirs(".git")
 		except Exception as ex:
 			logger.exception(ex)
 
