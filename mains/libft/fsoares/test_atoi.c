@@ -33,6 +33,11 @@ int test_atoi(void)
 	sprintf(buffer, "%i", INT_MIN);
 	res = single_test_atoi(buffer) && res;
 
+	for (int i = 0; i <= 0xFF; i++) {
+		sprintf(buffer, "%c%i", i, i + 1);
+		res = single_test_atoi(buffer) && res;
+	}
+
 	return res;
 }
 
