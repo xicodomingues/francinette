@@ -1,6 +1,9 @@
 
 import logging
+from nis import match
 import os
+from pathlib import Path
+import re
 import subprocess
 from halo import Halo
 from typing import List
@@ -8,6 +11,9 @@ from typing import List
 from utils.TerminalColors import TC
 
 logger = logging.getLogger("alelievr")
+
+func_regex = re.compile(r'^\s+\{"ft_(\w+)",.*')
+out_func_line = re.compile(r'^ft_(\w+):.*')
 
 class ExecuteAlelievr():
 
@@ -20,6 +26,23 @@ class ExecuteAlelievr():
 		self.git_url = "https://github.com/alelievr/libft-unit-test"
 
 	def execute(self):
+		self.prepare_tests()
+		return self.execute_tester()
+
+	def prepare_tests(self):
+		def handle_line(line: str):
+			match = func_regex.match(line)
+			if (match and match.group(1) in self.missing):
+				return "//" + line
+			return line
+
+		init = Path(self.temp_dir, 'src', 'init.c')
+		with open(init, 'r') as f_init:
+			lines = [handle_line(line) for line in f_init.readlines()]
+		with open(init, 'w') as f_init:
+			f_init.writelines(lines)
+
+	def execute_tester(self):
 		os.chdir(self.temp_dir)
 		logger.info(f"On directory {os.getcwd()} Executing war-machine")
 
@@ -37,4 +60,19 @@ class ExecuteAlelievr():
 		p = subprocess.run("./run_test")
 		logger.info(p)
 		print()
-		return []
+		return self.parse_output()
+
+	def parse_output(self):
+		def is_error(line):
+			if out_func_line.match(line):
+				for test in re.finditer(r"\[([^\]]+)\]", line):
+					if test.group(1) != 'OK':
+						return True
+			return False
+
+		log_path = Path(self.temp_dir, 'result.log')
+		with open(log_path, encoding='ascii', errors="backslashreplace") as file:
+			errors = [out_func_line.match(line).group(1) for line in file.readlines() if is_error(line)]
+			if len(errors) > 0:
+				print(f"\nFor a more detailed report open: {TC.PURPLE}{log_path}{TC.NC}\n")
+			return errors

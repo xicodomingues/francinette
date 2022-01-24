@@ -95,7 +95,7 @@ class LibftTester():
 		for tester in testers:
 			funcs_error.append(self.test_using(info, to_execute, missing, tester))
 		if not info.ex_to_execute:
-			self.show_summary(norm_res, present, missing, funcs_error)
+			self.show_summary(norm_res, present, missing, funcs_error, to_execute)
 
 	def select_functions_to_execute(self, info: TestRunInfo):
 		args = info.args;
@@ -134,7 +134,7 @@ class LibftTester():
 			logger.exception(ex)
 			return (tester.name, [])
 
-	def show_summary(self, norm: str, present, missing, errors):
+	def show_summary(self, norm: str, present, missing, errors, to_execute):
 
 		def get_norm_errors():
 
@@ -147,30 +147,36 @@ class LibftTester():
 			return [get_fname(line) for line in norm.splitlines() if is_file(line)]
 
 		norm_errors = get_norm_errors()
-		logger.warn(f"norminette errors: {norm_errors}")
-		if norm_errors:
-			print(f"{TC.B_RED}Norminette Errors:{TC.NC}")
-			print(', '.join(norm_errors))
-
-		logger.warn(f"missing functions: {missing}")
-
-		if missing:
-			print(f"\n{TC.B_RED}Missing functions: {TC.NC}{', '.join(missing)}")
-
-		logger.warn(f"errors in functions: {errors}")
 		error_funcs = set()
 		for results in errors:
 			error_funcs = error_funcs.union(results[1])
-		if error_funcs:
-			print(f"\n{TC.B_RED}Failed tests: {TC.NC}{', '.join(error_funcs)}")
 
-		if not missing and not norm_errors and not error_funcs:
+		has_errors = missing or norm_errors or error_funcs
+		if (not has_errors):
 			print(f"\n🎉🥳 {TC.B_GREEN}All tests passed! Congratulations!{TC.NC} 🥳🎉")
 			logger.info("All tests ok!")
 			if not is_strict():
 				print(f"\nWant some more thorough tests? run {TC.B_PURPLE}francinette{TC.NC}" +
 					  f" with {TC.B_WHITE}--strict{TC.NC}")
 			return True
+
+		print(f"\n{TC.B_CYAN}Summary{TC.NC}:\n")
+
+		logger.warn(f"norminette errors: {norm_errors}")
+		if norm_errors:
+			print(f"{TC.B_YELLOW}Norminette Errors:{TC.NC}", ', '.join(norm_errors))
+
+		logger.warn(f"missing functions: {missing}")
+		if missing:
+			print(f"\n{TC.B_RED}Missing functions: {TC.NC}{', '.join(missing)}")
+
+		logger.warn(f"errors in functions: {errors}")
+		if error_funcs:
+			print(f"\n{TC.B_RED}Failed tests: {TC.NC}{', '.join(error_funcs)}")
+
+		tests_ok = [test for test in to_execute if test not in errors]
+		if error_funcs:
+			print(f"\n{TC.B_GREEN}Passed tests: {TC.NC}{', '.join(tests_ok)}")
 		return False
 
 	def prepare_ex_files(self):
