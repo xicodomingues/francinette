@@ -174,7 +174,7 @@ class LibftTester():
 		logger.info(f"copying {self.source_dir} to {self.temp_dir}")
 		shutil.copytree(self.source_dir, self.temp_dir)
 
-		srcs_path = Path(self.temp_dir, "srcs")
+		srcs_path = Path(self.temp_dir, "__my_srcs")
 		logger.info(f"copying {self.source_dir} to {srcs_path}")
 		shutil.copytree(self.source_dir, srcs_path)
 
