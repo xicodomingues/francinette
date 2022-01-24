@@ -29,6 +29,7 @@ int test_single_lstmap(t_list **initial, t_list **expected)
 	lstclear(&res, free);
 	result = check_leaks(NULL) && result;
 
+#ifdef STRICT_MEM
 	reset_malloc_mock();
 	ft_lstmap(*initial, map_length, delete);
 	int malloc_calls = reset_malloc_mock();
@@ -47,6 +48,7 @@ int test_single_lstmap(t_list **initial, t_list **expected)
 		if (res != NULL)
 			result = error("Should return NULL\n");
 	}
+#endif
 	return result;
 }
 

@@ -13,7 +13,7 @@ from pathlib import Path
 from git import Repo
 
 from utils.ExecutionContext import TestRunInfo, set_contex
-from utils.TerminalColors import CT
+from utils.TerminalColors import TC
 
 logger = logging.getLogger("main")
 
@@ -62,7 +62,7 @@ def guess_project(current_dir):
 		return "libft"
 
 	raise Exception(f"Francinette needs to be executed inside a project folder\n" +
-	                f"{CT.NC}If you are in a project folder, please make sure that you have a valid Makefile " +
+	                f"{TC.NC}If you are in a project folder, please make sure that you have a valid Makefile " +
 	                f"and that you are creating the expected turn in files (for example 'libft.a')")
 
 
@@ -174,9 +174,9 @@ def main():
 		execute_tests(info)
 
 		if from_git:
-			print(f"You can see the cloned repository in {CT.B_WHITE}{git_dir}{CT.NC}")
+			print(f"You can see the cloned repository in {TC.B_WHITE}{git_dir}{TC.NC}")
 	except Exception as ex:
-		print(f"{CT.B_RED}{ex}{CT.NC}")
+		print(f"{TC.B_RED}{ex}{TC.NC}")
 		logger.exception(ex)
 
 

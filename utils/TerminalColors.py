@@ -1,5 +1,5 @@
 
-class CT:
+class TC:
 	B_WHITE = '\033[1;37m'
 	RED = '\033[0;31m'
 	GREEN = '\033[0;32m'

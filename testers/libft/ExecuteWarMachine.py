@@ -3,13 +3,14 @@ import io
 import logging
 import os
 import re
+import shutil
 import subprocess
 from typing import List
-from utils.ExecutionContext import BONUS_FUNCTIONS, PART_1_FUNCTIONS, PART_2_FUNCTIONS
+from utils.ExecutionContext import BONUS_FUNCTIONS, PART_1_FUNCTIONS, PART_2_FUNCTIONS, intersection
 from testers.libft.BaseExecutor import remove_ansi_colors
 
 from halo import Halo
-from utils.TerminalColors import CT
+from utils.TerminalColors import TC
 
 logger = logging.getLogger("war-machine")
 
@@ -34,41 +35,31 @@ class ExecuteWarMachine():
 		os.chdir(self.temp_dir)
 		logger.info(f"On directory {os.getcwd()} Executing war-machine")
 
-		Halo(f"{CT.CYAN}Executing: {CT.B_WHITE}{self.folder}{CT.NC} ({self.git_url})").info()
+		Halo(f"{TC.CYAN}Executing: {TC.B_WHITE}{self.folder}{TC.NC} ({self.git_url})").info()
 
 		command = self.get_command()
 		logger.info(f'executing: {command}')
-		proc = subprocess.Popen(command, shell=True)
+		proc = subprocess.Popen(['/bin/bash', '-c', command])
 		proc.wait()
 		with open("war-machine.stdout") as out:
 			res = [remove_ansi_colors(line) for line in out.readlines()]
 			logger.info(res)
+			print(TC.NC);
 			return res
 
 	def get_command(self):
-		to_execute_set = set(self.to_execute);
-		part1_inter = to_execute_set.intersection(PART_1_FUNCTIONS)
-		part2_inter = to_execute_set.intersection(PART_2_FUNCTIONS)
-		bonus_inter = to_execute_set.intersection(BONUS_FUNCTIONS)
+		part1_inter = intersection(self.to_execute, PART_1_FUNCTIONS)
+		part2_inter = intersection(self.to_execute, PART_2_FUNCTIONS)
+		bonus_inter = intersection(self.to_execute, BONUS_FUNCTIONS)
 
 		logger.info(f"part1_funcs: {part1_inter}")
 		logger.info(f"part2_funcs: {part2_inter}")
 		logger.info(f"bonus_funcs: {bonus_inter}")
 
-		if len(self.to_execute) <= 10:
-			funcs = [f"ft_{func}" for func in self.to_execute]
-			return f"./grademe.sh -l {' '.join(funcs)} | tee war-machine.stdout"
-
-		if (len(part1_inter) == len(PART_1_FUNCTIONS)
-				and len(part2_inter) > 0
-				and len(bonus_inter) == 0):
-			return f"./grademe.sh -b -m | tee war-machine.stdout"
-
-		if (len(part1_inter) > 0
-				and len(part2_inter) == 0
-				and len(bonus_inter) == 0):
-			return f"./grademe.sh -op1 -m | tee war-machine.stdout"
-		return f"./grademe.sh -m | tee war-machine.stdout"
+		force_makefile = " -l" if len(self.to_execute) < 5 else ""
+		return (f"./my_tester.sh " +
+				f"\"{' '.join(part1_inter)}\" \"{' '.join(part2_inter)}\" \"{' '.join(bonus_inter)}\"" +
+				f"{force_makefile} | tee war-machine.stdout")
 
 	def parse_output(self, output):
 

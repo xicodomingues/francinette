@@ -51,3 +51,8 @@ def has_bonus():
 
 def is_strict():
 	return _saved_context.strict
+
+
+def intersection(lst1, lst2):
+	lst3 = [value for value in lst1 if value in lst2]
+	return lst3

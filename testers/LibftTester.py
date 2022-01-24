@@ -8,8 +8,8 @@ from pathlib import Path
 
 import git
 from halo import Halo
-from main import CT, TestRunInfo
-from utils.ExecutionContext import BONUS_FUNCTIONS, PART_1_FUNCTIONS, PART_2_FUNCTIONS, has_bonus, is_strict, set_bonus
+from main import TC, TestRunInfo
+from utils.ExecutionContext import BONUS_FUNCTIONS, PART_1_FUNCTIONS, PART_2_FUNCTIONS, has_bonus, intersection, is_strict, set_bonus
 
 from testers.CommonTester import show_banner
 from testers.libft.ExecuteFsoares import ExecuteFsoares
@@ -29,11 +29,6 @@ AVAILABLE_TESTERS = [
 func_regex = re.compile(r"\w+\s+\**ft_(\w+)\(.*")
 
 norm_func_regex = re.compile(r"^([\w\\]+\.c): Error!")
-
-
-def intersection(lst1, lst2):
-	lst3 = [value for value in lst1 if value in lst2]
-	return lst3
 
 
 def run_command(command: str, spinner: Halo):
@@ -76,16 +71,12 @@ class LibftTester():
 		logger.info(f"To execute: {to_execute}")
 		logger.info(f"Missing: {missing}")
 
-		all_ok = True
+		funcs_error = []
 		for tester in AVAILABLE_TESTERS:
-			funcs_error = self.test_using(info, to_execute, missing, tester)
-			if not info.ex_to_execute:
-				all_ok = self.show_summary(norm_res, present, missing, funcs_error) and all_ok
-			else:
-				all_ok = False
-		if all_ok and not is_strict():
-			print(
-			    f"\nWant some more thorough tests? run {CT.B_CYAN}francinette{CT.NC} with {CT.B_WHITE}--strict{CT.NC}")
+			funcs_error.append(self.test_using(info, to_execute, missing, tester))
+		if not info.ex_to_execute:
+			self.show_summary(norm_res, present, missing, funcs_error)
+
 
 	def has_bonus(self):
 		makefile = Path(self.temp_dir, "Makefile")
@@ -98,7 +89,7 @@ class LibftTester():
 		self.prepare_tests(tester.name)
 
 		tx = tester.constructor(self.tests_dir, info.temp_dir, to_execute, missing)
-		return tx.execute()
+		return (tester.name, tx.execute())
 
 	def show_summary(self, norm: str, present, missing, errors):
 
@@ -115,20 +106,27 @@ class LibftTester():
 		norm_errors = get_norm_errors()
 		logger.warn(f"norminette errors: {norm_errors}")
 		if norm_errors:
-			print(f"{CT.B_RED}Norminette Errors:{CT.NC}")
+			print(f"{TC.B_RED}Norminette Errors:{TC.NC}")
 			print(', '.join(norm_errors))
 
 		logger.warn(f"missing functions: {missing}")
+
 		if missing:
-			print(f"\n{CT.B_RED}Missing functions: {CT.NC}{', '.join(missing)}")
+			print(f"\n{TC.B_RED}Missing functions: {TC.NC}{', '.join(missing)}")
 
 		logger.warn(f"errors in functions: {errors}")
-		if errors:
-			print(f"\n{CT.B_RED}Failed tests: {CT.NC}{', '.join(errors)}")
+		error_funcs = set()
+		for results in errors:
+			error_funcs = error_funcs.union(results[1])
+		if error_funcs:
+			print(f"\n{TC.B_RED}Failed tests: {TC.NC}{', '.join(error_funcs)}")
 
-		if not missing and not norm_errors and not errors:
-			print(f"\n🎉🥳 {CT.B_GREEN}All tests passed! Congratulations!{CT.NC} 🥳🎉")
+		if not missing and not norm_errors and not error_funcs:
+			print(f"\n🎉🥳 {TC.B_GREEN}All tests passed! Congratulations!{TC.NC} 🥳🎉")
 			logger.info("All tests ok!")
+			if not is_strict():
+				print(f"\nWant some more thorough tests? run {TC.B_PURPLE}francinette{TC.NC}" +
+					  f" with {TC.B_WHITE}--strict{TC.NC}")
 			return True
 		return False
 
@@ -162,13 +160,13 @@ class LibftTester():
 		logger.info(f"On directory {os.getcwd()}")
 		norm_exec = ["norminette", "-R", "CheckForbiddenSourceHeader"]
 
-		text = f"{CT.CYAN}Executing: {CT.B_WHITE}{' '.join(norm_exec)}{CT.NC}"
+		text = f"{TC.CYAN}Executing: {TC.B_WHITE}{' '.join(norm_exec)}{TC.NC}"
 		with Halo(text=text) as spinner:
 			result = subprocess.run(norm_exec, capture_output=True, text=True)
 			logger.info(result)
 			if result.returncode != 0:
 				spinner.fail()
-				print(f"{CT.YELLOW}{result.stdout}{CT.NC}")
+				print(f"{TC.YELLOW}{result.stdout}{TC.NC}")
 			else:
 				spinner.succeed()
 
@@ -179,7 +177,7 @@ class LibftTester():
 		command = "make re" + (" bonus" if has_bonus() else "")
 		logger.info(f"Calling '{command}' on directory {os.getcwd()}")
 
-		text = f"{CT.CYAN}Executing: {CT.B_WHITE}{command}{CT.NC}"
+		text = f"{TC.CYAN}Executing: {TC.B_WHITE}{command}{TC.NC}"
 		with Halo(text=text) as spinner:
 			run_command(command, spinner)
 			spinner.succeed()
@@ -199,7 +197,7 @@ class LibftTester():
 		# copy compiled library
 		library = os.path.join(self.temp_dir, "libft.a")
 		if not os.path.exists(library):
-			raise Exception(f"{CT.B_RED}libft.a{CT.RED} was not created. Please create it in the Makefile.")
+			raise Exception(f"{TC.B_RED}libft.a{TC.RED} was not created. Please create it in the Makefile.")
 		logger.info(f"Copying libft.a from {library} to {temp_dir}")
 		shutil.copy(library, temp_dir)
 
@@ -213,7 +211,7 @@ class LibftTester():
 	def get_present(self):
 		header = os.path.join(self.temp_dir, "libft.h")
 		if not os.path.exists(header):
-			raise Exception(f"There is no {CT.B_RED}libft.h{CT.RED} present")
+			raise Exception(f"There is no {TC.B_RED}libft.h{TC.RED} present")
 		with open(header, "r") as h:
 			funcs_str = [line for line in h.readlines() if func_regex.match(line)]
 			return [func_regex.match(line).group(1) for line in funcs_str]

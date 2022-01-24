@@ -125,7 +125,9 @@ int check_leaks(void *result)
 		t_node tmp = allocations[pos];
 		if (!tmp.freed && tmp.returned)
 		{
-			error("Memory leak: %p - %zu bytes\n", tmp.returned, tmp.size);
+			if (res)
+				error("\n");
+			printf("Memory leak: %p - %zu bytes\n", tmp.returned, tmp.size);
 			res = 0;
 		}
 	}

@@ -9,7 +9,7 @@ from halo import Halo
 from pexpect import run
 from testers.libft.BaseExecutor import remove_ansi_colors
 from utils.ExecutionContext import has_bonus, is_strict
-from utils.TerminalColors import CT
+from utils.TerminalColors import TC
 
 logger = logging.getLogger("fsoares")
 
@@ -30,6 +30,7 @@ class ExecuteFsoares():
 		self.compile_test()
 		result = self.execute_tests()
 		logger.info(f"result: {result}")
+		print()
 		return self.show_failed(result)
 
 	def compile_test(self):
@@ -37,7 +38,7 @@ class ExecuteFsoares():
 		logger.info(f"On directory {os.getcwd()}")
 
 		print()
-		text = f"{CT.CYAN}Compiling tests: {CT.B_WHITE}{self.folder}{CT.NC} (my own)"
+		text = f"{TC.CYAN}Compiling tests: {TC.B_WHITE}{self.folder}{TC.NC} (my own)"
 		with Halo(text=text) as spinner:
 			for func in self.to_execute:
 				strict = " -DSTRICT_MEM" if is_strict() else ""
@@ -54,7 +55,7 @@ class ExecuteFsoares():
 			spinner.succeed()
 
 	def execute_tests(self):
-		Halo(f"{CT.CYAN}Testing:{CT.NC}").info()
+		Halo(f"{TC.CYAN}Testing:{TC.NC}").info()
 		spinner = Halo(placement="right")
 
 		def parse_output(output: str):

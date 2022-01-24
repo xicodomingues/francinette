@@ -1,7 +1,7 @@
 import logging
 import re
 
-from utils.TerminalColors import CT
+from utils.TerminalColors import TC
 
 logger = logging.getLogger()
 ansi_columns = re.compile(r'\x1B(?:\[[0-?]*G)')

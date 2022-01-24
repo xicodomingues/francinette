@@ -6,47 +6,47 @@ import shutil
 import subprocess
 
 from utils.ExecutionContext import TestRunInfo
-from utils.TerminalColors import CT
+from utils.TerminalColors import TC
 
 logger = logging.getLogger()
 
 DEFAULT_COMPILE_FLAGS = ["-Wall", "-Wextra", "-Werror"]
-IGNORED_EXERCISE_HEADER = f"{CT.YELLOW}" \
+IGNORED_EXERCISE_HEADER = f"{TC.YELLOW}" \
         "═════════════════════════════════ #### ignored ═════════════════════════════════" \
-        f"{CT.NC}"
+        f"{TC.NC}"
 
-EXERCISE_HEADER = f"{CT.B_BLUE}" \
+EXERCISE_HEADER = f"{TC.B_BLUE}" \
         "═════════════════════════════════ Testing #### ═════════════════════════════════" \
-        f"{CT.NC}"
+        f"{TC.NC}"
 
-TEST_PASSED = f"\n{CT.B_GREEN}" \
+TEST_PASSED = f"\n{TC.B_GREEN}" \
         "══════════════════════════════    #### passed!    ══════════════════════════════" \
-        f"{CT.NC}"
+        f"{TC.NC}"
 
-TEST_FAILED = f"\n{CT.B_RED}" \
+TEST_FAILED = f"\n{TC.B_RED}" \
         "══════════════════════════════    #### failed!    ══════════════════════════════" \
-        f"{CT.NC}"
+        f"{TC.NC}"
 
-TEST_NOT_PRESENT = f"\n{CT.YELLOW}" \
+TEST_NOT_PRESENT = f"\n{TC.YELLOW}" \
         "══════════════════════════════  #### not present  ══════════════════════════════" \
-        f"{CT.NC}"
+        f"{TC.NC}"
 
-TEST_ONLY_EXECUTED = f"\n{CT.PURPLE}" \
+TEST_ONLY_EXECUTED = f"\n{TC.PURPLE}" \
         "══════════════════════════════   ####  executed   ══════════════════════════════" \
-        f"{CT.NC}"
+        f"{TC.NC}"
 
 
 def show_banner(project):
-    message = f"Welcome to {CT.B_PURPLE}Francinette{CT.B_BLUE}, a 42 tester framework!"
+    message = f"Welcome to {TC.B_PURPLE}Francinette{TC.B_BLUE}, a 42 tester framework!"
     submessage = f"{project}"
-    project_message = f"{CT.B_YELLOW}{project}{CT.B_BLUE}"
+    project_message = f"{TC.B_YELLOW}{project}{TC.B_BLUE}"
     size = 30 - len(submessage)
     project_message = " " * (size - (size // 2)) + project_message + " " * (size // 2)
-    print(f"{CT.B_BLUE}╔══════════════════════════════════════════════════════════════════════════════╗")
-    print(f"{CT.B_BLUE}║                {message}                ║")
-    print(f"{CT.B_BLUE}╚═══════════════════════╦══════════════════════════════╦═══════════════════════╝")
-    print(f"{CT.B_BLUE}                        ║{project_message}║")
-    print(f"{CT.B_BLUE}                        ╚══════════════════════════════╝{CT.NC}")
+    print(f"{TC.B_BLUE}╔══════════════════════════════════════════════════════════════════════════════╗")
+    print(f"{TC.B_BLUE}║                {message}                ║")
+    print(f"{TC.B_BLUE}╚═══════════════════════╦══════════════════════════════╦═══════════════════════╝")
+    print(f"{TC.B_BLUE}                        ║{project_message}║")
+    print(f"{TC.B_BLUE}                        ╚══════════════════════════════╝{TC.NC}")
 
 
 @dataclass
@@ -109,16 +109,16 @@ class CommonTester:
     def print_summary(test_status):
         ok_tests = [test for test, st in test_status.items() if st is True]
 
-        print(f"{CT.B_GREEN}Passed tests: {' '.join(ok_tests)}{CT.NC}")
+        print(f"{TC.B_GREEN}Passed tests: {' '.join(ok_tests)}{TC.NC}")
         failed_tests = [test for test, st in test_status.items() if st is False]
         if failed_tests:
-            print(f"{CT.B_RED}Failed tests: {' '.join(failed_tests)}{CT.NC}")
+            print(f"{TC.B_RED}Failed tests: {' '.join(failed_tests)}{TC.NC}")
         not_present = [test for test, st in test_status.items() if st == "Test Not Present"]
         if not_present:
-            print(f"{CT.YELLOW}Files not present: {' '.join(not_present)}{CT.NC}")
+            print(f"{TC.YELLOW}Files not present: {' '.join(not_present)}{TC.NC}")
         not_present = [test for test, st in test_status.items() if st == "No expected file"]
         if not_present:
-            print(f"{CT.PURPLE}Need manual validation: {' '.join(not_present)}{CT.NC}")
+            print(f"{TC.PURPLE}Need manual validation: {' '.join(not_present)}{TC.NC}")
 
     def pass_norminette(self, test):
         os.chdir(os.path.join(self.temp_dir, test))
@@ -128,11 +128,11 @@ class CommonTester:
 
         result = subprocess.run(norm_exec, capture_output=True, text=True)
 
-        print(f"{CT.CYAN}Executing: {CT.B_WHITE}{' '.join(norm_exec)}{CT.NC}:")
+        print(f"{TC.CYAN}Executing: {TC.B_WHITE}{' '.join(norm_exec)}{TC.NC}:")
         if result.returncode == 0:
-            print(f"{CT.GREEN}{result.stdout}{CT.NC}")
+            print(f"{TC.GREEN}{result.stdout}{TC.NC}")
         else:
-            print(f"{CT.YELLOW}{result.stdout}{CT.NC}")
+            print(f"{TC.YELLOW}{result.stdout}{TC.NC}")
 
         return result.returncode == 0
 
@@ -144,14 +144,14 @@ class CommonTester:
         # result = os.system(f"gcc { " ".join(flags) } { " ".join(files) }")
         gcc_exec = ["gcc"] + flags + files
 
-        print(f"{CT.CYAN}Executing: {CT.B_WHITE}{' '.join(gcc_exec)}{CT.NC}:")
+        print(f"{TC.CYAN}Executing: {TC.B_WHITE}{' '.join(gcc_exec)}{TC.NC}:")
         p = subprocess.Popen(gcc_exec)
         p.wait()
 
         if p.returncode == 0:
-            print(f"{CT.GREEN}gcc: OK!{CT.NC}")
+            print(f"{TC.GREEN}gcc: OK!{TC.NC}")
         else:
-            print(f"{CT.B_RED}Problem compiling files{CT.NC}")
+            print(f"{TC.B_RED}Problem compiling files{TC.NC}")
 
         return p.returncode
 
@@ -159,7 +159,7 @@ class CommonTester:
         logger.info(f"Running the output of the compilation: ")
         logger.info(f"On directory {os.getcwd()}")
 
-        print(f"\n{CT.CYAN}Executing: {CT.B_WHITE}./a.out | cat -e{CT.NC}:")
+        print(f"\n{TC.CYAN}Executing: {TC.B_WHITE}./a.out | cat -e{TC.NC}:")
 
         ps = subprocess.Popen('./a.out', stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         output = subprocess.check_output(('cat', '-e'), stdin=ps.stdout)
@@ -170,37 +170,37 @@ class CommonTester:
             logger.info("Executed program successfully main")
             print(output)
         else:
-            print(f"{CT.RED}{output}{CT.NC}")
-            print(f"{CT.B_RED}Error Executing the program! (Most likely SegFault){CT.NC}")
+            print(f"{TC.RED}{output}{TC.NC}")
+            print(f"{TC.B_RED}Error Executing the program! (Most likely SegFault){TC.NC}")
             location = os.path.join(self.temp_dir, test)
-            print(f"The {CT.B_WHITE}main.c{CT.NC} and {CT.B_WHITE}a.out{CT.NC} used in this "
-                  f"test are located at:\n{CT.B_WHITE}{location}{CT.NC}")
+            print(f"The {TC.B_WHITE}main.c{TC.NC} and {TC.B_WHITE}a.out{TC.NC} used in this "
+                  f"test are located at:\n{TC.B_WHITE}{location}{TC.NC}")
 
         return output
 
     @staticmethod
     def do_diff():
         diff_exec = ["diff", "--text", "expected", "out"]
-        print(f"\n{CT.CYAN}Executing: {CT.B_WHITE}{' '.join(diff_exec)}{CT.NC}:")
+        print(f"\n{TC.CYAN}Executing: {TC.B_WHITE}{' '.join(diff_exec)}{TC.NC}:")
 
         result = subprocess.run(diff_exec, capture_output=True, text=True)
         if result.returncode == 0:
-            print(f"{CT.GREEN}diff: No differences{CT.NC}")
+            print(f"{TC.GREEN}diff: No differences{TC.NC}")
         else:
-            print(f"{CT.B_PURPLE}< expected, > your result{CT.NC}")
-            print(f"{CT.RED}{result.stdout}{CT.NC}")
+            print(f"{TC.B_PURPLE}< expected, > your result{TC.NC}")
+            print(f"{TC.RED}{result.stdout}{TC.NC}")
 
         return result.returncode == 0
 
     @staticmethod
     def do_verification_fn(verification_fn):
-        print(f"\n{CT.CYAN}Executing function: {CT.B_WHITE}{verification_fn.__name__}{CT.NC}:")
+        print(f"\n{TC.CYAN}Executing function: {TC.B_WHITE}{verification_fn.__name__}{TC.NC}:")
 
         result = verification_fn()
         if result.returncode == 0:
-            print(f"{CT.GREEN}Everything OK!{CT.NC}")
+            print(f"{TC.GREEN}Everything OK!{TC.NC}")
         else:
-            print(f"{CT.RED}{result.stdout}{CT.NC}")
+            print(f"{TC.RED}{result.stdout}{TC.NC}")
 
         return result.returncode == 0
 

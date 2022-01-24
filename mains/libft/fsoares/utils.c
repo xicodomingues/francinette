@@ -214,7 +214,7 @@ int set_sign(const char *format, ...)
 
 int error(const char *format, ...)
 {
-	printf(BRED "Error" NC ": " CYN "%s" NC ": ", signature);
+	printf(BRED "Error" NC ": " BCYN "%s" NC ": ", signature);
 	va_list args;
 	va_start(args, format);
 	vprintf(format, args);

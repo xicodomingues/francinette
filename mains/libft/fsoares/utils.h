@@ -6,7 +6,7 @@
 /*   By: fsoares- <fsoares-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 13:40:02 by fsoares-          #+#    #+#             */
-/*   Updated: 2022/01/21 18:08:46 by fsoares-         ###   ########.fr       */
+/*   Updated: 2022/01/24 00:07:33 by fsoares-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,30 +95,30 @@ extern char escaped[1000];
 	printf("ft_%-13s: " YEL "No test yet\n" NC, #fn)
 
 #ifdef STRICT_MEM
-#define null_check(fn_call, rst)                                            \
-	reset_malloc_mock();                                                    \
-	fn_call;                                                                \
-	int malloc_calls = reset_malloc_mock();                                 \
-	for (int i = 0; i < malloc_calls; i++)                                  \
-	{                                                                       \
-		sprintf(signature + g_offset, NC " NULL check for %ith malloc", i); \
-		malloc_set_null(i);                                                 \
-		void *res = fn_call;                                                \
-		rst = check_leaks(res) && rst;                                      \
-		if (res != NULL)                                                    \
-			rst = error("Should return NULL\n");                            \
+#define null_check(fn_call, rst)                                                \
+	reset_malloc_mock();                                                        \
+	fn_call;                                                                    \
+	int malloc_calls = reset_malloc_mock();                                     \
+	for (int i = 0; i < malloc_calls; i++)                                      \
+	{                                                                           \
+		sprintf(signature + g_offset, NC " NULL check for %ith malloc", i + 1); \
+		malloc_set_null(i);                                                     \
+		void *res = fn_call;                                                    \
+		rst = check_leaks(res) && rst;                                          \
+		if (res != NULL)                                                        \
+			rst = error("Should return NULL\n");                                \
 	}
 
-#define null_null_check(fn_call, rst)                                       \
-	reset_malloc_mock();                                                    \
-	fn_call;                                                                \
-	int malloc_calls = reset_malloc_mock();                                 \
-	for (int i = 0; i < malloc_calls; i++)                                  \
-	{                                                                       \
-		sprintf(signature + g_offset, NC " NULL check for %ith malloc", i); \
-		fn_call;                                                            \
-		malloc_set_null(i);                                                 \
-		rst = check_leaks(NULL) && rst;                                     \
+#define null_null_check(fn_call, rst)                                           \
+	reset_malloc_mock();                                                        \
+	fn_call;                                                                    \
+	int malloc_calls = reset_malloc_mock();                                     \
+	for (int i = 0; i < malloc_calls; i++)                                      \
+	{                                                                           \
+		sprintf(signature + g_offset, NC " NULL check for %ith malloc", i + 1); \
+		fn_call;                                                                \
+		malloc_set_null(i);                                                     \
+		rst = check_leaks(NULL) && rst;                                         \
 	}
 #else
 #define null_check(fn_call, result)

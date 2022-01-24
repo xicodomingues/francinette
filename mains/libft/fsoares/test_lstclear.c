@@ -12,8 +12,7 @@ char *node_ptr_to_str(t_list *node)
 	if (node == NULL)
 		sprintf(res, "(null)");
 	else {
-		char *content = *((char **)node->content);
-		sprintf(res, "{node: %p -> %s}", node->content, escape_str(content));
+		sprintf(res, "{node: ptr-> %s}", escape_str((char *)node->content));
 	}
 	return res;
 }
@@ -24,6 +23,9 @@ int test_single_lstclear(t_list **list)
 	t_list *to_func = NULL;
 	char *args[10];
 	int i = 0;
+
+	char *s = list_to_str_fn(list, node_ptr_to_str);
+	set_sign("ft_lstclear(%s, [(x) => free(" RED "*" CYN "x)])", s); free(s);
 	while (*list != NULL)
 	{
 		args[i] = my_strdup((*list)->content);
@@ -32,14 +34,11 @@ int test_single_lstclear(t_list **list)
 		i++;
 	}
 
-	char *s = list_to_str_fn(&to_func, node_ptr_to_str);
-	set_sign("ft_lstclear(%s, [(x) => free(" RED "*" CYN "x)])", s); free(s);
-
 	ft_lstclear(&to_func, free_str_ptr);
-	check_leaks(NULL);
-	if (*list != NULL)
+	int res = check_leaks(NULL);
+	if (to_func != NULL)
 		return error("The value stored in the lst should be NULL after the clear.\n");
-	return 1;
+	return res;
 }
 
 int test_lstclear()

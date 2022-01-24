@@ -6,7 +6,7 @@ import sys
 
 from halo import Halo
 from testers.libft.BaseExecutor import remove_ansi_colors
-from utils.TerminalColors import CT
+from utils.TerminalColors import TC
 
 logger = logging.getLogger("tripouille")
 
@@ -41,7 +41,7 @@ class ExecuteTripouille():
 		os.chdir(self.temp_dir)
 		logger.info(f"On directory {os.getcwd()} compiling tests for Tripouille")
 
-		text = f"{CT.CYAN}Compiling tests: {CT.B_WHITE}{self.folder}{CT.NC} ({self.git_url})"
+		text = f"{TC.CYAN}Compiling tests: {TC.B_WHITE}{self.folder}{TC.NC} ({self.git_url})"
 		with Halo(text=text) as spinner:
 			command = f"clang++ -c -std=c++11 -I utils/ -I . utils/*.cpp "
 			for file in self.to_execute:
@@ -59,7 +59,7 @@ class ExecuteTripouille():
 
 	def execute_tests(self):
 
-		Halo(f"{CT.CYAN}Testing:{CT.NC}").info()
+		Halo(f"{TC.CYAN}Testing:{TC.NC}").info()
 		spinner = Halo(placement="right")
 
 		def get_output(p):
@@ -108,7 +108,7 @@ class ExecuteTripouille():
 
 		def print_error_lines(lines):
 			for i, line, test in lines:
-				print(f"{CT.RED}{test[1].ljust(3)} {CT.YELLOW}{i}: {CT.NC}{line}", end="")
+				print(f"{TC.RED}{test[1].ljust(3)} {TC.YELLOW}{i}: {TC.NC}{line}", end="")
 
 		def show_failed_lines(file, failed_tests):
 			with open(file) as f:
@@ -136,15 +136,15 @@ class ExecuteTripouille():
 		errors = has_failed(result)
 		if errors:
 			if str(errors) == "MKO":
-				print(f"{CT.RED}MKO{CT.NC}: test about your malloc size (this shouldn't be tested by moulinette)")
-			print(f"\n{CT.B_RED}Errors in:{CT.NC}\n")
+				print(f"{TC.RED}MKO{TC.NC}: test about your malloc size (this shouldn't be tested by moulinette)")
+			print(f"\n{TC.B_RED}Errors in:{TC.NC}\n")
 
 		funcs_error = []
 		for func, tests in result:
 			failed = [test for test in tests if is_failed(test)]
 			if failed:
 				test_file = get_file_path(func)
-				print(f"For {CT.B_WHITE}{test_file}{CT.NC}:")
+				print(f"For {TC.B_WHITE}{test_file}{TC.NC}:")
 				show_failed_lines(test_file, failed)
 				print()
 				funcs_error.append(func)
