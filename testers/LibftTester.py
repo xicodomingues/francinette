@@ -8,6 +8,7 @@ from pathlib import Path
 
 import git
 from halo import Halo
+from testers.libft.ExecuteAlelievr import ExecuteAlelievr
 from utils.ExecutionContext import BONUS_FUNCTIONS, PART_1_FUNCTIONS, PART_2_FUNCTIONS, TestRunInfo, has_bonus, intersection, is_strict, set_bonus
 
 from testers.CommonTester import show_banner
@@ -23,6 +24,7 @@ Tester = namedtuple("Test", "name constructor")
 AVAILABLE_TESTERS = [
     Tester('war-machine', ExecuteWarMachine),
     Tester('Tripouille', ExecuteTripouille),
+	Tester('alelievr', ExecuteAlelievr),
     Tester('fsoares', ExecuteFsoares)
 ]
 
@@ -46,12 +48,13 @@ def run_command(command: str, spinner: Halo):
 def test_selector(info: TestRunInfo):
 	testers = info.args.testers
 	if (testers == None):
-		return AVAILABLE_TESTERS
+		return [tester for tester in AVAILABLE_TESTERS if tester[0] != 'alelievr']
 	if (testers == []):
 		print(f"Please select one or more of the available testers:")
 		print(f"{TC.B_BLUE}    1) {TC.B_WHITE}war-machine{TC.NC} (https://github.com/y3ll0w42/libft-war-machine)")
 		print(f"{TC.B_BLUE}    2) {TC.B_WHITE}Tripouille{TC.NC} (https://github.com/Tripouille/libftTester)")
-		print(f"{TC.B_BLUE}    3) {TC.B_WHITE}fsoares{TC.NC} (my own tests)")
+		print(f"{TC.B_BLUE}    3) {TC.B_WHITE}alelievr{TC.NC} (https://github.com/alelievr/libft-unit-test)")
+		print(f"{TC.B_BLUE}    4) {TC.B_WHITE}fsoares{TC.NC} (my own tests)")
 		print(f"You can pass the numbers as arguments to {TC.B_WHITE}--testers{TC.NC} to not see this prompt")
 		testers = [char for char in input()]
 	testers = [test for test in ''.join(testers) if test != ' ']
@@ -69,7 +72,8 @@ class LibftTester():
 		self.tests_dir = info.tests_dir
 		self.source_dir = info.source_dir
 
-		self.prepare_ex_files()
+		with Halo(text = f"{TC.CYAN}Preparing project{TC.NC}"):
+			self.prepare_ex_files()
 		norm_res = self.check_norminette()
 		all_funcs = self.select_functions_to_execute(info)
 		self.create_library()
@@ -116,10 +120,15 @@ class LibftTester():
 			return len(bonus) != 0
 
 	def test_using(self, info: TestRunInfo, to_execute, missing, tester: Tester):
-		self.prepare_tests(tester.name)
+		try:
+			self.prepare_tests(tester.name)
 
-		tx = tester.constructor(self.tests_dir, info.temp_dir, to_execute, missing)
-		return (tester.name, tx.execute())
+			tx = tester.constructor(self.tests_dir, info.temp_dir, to_execute, missing)
+			return (tester.name, tx.execute())
+		except Exception as ex:
+			print(ex)
+			logger.exception(ex)
+			return (tester.name, [])
 
 	def show_summary(self, norm: str, present, missing, errors):
 

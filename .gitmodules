@@ -6,3 +6,6 @@
 	path = mains/libft/war-machine
 	url = https://github.com/xicodomingues/libft-war-machine
 	recurseSubmodules = true
+[submodule "mains/libft/alelievr"]
+	path = mains/libft/alelievr
+	url = https://github.com/xicodomingues/libft-unit-test
