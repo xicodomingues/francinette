@@ -1,3 +1,4 @@
+from argparse import Namespace
 from dataclasses import dataclass
 from typing import List
 
@@ -27,6 +28,7 @@ class TestRunInfo:
 	ex_to_execute: List[str]
 	strict: bool
 	has_bonus: bool
+	args: Namespace
 
 
 _saved_context = None

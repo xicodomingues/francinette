@@ -93,6 +93,7 @@ class ExecuteTripouille():
 		results = [execute_single_test(func) for func in self.to_execute]
 		spinner.stop()
 		logger.info(f"results: {results}")
+		print()
 		return results
 
 	def show_failed_tests(self, result):

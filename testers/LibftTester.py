@@ -8,13 +8,13 @@ from pathlib import Path
 
 import git
 from halo import Halo
-from main import TC, TestRunInfo
-from utils.ExecutionContext import BONUS_FUNCTIONS, PART_1_FUNCTIONS, PART_2_FUNCTIONS, has_bonus, intersection, is_strict, set_bonus
+from utils.ExecutionContext import BONUS_FUNCTIONS, PART_1_FUNCTIONS, PART_2_FUNCTIONS, TestRunInfo, has_bonus, intersection, is_strict, set_bonus
 
 from testers.CommonTester import show_banner
 from testers.libft.ExecuteFsoares import ExecuteFsoares
 from testers.libft.ExecuteTripouille import ExecuteTripouille
 from testers.libft.ExecuteWarMachine import ExecuteWarMachine
+from utils.TerminalColors import TC
 
 logger = logging.getLogger("libft")
 
@@ -43,26 +43,38 @@ def run_command(command: str, spinner: Halo):
 	return process
 
 
+def test_selector(info: TestRunInfo):
+	testers = info.args.testers
+	if (testers == None):
+		return AVAILABLE_TESTERS
+	if (testers == []):
+		print(f"Please select one or more of the available testers:")
+		print(f"{TC.B_BLUE}    1) {TC.B_WHITE}war-machine{TC.NC} (https://github.com/y3ll0w42/libft-war-machine)")
+		print(f"{TC.B_BLUE}    2) {TC.B_WHITE}Tripouille{TC.NC} (https://github.com/Tripouille/libftTester)")
+		print(f"{TC.B_BLUE}    3) {TC.B_WHITE}fsoares{TC.NC} (my own tests)")
+		print(f"You can pass the numbers as arguments to {TC.B_WHITE}--testers{TC.NC} to not see this prompt")
+		testers = [char for char in input()]
+	testers = [test for test in ''.join(testers) if test != ' ']
+	return [AVAILABLE_TESTERS[int(i) - 1] for i in testers]
+
 class LibftTester():
 
 	def __init__(self, info: TestRunInfo) -> None:
 
 		show_banner("libft")
+
+		testers = test_selector(info)
+
 		self.temp_dir = info.temp_dir
 		self.tests_dir = info.tests_dir
 		self.source_dir = info.source_dir
 
 		self.prepare_ex_files()
 		norm_res = self.check_norminette()
-
-		all_funcs = PART_1_FUNCTIONS + PART_2_FUNCTIONS
-		if self.has_bonus():
-			all_funcs = all_funcs + BONUS_FUNCTIONS
-			set_bonus(True)
+		all_funcs = self.select_functions_to_execute(info)
 		self.create_library()
-
 		present = self.get_present();
-		to_execute = intersection(present, all_funcs)
+		to_execute = intersection(all_funcs, present)
 
 		if info.ex_to_execute:
 			to_execute = info.ex_to_execute
@@ -72,11 +84,29 @@ class LibftTester():
 		logger.info(f"Missing: {missing}")
 
 		funcs_error = []
-		for tester in AVAILABLE_TESTERS:
+		for tester in testers:
 			funcs_error.append(self.test_using(info, to_execute, missing, tester))
 		if not info.ex_to_execute:
 			self.show_summary(norm_res, present, missing, funcs_error)
 
+	def select_functions_to_execute(self, info: TestRunInfo):
+		args = info.args;
+		if (args.part1 or args.part2 or args.bonus):
+			all_funcs = []
+			if (args.part1):
+				all_funcs.extend(PART_1_FUNCTIONS)
+			if (args.part2):
+				all_funcs.extend(PART_2_FUNCTIONS)
+			if (args.bonus):
+				all_funcs.extend(BONUS_FUNCTIONS)
+				set_bonus(True)
+			return all_funcs;
+
+		all_funcs = PART_1_FUNCTIONS + PART_2_FUNCTIONS
+		if self.has_bonus():
+			all_funcs = all_funcs + BONUS_FUNCTIONS
+			set_bonus(True)
+		return all_funcs
 
 	def has_bonus(self):
 		makefile = Path(self.temp_dir, "Makefile")

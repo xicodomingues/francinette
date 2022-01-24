@@ -62,8 +62,8 @@ def guess_project(current_dir):
 		return "libft"
 
 	raise Exception(f"Francinette needs to be executed inside a project folder\n" +
-	                f"{TC.NC}If you are in a project folder, please make sure that you have a valid Makefile " +
-	                f"and that you are creating the expected turn in files (for example 'libft.a')")
+					f"{TC.NC}If you are in a project folder, please make sure that you have a valid Makefile " +
+					f"and that you are creating the expected turn in files (for example 'libft.a')")
 
 
 def clone(repo, basedir, current_dir):
@@ -100,31 +100,62 @@ def execute_tests(info):
 	module.__getattribute__(module_name)(info)
 
 
+class Formatter(argparse.HelpFormatter):
+	# use defined argument order to display usage
+	def _format_usage(self, usage, actions, groups, prefix):
+		if prefix is None:
+			prefix = 'usage: '
+
+		# if usage is specified, use that
+		if usage is not None:
+			usage = usage % dict(prog=self._prog)
+
+		# if no optionals or positionals are available, usage is just prog
+		elif usage is None and not actions:
+			usage = '%(prog)s' % dict(prog=self._prog)
+		elif usage is None:
+			prog = '%(prog)s' % dict(prog=self._prog)
+			# build full usage string
+			action_usage = self._format_actions_usage(actions, groups)
+			usage = ' '.join([s for s in [prog, action_usage] if s])
+			usage = usage.replace("[--strict]", "[--strict]\n\t\t  ")
+			# omit the long line wrapping code
+		# prefix with 'usage:'
+		return '%s%s\n\n' % (prefix, usage)
+
+parser = argparse.ArgumentParser(formatter_class=Formatter)
+
 def main():
 	"""
-    Executes the test framework with the given args
-    """
+	Executes the test framework with the given args
+	"""
 	pwd = os.getcwd()
 	current_dir = os.path.basename(pwd)
 	original_dir = os.path.abspath(os.path.join(os.path.basename(pwd), ".."))
 	exercises = None
 
 	parser = ArgumentParser("francinette",
-	                        formatter_class=argparse.RawDescriptionHelpFormatter,
-	                        description=textwrap.dedent("""
-            A micro framework that allows you to test your code with more ease.
+							formatter_class=Formatter,
+							description=textwrap.dedent("""
+			A micro framework that allows you to test your code with more ease.
 
-            If this command is executed inside a project or an exercise (ex##),
-            then it knows automatically which tests to execute, and does. No need to pass
-            arguments.
-    """))
+			If this command is executed inside a project or an exercise (ex##),
+			then it knows automatically which tests to execute, and does. No need to pass
+			arguments.
+	"""))
 	parser.add_argument("git_repo", nargs="?", help="If present, it uses this repository to clone the exercises from")
 	parser.add_argument("exercise", nargs="*", help="If present, it executes the passed tests")
 	parser.add_argument("-u", "--update", action="store_true", help="forces francinette to update")
 	parser.add_argument("--strict",
-	                    action="store_true",
-	                    help=("It restricts the tests around memory allocation so that it reserves the correct " +
-	                          "amount of memory and that checks nulls when allocating memory"))
+						action="store_true",
+						help=("It restricts the tests around memory allocation so that it reserves the correct " +
+							  "amount of memory and that checks nulls when allocating memory"))
+	parser.add_argument("--part1", action="store_true", help="Execute tests of part1")
+	parser.add_argument("--part2", action="store_true", help="Execute tests of part2")
+	parser.add_argument("--bonus", action="store_true", help="Execute tests of bonus part")
+	parser.add_argument("-t", "--testers", nargs="*",
+						help=("Executes the corresponding testers. If no arguments are passed, it asks the user. " +
+							 f"{TC.YELLOW}This parameter should be the last one in the command line{TC.NC}"))
 	args = parser.parse_args()
 
 	if args.update:
@@ -138,7 +169,7 @@ def main():
 		exercises = [current_dir]
 		current_dir = os.path.basename(os.path.abspath(os.path.join(current_dir, "..", "..")))
 		logger.info(
-		    f"Found exXX in the current dir '{exercises}'. Saving the exercise and going up a dir: '{current_dir}'")
+			f"Found exXX in the current dir '{exercises}'. Saving the exercise and going up a dir: '{current_dir}'")
 		os.chdir("..")
 
 	base = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
@@ -166,7 +197,7 @@ def main():
 		mains_dir = os.path.join(base, "mains", project)
 
 		info = TestRunInfo(project, os.path.abspath(os.path.join(current_dir, "..")), mains_dir,
-		                   os.path.join(base, "temp", project), exercises, args.strict, False)
+						   os.path.join(base, "temp", project), exercises, args.strict, False, args)
 
 		logger.info(f"Test params: {info}")
 

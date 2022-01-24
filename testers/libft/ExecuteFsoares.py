@@ -37,7 +37,6 @@ class ExecuteFsoares():
 		os.chdir(self.temp_dir)
 		logger.info(f"On directory {os.getcwd()}")
 
-		print()
 		text = f"{TC.CYAN}Compiling tests: {TC.B_WHITE}{self.folder}{TC.NC} (my own)"
 		with Halo(text=text) as spinner:
 			for func in self.to_execute:
