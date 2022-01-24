@@ -174,6 +174,10 @@ class LibftTester():
 		logger.info(f"copying {self.source_dir} to {self.temp_dir}")
 		shutil.copytree(self.source_dir, self.temp_dir)
 
+		srcs_path = Path(self.temp_dir, "srcs")
+		logger.info(f"copying {self.source_dir} to {srcs_path}")
+		shutil.copytree(self.source_dir, srcs_path)
+
 		try:
 			repo = git.Repo(self.temp_dir)
 			for path in Path(self.temp_dir).glob("*"):
