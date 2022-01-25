@@ -4,7 +4,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 current_dir=$PWD
 
 # check for updates
-version=39
+version=40
 
 cd "$HOME"/francinette || exit
 
