@@ -59,7 +59,7 @@ class ExecuteAlelievr():
 		Halo(text=f"{TC.CYAN}Testing:{TC.NC}").info()
 		p = subprocess.run("./run_test")
 		logger.info(p)
-		print()
+		print('\n')
 		return self.parse_output()
 
 	def parse_output(self):

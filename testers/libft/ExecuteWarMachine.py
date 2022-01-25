@@ -76,3 +76,4 @@ class ExecuteWarMachine():
 		if len(res) != 0:
 			longer = Path(self.temp_dir, "deepthought")
 			print(f"\nFor a more detailed report open: {TC.PURPLE}{longer}{TC.NC}\n")
+		return res
