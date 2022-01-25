@@ -208,7 +208,7 @@ class LibftTester():
 	def check_norminette(self):
 		os.chdir(os.path.join(self.temp_dir))
 		logger.info(f"On directory {os.getcwd()}")
-		norm_exec = ["norminette", "-R", "CheckForbiddenSourceHeader"]
+		norm_exec = ["norminette"]
 
 		text = f"{TC.CYAN}Executing: {TC.B_WHITE}{' '.join(norm_exec)}{TC.NC}"
 		with Halo(text=text) as spinner:
