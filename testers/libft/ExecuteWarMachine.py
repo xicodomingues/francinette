@@ -2,6 +2,7 @@ from distutils import command
 import io
 import logging
 import os
+from pathlib import Path
 import re
 import shutil
 import subprocess
@@ -71,4 +72,7 @@ class ExecuteWarMachine():
 			return (match.group(1), match.group(2))
 
 		parsed = [parse_func(line) for line in output if is_func(line)]
-		return [func for func, res in parsed if res != "OK"]
+		res = [func for func, res in parsed if res != "OK"]
+		if len(res) != 0:
+			longer = Path(self.temp_dir, "deepthought")
+			print(f"\nFor a more detailed report open: {TC.PURPLE}{longer}{TC.NC}\n")

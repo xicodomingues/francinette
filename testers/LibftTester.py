@@ -48,7 +48,7 @@ def run_command(command: str, spinner: Halo):
 def test_selector(info: TestRunInfo):
 	testers = info.args.testers
 	if (testers == None):
-		return [tester for tester in AVAILABLE_TESTERS if tester[0] != 'alelievr']
+		return AVAILABLE_TESTERS
 	if (testers == []):
 		print(f"Please select one or more of the available testers:")
 		print(f"{TC.B_BLUE}    1) {TC.B_WHITE}war-machine{TC.NC} (https://github.com/y3ll0w42/libft-war-machine)")

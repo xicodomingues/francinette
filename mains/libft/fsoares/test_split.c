@@ -47,7 +47,7 @@ int same_strings(char **expected, char **result)
 		print_string_arr(result);
 		printf("\n");
 	}
-
+	same = check_mem_size(result, sizeof(char *) * (i + 1)) && same;
 	return same;
 }
 
