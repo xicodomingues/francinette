@@ -7,6 +7,7 @@ import re
 import subprocess
 from halo import Halo
 from typing import List
+from utils.ExecutionContext import BONUS_FUNCTIONS, has_bonus
 
 from utils.TerminalColors import TC
 
@@ -24,6 +25,9 @@ class ExecuteAlelievr():
 		self.missing = missing
 		self.tests_dir = os.path.join(tests_dir, self.folder)
 		self.git_url = "https://github.com/alelievr/libft-unit-test"
+
+		if not has_bonus():
+			self.missing += BONUS_FUNCTIONS
 
 	def execute(self):
 		self.prepare_tests()

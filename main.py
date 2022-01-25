@@ -36,6 +36,13 @@ def is_library(path):
 			return False
 
 
+def is_get_next_line(path):
+	file_path = Path(path, 'get_next_line.c')
+	logger.info(f"Testing: {file_path}")
+	if not file_path.exists():
+		return False
+	return True
+
 def is_repo(string: str):
 	return string.startswith("git@")
 
@@ -60,6 +67,9 @@ def guess_project(current_dir):
 
 	if is_library(os.path.abspath('.')):
 		return "libft"
+
+	if is_get_next_line('.'):
+		return "GetNextLine"
 
 	raise Exception(f"Francinette needs to be executed inside a project folder\n" +
 					f"{TC.NC}If you are in a project folder, please make sure that you have a valid Makefile " +
@@ -93,7 +103,8 @@ def clone(repo, basedir, current_dir):
 
 def execute_tests(info):
 	# Get the correct tester
-	module_name = info.project.capitalize() + "Tester"
+	project = info.project[0].upper() + info.project[1:]
+	module_name = project + "Tester"
 	module = importlib.import_module('testers.' + module_name)
 
 	# execute the tests
