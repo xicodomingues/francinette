@@ -1,0 +1,9 @@
+[submodule "tests/libft/alelievr"]
+	path = tests/libft/alelievr
+	url = https://github.com/xicodomingues/libft-unit-test
+[submodule "tests/libft/war-machine"]
+	path = tests/libft/war-machine
+	url = https://github.com/xicodomingues/libft-war-machine
+[submodule "tests/libft/Tripouille"]
+	path = tests/libft/Tripouille
+	url = https://github.com/xicodomingues/libftTester
