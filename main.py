@@ -14,7 +14,7 @@ from pathlib import Path
 from git import Repo
 
 from testers.cpiscine.CPiscineTester import CPiscineTester
-from testers.GetNextLineTester import GetNextLineTester
+from testers.get_next_line.GetNextLineTester import GetNextLineTester
 from testers.libft.LibftTester import LibftTester
 from utils.ExecutionContext import TestRunInfo, set_contex
 from utils.TerminalColors import TC
