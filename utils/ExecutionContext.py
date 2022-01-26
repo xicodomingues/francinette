@@ -1,5 +1,6 @@
 from argparse import Namespace
 from dataclasses import dataclass
+from pathlib import Path
 from typing import List
 
 
@@ -21,14 +22,11 @@ BONUS_FUNCTIONS = [
 
 @dataclass
 class TestRunInfo:
-	project: str
-	source_dir: str
-	tests_dir: str
-	temp_dir: str
+	source_dir: Path 	# location of the code to test
+	base_dir: Path		# location of francinette
 	ex_to_execute: List[str]
-	strict: bool
-	has_bonus: bool
 	args: Namespace
+	has_bonus: bool = False
 
 
 _saved_context = None
@@ -52,7 +50,7 @@ def has_bonus():
 
 
 def is_strict():
-	return _saved_context.strict
+	return _saved_context.args.strict
 
 
 def intersection(lst1, lst2):

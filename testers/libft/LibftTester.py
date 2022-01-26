@@ -1,3 +1,4 @@
+from lib2to3.pytree import Base
 import logging
 import os
 import re
@@ -8,14 +9,15 @@ from pathlib import Path
 
 import git
 from halo import Halo
+from testers.BaseTester import BaseTester
 from testers.libft.ExecuteAlelievr import ExecuteAlelievr
-from utils.ExecutionContext import BONUS_FUNCTIONS, PART_1_FUNCTIONS, PART_2_FUNCTIONS, TestRunInfo, has_bonus, intersection, is_strict, set_bonus
-
-from testers.CommonTester import show_banner
 from testers.libft.ExecuteFsoares import ExecuteFsoares
 from testers.libft.ExecuteTripouille import ExecuteTripouille
 from testers.libft.ExecuteWarMachine import ExecuteWarMachine
+from utils.ExecutionContext import (BONUS_FUNCTIONS, PART_1_FUNCTIONS, PART_2_FUNCTIONS, TestRunInfo, has_bonus,
+                                    intersection, is_strict, set_bonus)
 from utils.TerminalColors import TC
+from utils.Utils import show_banner
 
 logger = logging.getLogger("libft")
 
@@ -24,7 +26,7 @@ Tester = namedtuple("Test", "name constructor")
 AVAILABLE_TESTERS = [
     Tester('war-machine', ExecuteWarMachine),
     Tester('Tripouille', ExecuteTripouille),
-	Tester('alelievr', ExecuteAlelievr),
+    Tester('alelievr', ExecuteAlelievr),
     Tester('fsoares', ExecuteFsoares)
 ]
 
@@ -60,16 +62,17 @@ def test_selector(info: TestRunInfo):
 	testers = [test for test in ''.join(testers) if test != ' ']
 	return [AVAILABLE_TESTERS[int(i) - 1] for i in testers]
 
-class LibftTester():
+
+class LibftTester(BaseTester):
+
+	name = "libft"
 
 	def __init__(self, info: TestRunInfo) -> None:
+		super().__init__(info)
 
 		show_banner("libft")
-
 		testers = test_selector(info)
 
-		self.temp_dir = info.temp_dir
-		self.tests_dir = info.tests_dir
 		self.source_dir = info.source_dir
 
 		self.prepare_ex_files()
@@ -81,7 +84,7 @@ class LibftTester():
 
 		all_funcs = self.select_functions_to_execute(info)
 		self.create_library()
-		present = self.get_present();
+		present = self.get_present()
 		to_execute = intersection(all_funcs, present)
 
 		if info.ex_to_execute:
@@ -97,8 +100,21 @@ class LibftTester():
 		if not info.ex_to_execute:
 			self.show_summary(norm_res, present, missing, funcs_error, to_execute)
 
+	@staticmethod
+	def is_project(current_dir):
+		make_path = Path("Makefile")
+		logger.info(f"Makefile path: {make_path.resolve()}")
+		if not make_path.exists():
+			return False
+		with open(make_path, "r") as mk:
+			if 'libft' in mk.read():
+				return LibftTester
+			else:
+				return False
+
+
 	def select_functions_to_execute(self, info: TestRunInfo):
-		args = info.args;
+		args = info.args
 		if (args.part1 or args.part2 or args.bonus):
 			all_funcs = []
 			if (args.part1):
@@ -108,7 +124,7 @@ class LibftTester():
 			if (args.bonus):
 				all_funcs.extend(BONUS_FUNCTIONS)
 				set_bonus(True)
-			return all_funcs;
+			return all_funcs
 
 		all_funcs = PART_1_FUNCTIONS + PART_2_FUNCTIONS
 		if self.has_bonus():
@@ -127,7 +143,7 @@ class LibftTester():
 		try:
 			self.prepare_tests(tester.name)
 
-			tx = tester.constructor(self.tests_dir, info.temp_dir, to_execute, missing)
+			tx = tester.constructor(self.tests_dir, self.temp_dir, to_execute, missing)
 			return (tester.name, tx.execute())
 		except Exception as ex:
 			print(ex)
@@ -157,7 +173,7 @@ class LibftTester():
 			logger.info("All tests ok!")
 			if not is_strict():
 				print(f"\nWant some more thorough tests? run {TC.B_PURPLE}francinette{TC.NC}" +
-					  f" with {TC.B_WHITE}--strict{TC.NC}")
+				      f" with {TC.B_WHITE}--strict{TC.NC}")
 			return True
 
 		print(f"\n{TC.B_CYAN}Summary{TC.NC}:\n")
