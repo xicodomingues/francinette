@@ -175,7 +175,7 @@ char *escape_chr(char ch)
 {
 	if (ch == '\0')
 	{
-		return escape_str("'\\0'");
+		return "'\\0'";
 	}
 	else
 	{
