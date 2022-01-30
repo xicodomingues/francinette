@@ -54,10 +54,10 @@ void *malloc(size_t size)
 	void *to_return = p;
 	if (res_pos > cur_res_pos && (long)(results[cur_res_pos]) != 1)
 		to_return = results[cur_res_pos];
-	else if (size > 40)
+	else
 	{
 		char *s = (char *)p;
-		strcpy(s, "calloc should set the memory to zeros!");
+		strncpy(s, "calloc should set the memory to zeros!", size);
 	}
 	cur_res_pos++;
 	_add_malloc(p, size, to_return);
