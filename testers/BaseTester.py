@@ -136,7 +136,7 @@ class BaseTester:
 		except Exception as ex:
 			print(ex)
 			logger.exception(ex)
-			return (tester.name, [])
+			return (tester.name, [tester.name])
 
 	def prepare_tests(self, tester):
 		# delete destination folder if already present

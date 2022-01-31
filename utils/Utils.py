@@ -1,3 +1,4 @@
+import re
 from utils.TerminalColors import TC
 
 
@@ -12,3 +13,11 @@ def show_banner(project):
 	print(f"{TC.B_BLUE}╚═══════════════════════╦══════════════════════════════╦═══════════════════════╝")
 	print(f"{TC.B_BLUE}                        ║{project_message}║")
 	print(f"{TC.B_BLUE}                        ╚══════════════════════════════╝{TC.NC}")
+
+
+ansi_columns = re.compile(r'\x1B(?:\[[0-?]*G)')
+ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
+
+
+def remove_ansi_colors(text):
+	return ansi_escape.sub('', ansi_columns.sub(' ', text))
