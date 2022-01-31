@@ -27,7 +27,7 @@ class BaseTester:
 			for i, tester in enumerate(self.testers):
 				print(f"{TC.B_BLUE}    {i + 1}) {TC.B_WHITE}{tester.name}{TC.NC} ({tester.git_url})")
 			print(f"You can pass the numbers as arguments to {TC.B_WHITE}--testers{TC.NC} to not see this prompt")
-			testers = [char for char in input()]
-		testers = [test for test in ''.join(testers) if test != ' ']
-		return [testers[int(i) - 1] for i in testers]
+			selected_testers = [char for char in input()]
+		selected_testers = [test for test in ''.join(selected_testers) if test != ' ']
+		return [self.testers[int(i) - 1] for i in selected_testers]
 

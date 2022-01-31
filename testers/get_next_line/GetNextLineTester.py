@@ -7,10 +7,10 @@ from utils.Utils import show_banner
 
 logger = logging.getLogger("gnl")
 
-AVAILABLE_TESTERS = [Tripouille]
-
 
 class GetNextLineTester():
+
+	testers = [Tripouille]
 
 	def __init__(self, info: TestRunInfo) -> None:
 		show_banner("get_next_line")
