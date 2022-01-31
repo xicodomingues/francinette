@@ -19,10 +19,10 @@ test_regex = re.compile(r"ft_(\w+)\s*: (.*)")
 class Fsoares():
 
 	name = "fsoares"
+	folder = name
 	git_url = "my own tests"
 
 	def __init__(self, tests_dir, temp_dir, to_execute: Set[str], missing) -> None:
-		self.folder = "fsoares"
 		self.temp_dir = os.path.join(temp_dir, self.folder)
 		self.to_execute = to_execute
 		self.missing = missing

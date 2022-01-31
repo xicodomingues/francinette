@@ -27,9 +27,9 @@ def is_repo(string: str):
 	return string.startswith("git@")
 
 
-def guess_project(current_dir):
+def guess_project(current_path):
 	for project in PROJECTS:
-		p = project.is_project(current_dir)
+		p = project.is_project(current_path)
 		if p:
 			return p
 
@@ -48,7 +48,7 @@ def clone(repo, basedir, current_dir):
 	cloned = Repo.clone_from(repo, repo_dir_temp)
 	os.chdir(repo_dir_temp)
 
-	project = guess_project(os.getcwd())
+	project = guess_project(Path("."))
 	master = cloned.head.reference
 	author_name = str(master.commit.author.email).split('@')[0].replace(" ", "_")
 
@@ -169,7 +169,7 @@ def main():
 			exercises = None
 			from_git = True
 
-		project = guess_project(current_dir)
+		project = guess_project(Path('.'))
 
 		info = TestRunInfo(Path('.').resolve(), base, exercises, args)
 

@@ -7,7 +7,8 @@ import re
 import subprocess
 from halo import Halo
 from typing import List
-from utils.ExecutionContext import BONUS_FUNCTIONS, has_bonus
+from testers.libft.BaseExecutor import BONUS_FUNCTIONS
+from utils.ExecutionContext import has_bonus
 
 from utils.TerminalColors import TC
 
@@ -18,14 +19,15 @@ out_func_line = re.compile(r'^ft_(\w+):.*')
 
 class Alelievr():
 
-	name = "alelievr"
+	name = "libft-unit-test"
+	folder = "alelievr"
 	git_url = "https://github.com/alelievr/libft-unit-test"
 
 	def __init__(self, tests_dir, temp_dir, to_execute: List[str], missing) -> None:
-		self.temp_dir = os.path.join(temp_dir, self.name)
+		self.temp_dir = os.path.join(temp_dir, self.folder)
 		self.to_execute = to_execute
 		self.missing = missing
-		self.tests_dir = os.path.join(tests_dir, self.name)
+		self.tests_dir = os.path.join(tests_dir, self.folder)
 
 		if not has_bonus():
 			self.missing += BONUS_FUNCTIONS

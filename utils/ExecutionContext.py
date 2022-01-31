@@ -4,22 +4,6 @@ from pathlib import Path
 from typing import List
 
 
-PART_1_FUNCTIONS = [
-    "isalpha", "isdigit", "isalnum", "isascii", "isprint", "strlen", "memset", "bzero", "memcpy", "memmove", "strlcpy",
-    "strlcat", "toupper", "tolower", "strchr", "strrchr", "strncmp", "memchr", "memcmp", "strnstr", "atoi", "calloc",
-    "strdup"
-]
-
-PART_2_FUNCTIONS = [
-    "substr", "strjoin", "strtrim", "split", "itoa", "strmapi", "striteri", "putchar_fd", "putstr_fd", "putendl_fd",
-    "putnbr_fd"
-]
-
-BONUS_FUNCTIONS = [
-    "lstnew", "lstadd_front", "lstsize", "lstlast", "lstadd_back", "lstdelone", "lstclear", "lstiter", "lstmap"
-]
-
-
 @dataclass
 class TestRunInfo:
 	source_dir: Path 	# location of the code to test
@@ -45,7 +29,7 @@ def set_bonus(value):
 	_saved_context.has_bonus = value
 
 
-def has_bonus():
+def has_bonus() -> bool:
 	return _saved_context.has_bonus
 
 

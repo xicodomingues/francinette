@@ -7,8 +7,8 @@ import re
 import shutil
 import subprocess
 from typing import List
-from utils.ExecutionContext import BONUS_FUNCTIONS, PART_1_FUNCTIONS, PART_2_FUNCTIONS, intersection
-from testers.libft.BaseExecutor import remove_ansi_colors
+from utils.ExecutionContext import intersection
+from testers.libft.BaseExecutor import BONUS_FUNCTIONS, PART_1_FUNCTIONS, PART_2_FUNCTIONS, remove_ansi_colors
 
 from halo import Halo
 from utils.TerminalColors import TC
@@ -20,14 +20,15 @@ func_line_regex = re.compile(r"^ft_(\w+).*(OK|KO)$")
 
 class WarMachine():
 
-	name = "war-machine"
+	name = "libft-war-machine"
+	folder = "war-machine"
 	git_url = "https://github.com/y3ll0w42/libft-war-machine"
 
 	def __init__(self, tests_dir, temp_dir, to_execute: List[str], missing) -> None:
-		self.temp_dir = os.path.join(temp_dir, self.name)
+		self.temp_dir = os.path.join(temp_dir, self.folder)
 		self.to_execute = to_execute
 		self.missing = missing
-		self.tests_dir = os.path.join(tests_dir, self.name)
+		self.tests_dir = os.path.join(tests_dir, self.folder)
 
 	def execute(self):
 		output = self.execute_tests()

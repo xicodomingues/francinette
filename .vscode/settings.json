@@ -55,6 +55,7 @@
 		"norminette",
 		"pexpect",
 		"Popen",
+		"rglob",
 		"Tripouille"
 	]
 }

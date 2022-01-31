@@ -13,14 +13,15 @@ logger = logging.getLogger("tripouille")
 
 class Tripouille():
 
-	name = "Tripouille"
+	name = "libftTester"
+	folder = "Tripouille"
 	git_url = "https://github.com/Tripouille/libftTester"
 
 	def __init__(self, tests_dir, temp_dir, to_execute, missing) -> None:
-		self.temp_dir = os.path.join(temp_dir, self.name)
+		self.temp_dir = os.path.join(temp_dir, self.folder)
 		self.to_execute = to_execute
 		self.missing = missing
-		self.tests_dir = os.path.join(tests_dir, self.name)
+		self.tests_dir = os.path.join(tests_dir, self.folder)
 
 	def execute(self):
 		self.compile_test()

@@ -25,8 +25,8 @@ class CPiscineTester(BaseTester):
 
 
 	@staticmethod
-	def is_project(current_dir):
-		ex_path = Path("ex00").resolve()
+	def is_project(current_path):
+		ex_path = (current_path / "ex00").resolve()
 		logger.info(f"Testing path: {ex_path}")
 		if os.path.exists(ex_path):
 			if has_file(ex_path, "ft_putchar.c"):
