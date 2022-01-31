@@ -11,15 +11,16 @@ from utils.TerminalColors import TC
 logger = logging.getLogger("tripouille")
 
 
-class ExecuteTripouille():
+class Tripouille():
+
+	name = "Tripouille"
+	git_url = "https://github.com/Tripouille/libftTester"
 
 	def __init__(self, tests_dir, temp_dir, to_execute, missing) -> None:
-		self.folder = "Tripouille"
-		self.temp_dir = os.path.join(temp_dir, self.folder)
+		self.temp_dir = os.path.join(temp_dir, self.name)
 		self.to_execute = to_execute
 		self.missing = missing
-		self.tests_dir = os.path.join(tests_dir, self.folder)
-		self.git_url = "https://github.com/Tripouille/libftTester"
+		self.tests_dir = os.path.join(tests_dir, self.name)
 
 	def execute(self):
 		self.compile_test()
@@ -41,7 +42,7 @@ class ExecuteTripouille():
 		os.chdir(self.temp_dir)
 		logger.info(f"On directory {os.getcwd()} compiling tests for Tripouille")
 
-		text = f"{TC.CYAN}Compiling tests: {TC.B_WHITE}{self.folder}{TC.NC} ({self.git_url})"
+		text = f"{TC.CYAN}Compiling tests: {TC.B_WHITE}{self.name}{TC.NC} ({self.git_url})"
 		with Halo(text=text) as spinner:
 			command = f"clang++ -c -std=c++11 -I utils/ -I . utils/*.cpp "
 			for file in self.to_execute:

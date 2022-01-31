@@ -18,15 +18,16 @@ logger = logging.getLogger("war-machine")
 func_line_regex = re.compile(r"^ft_(\w+).*(OK|KO)$")
 
 
-class ExecuteWarMachine():
+class WarMachine():
+
+	name = "war-machine"
+	git_url = "https://github.com/y3ll0w42/libft-war-machine"
 
 	def __init__(self, tests_dir, temp_dir, to_execute: List[str], missing) -> None:
-		self.folder = "war-machine"
-		self.temp_dir = os.path.join(temp_dir, self.folder)
+		self.temp_dir = os.path.join(temp_dir, self.name)
 		self.to_execute = to_execute
 		self.missing = missing
-		self.tests_dir = os.path.join(tests_dir, self.folder)
-		self.git_url = "https://github.com/y3ll0w42/libft-war-machine"
+		self.tests_dir = os.path.join(tests_dir, self.name)
 
 	def execute(self):
 		output = self.execute_tests()
@@ -36,7 +37,7 @@ class ExecuteWarMachine():
 		os.chdir(self.temp_dir)
 		logger.info(f"On directory {os.getcwd()} Executing war-machine")
 
-		Halo(f"{TC.CYAN}Executing: {TC.B_WHITE}{self.folder}{TC.NC} ({self.git_url})").info()
+		Halo(f"{TC.CYAN}Executing: {TC.B_WHITE}{self.name}{TC.NC} ({self.git_url})").info()
 
 		command = self.get_command()
 		logger.info(f'executing: {command}')

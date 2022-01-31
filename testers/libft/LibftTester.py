@@ -1,20 +1,21 @@
-from lib2to3.pytree import Base
 import logging
 import os
 import re
 import shutil
 import subprocess
 from collections import namedtuple
+from lib2to3.pytree import Base
 from pathlib import Path
 
 import git
 from halo import Halo
 from testers.BaseTester import BaseTester
-from testers.libft.ExecuteAlelievr import ExecuteAlelievr
-from testers.libft.ExecuteFsoares import ExecuteFsoares
-from testers.libft.ExecuteTripouille import ExecuteTripouille
-from testers.libft.ExecuteWarMachine import ExecuteWarMachine
-from utils.ExecutionContext import (BONUS_FUNCTIONS, PART_1_FUNCTIONS, PART_2_FUNCTIONS, TestRunInfo, has_bonus,
+from testers.libft.Alelievr import Alelievr
+from testers.libft.Fsoares import Fsoares
+from testers.libft.Tripouille import Tripouille
+from testers.libft.WarMachine import WarMachine
+from utils.ExecutionContext import (BONUS_FUNCTIONS, PART_1_FUNCTIONS,
+                                    PART_2_FUNCTIONS, TestRunInfo, has_bonus,
                                     intersection, is_strict, set_bonus)
 from utils.TerminalColors import TC
 from utils.Utils import show_banner
@@ -22,13 +23,6 @@ from utils.Utils import show_banner
 logger = logging.getLogger("libft")
 
 Tester = namedtuple("Test", "name constructor")
-
-AVAILABLE_TESTERS = [
-    Tester('war-machine', ExecuteWarMachine),
-    Tester('Tripouille', ExecuteTripouille),
-    Tester('alelievr', ExecuteAlelievr),
-    Tester('fsoares', ExecuteFsoares)
-]
 
 func_regex = re.compile(r"\w+\s+\**ft_(\w+)\(.*")
 
@@ -47,31 +41,16 @@ def run_command(command: str, spinner: Halo):
 	return process
 
 
-def test_selector(info: TestRunInfo):
-	testers = info.args.testers
-	if (testers == None):
-		return AVAILABLE_TESTERS
-	if (testers == []):
-		print(f"Please select one or more of the available testers:")
-		print(f"{TC.B_BLUE}    1) {TC.B_WHITE}war-machine{TC.NC} (https://github.com/y3ll0w42/libft-war-machine)")
-		print(f"{TC.B_BLUE}    2) {TC.B_WHITE}Tripouille{TC.NC} (https://github.com/Tripouille/libftTester)")
-		print(f"{TC.B_BLUE}    3) {TC.B_WHITE}alelievr{TC.NC} (https://github.com/alelievr/libft-unit-test)")
-		print(f"{TC.B_BLUE}    4) {TC.B_WHITE}fsoares{TC.NC} (my own tests)")
-		print(f"You can pass the numbers as arguments to {TC.B_WHITE}--testers{TC.NC} to not see this prompt")
-		testers = [char for char in input()]
-	testers = [test for test in ''.join(testers) if test != ' ']
-	return [AVAILABLE_TESTERS[int(i) - 1] for i in testers]
-
-
 class LibftTester(BaseTester):
 
 	name = "libft"
+	testers = [WarMachine, Tripouille, Alelievr, Fsoares]
 
 	def __init__(self, info: TestRunInfo) -> None:
 		super().__init__(info)
 
 		show_banner("libft")
-		testers = test_selector(info)
+		testers = self.test_selector(info)
 
 		self.source_dir = info.source_dir
 
@@ -112,7 +91,6 @@ class LibftTester(BaseTester):
 			else:
 				return False
 
-
 	def select_functions_to_execute(self, info: TestRunInfo):
 		args = info.args
 		if (args.part1 or args.part2 or args.bonus):
@@ -143,7 +121,7 @@ class LibftTester(BaseTester):
 		try:
 			self.prepare_tests(tester.name)
 
-			tx = tester.constructor(self.tests_dir, self.temp_dir, to_execute, missing)
+			tx = tester(self.tests_dir, self.temp_dir, to_execute, missing)
 			return (tester.name, tx.execute())
 		except Exception as ex:
 			print(ex)

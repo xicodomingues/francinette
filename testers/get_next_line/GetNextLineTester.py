@@ -1,9 +1,14 @@
 import logging
 from pathlib import Path
+
+from testers.get_next_line.TripouilleTester import Tripouille
 from utils.ExecutionContext import TestRunInfo
 from utils.Utils import show_banner
 
 logger = logging.getLogger("gnl")
+
+AVAILABLE_TESTERS = [Tripouille]
+
 
 class GetNextLineTester():
 
@@ -19,4 +24,3 @@ class GetNextLineTester():
 		if not file_path.exists():
 			return False
 		return GetNextLineTester
-

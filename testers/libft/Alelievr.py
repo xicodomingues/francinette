@@ -16,15 +16,16 @@ logger = logging.getLogger("alelievr")
 func_regex = re.compile(r'^\s+\{"ft_(\w+)",.*')
 out_func_line = re.compile(r'^ft_(\w+):.*')
 
-class ExecuteAlelievr():
+class Alelievr():
+
+	name = "alelievr"
+	git_url = "https://github.com/alelievr/libft-unit-test"
 
 	def __init__(self, tests_dir, temp_dir, to_execute: List[str], missing) -> None:
-		self.folder = "alelievr"
-		self.temp_dir = os.path.join(temp_dir, self.folder)
+		self.temp_dir = os.path.join(temp_dir, self.name)
 		self.to_execute = to_execute
 		self.missing = missing
-		self.tests_dir = os.path.join(tests_dir, self.folder)
-		self.git_url = "https://github.com/alelievr/libft-unit-test"
+		self.tests_dir = os.path.join(tests_dir, self.name)
 
 		if not has_bonus():
 			self.missing += BONUS_FUNCTIONS
@@ -50,7 +51,7 @@ class ExecuteAlelievr():
 		os.chdir(self.temp_dir)
 		logger.info(f"On directory {os.getcwd()} Executing war-machine")
 
-		text = f"{TC.CYAN}Compiling tests: {TC.B_WHITE}{self.folder}{TC.NC} ({self.git_url})"
+		text = f"{TC.CYAN}Compiling tests: {TC.B_WHITE}{self.name}{TC.NC} ({self.git_url})"
 		with Halo(text) as spinner:
 			p = subprocess.run("make", capture_output=True)
 			logger.info(p)

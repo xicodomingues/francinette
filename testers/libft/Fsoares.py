@@ -16,7 +16,10 @@ logger = logging.getLogger("fsoares")
 test_regex = re.compile(r"ft_(\w+)\s*: (.*)")
 
 
-class ExecuteFsoares():
+class Fsoares():
+
+	name = "fsoares"
+	git_url = "my own tests"
 
 	def __init__(self, tests_dir, temp_dir, to_execute: Set[str], missing) -> None:
 		self.folder = "fsoares"

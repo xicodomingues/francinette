@@ -7,3 +7,6 @@
 [submodule "tests/libft/Tripouille"]
 	path = tests/libft/Tripouille
 	url = https://github.com/xicodomingues/libftTester
+[submodule "tests/get_next_line/gnlTester"]
+	path = tests/get_next_line/gnlTester
+	url = https://github.com/xicodomingues/gnlTester
