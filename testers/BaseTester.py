@@ -96,7 +96,8 @@ class BaseTester:
 						check_and_delete(repo, file)
 				if path.is_file():
 					check_and_delete(repo, path)
-			shutil.rmtree(".git")
+			logger.info(f"removing {self.temp_dir / '.git'}")
+			shutil.rmtree(self.temp_dir / ".git")
 		except Exception as ex:
 			logger.exception(ex)
 
@@ -170,9 +171,6 @@ class BaseTester:
 		if (not has_errors):
 			print(f"\n🎉🥳 {TC.B_GREEN}All tests passed! Congratulations!{TC.NC} 🥳🎉")
 			logger.info("All tests ok!")
-			if not is_strict():
-				print(f"\nWant some more thorough tests? run {TC.B_PURPLE}francinette{TC.NC}" +
-				      f" with {TC.B_WHITE}--strict{TC.NC}")
 			return True
 
 		print(f"\n{TC.B_CYAN}Summary{TC.NC}:\n")

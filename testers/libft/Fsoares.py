@@ -75,7 +75,7 @@ class Fsoares():
 		def execute_test(func):
 			spinner.start(f"ft_{func.ljust(13)}:")
 			out, code = run("sh -c " + quote(f"./test_{func}.out"), withexitstatus=1)
-			output = out.decode('ascii', errors="backslashreplace");
+			output = out.decode('ascii', errors="backslashreplace")
 			logger.info(output)
 			output = get_output(func, output)
 			return parse_output(remove_ansi_colors(output))
@@ -96,4 +96,7 @@ class Fsoares():
 				errors.append(func)
 
 		logger.warn(f"found errors for functions: {errors}")
+		if not is_strict() and not errors:
+			print(f"\nWant some more thorough tests? run {TC.B_PURPLE}francinette{TC.NC}" +
+			      f" with {TC.B_WHITE}--strict{TC.NC}")
 		return errors
