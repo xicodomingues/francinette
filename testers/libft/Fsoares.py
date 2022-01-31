@@ -97,6 +97,5 @@ class Fsoares():
 
 		logger.warn(f"found errors for functions: {errors}")
 		if not is_strict() and not errors:
-			print(f"\nWant some more thorough tests? run {TC.B_PURPLE}francinette{TC.NC}" +
-			      f" with {TC.B_WHITE}--strict{TC.NC}")
+			print(f"Want some more thorough tests? run '{TC.B_WHITE}francinette --strict{TC.NC}'")
 		return errors

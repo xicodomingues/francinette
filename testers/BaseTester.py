@@ -169,7 +169,7 @@ class BaseTester:
 
 		has_errors = missing or norm_errors or error_funcs
 		if (not has_errors):
-			print(f"\n🎉🥳 {TC.B_GREEN}All tests passed! Congratulations!{TC.NC} 🥳🎉")
+			print(f"\n🎉🥳 {TC.B_GREEN}All tests passed! Congratulations!{TC.NC} 🥳🎉\n")
 			logger.info("All tests ok!")
 			return True
 
