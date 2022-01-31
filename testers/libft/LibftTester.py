@@ -14,7 +14,7 @@ from testers.libft.BaseExecutor import BONUS_FUNCTIONS, PART_1_FUNCTIONS, PART_2
 from testers.libft.Fsoares import Fsoares
 from testers.libft.Tripouille import Tripouille
 from testers.libft.WarMachine import WarMachine
-from utils.ExecutionContext import TestRunInfo, has_bonus, set_bonus
+from utils.ExecutionContext import TestRunInfo, has_bonus, is_strict, set_bonus
 from utils.TerminalColors import TC
 
 logger = logging.getLogger("libft")
@@ -54,6 +54,12 @@ class LibftTester(BaseTester):
 				return LibftTester
 			else:
 				return False
+
+	def test_selector(self):
+		result = super().test_selector()
+		if is_strict():
+			return [Fsoares]
+		return result
 
 	def select_tests_to_execute(self):
 		args = self.info.args
