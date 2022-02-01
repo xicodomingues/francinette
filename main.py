@@ -55,7 +55,7 @@ def clone(repo, basedir, current_dir):
 	if '+' in author_name:
 		author_name = author_name.split('+')[1]
 
-	repo_copy_dir = os.path.join(current_dir, author_name + "_" + project)
+	repo_copy_dir = os.path.join(current_dir, author_name + "_" + project.name)
 	if os.path.exists(repo_copy_dir):
 		shutil.rmtree(repo_copy_dir)
 	cloned.clone(repo_copy_dir)
