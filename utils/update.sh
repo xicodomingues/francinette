@@ -4,6 +4,10 @@ cd "$HOME" || exit
 
 mkdir temp_____
 
+if [ "$(uname)" != "Darwin" ]; then
+	echo "Admin permissions need to install newer packages"
+	sudo apt install libbsd-dev libncurses-dev
+fi
 
 cd temp_____ || exit
 rm -rf francinette
@@ -11,7 +15,7 @@ rm -rf francinette
 # download github
 git clone --recursive https://github.com/xicodomingues/francinette.git
 
-cp -r francinette ..
+cp -r francinette .. 2> /dev/null
 
 cd "$HOME" || exit
 rm -rf temp_____

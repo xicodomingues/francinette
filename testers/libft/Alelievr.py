@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 import re
 import subprocess
+from sys import platform
 from halo import Halo
 from typing import List
 from testers.libft.BaseExecutor import BONUS_FUNCTIONS
@@ -48,6 +49,10 @@ class Alelievr():
 			lines = [handle_line(line) for line in f_init.readlines()]
 		with open(init, 'w') as f_init:
 			f_init.writelines(lines)
+
+		if platform == "linux" or platform == "linux2":
+			with open(Path(self.temp_dir, "..", "__my_srcs", "Makefile"), 'a') as mf:
+				mf.writelines("\n\nso:\n\tgcc -nostartfiles -fPIC *.c\n\tgcc -nostartfiles -shared -o libft.so *.o\n")
 
 	def execute_tester(self):
 		os.chdir(self.temp_dir)
