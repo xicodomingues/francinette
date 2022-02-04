@@ -6,7 +6,7 @@
 /*   By: fsoares- <fsoares-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 13:40:02 by fsoares-          #+#    #+#             */
-/*   Updated: 2022/02/04 14:31:53 by fsoares-         ###   ########.fr       */
+/*   Updated: 2022/02/04 21:08:09 by fsoares-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,42 @@ extern int g_test;
 	null_check(fn_call, result);                             \
 	return result;
 
+/**
+ * @brief Macro that creates wraps a get_next_line_test
+ */
+#define TEST(title, x)                                         \
+	{                                                          \
+		int status = 0;                                        \
+		int test = fork();                                     \
+		if (test == 0)                                         \
+		{                                                      \
+			g_test = 0;                                        \
+			alarm(TIMEOUT_US / 1000000);                       \
+			char *_title = title;                              \
+			printf(BLU "%-20s" NC ": ", _title);               \
+			fflush(stdout);                                    \
+			int res = 1;                                       \
+			errors_file = fopen("errors.log", "w");            \
+			reset_malloc_mock();                               \
+			x;                                                 \
+			res = leak_check() && res;                         \
+			res = null_check_gnl(_title) && res;               \
+			printf("\n");                                      \
+			if (res)                                           \
+				exit(EXIT_SUCCESS);                            \
+			else                                               \
+				exit(1);                                       \
+		}                                                      \
+		else                                                   \
+		{                                                      \
+			waitpid(test, &status, 0);                         \
+			if (WIFEXITED(status) && WEXITSTATUS(status) != 0) \
+				show_error_file();                             \
+		}                                                      \
+	}
+
+#define test_gnl(fd, expected) res = test_gnl_func(fd, expected, _title) && res;
+
 void handle_signals();
 
 void print_mem(void *ptr, int size);
@@ -136,6 +172,13 @@ void malloc_set_result(void *res);
 void malloc_set_null(int nth);
 int check_leaks(void *ptr);
 void print_mallocs();
+
+/* for file tester */
+int check_res(int res, char *prefix);
+int check_alloc(char *next, char *expected);
+int leak_check();
+int test_gnl_func(int fd, char *expected, char *input);
+int null_check_gnl(char *file);
 
 #ifndef __APPLE__
 size_t strlcat(char *dst, const char *src, size_t size);

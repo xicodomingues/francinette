@@ -173,11 +173,11 @@ class BaseTester:
 			logger.info("All tests ok!")
 			return True
 
-		print(f"\n{TC.B_CYAN}Summary{TC.NC}:\n")
+		print(f"\n{TC.B_CYAN}Summary{TC.NC}:")
 
 		logger.warn(f"norminette errors: {norm_errors}")
 		if norm_errors:
-			print(f"{TC.B_YELLOW}Norminette Errors:{TC.NC}", ', '.join(norm_errors))
+			print(f"\n{TC.B_YELLOW}Norminette Errors:{TC.NC}", ', '.join(norm_errors))
 
 		logger.warn(f"missing functions: {missing}")
 		if missing:
