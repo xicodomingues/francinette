@@ -1,8 +1,6 @@
 import abc
 import logging
 import os
-from pydoc import text
-import subprocess
 
 import pexpect
 from halo import Halo
@@ -26,28 +24,34 @@ class BaseExecutor:
 	def execute(self):
 		pass
 
-	def show_run_tests(self, command):
+	def execute_command(self, command, spinner=None):
 		output = ""
 
 		def parse_out(str):
 			nonlocal output
+			if (spinner and spinner.enabled):
+				spinner.fail()
+				spinner.enabled = False
+				str = b'\r' + str
 			output += str.decode('ascii', errors="backslashreplace")
 			return str
 
 		logger.info(f"on dir {os.getcwd()}")
-		Halo(f"{TC.CYAN}Running tests: {TC.B_WHITE}{self.name}{TC.NC} ({self.git_url})").info()
 		p = pexpect.spawn(command)
 		p.interact(output_filter=parse_out)
+		print()
 		return remove_ansi_colors(output)
+
+	def run_tests(self, command, show_message=True):
+		if show_message:
+			Halo(f"{TC.CYAN}Running tests: {TC.B_WHITE}{self.name}{TC.NC} ({self.git_url})").info()
+		return self.execute_command(command)
 
 	def compile_tests(self, command):
 		logger.info(f"on dir {os.getcwd()}")
 
 		text = f"{TC.CYAN}Compiling tests: {TC.B_WHITE}{self.name}{TC.NC} ({self.git_url})"
 		with Halo(text) as spinner:
-			c = subprocess.run(command.split(" "), capture_output=True, text=True)
-			logger.info(c)
-			if c.returncode != 0:
-				spinner.fail()
-				print(c.stderr)
-				raise Exception("Problem compiling the tests")
+			self.execute_command(command, spinner)
+			if (spinner and spinner.enabled):
+				spinner.succeed()

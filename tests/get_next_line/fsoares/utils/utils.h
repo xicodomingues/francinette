@@ -6,7 +6,7 @@
 /*   By: fsoares- <fsoares-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 13:40:02 by fsoares-          #+#    #+#             */
-/*   Updated: 2022/01/31 14:10:27 by fsoares-         ###   ########.fr       */
+/*   Updated: 2022/02/04 14:31:53 by fsoares-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@
 #include <stdbool.h>
 #include <time.h>
 
-#include "libft.h"
 #include "color.h"
 
 #define MEM_SIZE 0x100
@@ -37,6 +36,8 @@ extern char function[1000];
 extern char signature[10000];
 extern int g_offset;
 extern char escaped[1000];
+extern FILE *errors_file;
+extern int g_test;
 
 #define test(fn)                                        \
 	strcpy(function, #fn);                              \
@@ -107,6 +108,7 @@ void reset_with(void *m1, void *m2, char *content, int size);
 
 int set_sign(const char *format, ...);
 int error(const char *format, ...);
+void show_error_file();
 
 int same_ptr(void *res, void *res_std);
 int same_mem(void *expected, void *result, int size);

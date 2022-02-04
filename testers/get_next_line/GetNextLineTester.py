@@ -4,7 +4,7 @@ from testers.BaseTester import BaseTester
 from testers.get_next_line.Fsoares import Fsoares
 
 from testers.get_next_line.Tripouille import Tripouille
-from utils.ExecutionContext import TestRunInfo
+from utils.ExecutionContext import TestRunInfo, is_strict
 from utils.Utils import show_banner
 
 logger = logging.getLogger("gnl")
@@ -27,3 +27,9 @@ class GetNextLineTester(BaseTester):
 		if not file_path.exists():
 			return False
 		return GetNextLineTester
+
+	def test_selector(self):
+		result = super().test_selector()
+		if is_strict():
+			return [Fsoares]
+		return result

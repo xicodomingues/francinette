@@ -95,11 +95,17 @@ void malloc_set_null(int nth)
 
 size_t get_malloc_size(void *ptr)
 {
+	size_t size = 0;
 	for (int pos = 0; pos < alloc_pos; pos++)
 	{
 		t_node temp = allocations[pos];
 		if (temp.ptr == ptr)
-			return temp.size;
+		{
+			if (temp.freed)
+				size = temp.size;
+			else
+				return temp.size;
+		}
 	}
 	return 0;
 }
@@ -127,7 +133,7 @@ int check_leaks(void *result)
 		{
 			if (res)
 				error("\n");
-			printf("Memory leak: %p - %zu bytes\n", tmp.returned, tmp.size);
+			fprintf(errors_file, "Memory leak: %p - %zu bytes\n", tmp.returned, tmp.size);
 			res = 0;
 		}
 	}

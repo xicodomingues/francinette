@@ -6,11 +6,14 @@ int g_offset;
 char escaped[1000];
 char escaped_div = 2;
 int where_buffer = 0;
+int g_test = 1;
+
+FILE *errors_file;
 
 void show_signal_msg(char *message, char *resume, int signal)
 {
-	printf(CYN "%s" NC ": " BRED "%s\n" NC, signature, message);
-	printf("ft_%-13s: " YEL "%s" NC "\n", function, resume);
+	fprintf(errors_file, BCYN "%s" NC ": " BRED "%s\n" NC, signature, message);
+	printf(YEL "%s" NC "\n", resume);
 	exit(signal);
 }
 
@@ -36,7 +39,6 @@ void sigalarm(int signal)
 
 void handle_signals()
 {
-	alarm(5);
 	signal(SIGSEGV, sigsegv);
 	signal(SIGABRT, sigabort);
 	signal(SIGBUS, sigbus);
@@ -144,6 +146,23 @@ char *rand_bytes(char *dest, int len)
 	return dest;
 }
 
+char *truncate_str(char *src)
+{
+	char temp[1000];
+
+	int len = strlen(src);
+	temp[0] = '"';
+	strncpy(temp + 1, src, 21);
+	strncpy(temp + 21, "[...]", 6);
+	strncpy(temp + 26, src + len - 20, 21);
+	sprintf(temp + 46, "\"(%i characters)", len);
+	char *res = escape_str(temp);
+	len = strlen(res);
+	res[len - 1] = '\0';
+	return res + 1;
+}
+
+
 char *escape_str(char *src)
 {
 	int i, j;
@@ -153,17 +172,22 @@ char *escape_str(char *src)
 		sprintf(my_bf, "<NULL>");
 		return my_bf;
 	}
+	if (strlen(src) > 100)
+		return truncate_str(src);
+
 	my_bf[0] = '"';
 	for (i = 0, j = 1; src[i]; i++, j++)
 	{
 		if (isprint(src[i]))
-		{
 			my_bf[j] = src[i];
-		}
+		else if (src[i] == '\n')
+			sprintf(my_bf + j++, "\\n");
+		else if (src[i] == '\t')
+			sprintf(my_bf + j++, "\\t");
 		else
 		{
-			sprintf(my_bf + j, "\\%02x", (unsigned char)src[i]);
-			j += 2;
+			sprintf(my_bf + j, "\\x%02x", (unsigned char)src[i]);
+			j += 3;
 		}
 	}
 	my_bf[j] = '"';
@@ -208,18 +232,36 @@ int set_sign(const char *format, ...)
 	va_start(args, format);
 	g_offset = vsprintf(signature, format, args);
 	va_end(args);
-	reset_malloc_mock();
 	return g_offset;
 }
 
 int error(const char *format, ...)
 {
-	printf(BRED "Error" NC ": " BCYN "%s" NC ": ", signature);
+	fprintf(errors_file, BRED "Error" NC " %i: " CYN "%s" NC ": ", g_test + 1, signature);
 	va_list args;
 	va_start(args, format);
-	vprintf(format, args);
+	vfprintf(errors_file, format, args);
 	va_end(args);
 	return 0;
+}
+
+void show_error_file()
+{
+	char buf[1024];
+	fclose(errors_file);
+
+	FILE *file;
+	size_t nread;
+	file = fopen("errors.log", "r");
+	if (file) {
+		while ((nread = fread(buf, 1, sizeof buf, file)) > 0)
+			fwrite(buf, 1, nread, stdout);
+		if (ferror(file)) {
+			/* deal with error */
+		}
+		fclose(file);
+		printf("\n");
+	}
 }
 
 int same_ptr(void *res, void *res_std)
@@ -294,8 +336,13 @@ int same_return(void *res, void *dest)
 
 int same_string(char *expected, char *actual)
 {
-	if (strcmp(expected, actual) != 0)
-		return error("expected: \"%s\", got: \"%s\"\n", expected, actual);
+	if (expected == NULL && actual == NULL)
+		return 1;
+	if ((expected == NULL && actual != NULL) || (expected != NULL && actual == NULL))
+		return error("expected %s, got %s\n", escape_str(expected), escape_str(actual));
+	if (strcmp(expected, actual) != 0) {
+		return error("expected: %s, got: %s\n", escape_str(expected), escape_str(actual));
+	}
 	return 1;
 }
 

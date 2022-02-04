@@ -19,5 +19,5 @@ class Tripouille(BaseExecutor):
 		super().__init__(tests_dir, temp_dir, to_execute, missing)
 
 	def execute(self):
-		output = self.show_run_tests("make m")
+		output = self.run_tests("make m")
 		return []

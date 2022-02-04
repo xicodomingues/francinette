@@ -63,7 +63,7 @@ class BaseTester:
 
 		if (selected_testers == None):
 			return self.testers
-
+		# TODO: check valid tester
 		if (selected_testers == []):
 			print(f"Please select one or more of the available testers:")
 			for i, tester in enumerate(self.testers):
