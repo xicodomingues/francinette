@@ -24,7 +24,7 @@ lines_finder = re.compile(r'(^.*if.*atoi\(argv\[1\]\).* == \d.*$)|(^\s+else if \
 
 def cat_file(path):
 	p = subprocess.run(f'cat -e {path.resolve()}', shell=True, capture_output=True)
-	print(indent(p.stdout.decode('ascii', errors="backslashreplace"), "    "))
+	print(p.stdout.decode('ascii', errors="backslashreplace"))
 
 
 class WarMachine():
@@ -85,7 +85,7 @@ class WarMachine():
 
 		def print_test_lines(lines, start, number):
 			tabs = lines[start + 1].count('\t')
-			print(f"Test {number + 1}:")
+			print(f"{TC.BLUE}Test {number + 1}{TC.NC}:")
 			if not re.match(r'\t+\{', lines[start + 1]):
 				print(lines[start + 1][tabs - 1:].replace('\t', " " * 4), end="")
 				return
@@ -99,9 +99,9 @@ class WarMachine():
 			expected = path / '..' / f'{name}.output'
 			result = path / '..' / f'user_output_{name}'
 
-			print(f"Expected (cat -e {name}.output):")
+			print(f"{TC.YELLOW}Expected{TC.NC} (cat -e {name}.output):")
 			cat_file(expected)
-			print(f"Your result (cat -e user_output_{name}):")
+			print(f"{TC.RED}Your result{TC.NC} (cat -e user_output_{name}):")
 			cat_file(result)
 			print()
 
@@ -113,9 +113,9 @@ class WarMachine():
 				print_test_lines(lines, test_lines[fail], fail)
 				print_diffs(path, fail)
 
-		path = Path(self.temp_dir, 'tests', get_part(func), f'ft_{func}', 'main.c').resolve()
-		print(f"Errors in {func}: {path}")
-		show_code(path, [i for i, test in enumerate(tests) if test != '✓'])
+		path = Path(self.temp_dir, 'tests', get_part(func), f'ft_{func}').resolve()
+		print(f"{TC.B_RED}Errors{TC.NC} in {TC.BLUE}{func}{TC.NC}: {TC.B_WHITE}{path}{TC.NC}")
+		show_code(path / 'main.c', [i for i, test in enumerate(tests) if test != '✓'])
 
 	def parse_output(self, output):
 
@@ -128,15 +128,27 @@ class WarMachine():
 				self.show_failed_test_code(match.group(1), match.group(2))
 			return (match.group(1), match.group(3))
 
+		def print_file_summary(file):
+			with open(file) as f:
+				lines = f.readlines()
+			print()
+			[print(line, end='') for line in lines[:100]]
+			if len(lines) > 100:
+				dest = (file / ".." / 'errors.log').resolve()
+				with open(file, "r") as orig, open(dest, "w") as log:
+					log.write(remove_ansi_colors(orig.read()))
+				print(f"...\n\nFile too large. To see full report open: {TC.PURPLE}{dest}{TC.NC}")
+
 		orig_stdout = sys.stdout
-		with open(Path(self.temp_dir, "errors.log"), "w") as error_log:
+		with open(Path(self.temp_dir, "errors_color.log"), "w") as error_log:
 			sys.stdout = error_log
 			parsed = [parse_func(line) for line in output if is_func(line)]
 			sys.stdout = orig_stdout
 
 		res = [func for func, res in parsed if res != "OK"]
-		if len(res) == 0:
+		if len(res) != 0:
 			longer = Path(self.temp_dir, "deepthought")
-			print(f"\nMore information in: {TC.PURPLE}{longer}{TC.NC}")
-			print(f"and: {TC.B_WHITE}{Path(self.temp_dir, 'errors.log').resolve()}{TC.NC}")
+			print(f"More information in: {TC.PURPLE}{longer}{TC.NC}")
+			print_file_summary(Path(self.temp_dir, 'errors_color.log'))
+			#print(f"and: {TC.B_WHITE}{Path(self.temp_dir, 'errors.log').resolve()}{TC.NC}")
 		return res
