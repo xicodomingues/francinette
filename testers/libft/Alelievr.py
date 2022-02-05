@@ -82,9 +82,16 @@ class Alelievr():
 						return True
 			return False
 
+		def show_file_output(path):
+			with open(path) as file:
+				error_lines = [line for line in file.readlines() if not out_func_line.match(line)]
+				print(" ".join(error_lines[:100]), end="")
+				if (len(error_lines) > 100):
+					print(f"...\n\nFile too large. To see full report open: {TC.PURPLE}{log_path}{TC.NC}\n")
+
 		log_path = Path(self.temp_dir, 'result.log')
 		with open(log_path, encoding='ascii', errors="backslashreplace") as file:
 			errors = [out_func_line.match(line).group(1) for line in file.readlines() if is_error(line)]
 			if len(errors) > 0:
-				print(f"\nFor a more detailed report open: {TC.PURPLE}{log_path}{TC.NC}\n")
+				show_file_output(log_path)
 			return errors
