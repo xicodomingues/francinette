@@ -1,10 +1,10 @@
 
 #include "utils.h"
 
-int compare_strlen(char *str)
+int compare_strlen(int test_number, char *str)
 {
-	sprintf(signature, "ft_strlen(%s)", escape_str(str));
-	return same_value(ft_strlen(str), strlen(str));
+	set_signature(test_number, "ft_strlen(%s)", escape_str(str));
+	return same_value(strlen(str), ft_strlen(str));
 }
 
 int test_strlen(void)
@@ -12,17 +12,18 @@ int test_strlen(void)
 	char str[100];
 	int res = 1;
 
-	for (int n = 0; n < REPETITIONS && res; n++)
-	{
-		rand_bytes(str, rand() % 98 + 1);
-		res = compare_strlen(str) && res;
-	}
-	res = compare_strlen("") && res;
+	res = compare_strlen(1, "") && res;
 	str[0] = EOF;
 	str[1] = '\0';
-	res = compare_strlen(str) && res;
+	res = compare_strlen(2, str) && res;
 	const char *s = "aaaaa";
 	ft_strlen(s);
+
+	for (int n = 0; n < REPETITIONS && res; n++)
+	{
+		rand_str(str, rand() % 98 + 1);
+		res = compare_strlen(3 + n, str) && res;
+	}
 	return res;
 }
 

@@ -6,7 +6,7 @@
 /*   By: fsoares- <fsoares-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 13:40:02 by fsoares-          #+#    #+#             */
-/*   Updated: 2022/02/04 21:08:09 by fsoares-         ###   ########.fr       */
+/*   Updated: 2022/02/05 19:49:44 by fsoares-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,13 +142,13 @@ char *escape_chr(char ch);
 void reset(void *m1, void *m2, int size);
 void reset_with(void *m1, void *m2, char *content, int size);
 
-int set_sign(const char *format, ...);
+int set_signature(const char *format, ...);
 int error(const char *format, ...);
 void show_error_file();
 
 int same_ptr(void *res, void *res_std);
 int same_mem(void *expected, void *result, int size);
-int same_value(int res, int res_std);
+int same_value(int expected, int res);
 int same_sign(int res, int res_std);
 int same_offset(void *start, void *start_std, void *res, void *res_std);
 int same_return(void *res, void *dest);

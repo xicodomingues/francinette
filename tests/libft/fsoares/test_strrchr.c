@@ -1,25 +1,26 @@
 
 #include "utils.h"
 
-int single_test_strrchr(char *str, int ch)
+int single_test_strrchr(int test_number, char *str, int ch)
 {
-	sprintf(signature, "ft_strrchr(%p: \"%s\", %i: %s)", str, str, ch, escape_chr(ch));
+	set_signature(test_number, "ft_strrchr(%p: \"%s\", %i: %s)", str, str, ch, escape_chr(ch));
 	char *res = ft_strrchr(str, ch);
 	char *res_std = strrchr(str, ch);
 
-	return same_ptr(res, res_std);
+	return same_offset(str, res_std, str, res);
 }
 
 int test_strrchr(void)
 {
 	int res = 1;
 
-	res = single_test_strrchr("teste", 'e') && res;
-	res = single_test_strrchr("teste", '\0') && res;
-	res = single_test_strrchr("xteste", 'x') && res;
-	res = single_test_strrchr("teste", 'x') && res;
+	res = single_test_strrchr(1, "teste", 'e') && res;
+	res = single_test_strrchr(2, "teste", '\0') && res;
+	res = single_test_strrchr(3, "xteste", 'x') && res;
+	res = single_test_strrchr(4, "teste", 'x') && res;
 
-	res = single_test_strrchr("teste", 1024 + 'e') && res;
+	res = single_test_strrchr(5, "teste", 1024 + 'e') && res;
+	res = single_test_strrchr(6, "teste", 1024) && res;
 
 	return res;
 }

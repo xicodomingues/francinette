@@ -132,12 +132,12 @@ class WarMachine():
 			with open(file) as f:
 				lines = f.readlines()
 			print()
-			[print(line, end='') for line in lines[:100]]
-			if len(lines) > 100:
+			[print(line, end='') for line in lines[:50]]
+			if len(lines) > 50:
 				dest = (file / ".." / 'errors.log').resolve()
 				with open(file, "r") as orig, open(dest, "w") as log:
 					log.write(remove_ansi_colors(orig.read()))
-				print(f"...\n\nFile too large. To see full report open: {TC.PURPLE}{dest}{TC.NC}")
+				print(f"...\n\nFile too large. To see full report open: {TC.PURPLE}{dest}{TC.NC}\n")
 
 		orig_stdout = sys.stdout
 		with open(Path(self.temp_dir, "errors_color.log"), "w") as error_log:

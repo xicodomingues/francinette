@@ -21,3 +21,6 @@ ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
 
 def remove_ansi_colors(text):
 	return ansi_escape.sub('', ansi_columns.sub(' ', text))
+
+def open_ascii(file, mode='r'):
+	return open(file, mode, encoding='ascii', errors="backslashreplace")

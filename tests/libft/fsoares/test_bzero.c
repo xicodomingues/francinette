@@ -1,13 +1,14 @@
 
 #include "utils.h"
 
-int single_test_bzero(char *m, char *ms, int size)
+int single_test_bzero(int test_number, char *res, char *expected, int size)
 {
-	reset(m, ms, MEM_SIZE);
-	bzero(ms, size);
-	ft_bzero(m, size);
-	sprintf(signature, "ft_bzero(%p, %i)", m, size);
-	return (same_mem(ms, m, MEM_SIZE));
+	set_signature(test_number, "ft_bzero(%p, %i)", res, size);
+	reset(res, expected, MEM_SIZE);
+	bzero(expected, size);
+	ft_bzero(res, size);
+
+	return (same_mem(expected, res, MEM_SIZE));
 }
 
 int test_bzero(void)
@@ -17,9 +18,9 @@ int test_bzero(void)
 
 	int res = 1;
 
-	res = single_test_bzero(mem, mem_std, 0) && res;
-	res = single_test_bzero(mem, mem_std, 12) && res;
-	res = single_test_bzero(mem + 2, mem_std + 2, 40) && res;
+	res = single_test_bzero(1, mem, mem_std, 0) && res;
+	res = single_test_bzero(2, mem, mem_std, 12) && res;
+	res = single_test_bzero(3, mem + 2, mem_std + 2, 40) && res;
 
 	return res;
 }

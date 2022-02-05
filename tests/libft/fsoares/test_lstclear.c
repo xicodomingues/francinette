@@ -18,14 +18,15 @@ char *node_ptr_to_str(t_list *node)
 }
 
 
-int test_single_lstclear(t_list **list)
+int test_single_lstclear(int test_number, t_list **list)
 {
 	t_list *to_func = NULL;
 	char *args[10];
 	int i = 0;
 
 	char *s = list_to_str_fn(list, node_ptr_to_str);
-	set_sign("ft_lstclear(%s, [(x) => free(" RED "*" CYN "x)])", s); free(s);
+	set_signature(test_number, "ft_lstclear(%s, [(x) => free(" RED "*" CYN "x)])", s); free(s);
+
 	while (*list != NULL)
 	{
 		args[i] = my_strdup((*list)->content);
@@ -43,9 +44,9 @@ int test_single_lstclear(t_list **list)
 
 int test_lstclear()
 {
-	int res = test_single_lstclear(create_list(0));
-	res = test_single_lstclear(create_list(1, "hello!")) && res;
-	res = test_single_lstclear(
+	int res = test_single_lstclear(1, create_list(0));
+	res = test_single_lstclear(2, create_list(1, "hello!")) && res;
+	res = test_single_lstclear(3,
 		create_list(5, "um", "dois", "tres", "quatro", "cinco")) && res;
 
 	return res;

@@ -1,5 +1,6 @@
 import logging
 import os
+from pathlib import Path
 from pipes import quote
 import re
 import subprocess
@@ -10,6 +11,7 @@ from pexpect import run
 from testers.libft.BaseExecutor import remove_ansi_colors
 from utils.ExecutionContext import has_bonus, is_strict
 from utils.TerminalColors import TC
+from utils.Utils import open_ascii
 
 logger = logging.getLogger("fsoares")
 
@@ -60,8 +62,10 @@ class Fsoares():
 		Halo(f"{TC.CYAN}Testing:{TC.NC}").info()
 		spinner = Halo(placement="right")
 
-		def parse_output(output: str):
+		def parse_output(output: str, func):
 			lines = output.splitlines()
+			if not lines:
+				return (func, "Execution Problem", ["Execution Problem"])
 			if lines[-1] == "":
 				lines = lines[:-1]
 			match = test_regex.match(lines[-1])
@@ -78,7 +82,7 @@ class Fsoares():
 			output = out.decode('ascii', errors="backslashreplace")
 			logger.info(output)
 			output = get_output(func, output)
-			return parse_output(remove_ansi_colors(output))
+			return parse_output(remove_ansi_colors(output), func)
 
 		result = [execute_test(func) for func in self.to_execute]
 		logger.info(f"tests result: {result}")
@@ -90,12 +94,35 @@ class Fsoares():
 		def is_error(result):
 			return result != "OK" and result != "No test yet"
 
+		def build_error_file(errors):
+			with open("errors_color.log", "w") as error_log:
+				for func in errors:
+					path = Path(self.tests_dir, f"test_{func}.c").resolve()
+					error_log.write(f"For {TC.CYAN}ft_{func}{TC.NC}, in {TC.B_WHITE}{path}{TC.NC}:\n\n")
+					with open_ascii(f"errors_{func}.log", "r") as f_error:
+						error_log.write(f_error.read())
+
+		def show_errors_file():
+			file = Path(self.temp_dir, "errors_color.log")
+			with open_ascii(file) as f:
+				lines = f.readlines()
+			print()
+			[print(line, end='') for line in lines[:50]]
+			if len(lines) > 50:
+				dest = Path(self.temp_dir, 'errors.log').resolve()
+				with open_ascii(file, "r") as orig, open(dest, "w") as log:
+					log.write(remove_ansi_colors(orig.read()))
+				print(f"...\n\nFile too large. To see full report open: {TC.PURPLE}{dest}{TC.NC}\n")
+			print()
+
 		errors = []
 		for func, res, lines in output:
 			if (is_error(res)):
 				errors.append(func)
-
 		logger.warn(f"found errors for functions: {errors}")
-		if not is_strict() and not errors:
+		if errors:
+			build_error_file(errors)
+			show_errors_file()
+		if not is_strict() and not errors and not self.missing:
 			print(f"Want some more thorough tests? run '{TC.B_WHITE}francinette --strict{TC.NC}'")
 		return errors

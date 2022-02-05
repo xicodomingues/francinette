@@ -1,9 +1,9 @@
 
 #include "utils.h"
 
-int single_test_putnbr(int n, int fd)
+int single_test_putnbr(int test_number, int n, int fd)
 {
-	set_sign("ft_putnbr_fd(%i, fd: %i)", n, fd);
+	set_signature(test_number, "ft_putnbr_fd(%i, fd: %i)", n, fd);
 
 	ft_putnbr_fd(n, fd);
 	ft_putendl_fd("", fd);
@@ -14,11 +14,11 @@ int test_putnbr_fd()
 {
 	int fd = open("fsoares", O_RDWR | O_CREAT);
 
-	int res = single_test_putnbr(0, fd);
-	res = single_test_putnbr(10000043, fd) && res;
-	res = single_test_putnbr(-10000043, fd) && res;
-	res = single_test_putnbr(INT_MAX, fd) && res;
-	res = single_test_putnbr(INT_MIN, fd) && res;
+	int res = single_test_putnbr(1, 0, fd);
+	res = single_test_putnbr(2, 10000043, fd) && res;
+	res = single_test_putnbr(3, -10000043, fd) && res;
+	res = single_test_putnbr(4, INT_MAX, fd) && res;
+	res = single_test_putnbr(5, INT_MIN, fd) && res;
 
 	lseek(fd, SEEK_SET, 0);
 	char content[100] = {0};
@@ -29,7 +29,7 @@ int test_putnbr_fd()
 	if(strcmp(content, expected) != 0)
 		res = error("expected: %s, content of the file: %s\n", escape_str(expected), escape_str(content)) && res;
 
-	set_sign("ft_putnbr_fd(%i, fd: %i)", 10000, fd);
+	set_signature(6, "ft_putnbr_fd(%i, fd: %i)", 10000, fd);
 	null_null_check(ft_putnbr_fd(10000, fd), res);
 
 	remove("./fsoares");

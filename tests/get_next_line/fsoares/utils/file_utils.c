@@ -21,7 +21,7 @@ int leak_check()
 
 int test_gnl_func(int fd, char *expected, char *input)
 {
-	set_sign("get_next_line(%i: %s)", fd, escape_str(input));
+	set_signature("get_next_line(%i: %s)", fd, escape_str(input));
 
 	char *next = get_next_line(fd);
 	int res = same_string(expected, next);

@@ -92,7 +92,7 @@ char *list_to_str_fn(t_list **head_ptr, char *(*str_node)(t_list *node))
 	while (head != NULL)
 	{
 		node_str = str_node(head);
-		offset += sprintf(str + offset, "%s -> ", node_str);
+		offset += sprintf(str + offset, "%s->", node_str);
 		free(node_str);
 		head = head->next;
 	}
@@ -131,7 +131,7 @@ int same_list(t_list **expected, t_list **result)
 
 	char *res_list_str = list_to_str(result);
 	char *expected_list_str = list_to_str(expected);
-	error("different lists\n" YEL "Expected" NC ": %s\n" YEL "Result  " NC ": %s\n",
+	error("different lists\n" YEL "Expected" NC ": %s\n" YEL "Result  " NC ": %s\n\n",
 		  expected_list_str, res_list_str);
 	free(res_list_str);
 	free(expected_list_str);

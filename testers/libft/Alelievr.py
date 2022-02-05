@@ -12,6 +12,7 @@ from testers.libft.BaseExecutor import BONUS_FUNCTIONS
 from utils.ExecutionContext import has_bonus
 
 from utils.TerminalColors import TC
+from utils.Utils import open_ascii
 
 logger = logging.getLogger("alelievr")
 
@@ -83,14 +84,14 @@ class Alelievr():
 			return False
 
 		def show_file_output(path):
-			with open(path) as file:
+			with open_ascii(path) as file:
 				error_lines = [line for line in file.readlines() if not out_func_line.match(line)]
-				print(" ".join(error_lines[:100]), end="")
-				if (len(error_lines) > 100):
+				print(" ".join(error_lines[:50]), end="")
+				if (len(error_lines) > 50):
 					print(f"...\n\nFile too large. To see full report open: {TC.PURPLE}{log_path}{TC.NC}\n")
 
 		log_path = Path(self.temp_dir, 'result.log')
-		with open(log_path, encoding='ascii', errors="backslashreplace") as file:
+		with open_ascii(log_path) as file:
 			errors = [out_func_line.match(line).group(1) for line in file.readlines() if is_error(line)]
 			if len(errors) > 0:
 				show_file_output(log_path)

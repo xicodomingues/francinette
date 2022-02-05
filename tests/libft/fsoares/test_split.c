@@ -18,13 +18,13 @@ void print_string_arr(char **array)
 {
 	int i = 0;
 	char *res = array[i];
-	printf("[");
+	fprintf(errors_file, "[");
 	while (res != NULL)
 	{
-		printf("\"%s\", ", res);
+		fprintf(errors_file, "%s, ", escape_str(res));
 		res = array[++i];
 	}
-	printf(" NULL]");
+	fprintf(errors_file, " NULL]");
 }
 
 int same_strings(char **expected, char **result)
@@ -41,19 +41,20 @@ int same_strings(char **expected, char **result)
 
 	if (!same)
 	{
+		fprintf(errors_file, "\n");
 		error("\n" YEL "Expected: " NC);
 		print_string_arr(expected);
-		printf("\n" YEL "Returned: " NC);
+		fprintf(errors_file, "\n" YEL "Returned: " NC);
 		print_string_arr(result);
-		printf("\n");
+		fprintf(errors_file, "\n");
 	}
 	same = check_mem_size(result, sizeof(char *) * (i + 1)) && same;
 	return same;
 }
 
-int test_single_split(char *s, char c, char **expected)
+int test_single_split(int test_number, char *s, char c, char **expected)
 {
-	set_sign("ft_split(%s, %i:%s)", escape_str(s), c, escape_chr(c));
+	set_signature(test_number, "ft_split(%s, %i:%s)", escape_str(s), c, escape_chr(c));
 
 	char **res = ft_split(s, c);
 
@@ -75,18 +76,18 @@ int test_single_split(char *s, char c, char **expected)
 int test_split()
 {
 	char **expected = init_str_array(2, "hello!", NULL);
-	int res = test_single_split("hello!", ' ', expected);
+	int res = test_single_split(1, "hello!", ' ', expected);
 
-	res = test_single_split("xxxxxxxxhello!", 'x', expected) && res;
-	res = test_single_split("hello!zzzzzzzz", 'z', expected) && res;
-	res = test_single_split("\11\11\11\11hello!\11\11\11\11", '\11', expected) && res;
+	res = test_single_split(2, "xxxxxxxxhello!", 'x', expected) && res;
+	res = test_single_split(3, "hello!zzzzzzzz", 'z', expected) && res;
+	res = test_single_split(4, "\11\11\11\11hello!\11\11\11\11", '\11', expected) && res;
 
 	expected = init_str_array(1, NULL);
-	res = test_single_split("", 'a', expected) && res;
-	res = test_single_split("ggggggggggg", 'g', expected) && res;
+	res = test_single_split(5, "", 'a', expected) && res;
+	res = test_single_split(6, "ggggggggggg", 'g', expected) && res;
 
 	expected = init_str_array(5, "1", "2a,", "3", "--h", NULL);
-	res = test_single_split("^^^1^^2a,^^^^3^^^^--h^^^^", '^', expected) && res;
+	res = test_single_split(7, "^^^1^^2a,^^^^3^^^^--h^^^^", '^', expected) && res;
 
 	return res;
 }

@@ -41,8 +41,9 @@ static void _mark_as_free(void *ptr)
 	for (int pos = 0; pos < alloc_pos; pos++)
 	{
 		t_node temp = allocations[pos];
-		if (temp.ptr == ptr) {
+		if (temp.ptr == ptr && !temp.freed) {
 			allocations[pos].freed = true;
+			return;
 		}
 	}
 }
@@ -57,7 +58,15 @@ void *malloc(size_t size)
 	else
 	{
 		char *s = (char *)p;
-		strncpy(s, "calloc should set the memory to zeros!", size);
+		size_t i = 0;
+		while (i < size) {
+			s[i] = (char)(i + 1);
+			i++;
+		}
+		if (i > 2)
+			s[1] = 0;
+		if (size > 3)
+			strncpy(s + 2, "calloc should set the memory to zeros!", size - 2);
 	}
 	cur_res_pos++;
 	_add_malloc(p, size, to_return);
@@ -95,13 +104,19 @@ void malloc_set_null(int nth)
 
 size_t get_malloc_size(void *ptr)
 {
+	size_t size = 0;
 	for (int pos = 0; pos < alloc_pos; pos++)
 	{
 		t_node temp = allocations[pos];
 		if (temp.ptr == ptr)
-			return temp.size;
+		{
+			if (temp.freed)
+				size = temp.size;
+			else
+				return temp.size;
+		}
 	}
-	return 0;
+	return size;
 }
 
 void print_mallocs()
@@ -110,7 +125,7 @@ void print_mallocs()
 	for (int pos = 0; pos < temp; pos++)
 	{
 		t_node tmp = allocations[pos];
-		printf("%i: %p - %zu - freed: %i - %p\n", pos, tmp.ptr, tmp.size, tmp.freed, tmp.returned);
+		fprintf(errors_file, "%i: %p - %zu - freed: %i - %p\n", pos, tmp.ptr, tmp.size, tmp.freed, tmp.returned);
 	}
 }
 
@@ -127,9 +142,11 @@ int check_leaks(void *result)
 		{
 			if (res)
 				error("\n");
-			printf("Memory leak: %p - %zu bytes\n", tmp.returned, tmp.size);
+			fprintf(errors_file, "Memory leak: %p - %zu bytes\n", tmp.returned, tmp.size);
 			res = 0;
 		}
 	}
+	if (!res)
+		fprintf(errors_file, "\n");
 	return res;
 }

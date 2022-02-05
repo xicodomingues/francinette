@@ -226,7 +226,7 @@ void reset_with(void *m1, void *m2, char *content, int size)
 	strcpy(m2, content);
 }
 
-int set_sign(const char *format, ...)
+int set_signature(const char *format, ...)
 {
 	va_list args;
 	va_start(args, format);
@@ -294,10 +294,10 @@ int same_mem(void *expected, void *result, int size)
 	return equal;
 }
 
-int same_value(int res, int res_std)
+int same_value(int expected, int res)
 {
-	if (res != res_std)
-		return error("yours: %i, std: %i\n", res, res_std);
+	if (res != expected)
+		return error("expected: %i, yours: %i\n", expected, res);
 	return 1;
 }
 

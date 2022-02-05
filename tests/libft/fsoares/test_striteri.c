@@ -1,9 +1,9 @@
 
 #include "utils.h"
 
-int single_test_striteri(char *str, void (*fn)(unsigned int, char *), char *func, char *expected)
+int single_test_striteri(int test_number, char *str, void (*fn)(unsigned int, char *), char *func, char *expected)
 {
-	set_sign("ft_striteri(\"%s\", %s)", str, func);
+	set_signature(test_number, "ft_striteri(\"%s\", %s)", str, func);
 
 	char buffer[20];
 	strcpy(buffer, str);
@@ -25,9 +25,9 @@ void to_char_zero(unsigned int i, char *c) {
 
 int test_striteri()
 {
-	int res = single_test_striteri("", add, "{(i, c) => i + c}", "");
-	res = single_test_striteri("abcd0 ", add, "{(i, c) => i + c}", "aceg4%") && res;
-	res = single_test_striteri("abcdfsdfs", to_char_zero, "{(i, c) => '0'}", "000000000") && res;
+	int res = single_test_striteri(1, "", add, "{(i, c) => i + c}", "");
+	res = single_test_striteri(2, "abcd0 ", add, "{(i, c) => i + c}", "aceg4%") && res;
+	res = single_test_striteri(3, "abcdfsdfs", to_char_zero, "{(i, c) => '0'}", "000000000") && res;
 
 	return res;
 }

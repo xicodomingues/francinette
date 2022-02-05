@@ -6,7 +6,7 @@
 /*   By: fsoares- <fsoares-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 13:40:02 by fsoares-          #+#    #+#             */
-/*   Updated: 2022/01/24 00:07:33 by fsoares-         ###   ########.fr       */
+/*   Updated: 2022/02/05 21:46:06 by fsoares-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,59 +37,68 @@ extern char function[1000];
 extern char signature[10000];
 extern int g_offset;
 extern char escaped[1000];
+extern FILE *errors_file;
+extern int g_test;
 
-#define create_test_ctype(fn)                                                \
-	int test_##fn(void)                                                      \
-	{                                                                        \
-		int c;                                                               \
-		int res = 1;                                                         \
-		for (c = 0; c <= 0xff && res; c++)                                   \
-		{                                                                    \
-			if (!fn(c) != !ft_##fn(c))                                       \
-			{                                                                \
-				printf(CYN "fn_" #fn "(%i: %s)" NC ": std: %i, yours: %i\n", \
-					   c, escape_chr(c), fn(c), ft_##fn(c));                 \
-				res = 0;                                                     \
-			}                                                                \
-		}                                                                    \
-		if (!fn(EOF) != !ft_##fn(EOF))                                       \
-		{                                                                    \
-			printf(CYN "fn_" #fn "(EOF)" NC ": std: %i, yours: %i\n",        \
-				   fn(EOF), ft_##fn(EOF));                                   \
-			res = 0;                                                         \
-		}                                                                    \
-		return res;                                                          \
+#define create_test_ctype(fn)                                                       \
+	int test_##fn(void)                                                             \
+	{                                                                               \
+		int c;                                                                      \
+		int res = 1;                                                                \
+		for (c = 0; c <= 0xff && res; c++)                                          \
+		{                                                                           \
+			if (!fn(c) != !ft_##fn(c))                                              \
+			{                                                                       \
+				fprintf(errors_file,                                                \
+						CYN "fn_" #fn "(%i: %s)" NC ": std: %i, yours: %i\n",       \
+						c, escape_chr(c), fn(c), ft_##fn(c));                       \
+				res = 0;                                                            \
+			}                                                                       \
+		}                                                                           \
+		if (!fn(EOF) != !ft_##fn(EOF))                                              \
+		{                                                                           \
+			fprintf(errors_file, CYN "fn_" #fn "(EOF)" NC ": std: %i, yours: %i\n", \
+					fn(EOF), ft_##fn(EOF));                                         \
+			res = 0;                                                                \
+		}                                                                           \
+		return res;                                                                 \
 	}
 
-#define create_test_val(fn)                                                  \
-	int test_##fn(void)                                                      \
-	{                                                                        \
-		int c;                                                               \
-		int res = 1;                                                         \
-		for (c = 0; c <= 0xff && res; c++)                                   \
-		{                                                                    \
-			if (fn(c) != ft_##fn(c))                                         \
-			{                                                                \
-				printf(CYN "ft_" #fn "(%i: %s)" NC ": std: %i, yours: %i\n", \
-					   c, escape_chr(c), fn(c), ft_##fn(c));                 \
-				res = 0;                                                     \
-			}                                                                \
-		}                                                                    \
-		if (fn(EOF) != ft_##fn(EOF))                                         \
-		{                                                                    \
-			printf(CYN "ft_" #fn "(EOF)" NC ": std: %i, yours: %i\n",        \
-				   fn(EOF), ft_##fn(EOF));                                   \
-			res = 0;                                                         \
-		}                                                                    \
-		return res;                                                          \
+#define create_test_val(fn)                                                         \
+	int test_##fn(void)                                                             \
+	{                                                                               \
+		int c;                                                                      \
+		int res = 1;                                                                \
+		for (c = 0; c <= 0xff && res; c++)                                          \
+		{                                                                           \
+			if (fn(c) != ft_##fn(c))                                                \
+			{                                                                       \
+				fprintf(errors_file,                                                \
+						CYN "ft_" #fn "(%i: %s)" NC ": std: %i, yours: %i\n",       \
+						c, escape_chr(c), fn(c), ft_##fn(c));                       \
+				res = 0;                                                            \
+			}                                                                       \
+		}                                                                           \
+		if (fn(EOF) != ft_##fn(EOF))                                                \
+		{                                                                           \
+			fprintf(errors_file, CYN "ft_" #fn "(EOF)" NC ": std: %i, yours: %i\n", \
+					fn(EOF), ft_##fn(EOF));                                         \
+			res = 0;                                                                \
+		}                                                                           \
+		return res;                                                                 \
 	}
 
-#define test(fn)                                        \
-	strcpy(function, #fn);                              \
-	if (!test_##fn())                                   \
-		printf("%-16s: " BRED "KO" NC "\n", "ft_" #fn); \
-	else                                                \
-		printf("%-16s: " BGRN "OK" NC "\n", "ft_" #fn);
+#define test(fn)                                       \
+	strcpy(function, #fn);                             \
+	errors_file = fopen("errors_" #fn ".log", "w");    \
+	if (!test_##fn())                                  \
+	{                                                  \
+		printf("%-16s: " RED "KO" NC "\n", "ft_" #fn); \
+		fprintf(errors_file, "\n");                  \
+	}                                                  \
+	else                                               \
+		printf("%-16s: " GRN "OK" NC "\n", "ft_" #fn); \
+	fclose(errors_file);
 
 #define no_test(fn) \
 	printf("ft_%-13s: " YEL "No test yet\n" NC, #fn)
@@ -101,7 +110,7 @@ extern char escaped[1000];
 	int malloc_calls = reset_malloc_mock();                                     \
 	for (int i = 0; i < malloc_calls; i++)                                      \
 	{                                                                           \
-		sprintf(signature + g_offset, NC " NULL check for %ith malloc", i + 1); \
+		sprintf(signature + g_offset, MAG " malloc " NC "protection check for %ith malloc", i + 1); \
 		malloc_set_null(i);                                                     \
 		void *res = fn_call;                                                    \
 		rst = check_leaks(res) && rst;                                          \
@@ -115,7 +124,7 @@ extern char escaped[1000];
 	int malloc_calls = reset_malloc_mock();                                     \
 	for (int i = 0; i < malloc_calls; i++)                                      \
 	{                                                                           \
-		sprintf(signature + g_offset, NC " NULL check for %ith malloc", i + 1); \
+		sprintf(signature + g_offset, MAG " malloc" NC " protection check for %ith malloc", i + 1); \
 		fn_call;                                                                \
 		malloc_set_null(i);                                                     \
 		rst = check_leaks(NULL) && rst;                                         \
@@ -146,20 +155,22 @@ void print_mem(void *ptr, int size);
 void print_mem_full(void *ptr, int size);
 
 char *rand_bytes(char *dest, int len);
+char *rand_str(char *dest, int len);
 char *escape_str(char *src);
 char *escape_chr(char ch);
 void reset(void *m1, void *m2, int size);
 void reset_with(void *m1, void *m2, char *content, int size);
 
-int set_sign(const char *format, ...);
+int set_signature(int test_number, const char *format, ...);
 int error(const char *format, ...);
+void show_error_file();
 
 int same_ptr(void *res, void *res_std);
 int same_mem(void *expected, void *result, int size);
-int same_value(int res, int res_std);
-int same_sign(int res, int res_std);
-int same_offset(void *start, void *start_std, void *res, void *res_std);
-int same_return(void *res, void *dest);
+int same_value(int expected, int res);
+int same_sign(int expected, int res);
+int same_offset(void *expected_start, void *expected_res, void *start, void *res);
+int same_return(void *expected, void *res);
 int same_size(void *ptr, void *ptr_std);
 int same_string(char *expected, char *actual);
 char *my_strdup(const char *s1);
