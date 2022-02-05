@@ -1,11 +1,14 @@
 from distutils import command
 import io
 import logging
+from nis import match
 import os
 from pathlib import Path
 import re
 import shutil
 import subprocess
+import sys
+from textwrap import indent
 from typing import List
 from utils.ExecutionContext import intersection
 from testers.libft.BaseExecutor import BONUS_FUNCTIONS, PART_1_FUNCTIONS, PART_2_FUNCTIONS, remove_ansi_colors
@@ -15,7 +18,13 @@ from utils.TerminalColors import TC
 
 logger = logging.getLogger("war-machine")
 
-func_line_regex = re.compile(r"^ft_(\w+).*(OK|KO)$")
+func_line_regex = re.compile(r"^ft_(\w+)\s*([^ ]+)\s*(OK|KO)$")
+lines_finder = re.compile(r'(^.*if.*atoi\(argv\[1\]\).* == \d.*$)|(^\s+else if \(arg == \d+\).*$)')
+
+
+def cat_file(path):
+	p = subprocess.run(f'cat -e {path.resolve()}', shell=True, capture_output=True)
+	print(indent(p.stdout.decode('ascii', errors="backslashreplace"), "    "))
 
 
 class WarMachine():
@@ -47,7 +56,7 @@ class WarMachine():
 		with open("war-machine.stdout") as out:
 			res = [remove_ansi_colors(line) for line in out.readlines()]
 			logger.info(res)
-			print(TC.NC);
+			print(TC.NC)
 			return res
 
 	def get_command(self):
@@ -61,8 +70,52 @@ class WarMachine():
 
 		force_makefile = " -l" if len(self.to_execute) < 5 else ""
 		return (f"./my_tester.sh " +
-				f"\"{' '.join(part1_inter)}\" \"{' '.join(part2_inter)}\" \"{' '.join(bonus_inter)}\"" +
-				f"{force_makefile} | tee war-machine.stdout")
+		        f"\"{' '.join(part1_inter)}\" \"{' '.join(part2_inter)}\" \"{' '.join(bonus_inter)}\"" +
+		        f"{force_makefile} | tee war-machine.stdout")
+
+	def show_failed_test_code(self, func, tests):
+
+		def get_part(func):
+			if func in PART_1_FUNCTIONS:
+				return "Part1_functions"
+			if func in PART_2_FUNCTIONS:
+				return "Part2_functions"
+			if func in BONUS_FUNCTIONS:
+				return "Bonus_functions"
+
+		def print_test_lines(lines, start, number):
+			tabs = lines[start + 1].count('\t')
+			print(f"Test {number + 1}:")
+			if not re.match(r'\t+\{', lines[start + 1]):
+				print(lines[start + 1][tabs - 1:].replace('\t', " " * 4), end="")
+				return
+			i = start + 2
+			while (not re.match('\t' * tabs + '}', lines[i])):
+				print(lines[i][tabs:].replace("\t", " " * 4), end='')
+				i += 1
+
+		def print_diffs(path, fail):
+			name = f"test{str(fail + 1).zfill(2)}"
+			expected = path / '..' / f'{name}.output'
+			result = path / '..' / f'user_output_{name}'
+
+			print(f"Expected (cat -e {name}.output):")
+			cat_file(expected)
+			print(f"Your result (cat -e user_output_{name}):")
+			cat_file(result)
+			print()
+
+		def show_code(path, failed):
+			with open(path) as mc:
+				lines = mc.readlines()
+			test_lines = [i for i, line in enumerate(lines) if lines_finder.match(line)]
+			for fail in failed:
+				print_test_lines(lines, test_lines[fail], fail)
+				print_diffs(path, fail)
+
+		path = Path(self.temp_dir, 'tests', get_part(func), f'ft_{func}', 'main.c').resolve()
+		print(f"Errors in {func}: {path}")
+		show_code(path, [i for i, test in enumerate(tests) if test != '✓'])
 
 	def parse_output(self, output):
 
@@ -71,11 +124,19 @@ class WarMachine():
 
 		def parse_func(line: str):
 			match = func_line_regex.match(line)
-			return (match.group(1), match.group(2))
+			if match.group(3) != "OK":
+				self.show_failed_test_code(match.group(1), match.group(2))
+			return (match.group(1), match.group(3))
 
-		parsed = [parse_func(line) for line in output if is_func(line)]
+		orig_stdout = sys.stdout
+		with open(Path(self.temp_dir, "errors.log"), "w") as error_log:
+			sys.stdout = error_log
+			parsed = [parse_func(line) for line in output if is_func(line)]
+			sys.stdout = orig_stdout
+
 		res = [func for func, res in parsed if res != "OK"]
-		if len(res) != 0:
+		if len(res) == 0:
 			longer = Path(self.temp_dir, "deepthought")
-			print(f"\nFor a more detailed report open: {TC.PURPLE}{longer}{TC.NC}\n")
+			print(f"\nMore information in: {TC.PURPLE}{longer}{TC.NC}")
+			print(f"and: {TC.B_WHITE}{Path(self.temp_dir, 'errors.log').resolve()}{TC.NC}")
 		return res

@@ -7,6 +7,7 @@ class TC:
 	B_CYAN = '\033[1;36m'
 	B_GREEN = '\033[1;32m'
 	B_BLUE = '\033[1;36m'
+	BLUE = '\033[0;36m'
 	PURPLE = '\033[0;35m'
 	B_PURPLE = '\033[1;35m'
 	YELLOW = '\033[0;33m'
