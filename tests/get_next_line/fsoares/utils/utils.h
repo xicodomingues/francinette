@@ -6,7 +6,7 @@
 /*   By: fsoares- <fsoares-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 13:40:02 by fsoares-          #+#    #+#             */
-/*   Updated: 2022/02/05 19:49:44 by fsoares-         ###   ########.fr       */
+/*   Updated: 2022/02/07 16:51:58 by fsoares-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,16 +39,6 @@ extern char escaped[1000];
 extern FILE *errors_file;
 extern int g_test;
 
-#define test(fn)                                        \
-	strcpy(function, #fn);                              \
-	if (!test_##fn())                                   \
-		printf("%-16s: " BRED "KO" NC "\n", "ft_" #fn); \
-	else                                                \
-		printf("%-16s: " BGRN "OK" NC "\n", "ft_" #fn);
-
-#define no_test(fn) \
-	printf("ft_%-13s: " YEL "No test yet\n" NC, #fn)
-
 #ifdef STRICT_MEM
 #define null_check(fn_call, rst)                                                \
 	reset_malloc_mock();                                                        \
@@ -56,7 +46,7 @@ extern int g_test;
 	int malloc_calls = reset_malloc_mock();                                     \
 	for (int i = 0; i < malloc_calls; i++)                                      \
 	{                                                                           \
-		sprintf(signature + g_offset, NC " NULL check for %ith malloc", i + 1); \
+		sprintf(signature + g_offset, MAG " malloc " NC "protection check for %ith malloc", i + 1); \
 		malloc_set_null(i);                                                     \
 		void *res = fn_call;                                                    \
 		rst = check_leaks(res) && rst;                                          \
@@ -70,7 +60,7 @@ extern int g_test;
 	int malloc_calls = reset_malloc_mock();                                     \
 	for (int i = 0; i < malloc_calls; i++)                                      \
 	{                                                                           \
-		sprintf(signature + g_offset, NC " NULL check for %ith malloc", i + 1); \
+		sprintf(signature + g_offset, MAG " malloc" NC " protection check for %ith malloc", i + 1); \
 		fn_call;                                                                \
 		malloc_set_null(i);                                                     \
 		rst = check_leaks(NULL) && rst;                                         \
@@ -104,8 +94,8 @@ extern int g_test;
 		int test = fork();                                     \
 		if (test == 0)                                         \
 		{                                                      \
-			g_test = 0;                                        \
-			alarm(TIMEOUT_US / 1000000);                       \
+			g_test = 1;                                        \
+			alarm(5);                                          \
 			char *_title = title;                              \
 			printf(BLU "%-20s" NC ": ", _title);               \
 			fflush(stdout);                                    \
@@ -137,6 +127,7 @@ void print_mem(void *ptr, int size);
 void print_mem_full(void *ptr, int size);
 
 char *rand_bytes(char *dest, int len);
+char *rand_str(char *dest, int len);
 char *escape_str(char *src);
 char *escape_chr(char ch);
 void reset(void *m1, void *m2, int size);
@@ -149,9 +140,9 @@ void show_error_file();
 int same_ptr(void *res, void *res_std);
 int same_mem(void *expected, void *result, int size);
 int same_value(int expected, int res);
-int same_sign(int res, int res_std);
-int same_offset(void *start, void *start_std, void *res, void *res_std);
-int same_return(void *res, void *dest);
+int same_sign(int expected, int res);
+int same_offset(void *expected_start, void *expected_res, void *start, void *res);
+int same_return(void *expected, void *res);
 int same_size(void *ptr, void *ptr_std);
 int same_string(char *expected, char *actual);
 char *my_strdup(const char *s1);

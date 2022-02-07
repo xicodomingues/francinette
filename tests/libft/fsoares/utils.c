@@ -12,8 +12,8 @@ FILE *errors_file;
 
 void show_signal_msg(char *message, char *resume, int signal)
 {
-	//fprintf(errors_file, BRED "Error" NC " in test %i: " BCYN "%s" NC ": " BRED "%s\n" NC,
-	//		g_test, signature, message);
+	fprintf(errors_file, BRED "Error" NC " in test %i: " BCYN "%s" NC ": " BRED "%s\n" NC,
+			g_test, signature, message);
 	(void)message;
 	printf("ft_%-13s: " YEL "%s" NC "\n", function, resume);
 	exit(signal);

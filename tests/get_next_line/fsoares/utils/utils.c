@@ -12,7 +12,8 @@ FILE *errors_file;
 
 void show_signal_msg(char *message, char *resume, int signal)
 {
-	fprintf(errors_file, BCYN "%s" NC ": " BRED "%s\n" NC, signature, message);
+	fprintf(errors_file, BRED "Error" NC " in test %i: " CYN "%s" NC ": " BRED "%s\n" NC,
+			g_test, signature, message);
 	printf(YEL "%s" NC "\n", resume);
 	exit(signal);
 }
@@ -59,22 +60,23 @@ static void print_str(unsigned char *ptr, int size)
 {
 	if (size != -1)
 		for (int i = size % 16; i < 16; i++)
-			printf(i % 2 ? "   " : "  ");
+			fprintf(errors_file, i % 2 ? "   " : "  ");
 	int limit = (size == -1 ? 16 : size);
 	int i = 0;
+	fprintf(errors_file, "->  ");
 	while (i < limit)
 	{
-		printf("%c", isprint(ptr[i]) ? ptr[i] : '.');
+		fprintf(errors_file, "%c", isprint(ptr[i]) ? ptr[i] : '.');
 		i++;
 	}
-	printf("\n");
+	fprintf(errors_file, "\n");
 }
 
 void print_mem_full(void *ptr, int size)
 {
 	if (ptr == NULL || ptr == 0)
 	{
-		printf("ERROR: %p points to NULL\n", ptr);
+		fprintf(errors_file, "ERROR: %p points to NULL\n", ptr);
 		return;
 	}
 	int i = 0;
@@ -88,9 +90,9 @@ void print_mem_full(void *ptr, int size)
 				i += 16;
 				continue;
 			}
-			printf("%p: ", ptr + i);
+			fprintf(errors_file, "at 0x%p: ", ptr + i);
 		}
-		printf("%02x%s", ptrc[i], (i % 2 ? " " : ""));
+		fprintf(errors_file, "%02x%s", ptrc[i], (i % 2 ? " " : ""));
 		i++;
 		if (i % 16 == 0)
 		{
@@ -107,7 +109,7 @@ void print_mem(void *ptr, int size)
 {
 	if (ptr == NULL || ptr == 0)
 	{
-		printf("ERROR: %p points to NULL\n", ptr);
+		fprintf(errors_file, "ERROR: %p points to NULL\n", ptr);
 		return;
 	}
 	int i = 0;
@@ -116,14 +118,14 @@ void print_mem(void *ptr, int size)
 	{
 		if (i % 16 == 0)
 		{
-			if (is_empty(ptr + i))
+			if (is_empty(ptr + i) && i > 0)
 			{
 				i += 16;
 				continue;
 			}
-			printf("%04x: ", i);
+			fprintf(errors_file, "%04x: ", i);
 		}
-		printf("%02x%s", ptrc[i], (i % 2 ? " " : ""));
+		fprintf(errors_file, "%02x%s", ptrc[i], (i % 2 ? " " : ""));
 		i++;
 		if (i % 16 == 0)
 		{
@@ -146,6 +148,16 @@ char *rand_bytes(char *dest, int len)
 	return dest;
 }
 
+char *rand_str(char *dest, int len)
+{
+	dest[len - 1] = '\0';
+	for (int i = 0; i < len - 1; i++)
+	{
+		dest[i] = rand() % ('~' - ' ') + ' ';
+	}
+	return dest;
+}
+
 char *truncate_str(char *src)
 {
 	char temp[1000];
@@ -162,13 +174,13 @@ char *truncate_str(char *src)
 	return res + 1;
 }
 
-
 char *escape_str(char *src)
 {
 	int i, j;
 	where_buffer = (where_buffer + 1) % escaped_div;
 	char *my_bf = escaped + where_buffer * (10000 / escaped_div);
-	if (src == NULL) {
+	if (src == NULL)
+	{
 		sprintf(my_bf, "<NULL>");
 		return my_bf;
 	}
@@ -184,6 +196,12 @@ char *escape_str(char *src)
 			sprintf(my_bf + j++, "\\n");
 		else if (src[i] == '\t')
 			sprintf(my_bf + j++, "\\t");
+		else if (src[i] == '\f')
+			sprintf(my_bf + j++, "\\f");
+		else if (src[i] == '\r')
+			sprintf(my_bf + j++, "\\r");
+		else if (src[i] == '\v')
+			sprintf(my_bf + j++, "\\v");
 		else
 		{
 			sprintf(my_bf + j, "\\x%02x", (unsigned char)src[i]);
@@ -237,7 +255,7 @@ int set_signature(const char *format, ...)
 
 int error(const char *format, ...)
 {
-	fprintf(errors_file, BRED "Error" NC " %i: " CYN "%s" NC ": ", g_test + 1, signature);
+	fprintf(errors_file, BRED "Error" NC " in test %i: " CYN "%s" NC ": ", g_test, signature);
 	va_list args;
 	va_start(args, format);
 	vfprintf(errors_file, format, args);
@@ -253,10 +271,12 @@ void show_error_file()
 	FILE *file;
 	size_t nread;
 	file = fopen("errors.log", "r");
-	if (file) {
+	if (file)
+	{
 		while ((nread = fread(buf, 1, sizeof buf, file)) > 0)
 			fwrite(buf, 1, nread, stdout);
-		if (ferror(file)) {
+		if (ferror(file))
+		{
 			/* deal with error */
 		}
 		fclose(file);
@@ -286,10 +306,11 @@ int same_mem(void *expected, void *result, int size)
 	if (!equal)
 	{
 		error("different memory" NC "\n");
-		printf(YEL "res" NC ":\n");
-		print_mem(res, size);
-		printf(YEL "std" NC ":\n");
+		fprintf(errors_file, YEL "expected" NC ":\n");
 		print_mem(std, size);
+		fprintf(errors_file, YEL "yours" NC ":\n");
+		print_mem(res, size);
+		fprintf(errors_file, "\n");
 	}
 	return equal;
 }
@@ -301,35 +322,36 @@ int same_value(int expected, int res)
 	return 1;
 }
 
-int same_sign(int res, int res_std)
+int same_sign(int expected, int res)
 {
-	int rs = (res > 0 ? 1 : (res < 0 ? -1 : 0));
-	int rss = (res_std > 0 ? 1 : (res_std < 0 ? -1 : 0));
-	if (rs != rss)
-		return error("yours: %i (%i), std: %i (%i)\n", rs, res, rss, res_std);
+	int expected_sign = (expected > 0 ? 1 : (expected < 0 ? -1 : 0));
+	int res_sign = (res > 0 ? 1 : (res < 0 ? -1 : 0));
+	if (expected_sign != res_sign)
+		return error("\nexpected sign: %i (value: %i), yours sign: %i (value: %i)\n\n", expected_sign, expected, res_sign, res);
 	return 1;
 }
 
-int same_offset(void *start, void *start_std, void *res, void *res_std)
+int same_offset(void *expected_start, void *expected_res, void *start, void *res)
 {
-	long diff = (long)res - (long)start;
-	long diff_std = (long)res_std - (long)start_std;
+	long offset = (long)res - (long)start;
+	long expected_offset = (long)expected_res - (long)expected_start;
 
-	if (res == NULL && res_std == NULL)
+	if (res == NULL && expected_res == NULL)
 		return 1;
-	if (diff == diff_std)
+	if (offset == expected_offset)
 		return 1;
-	if ((res == NULL && res_std != NULL) || (res != NULL && res_std == NULL))
-		return error("yours: %p, std: %p\n");
+	if ((res == NULL && expected_res != NULL) || (res != NULL && expected_res == NULL))
+		return error("expected: %p, yours: %p\n", expected_res, res);
 
-	return error("offset: yours: %i, std: %i\n", diff, diff_std);
+	return error("\nexpected: %p (offset %i), yours: %p (offset %i)\n\n",
+			expected_res, expected_offset, res, offset);
 }
 
-int same_return(void *res, void *dest)
+int same_return(void *expected, void *res)
 {
-	if (res != dest)
+	if (expected != res)
 	{
-		return error("should return: %p, but returned: %p", dest, res);
+		return error("should return: %p, but returned: %p", expected, res);
 	}
 	return 1;
 }
@@ -339,8 +361,9 @@ int same_string(char *expected, char *actual)
 	if (expected == NULL && actual == NULL)
 		return 1;
 	if ((expected == NULL && actual != NULL) || (expected != NULL && actual == NULL))
-		return error("expected %s, got %s\n", escape_str(expected), escape_str(actual));
-	if (strcmp(expected, actual) != 0) {
+		return error("expected: %s, got: %s\n", escape_str(expected), escape_str(actual));
+	if (strcmp(expected, actual) != 0)
+	{
 		return error("expected: %s, got: %s\n", escape_str(expected), escape_str(actual));
 	}
 	return 1;
@@ -363,15 +386,15 @@ int check_mem_size(void *ptr, size_t expected_size)
 	return 1;
 }
 
-char	*my_strdup(const char *s1)
+char *my_strdup(const char *s1)
 {
 	return (my_strndup(s1, strlen(s1) + 1));
 }
 
-char	*my_strndup(const char *s1, size_t size)
+char *my_strndup(const char *s1, size_t size)
 {
-	size_t	len;
-	char	*result;
+	size_t len;
+	char *result;
 
 	len = strlen(s1) + 1;
 	if (size < len)

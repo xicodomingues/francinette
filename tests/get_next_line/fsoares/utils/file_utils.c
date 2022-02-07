@@ -4,9 +4,9 @@
 int check_res(int res, char *prefix)
 {
 	if (!res)
-		printf(RED "%i.%sKO " NC, ++g_test, prefix);
+		printf(RED "%i.%sKO " NC, g_test++, prefix);
 	else
-		printf(GRN "%i.%sOK " NC, ++g_test, prefix);
+		printf(GRN "%i.%sOK " NC, g_test++, prefix);
 	fflush(stdout);
 	return res;
 }
