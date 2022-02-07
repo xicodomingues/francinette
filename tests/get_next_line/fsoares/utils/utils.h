@@ -6,7 +6,7 @@
 /*   By: fsoares- <fsoares-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 13:40:02 by fsoares-          #+#    #+#             */
-/*   Updated: 2022/02/07 16:51:58 by fsoares-         ###   ########.fr       */
+/*   Updated: 2022/02/07 17:37:19 by fsoares-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,30 +40,30 @@ extern FILE *errors_file;
 extern int g_test;
 
 #ifdef STRICT_MEM
-#define null_check(fn_call, rst)                                                \
-	reset_malloc_mock();                                                        \
-	fn_call;                                                                    \
-	int malloc_calls = reset_malloc_mock();                                     \
-	for (int i = 0; i < malloc_calls; i++)                                      \
-	{                                                                           \
+#define null_check(fn_call, rst)                                                                    \
+	reset_malloc_mock();                                                                            \
+	fn_call;                                                                                        \
+	int malloc_calls = reset_malloc_mock();                                                         \
+	for (int i = 0; i < malloc_calls; i++)                                                          \
+	{                                                                                               \
 		sprintf(signature + g_offset, MAG " malloc " NC "protection check for %ith malloc", i + 1); \
-		malloc_set_null(i);                                                     \
-		void *res = fn_call;                                                    \
-		rst = check_leaks(res) && rst;                                          \
-		if (res != NULL)                                                        \
-			rst = error("Should return NULL\n");                                \
+		malloc_set_null(i);                                                                         \
+		void *res = fn_call;                                                                        \
+		rst = check_leaks(res) && rst;                                                              \
+		if (res != NULL)                                                                            \
+			rst = error("Should return NULL\n");                                                    \
 	}
 
-#define null_null_check(fn_call, rst)                                           \
-	reset_malloc_mock();                                                        \
-	fn_call;                                                                    \
-	int malloc_calls = reset_malloc_mock();                                     \
-	for (int i = 0; i < malloc_calls; i++)                                      \
-	{                                                                           \
+#define null_null_check(fn_call, rst)                                                               \
+	reset_malloc_mock();                                                                            \
+	fn_call;                                                                                        \
+	int malloc_calls = reset_malloc_mock();                                                         \
+	for (int i = 0; i < malloc_calls; i++)                                                          \
+	{                                                                                               \
 		sprintf(signature + g_offset, MAG " malloc" NC " protection check for %ith malloc", i + 1); \
-		fn_call;                                                                \
-		malloc_set_null(i);                                                     \
-		rst = check_leaks(NULL) && rst;                                         \
+		fn_call;                                                                                    \
+		malloc_set_null(i);                                                                         \
+		rst = check_leaks(NULL) && rst;                                                             \
 	}
 #else
 #define null_check(fn_call, result)
@@ -105,6 +105,7 @@ extern int g_test;
 			x;                                                 \
 			res = leak_check() && res;                         \
 			res = null_check_gnl(_title) && res;               \
+			fclose(errors_file);                               \
 			printf("\n");                                      \
 			if (res)                                           \
 				exit(EXIT_SUCCESS);                            \
@@ -115,7 +116,7 @@ extern int g_test;
 		{                                                      \
 			waitpid(test, &status, 0);                         \
 			if (WIFEXITED(status) && WEXITSTATUS(status) != 0) \
-				show_error_file();                             \
+				add_to_error_file(title);                      \
 		}                                                      \
 	}
 
@@ -135,7 +136,7 @@ void reset_with(void *m1, void *m2, char *content, int size);
 
 int set_signature(const char *format, ...);
 int error(const char *format, ...);
-void show_error_file();
+void add_to_error_file();
 
 int same_ptr(void *res, void *res_std);
 int same_mem(void *expected, void *result, int size);

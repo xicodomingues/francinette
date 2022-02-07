@@ -14,13 +14,13 @@ void show_signal_msg(char *message, char *resume, int signal)
 {
 	fprintf(errors_file, BRED "Error" NC " in test %i: " CYN "%s" NC ": " BRED "%s\n" NC,
 			g_test, signature, message);
-	printf(YEL "%s" NC "\n", resume);
+	printf(YEL "%i.KO %s\n" NC, g_test++, resume);
 	exit(signal);
 }
 
 void sigsegv(int signal)
 {
-	show_signal_msg("Segmentation fault!", "Segmentation fault", signal);
+	show_signal_msg("Segmentation fault!", "Segfault", signal);
 }
 
 void sigabort(int signal)
@@ -263,24 +263,32 @@ int error(const char *format, ...)
 	return 0;
 }
 
-void show_error_file()
+void add_to_error_file(char *file_under_test)
 {
 	char buf[1024];
 	fclose(errors_file);
 
-	FILE *file;
+	FILE *file, *file_big;
 	size_t nread;
 	file = fopen("errors.log", "r");
-	if (file)
+	file_big = fopen("error_color.log", "a");
+	if (ftell(file_big) > 0)
+		fprintf(file_big, "\n\n");
+	fprintf(file_big, "Error reading '" CYN "%s" NC "':\n", file_under_test);
+	if (file && file_big)
 	{
 		while ((nread = fread(buf, 1, sizeof buf, file)) > 0)
-			fwrite(buf, 1, nread, stdout);
+			fwrite(buf, 1, nread, file_big);
 		if (ferror(file))
 		{
-			/* deal with error */
+			fprintf(file_big, "\nProblem reading error output file");
+		}
+		if (ferror(file_big))
+		{
+			printf("\nProblem appending output to error file.n");
 		}
 		fclose(file);
-		printf("\n");
+		fclose(file_big);
 	}
 }
 

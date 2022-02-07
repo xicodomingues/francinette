@@ -39,7 +39,8 @@
 		"__locale": "c",
 		"complex": "c",
 		"__config": "c",
-		"color.h": "c"
+		"color.h": "c",
+		"cstdio": "cpp"
 	},
 	"python.linting.enabled": true,
 	"python.linting.pylintPath": "pylint",

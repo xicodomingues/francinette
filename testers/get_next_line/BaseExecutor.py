@@ -55,3 +55,30 @@ class BaseExecutor:
 			self.execute_command(command, spinner)
 			if (spinner and spinner.enabled):
 				spinner.succeed()
+
+	def check_errors(self, output, test_file_path):
+
+		def parse_tests(tests):
+			return [(match.group(1), match.group(2)) for match in self.test_regex.finditer(tests)]
+
+		def parse_line(line):
+			match = self.line_regex.match(line)
+			return (match.group(1), parse_tests(match.group(2)))
+
+		def get_errors(result):
+			return [test[0] for test in result[1] if not test[1].startswith("OK")]
+
+		def has_errors_line(line: str):
+			if self.line_regex.match(line):
+				return len(get_errors(parse_line(line)));
+
+		def has_errors(output: str):
+			for line in output.splitlines():
+				if has_errors_line(line):
+					return True
+
+		if has_errors(output):
+			test_path = self.tests_dir / test_file_path
+			print(f"To see the tests open: {TC.PURPLE}{test_path.resolve()}{TC.NC}")
+			return [self.name]
+		return []

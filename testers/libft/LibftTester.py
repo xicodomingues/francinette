@@ -57,7 +57,7 @@ class LibftTester(BaseTester):
 
 	def test_selector(self):
 		result = super().test_selector()
-		if is_strict():
+		if is_strict() and Fsoares in result:
 			return [Fsoares]
 		return result
 

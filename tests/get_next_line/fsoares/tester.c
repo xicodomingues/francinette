@@ -13,7 +13,7 @@ void populate_expected(char *buffer, int n)
 int main()
 {
 	handle_signals();
-	printf( BMAG "BUFFER_SIZE" NC ": %i\n", BUFFER_SIZE);
+	printf(BMAG "BUFFER_SIZE" NC ": %i\n", BUFFER_SIZE);
 	TEST("Invalid fd", {
 		/* 1 */ test_gnl(-1, NULL);
 		/* 2 */ test_gnl(100, NULL);

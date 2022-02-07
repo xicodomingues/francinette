@@ -6,7 +6,7 @@
 /*   By: fsoares- <fsoares-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 13:40:02 by fsoares-          #+#    #+#             */
-/*   Updated: 2022/02/07 16:48:31 by fsoares-         ###   ########.fr       */
+/*   Updated: 2022/02/07 17:24:54 by fsoares-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ extern int g_test;
 	if (!test_##fn())                                  \
 	{                                                  \
 		printf("%-16s: " RED "KO" NC "\n", "ft_" #fn); \
-		fprintf(errors_file, "\n");                  \
+		fprintf(errors_file, "\n");                    \
 	}                                                  \
 	else                                               \
 		printf("%-16s: " GRN "OK" NC "\n", "ft_" #fn); \
