@@ -1,20 +1,16 @@
-from distutils import command
-import io
 import logging
-from nis import match
 import os
-from pathlib import Path
 import re
-import shutil
 import subprocess
 import sys
-from textwrap import indent
+from pathlib import Path
 from typing import List
-from utils.ExecutionContext import intersection
-from testers.libft.BaseExecutor import BONUS_FUNCTIONS, PART_1_FUNCTIONS, PART_2_FUNCTIONS, remove_ansi_colors
 
 from halo import Halo
+from testers.libft.BaseExecutor import (BONUS_FUNCTIONS, PART_1_FUNCTIONS,
+                                        PART_2_FUNCTIONS, remove_ansi_colors)
 from utils.TerminalColors import TC
+from utils.Utils import intersection
 
 logger = logging.getLogger("war-machine")
 

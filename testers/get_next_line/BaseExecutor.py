@@ -1,9 +1,11 @@
 import abc
 import logging
 import os
+from turtle import Turtle
 
 import pexpect
 from halo import Halo
+from utils.ExecutionContext import get_context
 from utils.TerminalColors import TC
 from utils.Utils import remove_ansi_colors
 
@@ -19,6 +21,17 @@ class BaseExecutor:
 		self.missing = missing
 		os.chdir(self.temp_dir)
 		logger.info(f"on dir {os.getcwd()}")
+		args = get_context().args;
+		self.exec_mandatory = False
+		self.exec_bonus = False
+		if (not args.mandatory and not args.bonus):
+			self.exec_mandatory = True
+			self.exec_bonus = True
+		else:
+			if args.mandatory:
+				self.exec_mandatory = True
+			if args.bonus:
+				self.exec_bonus = True
 
 	@abc.abstractmethod
 	def execute(self):
@@ -39,7 +52,7 @@ class BaseExecutor:
 		logger.info(f"on dir {os.getcwd()}")
 		p = pexpect.spawn(command)
 		p.interact(output_filter=parse_out)
-		print()
+		print(TC.NC)
 		return remove_ansi_colors(output)
 
 	def run_tests(self, command, show_message=True):
@@ -56,7 +69,7 @@ class BaseExecutor:
 			if (spinner and spinner.enabled):
 				spinner.succeed()
 
-	def check_errors(self, output, test_file_path):
+	def check_errors(self, output):
 
 		def parse_tests(tests):
 			return [(match.group(1), match.group(2)) for match in self.test_regex.finditer(tests)]
@@ -66,19 +79,12 @@ class BaseExecutor:
 			return (match.group(1), parse_tests(match.group(2)))
 
 		def get_errors(result):
-			return [test[0] for test in result[1] if not test[1].startswith("OK")]
+			temp = [test for test in result[1] if not test[1].startswith("OK")]
+			if temp:
+				return result[0]
 
-		def has_errors_line(line: str):
+		def get_errors_line(line: str):
 			if self.line_regex.match(line):
-				return len(get_errors(parse_line(line)));
+				return get_errors(parse_line(line));
 
-		def has_errors(output: str):
-			for line in output.splitlines():
-				if has_errors_line(line):
-					return True
-
-		if has_errors(output):
-			test_path = self.tests_dir / test_file_path
-			print(f"To see the tests open: {TC.PURPLE}{test_path.resolve()}{TC.NC}")
-			return [self.name]
-		return []
+		return filter(lambda x: x is not None, [get_errors_line(line) for line in output.splitlines()])

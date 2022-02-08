@@ -10,6 +10,7 @@ from halo import Halo
 
 from utils.ExecutionContext import is_strict
 from utils.TerminalColors import TC
+from utils.Utils import show_errors_file
 
 logger = logging.getLogger("gnl-fsoares")
 
@@ -30,10 +31,14 @@ class Fsoares(BaseExecutor):
 		strict = "STRICT='-D STRICT_MEM'" if is_strict() else ""
 		command = f"make BUFFER_SIZE=1 {strict}"
 		output = self.run_tests(command)
-		errors = self.check_errors(output, "tester.c")
+		errors = list(self.check_errors(output))
+		if errors:
+			show_errors_file(self.temp_dir / "error_color.log", self.temp_dir / "errors.log")
+			test_path = self.tests_dir / "tester.c"
+			print(f"To see the tests open: {TC.PURPLE}{test_path.resolve()}{TC.NC}")
 		if not is_strict() and not errors:
 			print(f"Want some more thorough tests? run '{TC.B_WHITE}francinette --strict{TC.NC}'. " +
 			      f"Moulinette will not do these checks, it's only a matter of pride.")
-		return errors
+		return [self.name] if errors else []
 
 

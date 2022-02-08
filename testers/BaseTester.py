@@ -8,9 +8,9 @@ from pathlib import Path
 
 import git
 from halo import Halo
-from utils.ExecutionContext import TestRunInfo, intersection, is_strict
+from utils.ExecutionContext import TestRunInfo
 from utils.TerminalColors import TC
-from utils.Utils import show_banner
+from utils.Utils import intersection, show_banner
 
 logger = logging.getLogger("base")
 

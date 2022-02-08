@@ -4,7 +4,7 @@ from testers.BaseTester import BaseTester
 from testers.get_next_line.Fsoares import Fsoares
 
 from testers.get_next_line.Tripouille import Tripouille
-from utils.ExecutionContext import TestRunInfo, is_strict
+from utils.ExecutionContext import TestRunInfo, has_bonus, is_strict, set_bonus
 from utils.Utils import show_banner
 
 logger = logging.getLogger("gnl")
@@ -17,6 +17,10 @@ class GetNextLineTester(BaseTester):
 
 	def __init__(self, info: TestRunInfo) -> None:
 		super().__init__(info)
+		if (info.source_dir / "get_next_line_bonus.c").exists() \
+				and not info.args.mandatory:
+			logger.info("Has bonus")
+			set_bonus(True)
 		self.execute_testers()
 		pass
 

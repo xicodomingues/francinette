@@ -117,6 +117,7 @@ def main():
 	                          "amount of memory and that checks nulls when allocating memory"))
 	parser.add_argument("--part1", action="store_true", help="Execute tests of part1")
 	parser.add_argument("--part2", action="store_true", help="Execute tests of part2")
+	parser.add_argument("--mandatory", action="store_true", help="Executes test of the mandatory part")
 	parser.add_argument("--bonus", action="store_true", help="Execute tests of bonus part")
 	parser.add_argument("-t",
 	                    "--testers",

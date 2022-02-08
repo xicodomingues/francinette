@@ -273,7 +273,7 @@ void add_to_error_file(char *file_under_test)
 	file = fopen("errors.log", "r");
 	file_big = fopen("error_color.log", "a");
 	if (ftell(file_big) > 0)
-		fprintf(file_big, "\n\n");
+		fprintf(file_big, "\n");
 	fprintf(file_big, "Error reading '" CYN "%s" NC "':\n", file_under_test);
 	if (file && file_big)
 	{
