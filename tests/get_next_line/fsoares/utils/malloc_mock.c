@@ -57,7 +57,7 @@ void *malloc(size_t size)
 	void *to_return = p;
 	if (res_pos > cur_res_pos && (long)(results[cur_res_pos]) != 1)
 		to_return = results[cur_res_pos];
-	else
+	else if (size < 100000)
 	{
 		char *s = (char *)p;
 		size_t i = 0;
