@@ -49,7 +49,7 @@ void sigbus(int signal)
 
 void sigalarm(int signal)
 {
-	show_signal_msg("Timeout occurred", "Infinite loop", signal);
+	show_signal_msg("Timeout occurred", "Timeout", signal);
 }
 
 void handle_signals()

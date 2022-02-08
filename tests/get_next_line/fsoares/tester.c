@@ -112,5 +112,7 @@ int main()
 		/* 5 */ test_gnl(fd, "xxxx\n");
 		/* 6 */ test_gnl(fd, NULL);
 	});
+
+	//TODO: Test 5MB file
 	printf("\n");
 }

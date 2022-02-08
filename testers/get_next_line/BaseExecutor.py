@@ -5,7 +5,7 @@ from typing import Set
 
 import pexpect
 from halo import Halo
-from utils.ExecutionContext import get_context
+from utils.ExecutionContext import get_context, has_bonus
 from utils.TerminalColors import TC
 from utils.Utils import remove_ansi_colors
 
@@ -32,6 +32,8 @@ class BaseExecutor:
 				self.exec_mandatory = True
 			if args.bonus:
 				self.exec_bonus = True
+		if not has_bonus():
+			self.exec_bonus = False
 
 	@abc.abstractmethod
 	def execute(self):

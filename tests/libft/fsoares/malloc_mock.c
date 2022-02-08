@@ -1,6 +1,6 @@
 #define _GNU_SOURCE
 #include <dlfcn.h>
-#include <execinfo.h> //TODO: make work on mac?
+#include <execinfo.h>
 
 #include "utils.h"
 #include "color.h"
