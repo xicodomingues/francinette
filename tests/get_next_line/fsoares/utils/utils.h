@@ -6,7 +6,7 @@
 /*   By: fsoares- <fsoares-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 13:40:02 by fsoares-          #+#    #+#             */
-/*   Updated: 2022/02/07 17:37:19 by fsoares-         ###   ########.fr       */
+/*   Updated: 2022/02/08 19:35:58 by fsoares-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ extern int g_offset;
 extern char escaped[1000];
 extern FILE *errors_file;
 extern int g_test;
+extern int child_pid;
 
 #ifdef STRICT_MEM
 #define null_check(fn_call, rst)                                                                    \
@@ -85,43 +86,68 @@ extern int g_test;
 	null_check(fn_call, result);                             \
 	return result;
 
+#define BASE_TEST(title, code)                            \
+	{                                                     \
+		int status = 0;                                   \
+		int test = fork();                                \
+		if (test == 0)                                    \
+		{                                                 \
+			code;                                         \
+		}                                                 \
+		else                                              \
+		{                                                 \
+			long total = 0;                               \
+			long interval = 50000;                        \
+			while (total < 5000000)                       \
+			{                                             \
+				usleep(interval);                         \
+				int c = waitpid(test, &status, WNOHANG);  \
+				if (c != 0 && WIFEXITED(status))          \
+				{                                         \
+					if (WEXITSTATUS(status) != 0)         \
+						add_to_error_file(title);         \
+					break;                                \
+				}                                         \
+				total += interval;                        \
+			}                                             \
+			if (total >= 5000000)                         \
+			{                                             \
+				if (waitpid(test, &status, WNOHANG) == 0) \
+				{                                         \
+					kill(test, SIGKILL);                  \
+					show_timeout(); \
+				}                                         \
+			}                                             \
+		}                                                 \
+	}
+
 /**
  * @brief Macro that creates wraps a get_next_line_test
  */
-#define TEST(title, x)                                         \
-	{                                                          \
-		int status = 0;                                        \
-		int test = fork();                                     \
-		if (test == 0)                                         \
-		{                                                      \
-			g_test = 1;                                        \
-			alarm(5);                                          \
-			char *_title = title;                              \
-			printf(BLU "%-20s" NC ": ", _title);               \
-			fflush(stdout);                                    \
-			int res = 1;                                       \
-			errors_file = fopen("errors.log", "w");            \
-			reset_malloc_mock();                               \
-			x;                                                 \
-			res = leak_check() && res;                         \
-			res = null_check_gnl(_title) && res;               \
-			fclose(errors_file);                               \
-			printf("\n");                                      \
-			if (res)                                           \
-				exit(EXIT_SUCCESS);                            \
-			else                                               \
-				exit(1);                                       \
-		}                                                      \
-		else                                                   \
-		{                                                      \
-			waitpid(test, &status, 0);                         \
-			if (WIFEXITED(status) && WEXITSTATUS(status) != 0) \
-				add_to_error_file(title);                      \
-		}                                                      \
-	}
+#define TEST(title, code)                       \
+	BASE_TEST(title, {                          \
+		g_test = 1;                             \
+		alarm(5);                               \
+		char *_title = title;                   \
+		printf(BLU "%-20s" NC ": ", _title);    \
+		fflush(stdout);                         \
+		int res = 1;                            \
+		errors_file = fopen("errors.log", "w"); \
+		reset_malloc_mock();                    \
+		code;                                   \
+		res = leak_check() && res;              \
+		res = null_check_gnl(_title) && res;    \
+		fclose(errors_file);                    \
+		printf("\n");                           \
+		if (res)                                \
+			exit(EXIT_SUCCESS);                 \
+		else                                    \
+			exit(1);                            \
+	})
 
 #define test_gnl(fd, expected) res = test_gnl_func(fd, expected, _title) && res;
 
+void show_timeout();
 void handle_signals();
 
 void print_mem(void *ptr, int size);
@@ -170,6 +196,7 @@ int check_res(int res, char *prefix);
 int check_alloc(char *next, char *expected);
 int leak_check();
 int test_gnl_func(int fd, char *expected, char *input);
+int silent_gnl_test(int fd, char *expected);
 int null_check_gnl(char *file);
 
 #ifndef __APPLE__

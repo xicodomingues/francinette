@@ -1,7 +1,7 @@
 import abc
 import logging
 import os
-from turtle import Turtle
+from typing import Set
 
 import pexpect
 from halo import Halo
@@ -76,7 +76,7 @@ class BaseExecutor:
 
 		def parse_line(line):
 			match = self.line_regex.match(line)
-			return (match.group(1), parse_tests(match.group(2)))
+			return (match.group(1).strip(), parse_tests(match.group(2)))
 
 		def get_errors(result):
 			temp = [test for test in result[1] if not test[1].startswith("OK")]
@@ -88,3 +88,16 @@ class BaseExecutor:
 				return get_errors(parse_line(line));
 
 		return filter(lambda x: x is not None, [get_errors_line(line) for line in output.splitlines()])
+
+	def show_test_files(self, errors: Set, bonus_set, mandatory_path, bonus_path):
+			bonus_err = errors.intersection(bonus_set)
+			errors = errors.difference(bonus_set)
+			if errors:
+				test_path = self.tests_dir / mandatory_path
+				print(f"To see the tests open: {TC.PURPLE}{test_path.resolve()}{TC.NC}")
+				if bonus_err:
+					test_path = self.tests_dir / bonus_path
+					print(f"and the bonus open: {TC.PURPLE}{test_path.resolve()}{TC.NC}\n")
+			if not errors and bonus_err:
+				test_path = self.tests_dir / bonus_path
+				print(f"To see the tests open: {TC.PURPLE}{test_path.resolve()}{TC.NC}\n")

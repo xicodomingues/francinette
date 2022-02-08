@@ -35,6 +35,20 @@ int test_gnl_func(int fd, char *expected, char *input)
 	return res;
 }
 
+int silent_gnl_test(int fd, char *expected)
+{
+	set_signature("get_next_line(%i: \"lines_around_10.txt\")", fd);
+
+	char *next = get_next_line(fd);
+	int res = same_string(expected, next);
+	if (!res) {
+		printf("expected: --%s--, result: --%s--\n", expected, next);
+		printf(RED "%i.KO " NC, g_test++);
+	}
+	free(next);
+	return res;
+}
+
 int null_check_gnl(char *file)
 {
 #ifdef STRICT_MEM

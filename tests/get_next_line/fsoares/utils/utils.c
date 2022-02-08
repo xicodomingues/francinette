@@ -7,11 +7,25 @@ char escaped[1000];
 char escaped_div = 2;
 int where_buffer = 0;
 int g_test = 1;
+int child_pid = -1;
 
 FILE *errors_file;
 
+void show_timeout()
+{
+	fprintf(errors_file, BRED "Error" NC " in test %i: " CYN "%s" NC ": " BRED "%s\n" NC,
+		g_test, signature, "Timeout occurred");
+	printf(YEL "%i.KO %s\n" NC, g_test++, "TIMEOUT");
+}
+
 void show_signal_msg(char *message, char *resume, int signal)
 {
+	if (child_pid != -1)
+	{
+		kill(child_pid, SIGKILL);
+		child_pid = -1;
+		printf("\b");
+	}
 	fprintf(errors_file, BRED "Error" NC " in test %i: " CYN "%s" NC ": " BRED "%s\n" NC,
 			g_test, signature, message);
 	printf(YEL "%i.KO %s\n" NC, g_test++, resume);
@@ -368,10 +382,13 @@ int same_string(char *expected, char *actual)
 {
 	if (expected == NULL && actual == NULL)
 		return 1;
-	if ((expected == NULL && actual != NULL) || (expected != NULL && actual == NULL))
+	if ((expected == NULL && actual != NULL) || (expected != NULL && actual == NULL)){
+		printf("bbbbbbbbbb: %s, %s\n", escape_str(expected), escape_str(actual));
 		return error("expected: %s, got: %s\n", escape_str(expected), escape_str(actual));
+	}
 	if (strcmp(expected, actual) != 0)
 	{
+		printf("aaaaaaaaaa: %s, %s\n", escape_str(expected), escape_str(actual));
 		return error("expected: %s, got: %s\n", escape_str(expected), escape_str(actual));
 	}
 	return 1;

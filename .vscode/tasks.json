@@ -3,7 +3,7 @@
 	"tasks": [
 		{
 			"type": "cppbuild",
-			"label": "C/C++: clang build active file",
+			"label": "libft test",
 			"command": "/usr/bin/clang",
 			"args": [
 				"-fdiagnostics-color=always",
@@ -16,6 +16,34 @@
 				"-lft",
 				"-o",
 				"${fileBasenameNoExtension}",
+				"-ldl"
+			],
+			"options": {
+				"cwd": "${fileDirname}"
+			},
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": "build",
+			"detail": "compiler: /usr/bin/clang"
+		},
+		{
+			"type": "cppbuild",
+			"label": "gnl bonus test",
+			"command": "/usr/bin/clang",
+			"args": [
+				"-fdiagnostics-color=always",
+				"-g",
+				"-D BUFFER_SIZE=10",
+				"-D STRICT_MEM",
+				"utils/utils.c",
+				"utils/file_utils.c",
+				"utils/malloc_mock.c",
+				"../get_next_line_bonus.c",
+				"../get_next_line_utils_bonus.c",
+				"bonus.c",
+				"-o",
+				"bonus.out",
 				"-ldl"
 			],
 			"options": {

@@ -22,11 +22,13 @@ int cur_res_pos = 0;
 t_node *head = NULL;
 t_node *last = NULL;
 
-t_node allocations[10000];
+t_node allocations[100000];
 int alloc_pos = 0;
 
 static void _add_malloc(void *ptr, size_t size, void *to_return)
 {
+	if (alloc_pos >= 100000)
+		return;
 	t_node new_node = allocations[alloc_pos];
 	new_node.freed = false;
 	new_node.ptr = ptr;
@@ -38,7 +40,7 @@ static void _add_malloc(void *ptr, size_t size, void *to_return)
 
 static void _mark_as_free(void *ptr)
 {
-	for (int pos = 0; pos < alloc_pos; pos++)
+	for (int pos = 0; pos < alloc_pos && alloc_pos < 100000; pos++)
 	{
 		t_node temp = allocations[pos];
 		if (temp.ptr == ptr && !temp.freed) {

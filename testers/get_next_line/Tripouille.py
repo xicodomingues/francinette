@@ -2,6 +2,7 @@ import logging
 import re
 
 from testers.get_next_line.BaseExecutor import BaseExecutor
+from utils.ExecutionContext import has_bonus
 from utils.TerminalColors import TC
 
 logger = logging.getLogger('gnl-trip')
@@ -21,7 +22,7 @@ class Tripouille(BaseExecutor):
 	def execute(self):
 
 		def handle_output(output, execute=True):
-			if not execute:
+			if not execute or not output:
 				return []
 			lines = output.splitlines()
 			if lines[1].startswith("../"):
@@ -29,27 +30,15 @@ class Tripouille(BaseExecutor):
 			errors = self.check_errors(output)
 			return errors
 
-		def print_test_files(errors):
-			bonus_err = "multiple fd" in errors
-			errors.remove("multiple fd")
-			if errors:
-				test_path = self.tests_dir / "tests" / "mandatory.cpp"
-				print(f"To see the tests open: {TC.PURPLE}{test_path.resolve()}{TC.NC}")
-				if bonus_err:
-					test_path = self.tests_dir / "tests" / "bonus.cpp"
-					print(f"and the bonus open: {TC.PURPLE}{test_path.resolve()}{TC.NC}\n")
-			if not errors and bonus_err:
-				test_path = self.tests_dir / "tests" / "bonus.cpp"
-				print(f"To see the tests open: {TC.PURPLE}{test_path.resolve()}{TC.NC}\n")
-
 		def execute_make(command, execute=True, silent=False):
 			if execute:
 				return self.run_tests(command, not silent)
 
 		output = execute_make("make m", self.exec_mandatory)
-		output_bonus = execute_make("make b", self.exec_bonus, True)
+		output_bonus = execute_make("make b", self.exec_bonus and has_bonus(), True)
 		errors = handle_output(output, self.exec_mandatory)
+
 		all_errors = set(errors).union(handle_output(output_bonus, self.exec_bonus))
-		print_test_files(all_errors)
+		self.show_test_files(all_errors, ["multiple fd"], "tests/mandatory.cpp", "tests/bonus.cpp")
 		return [self.name] if all_errors else []
 

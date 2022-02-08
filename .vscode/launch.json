@@ -5,7 +5,7 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"name": "(lldb) Launch",
+			"name": "Launch libft test",
 			"type": "cppdbg",
 			"request": "launch",
 			"program": "${fileDirname}/${fileBasenameNoExtension}",
@@ -15,15 +15,20 @@
 			"environment": [],
 			"externalConsole": false,
 			"MIMode": "lldb",
-			"preLaunchTask": "C/C++: clang build active file"
+			"preLaunchTask": "libft test"
 		},
 		{
-			"name": "Python: Current File",
-			"type": "python",
+			"name": "Launch gnl bonus test",
+			"type": "cppdbg",
 			"request": "launch",
-			"program": "main.py",
-			"arguments": "c06",
-			"console": "integratedTerminal"
+			"program": "${fileDirname}/bonus.out",
+			"args": [],
+			"stopAtEntry": false,
+			"cwd": "${fileDirname}",
+			"environment": [],
+			"externalConsole": false,
+			"MIMode": "lldb",
+			"preLaunchTask": "gnl bonus test"
 		}
 	]
 }
