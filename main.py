@@ -125,6 +125,7 @@ def main():
 	                    help=("Executes the corresponding testers. If no arguments are passed, it asks the user. " +
 	                          f"{TC.YELLOW}This parameter should be the last one in the command line{TC.NC}"))
 	parser.add_argument("-v", "--verbose", action="store_true", help="Activates verbose mode")
+	parser.add_argument("--timeout", action='store', default='3', help="The new timeout in seconds (by default is 3)")
 	args = parser.parse_args()
 
 	if args.update:

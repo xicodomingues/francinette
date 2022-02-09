@@ -2,7 +2,7 @@ import logging
 import re
 
 from testers.get_next_line.BaseExecutor import BaseExecutor
-from utils.ExecutionContext import has_bonus
+from utils.ExecutionContext import get_timeout
 from utils.TerminalColors import TC
 
 logger = logging.getLogger('gnl-trip')
@@ -33,9 +33,9 @@ class Tripouille(BaseExecutor):
 		def execute_make(command, execute=True, silent=False):
 			if execute:
 				return self.run_tests(command, not silent)
-
-		output = execute_make("make m", self.exec_mandatory)
-		output_bonus = execute_make("make b", self.exec_bonus, True)
+		timeout = f"TIMEOUT_US={get_timeout() * 1_000_000}"
+		output = execute_make(f"make {timeout} m", self.exec_mandatory)
+		output_bonus = execute_make(f"make {timeout} b", self.exec_bonus, True)
 		errors = handle_output(output, self.exec_mandatory)
 
 		all_errors = set(errors).union(handle_output(output_bonus, self.exec_bonus))

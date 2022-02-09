@@ -9,7 +9,7 @@ from typing import Set
 from halo import Halo
 from pexpect import run
 from testers.libft.BaseExecutor import remove_ansi_colors
-from utils.ExecutionContext import has_bonus, is_strict
+from utils.ExecutionContext import get_timeout, has_bonus, is_strict
 from utils.TerminalColors import TC
 from utils.Utils import open_ascii
 
@@ -47,7 +47,7 @@ class Fsoares():
 			for func in self.to_execute:
 				strict = " -DSTRICT_MEM" if is_strict() else ""
 				bonus = " list_utils.c" if has_bonus() else ""
-				command = (f"gcc{strict} -Wall -Wextra -Werror utils.c{bonus} " +
+				command = (f"gcc{strict} -D TIMEOUT={get_timeout()} -Wall -Wextra -Werror utils.c{bonus} " +
 				           f"test_{func}.c malloc_mock.c -L. -lft -o test_{func}.out -ldl")
 				logger.info(f"executing {command}")
 				res = subprocess.run(command, shell=True, capture_output=True, text=True)

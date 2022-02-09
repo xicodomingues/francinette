@@ -36,5 +36,6 @@ def has_bonus() -> bool:
 def is_strict():
 	return _saved_context.args.strict
 
-
+def get_timeout():
+	return int(_saved_context.args.timeout)
 

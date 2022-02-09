@@ -6,6 +6,7 @@ import sys
 
 from halo import Halo
 from testers.libft.BaseExecutor import remove_ansi_colors
+from utils.ExecutionContext import get_timeout
 from utils.TerminalColors import TC
 
 logger = logging.getLogger("tripouille")
@@ -31,7 +32,7 @@ class Tripouille():
 	def compile_test(self):
 
 		def compile_executable(function, spinner):
-			command = (f"clang++ -ldl check.o color.o leaks.o sigsegv.o ft_{function}_test.o" +
+			command = (f"clang++ -ldl -D TIMEOUT={get_timeout()} check.o color.o leaks.o sigsegv.o ft_{function}_test.o" +
 			           f" -o ft_{function}.out -L. -lft -I. -I utils")
 			res = subprocess.run(command, shell=True, capture_output=True, text=True)
 			logger.info(res)
@@ -45,7 +46,7 @@ class Tripouille():
 
 		text = f"{TC.CYAN}Compiling tests: {TC.B_WHITE}{self.name}{TC.NC} ({self.git_url})"
 		with Halo(text=text) as spinner:
-			command = f"clang++ -c -std=c++11 -I utils/ -I . utils/*.cpp "
+			command = f"clang++ -D TIMEOUT={get_timeout()} -c -std=c++11 -I utils/ -I . utils/*.cpp "
 			for file in self.to_execute:
 				command += f"tests/ft_{file}_test.cpp "
 

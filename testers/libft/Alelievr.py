@@ -1,6 +1,5 @@
 
 import logging
-from nis import match
 import os
 from pathlib import Path
 import re
@@ -9,7 +8,7 @@ from sys import platform
 from halo import Halo
 from typing import List
 from testers.libft.BaseExecutor import BONUS_FUNCTIONS
-from utils.ExecutionContext import has_bonus
+from utils.ExecutionContext import get_timeout, has_bonus
 
 from utils.TerminalColors import TC
 from utils.Utils import open_ascii
@@ -57,11 +56,11 @@ class Alelievr():
 
 	def execute_tester(self):
 		os.chdir(self.temp_dir)
-		logger.info(f"On directory {os.getcwd()} Executing war-machine")
+		logger.info(f"On directory {os.getcwd()} Executing alelievr")
 
 		text = f"{TC.CYAN}Compiling tests: {TC.B_WHITE}{self.name}{TC.NC} ({self.git_url})"
 		with Halo(text) as spinner:
-			p = subprocess.run("make", capture_output=True)
+			p = subprocess.run(["make", f"TIMEOUT={get_timeout() * 1_000}" , "all"], capture_output=True)
 			logger.info(p)
 			if p.returncode != 0:
 				error = p.stderr.decode('ascii', errors="backslashreplace")

@@ -41,7 +41,7 @@ void sigalarm(int signal)
 
 void handle_signals()
 {
-	alarm(5);
+	alarm(TIMEOUT);
 	signal(SIGSEGV, sigsegv);
 	signal(SIGABRT, sigabort);
 	signal(SIGBUS, sigbus);

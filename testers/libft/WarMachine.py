@@ -9,6 +9,7 @@ from typing import List
 from halo import Halo
 from testers.libft.BaseExecutor import (BONUS_FUNCTIONS, PART_1_FUNCTIONS,
                                         PART_2_FUNCTIONS, remove_ansi_colors)
+from utils.ExecutionContext import get_timeout
 from utils.TerminalColors import TC
 from utils.Utils import intersection
 
@@ -20,7 +21,7 @@ lines_finder = re.compile(r'(^.*if.*atoi\(argv\[1\]\).* == \d.*$)|(^\s+else if \
 
 def cat_file(path):
 	p = subprocess.run(f'cat -e {path.resolve()}', shell=True, capture_output=True)
-	print(p.stdout.decode('ascii', errors="backslashreplace"))
+	print(p.stdout.decode('ascii', errors="backslashreplace"), end='')
 
 
 class WarMachine():
@@ -67,7 +68,7 @@ class WarMachine():
 		force_makefile = " -l" if len(self.to_execute) < 5 else ""
 		return (f"./my_tester.sh " +
 		        f"\"{' '.join(part1_inter)}\" \"{' '.join(part2_inter)}\" \"{' '.join(bonus_inter)}\"" +
-		        f"{force_makefile} | tee war-machine.stdout")
+		        f"{force_makefile} {get_timeout()} | tee war-machine.stdout")
 
 	def show_failed_test_code(self, func, tests):
 
@@ -143,6 +144,7 @@ class WarMachine():
 
 		res = [func for func, res in parsed if res != "OK"]
 		if len(res) != 0:
+			print(f"Abort : {TC.RED}A{TC.NC} Bus error : {TC.RED}B{TC.NC} Segmentation fault : {TC.RED}S{TC.NC} Timeout : {TC.RED}T{TC.NC}\n")
 			longer = Path(self.temp_dir, "deepthought")
 			print(f"More information in: {TC.PURPLE}{longer}{TC.NC}")
 			print_file_summary(Path(self.temp_dir, 'errors_color.log'))

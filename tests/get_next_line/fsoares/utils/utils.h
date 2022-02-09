@@ -6,7 +6,7 @@
 /*   By: fsoares- <fsoares-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 13:40:02 by fsoares-          #+#    #+#             */
-/*   Updated: 2022/02/08 19:35:58 by fsoares-         ###   ########.fr       */
+/*   Updated: 2022/02/09 15:59:29 by fsoares-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ extern int child_pid;
 		{                                                 \
 			long total = 0;                               \
 			long interval = 50000;                        \
-			while (total < 5000000)                       \
+			while (total < TIMEOUT * 1000000)             \
 			{                                             \
 				usleep(interval);                         \
 				int c = waitpid(test, &status, WNOHANG);  \
@@ -110,24 +110,24 @@ extern int child_pid;
 				}                                         \
 				total += interval;                        \
 			}                                             \
-			if (total >= 5000000)                         \
+			if (total >= TIMEOUT * 1000000)               \
 			{                                             \
 				if (waitpid(test, &status, WNOHANG) == 0) \
 				{                                         \
 					kill(test, SIGKILL);                  \
-					show_timeout(); \
+					show_timeout();                       \
 				}                                         \
 			}                                             \
 		}                                                 \
 	}
 
 /**
- * @brief Macro that creates wraps a get_next_line_test
+ * @brief Macro that wraps a get_next_line_test
  */
 #define TEST(title, code)                       \
 	BASE_TEST(title, {                          \
 		g_test = 1;                             \
-		alarm(5);                               \
+		alarm(TIMEOUT);                         \
 		char *_title = title;                   \
 		printf(BLU "%-20s" NC ": ", _title);    \
 		fflush(stdout);                         \

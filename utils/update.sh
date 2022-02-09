@@ -13,7 +13,8 @@ cd temp_____ || exit
 rm -rf francinette
 
 # download github
-git clone --recursive https://github.com/xicodomingues/francinette.git
+echo "Downloading francinette repo..."
+git clone --quiet --recursive https://github.com/xicodomingues/francinette.git 2> /dev/null
 
 cp -r francinette .. 2> /dev/null
 

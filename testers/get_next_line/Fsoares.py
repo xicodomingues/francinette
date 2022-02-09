@@ -3,7 +3,7 @@ import re
 from typing import Set
 
 from testers.get_next_line.BaseExecutor import BaseExecutor
-from utils.ExecutionContext import has_bonus, is_strict
+from utils.ExecutionContext import get_timeout, has_bonus, is_strict
 from utils.TerminalColors import TC
 from utils.Utils import show_errors_file
 
@@ -65,8 +65,8 @@ class Fsoares(BaseExecutor):
 				print(f"Want some more thorough tests? run '{TC.B_WHITE}francinette --strict{TC.NC}'. " +
 				      f"Moulinette will not do these checks, it's only a matter of pride.")
 			return errors
-
-		errors = execute_command("make mandatory", self.exec_mandatory)
-		bonus_errors = set(errors).union(execute_command("make bonus", self.exec_bonus, True))
+		timeout = f"TIMEOUT={get_timeout()}"
+		errors = execute_command(f"make {timeout} mandatory", self.exec_mandatory)
+		bonus_errors = set(errors).union(execute_command(f"make {timeout} bonus", self.exec_bonus, True))
 		bonus_errors = show_errors(bonus_errors)
 		return [self.name] if bonus_errors else []

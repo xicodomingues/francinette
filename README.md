@@ -80,7 +80,7 @@ libft $> paco memset isalpha memcpy  # Executes only the specified tests
 ```
 
 The name of the folder is not important. What is important is that you have a `Makefile`
-that contains the name of the project (for example `libft`). If there is no `Makefile`
+that contains the name of the project (for example `libft`), or the expected delivery files. If there is no `Makefile` or delivery files are not present
 `francinette` will not know what project to execute.
 
 ```

@@ -120,7 +120,7 @@ int main()
 						   0x2826, 0x2834, 0x2832, 0x2833, 0x2813};
 
 	g_test = 1;
-	alarm(60);
+	alarm(TIMEOUT * 10);
 	char *_title = "test limit fds";
 	printf(BLU "%-20s" NC ": ", _title);
 	fflush(stdout);
