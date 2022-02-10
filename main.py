@@ -126,12 +126,19 @@ def main():
 	                          f"{TC.YELLOW}This parameter should be the last one in the command line{TC.NC}"))
 	parser.add_argument("-v", "--verbose", action="store_true", help="Activates verbose mode")
 	parser.add_argument("--timeout", action='store', default='3', help="The new timeout in seconds (by default is 3)")
+	parser.add_argument("--clean-cache", action='store_true', help="Executes a script that will clean the most significant caches")
 	args = parser.parse_args()
 
 	if args.update:
 		file = os.path.join(os.path.dirname(os.path.realpath(__file__)), "utils", "update.sh")
 		logger.info(f"executing update with script: {file}")
 		subprocess.run(file, shell=True)
+		exit(0)
+
+	if args.clean_cache:
+		file = Path(os.path.realpath(__file__), "..", "utils", "clean_cache.sh").resolve();
+		logger.info(f"executing cleaning of the cache with script: {file}")
+		subprocess.run(str(file), shell=True)
 		exit(0)
 
 	if args.verbose:
