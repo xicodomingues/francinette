@@ -19,7 +19,7 @@ from utils.TerminalColors import TC
 
 logger = logging.getLogger("libft")
 
-func_regex = re.compile(r"\w+\s+\**ft_(\w+)\s*\(.*")
+func_regex = re.compile(r"(\w+\s+)+\**ft_(\w+)\s*\(.*")
 
 
 def run_command(command: str, spinner: Halo):
