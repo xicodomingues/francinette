@@ -173,6 +173,7 @@ class BaseTester:
 			print(f"{TC.CYAN}╔══════════════════════════════════════════════════════════════════════════════╗")
 			print(f"{TC.CYAN}║                 🎉🥳 {TC.B_GREEN}All tests passed! Congratulations!{TC.CYAN} 🥳🎉                 ║")
 			print(f"{TC.CYAN}╚══════════════════════════════════════════════════════════════════════════════╝")
+			print(TC.NC)
 			logger.info("All tests ok!")
 			return True
 
@@ -191,6 +192,6 @@ class BaseTester:
 			print(f"\n{TC.B_RED}Failed tests: {TC.NC}{', '.join(error_funcs)}")
 
 		tests_ok = [test for test in to_execute if test not in errors]
-		if error_funcs:
+		if tests_ok:
 			print(f"\n{TC.B_GREEN}Passed tests: {TC.NC}{', '.join(tests_ok)}")
 		return False

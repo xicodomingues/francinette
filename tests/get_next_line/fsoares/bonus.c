@@ -116,7 +116,10 @@ int main()
 
 #ifdef STRICT_MEM
 
-	return 0;
+	if (BUFFER_SIZE != 10) {
+		printf("\n");
+		return 0;
+	}
 
 	wchar_t symbols[10] = {0x280B, 0x2819, 0x281A, 0x281E, 0x2816,
 						   0x2826, 0x2834, 0x2832, 0x2833, 0x2813};
@@ -188,7 +191,7 @@ int main()
 		}
 		kill(cid, SIGKILL);
 		child_pid = -1;
-		usleep(100000);
+		usleep(200000);
 		printf("\b" NC "\n");
 		fflush(stdout);
 	}

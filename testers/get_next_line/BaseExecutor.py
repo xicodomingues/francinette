@@ -44,7 +44,7 @@ class BaseExecutor:
 		output = ""
 		inside_sanitizer = False
 		add_to_file = False
-		error_file = False
+		error_file = None
 
 		def parse_out(to_output):
 			nonlocal output
