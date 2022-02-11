@@ -3,6 +3,7 @@ import os
 from pathlib import Path
 from pipes import quote
 import re
+import shutil
 import subprocess
 from typing import Set
 
@@ -38,12 +39,37 @@ class Fsoares():
 		print()
 		return self.show_failed(result)
 
-	def compile_test(self):
-		os.chdir(self.temp_dir)
-		logger.info(f"On directory {os.getcwd()}")
+	def recompile_with_sanitizer(self):
+		other_dir = Path(self.temp_dir, "..", "__my_srcs")
+		makefile = Path(other_dir, "Makefile").resolve()
+		with open(makefile, 'r') as file :
+			filedata = file.read()
+		new_make = re.sub(r"-\bWall\b", "-g -fsanitize=address -Wall", filedata)
+		logger.info("added sanitization to makefile")
+		with open(makefile, 'w') as file:
+			file.write(new_make)
 
+		os.chdir(other_dir)
+		command = "make re" + (" bonus" if has_bonus() else "")
+		logger.info(f"Calling '{command}' on directory {os.getcwd()}")
+
+		to_execute = command.split(" ")
+		process = subprocess.run(to_execute, capture_output=True, text=True)
+		logger.info(process)
+
+		if process.returncode == 0:
+			logger.info(f"copying sanitized libft.a from {other_dir} to {self.temp_dir}")
+			shutil.copy(other_dir / "libft.a", Path(self.temp_dir, "libft.a"))
+
+	def compile_test(self):
 		text = f"{TC.CYAN}Compiling tests: {TC.B_WHITE}{self.folder}{TC.NC} (my own)"
 		with Halo(text=text) as spinner:
+			if is_strict():
+				self.recompile_with_sanitizer()
+
+			os.chdir(self.temp_dir)
+			logger.info(f"On directory {os.getcwd()}")
+
 			for func in self.to_execute:
 				strict = "-g -fsanitize=address -DSTRICT_MEM" if is_strict() else ""
 				bonus = " list_utils.c" if has_bonus() else ""
@@ -83,7 +109,7 @@ class Fsoares():
 			with open(f"errors_{func}.log", "a") as err_file:
 				err_file.writelines(error)
 				err_file.write("\n")
-			return output.splitlines()[-2];
+			return output.splitlines(True)[-1];
 
 		def get_output(func, output):
 			new_output = parse_sanitizer(func, output)
