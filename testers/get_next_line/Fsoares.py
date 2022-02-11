@@ -30,9 +30,11 @@ class Fsoares(BaseExecutor):
 		def execute_command(command, execute=True, silent=False):
 			if not execute:
 				return []
-			strict = "STRICT='-D STRICT_MEM'" if is_strict() else ""
+			strict = "EXEC_STRICT=1" if is_strict() else ""
 			command = f"{command} {strict}"
+			logger.info(f"executing: {command}")
 			output = self.run_tests(command, show_message=not silent)
+			logger.info(output)
 			return list(self.check_errors(output))
 
 		def validate_one_static():

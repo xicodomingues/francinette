@@ -14,8 +14,7 @@ FILE *errors_file;
 void show_timeout()
 {
 	fprintf(errors_file, BRED "Error" NC " in test %i: " CYN "%s" NC ": " BRED "%s\n" NC,
-		g_test, signature, ("Timeout occurred. You can increase the timeout by executing "
-				BWHT "francinette --timeout <number of seconds>" NC));
+			g_test, signature, ("Timeout occurred. You can increase the timeout by executing " BWHT "francinette --timeout <number of seconds>" NC));
 	printf(YEL "%i.KO %s\n" NC, g_test++, "TIMEOUT");
 }
 
@@ -50,8 +49,7 @@ void sigbus(int signal)
 
 void sigalarm(int signal)
 {
-	show_signal_msg(("Timeout occurred. You can increase the timeout by executing "
-				BWHT "francinette --timeout <number of seconds>" NC), "Timeout", signal);
+	show_signal_msg(("Timeout occurred. You can increase the timeout by executing " BWHT "francinette --timeout <number of seconds>" NC), "Timeout", signal);
 }
 
 void handle_signals()
@@ -368,7 +366,7 @@ int same_offset(void *expected_start, void *expected_res, void *start, void *res
 		return error("expected: %p, yours: %p\n", expected_res, res);
 
 	return error("\nexpected: %p (offset %i), yours: %p (offset %i)\n\n",
-			expected_res, expected_offset, res, offset);
+				 expected_res, expected_offset, res, offset);
 }
 
 int same_return(void *expected, void *res)
@@ -384,13 +382,12 @@ int same_string(char *expected, char *actual)
 {
 	if (expected == NULL && actual == NULL)
 		return 1;
-	if ((expected == NULL && actual != NULL) || (expected != NULL && actual == NULL)){
-		printf("bbbbbbbbbb: %s, %s\n", escape_str(expected), escape_str(actual));
+	if ((expected == NULL && actual != NULL) || (expected != NULL && actual == NULL))
+	{
 		return error("expected: %s, got: %s\n", escape_str(expected), escape_str(actual));
 	}
 	if (strcmp(expected, actual) != 0)
 	{
-		printf("aaaaaaaaaa: %s, %s\n", escape_str(expected), escape_str(actual));
 		return error("expected: %s, got: %s\n", escape_str(expected), escape_str(actual));
 	}
 	return 1;

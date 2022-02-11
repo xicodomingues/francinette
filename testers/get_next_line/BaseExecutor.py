@@ -1,4 +1,5 @@
 import abc
+from fileinput import close
 import logging
 import os
 from typing import Set
@@ -41,15 +42,36 @@ class BaseExecutor:
 
 	def execute_command(self, command, spinner=None):
 		output = ""
+		inside_sanitizer = False
+		add_to_file = False
+		error_file = False
 
-		def parse_out(str):
+		def parse_out(to_output):
 			nonlocal output
+			nonlocal inside_sanitizer
+			nonlocal error_file
+			nonlocal add_to_file
+
 			if (spinner and spinner.enabled):
 				spinner.fail()
 				spinner.enabled = False
-				str = b'\r' + str
-			output += str.decode('ascii', errors="backslashreplace")
-			return str
+				to_output = b'\r' + to_output
+			decoded = to_output.decode('ascii', errors="backslashreplace")
+			if inside_sanitizer or "=================================================================" in decoded:
+				if not inside_sanitizer:
+					error_file = open(self.temp_dir / "error_color.log", "a")
+					inside_sanitizer = True
+					add_to_file = True
+				if add_to_file:
+					error_file.write(decoded)
+				if "SUMMARY: AddressSanitizer" in decoded:
+					add_to_file = False
+				if "==ABORTING" in decoded:
+					inside_sanitizer = False
+					error_file.close()
+				return b''
+			output += decoded
+			return to_output
 
 		logger.info(f"on dir {os.getcwd()}")
 		p = pexpect.spawn(command)

@@ -116,11 +116,13 @@ int main()
 
 #ifdef STRICT_MEM
 
+	return 0;
+
 	wchar_t symbols[10] = {0x280B, 0x2819, 0x281A, 0x281E, 0x2816,
 						   0x2826, 0x2834, 0x2832, 0x2833, 0x2813};
 
 	g_test = 1;
-	alarm(TIMEOUT * 10);
+	alarm(TIMEOUT * 15);
 	char *_title = "test limit fds";
 	printf(BLU "%-20s" NC ": ", _title);
 	fflush(stdout);
@@ -164,17 +166,19 @@ int main()
 			fds[fd]++;
 			fd++;
 		}
-		if (res)
+		if (res) {
 			printf("\b" NC "Read all fds: " GRN "OK!" BWHT "  ");
-		fflush(stdout);
+			fflush(stdout);
+		}
 		for (int i = 0; i < 10002 && res; i++)
 		{
 			fd = rand() % (end - start) + start;
 			res = silent_gnl_test(fd, get_line(fds[fd])) && res;
 			fds[fd]++;
-			if (res && i % 5000 == 4999)
+			if (res && i % 5000 == 4999) {
 				printf("\b" NC "%i reads: " GRN "OK!" BWHT "  ", i + 1);
-			fflush(stdout);
+				fflush(stdout);
+			}
 		}
 		fd = start;
 		while (fd <= end)
