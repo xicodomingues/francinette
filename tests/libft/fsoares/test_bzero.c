@@ -20,7 +20,6 @@ int test_bzero(void)
 
 	res = single_test_bzero(1, mem, mem_std, 0) && res;
 	res = single_test_bzero(2, mem, mem_std, 12) && res;
-	res = single_test_bzero(3, mem + 2, mem_std + 2, 40) && res;
 
 	return res;
 }

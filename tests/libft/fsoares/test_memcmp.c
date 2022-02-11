@@ -19,16 +19,19 @@ int test_memcmp(void)
 	res = single_test_memcmp(3, "teste", "teste", 5) && res;
 	res = single_test_memcmp(4, "teste", "teste", 6) && res;
 	res = single_test_memcmp(5, "teste", "testex", 6) && res;
-	res = single_test_memcmp(6, "teste", "test", 10) && res;
-	res = single_test_memcmp(7, "test", "teste", 10) && res;
 
-	unsigned char s1[10] = "abcdef";
-	unsigned char s2[10] = "abc\xfdxx";
-	res = single_test_memcmp(8, (char *)s1, (char *)s2, 5) && res;
+	char s1[20] = "teste";
+	char s2[20] = "test";
+	res = single_test_memcmp(6, s1, s2, 10) && res;
+	res = single_test_memcmp(7, s2, s1, 10) && res;
+
+	strcpy(s1, "abcdef");
+	strcpy(s2, "abc\xfdxx");
+	res = single_test_memcmp(8, s1, s2, 5) && res;
 
 	s1[3] = 0;
 	s2[3] = 0;
-	int other = single_test_memcmp(9, (char *)s1, (char *)s2, 7);
+	int other = single_test_memcmp(9, s1, s2, 7);
 	if (!other && res) {
 		fprintf(errors_file, BRED "You are stoping at the '\\0'\n" NC);
 		res = 0;

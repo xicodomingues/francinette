@@ -3,8 +3,8 @@
 
 int single_test_memmove(int test_number, char *dest, char *dest_std, char *src, char *src_std, char *value, int n)
 {
-	reset(dest, dest_std, MEM_SIZE + 10);
-	reset(src, src_std, MEM_SIZE + 10);
+	reset(dest, dest_std, MEM_SIZE);
+	reset(src, src_std, MEM_SIZE);
 	strcpy(src, value);
 	strcpy(src_std, value);
 

@@ -402,13 +402,13 @@ char *my_strndup(const char *s1, size_t size)
 	size_t len;
 	char *result;
 
-	len = strlen(s1) + 1;
+	len = strlen(s1);
 	if (size < len)
-		len = size + 1;
-	result = (char *)malloc(len * sizeof(char));
+		len = size;
+	result = (char *)malloc((len + 1) * sizeof(char));
 	if (result == NULL)
 		return (result);
-	strlcpy(result, s1, len);
+	strlcpy(result, s1, len + 1);
 	result[len] = 0;
 	return (result);
 }

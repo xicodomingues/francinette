@@ -16,7 +16,7 @@ from utils.Utils import open_ascii
 logger = logging.getLogger("fsoares")
 
 test_regex = re.compile(r"ft_(\w+)\s*: (.*)")
-
+errors_color_name = "errors_color.log"
 
 class Fsoares():
 
@@ -45,9 +45,9 @@ class Fsoares():
 		text = f"{TC.CYAN}Compiling tests: {TC.B_WHITE}{self.folder}{TC.NC} (my own)"
 		with Halo(text=text) as spinner:
 			for func in self.to_execute:
-				strict = " -DSTRICT_MEM" if is_strict() else ""
+				strict = "-g -fsanitize=address -DSTRICT_MEM" if is_strict() else ""
 				bonus = " list_utils.c" if has_bonus() else ""
-				command = (f"gcc{strict} -D TIMEOUT={get_timeout()} -Wall -Wextra -Werror utils.c{bonus} " +
+				command = (f"gcc {strict} -D TIMEOUT={get_timeout()} -Wall -Wextra -Werror utils.c{bonus} " +
 				           f"test_{func}.c malloc_mock.c -L. -lft -o test_{func}.out -ldl")
 				logger.info(f"executing {command}")
 				res = subprocess.run(command, shell=True, capture_output=True, text=True)
@@ -71,9 +71,24 @@ class Fsoares():
 			match = test_regex.match(lines[-1])
 			return (match.group(1), match.group(2), lines)
 
+		def parse_sanitizer(func, output: str):
+			if not output.startswith("================================="):
+				return output
+
+			error = []
+			for line in output.splitlines(keepends=True):
+				error.append(line)
+				if line.startswith("SUMMARY: AddressSanitizer:"):
+					break;
+			with open(f"errors_{func}.log", "a") as err_file:
+				err_file.writelines(error)
+				err_file.write("\n")
+			return output.splitlines()[-2];
+
 		def get_output(func, output):
+			new_output = parse_sanitizer(func, output)
 			spinner.stop()
-			print(output, end="")
+			print(new_output, end="")
 			return output
 
 		def execute_test(func):
@@ -95,7 +110,7 @@ class Fsoares():
 			return result != "OK" and result != "No test yet"
 
 		def build_error_file(errors):
-			with open("errors_color.log", "w") as error_log:
+			with open(errors_color_name, "w") as error_log:
 				for func in errors:
 					path = Path(self.tests_dir, f"test_{func}.c").resolve()
 					error_log.write(f"For {TC.CYAN}ft_{func}{TC.NC}, in {TC.B_WHITE}{path}{TC.NC}:\n\n")
@@ -103,7 +118,7 @@ class Fsoares():
 						error_log.write(f_error.read())
 
 		def show_errors_file():
-			file = Path(self.temp_dir, "errors_color.log")
+			file = Path(self.temp_dir, errors_color_name)
 			with open_ascii(file) as f:
 				lines = f.readlines()
 			print()
