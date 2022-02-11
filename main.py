@@ -23,8 +23,35 @@ logger = logging.getLogger("main")
 
 PROJECTS = [CPiscineTester, LibftTester, GetNextLineTester]
 
+
 def is_repo(string: str):
 	return string.startswith("git@")
+
+
+def find_all(name, path):
+	result = []
+	for root, _, files in os.walk(path):
+		if name in files:
+			result.append(os.path.join(root, name))
+	return result
+
+
+def has_vscode():
+	if shutil.which("code") is not None:
+		logger.info("vscode exists in command line")
+		return True
+	if Path(os.environ['HOME'], 'Downloads', "Visual Studio Code.app").exists():
+		logger.info("vscode exists in the download directory")
+		return True
+	return False
+
+
+def open_vscode(path):
+	if shutil.which("code") is not None:
+		subprocess.run(["code", path])
+	vscode_path = Path(os.environ['HOME'], 'Downloads', "Visual Studio Code.app/Contents/Resources/app/bin/code")
+	if vscode_path.exists():
+		subprocess.run([vscode_path.resolve(), path])
 
 
 def guess_project(current_path):
@@ -82,6 +109,7 @@ class Formatter(argparse.HelpFormatter):
 			action_usage = self._format_actions_usage(actions, groups)
 			usage = ' '.join([s for s in [prog, action_usage] if s])
 			usage = usage.replace("[--strict]", "[--strict]\n\t\t  ")
+			usage = usage.replace("[--timeout TIMEOUT]", "[--timeout TIMEOUT]\n\t\t  ")
 			# omit the long line wrapping code
 		# prefix with 'usage:'
 		return '%s%s\n\n' % (prefix, usage)
@@ -110,6 +138,7 @@ def main():
 	"""))
 	parser.add_argument("git_repo", nargs="?", help="If present, it uses this repository to clone the exercises from")
 	parser.add_argument("exercise", nargs="*", help="If present, it executes the passed tests")
+	parser.add_argument("-v", "--verbose", action="store_true", help="Activates verbose mode")
 	parser.add_argument("-u", "--update", action="store_true", help="forces francinette to update")
 	parser.add_argument("--strict",
 	                    action="store_true",
@@ -119,14 +148,15 @@ def main():
 	parser.add_argument("--part2", action="store_true", help="Execute tests of part2")
 	parser.add_argument("--mandatory", action="store_true", help="Executes test of the mandatory part")
 	parser.add_argument("--bonus", action="store_true", help="Execute tests of bonus part")
+	parser.add_argument("--timeout", action='store', default='3', help="The new timeout in seconds (by default is 3)")
+	parser.add_argument("--clean-cache",
+	                    action='store_true',
+	                    help="Executes a script that will clean the most significant caches")
 	parser.add_argument("-t",
 	                    "--testers",
 	                    nargs="*",
 	                    help=("Executes the corresponding testers. If no arguments are passed, it asks the user. " +
 	                          f"{TC.YELLOW}This parameter should be the last one in the command line{TC.NC}"))
-	parser.add_argument("-v", "--verbose", action="store_true", help="Activates verbose mode")
-	parser.add_argument("--timeout", action='store', default='3', help="The new timeout in seconds (by default is 3)")
-	parser.add_argument("--clean-cache", action='store_true', help="Executes a script that will clean the most significant caches")
 	args = parser.parse_args()
 
 	if args.update:
@@ -136,7 +166,7 @@ def main():
 		exit(0)
 
 	if args.clean_cache:
-		file = Path(os.path.realpath(__file__), "..", "utils", "clean_cache.sh").resolve();
+		file = Path(os.path.realpath(__file__), "..", "utils", "clean_cache.sh").resolve()
 		logger.info(f"executing cleaning of the cache with script: {file}")
 		subprocess.run(str(file), shell=True)
 		exit(0)
@@ -175,15 +205,15 @@ def main():
 		if args.git_repo:
 			logger.info(f"paco called from: {original_dir}")
 			git_dir = clone(args.git_repo, base, original_dir)
+			if has_vscode():
+				open_vscode(git_dir)
 			exercises = None
 			from_git = True
 
 		project = guess_project(Path('.'))
-
 		info = TestRunInfo(Path('.').resolve(), base, exercises, args)
 
 		logger.info(f"Test params: {info}")
-
 		set_contex(info)
 		project(info)
 

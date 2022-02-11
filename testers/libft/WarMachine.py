@@ -98,7 +98,7 @@ class WarMachine():
 
 			print(f"{TC.YELLOW}Expected{TC.NC} (cat -e {name}.output):")
 			cat_file(expected)
-			print(f"{TC.RED}Your result{TC.NC} (cat -e user_output_{name}):")
+			print(f"\n{TC.RED}Your result{TC.NC} (cat -e user_output_{name}):")
 			cat_file(result)
 			print()
 
