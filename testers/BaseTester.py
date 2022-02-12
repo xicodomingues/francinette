@@ -8,7 +8,7 @@ from pathlib import Path
 
 import git
 from halo import Halo
-from utils.ExecutionContext import TestRunInfo
+from utils.ExecutionContext import TestRunInfo, is_strict
 from utils.TerminalColors import TC
 from utils.Utils import intersection, show_banner
 
@@ -62,6 +62,8 @@ class BaseTester:
 		selected_testers = self.info.args.testers
 
 		if (selected_testers == None):
+			if is_strict() and self.my_tester:
+				return [self.my_tester]
 			return self.testers
 		# TODO: check valid tester
 		if (selected_testers == []):
@@ -72,7 +74,10 @@ class BaseTester:
 			selected_testers = [char for char in input()]
 
 		selected_testers = [test for test in ''.join(selected_testers) if test != ' ']
-		return [self.testers[int(i) - 1] for i in selected_testers]
+		result = [self.testers[int(i) - 1] for i in selected_testers]
+		if is_strict() and self.my_tester in result:
+			return [self.my_tester]
+		return result
 
 	def prepare_ex_files(self):
 

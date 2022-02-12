@@ -3,19 +3,19 @@ import os
 import re
 import shutil
 import subprocess
-from collections import namedtuple
 from pathlib import Path
 
-import git
 from halo import Halo
 from testers.BaseTester import BaseTester
 from testers.libft.Alelievr import Alelievr
-from testers.libft.BaseExecutor import BONUS_FUNCTIONS, PART_1_FUNCTIONS, PART_2_FUNCTIONS
+from testers.libft.BaseExecutor import (BONUS_FUNCTIONS, PART_1_FUNCTIONS,
+                                        PART_2_FUNCTIONS)
 from testers.libft.Fsoares import Fsoares
 from testers.libft.Tripouille import Tripouille
 from testers.libft.WarMachine import WarMachine
 from utils.ExecutionContext import TestRunInfo, has_bonus, is_strict, set_bonus
 from utils.TerminalColors import TC
+from utils.Utils import is_makefile_project
 
 logger = logging.getLogger("libft")
 
@@ -37,6 +37,7 @@ def run_command(command: str, spinner: Halo):
 class LibftTester(BaseTester):
 
 	name = "libft"
+	my_tester = Fsoares
 	testers = [WarMachine, Tripouille, Alelievr, Fsoares]
 
 	def __init__(self, info: TestRunInfo) -> None:
@@ -45,21 +46,7 @@ class LibftTester(BaseTester):
 
 	@staticmethod
 	def is_project(current_path):
-		make_path = current_path / "Makefile"
-		logger.info(f"Makefile path: {make_path.resolve()}")
-		if not make_path.exists():
-			return False
-		with open(make_path, "r") as mk:
-			if 'libft' in mk.read():
-				return LibftTester
-			else:
-				return False
-
-	def test_selector(self):
-		result = super().test_selector()
-		if is_strict() and Fsoares in result:
-			return [Fsoares]
-		return result
+		return is_makefile_project(current_path, "libft.a", LibftTester)
 
 	def select_tests_to_execute(self):
 		args = self.info.args

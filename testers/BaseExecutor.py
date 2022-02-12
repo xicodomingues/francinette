@@ -1,5 +1,4 @@
 import abc
-from fileinput import close
 import logging
 import os
 from typing import Set
@@ -22,7 +21,7 @@ class BaseExecutor:
 		self.missing = missing
 		os.chdir(self.temp_dir)
 		logger.info(f"on dir {os.getcwd()}")
-		args = get_context().args;
+		args = get_context().args
 		self.exec_mandatory = False
 		self.exec_bonus = False
 		if (not args.mandatory and not args.bonus):
@@ -109,19 +108,19 @@ class BaseExecutor:
 
 		def get_errors_line(line: str):
 			if self.line_regex.match(line):
-				return get_errors(parse_line(line));
+				return get_errors(parse_line(line))
 
 		return filter(lambda x: x is not None, [get_errors_line(line) for line in output.splitlines()])
 
 	def show_test_files(self, errors: Set, bonus_set, mandatory_path, bonus_path):
-			bonus_err = errors.intersection(bonus_set)
-			errors = errors.difference(bonus_set)
-			if errors:
-				test_path = self.tests_dir / mandatory_path
-				print(f"To see the tests open: {TC.PURPLE}{test_path.resolve()}{TC.NC}")
-				if bonus_err:
-					test_path = self.tests_dir / bonus_path
-					print(f"and the bonus open: {TC.PURPLE}{test_path.resolve()}{TC.NC}\n")
-			if not errors and bonus_err:
+		bonus_err = errors.intersection(bonus_set)
+		errors = errors.difference(bonus_set)
+		if errors:
+			test_path = self.tests_dir / mandatory_path
+			print(f"To see the tests open: {TC.PURPLE}{test_path.resolve()}{TC.NC}")
+			if bonus_err:
 				test_path = self.tests_dir / bonus_path
-				print(f"To see the tests open: {TC.PURPLE}{test_path.resolve()}{TC.NC}\n")
+				print(f"and the bonus open: {TC.PURPLE}{test_path.resolve()}{TC.NC}\n")
+		if not errors and bonus_err:
+			test_path = self.tests_dir / bonus_path
+			print(f"To see the tests open: {TC.PURPLE}{test_path.resolve()}{TC.NC}\n")

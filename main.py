@@ -8,7 +8,7 @@ import subprocess
 import sys
 import textwrap
 from argparse import ArgumentParser
-from logging.handlers import TimedRotatingFileHandler
+from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
 from git import Repo
@@ -16,12 +16,13 @@ from git import Repo
 from testers.cpiscine.CPiscineTester import CPiscineTester
 from testers.get_next_line.GetNextLineTester import GetNextLineTester
 from testers.libft.LibftTester import LibftTester
+from testers.printf.PrintfTester import PrintfTester
 from utils.ExecutionContext import TestRunInfo, set_contex
 from utils.TerminalColors import TC
 
 logger = logging.getLogger("main")
 
-PROJECTS = [CPiscineTester, LibftTester, GetNextLineTester]
+PROJECTS = [CPiscineTester, LibftTester, GetNextLineTester, PrintfTester]
 
 
 def is_repo(string: str):
@@ -228,11 +229,10 @@ if __name__ == '__main__':
 	logger_dir = Path(__file__, "..", "logs").resolve()
 	if not logger_dir.exists():
 		logger_dir.mkdir()
-	handler = TimedRotatingFileHandler(logger_dir.joinpath("execution.log"), when='d', backupCount=1)
+	handler = RotatingFileHandler(logger_dir.joinpath("execution.log"), maxBytes=1024 * 1024, backupCount=1)
 	handler.setLevel(logging.DEBUG)
 	formatter = logging.Formatter('%(asctime)s [%(name)s][%(levelname)s]: %(message)s')
 	handler.setFormatter(formatter)
-	handler.suffix += ".log"
 	root = logging.getLogger()
 	root.addHandler(handler)
 	root.setLevel(logging.INFO)

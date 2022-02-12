@@ -1,10 +1,10 @@
 import logging
 import os
-from pathlib import Path
-from pipes import quote
 import re
 import shutil
 import subprocess
+from pathlib import Path
+from pipes import quote
 from typing import Set
 
 from halo import Halo
@@ -17,7 +17,10 @@ from utils.Utils import open_ascii
 logger = logging.getLogger("fsoares")
 
 test_regex = re.compile(r"ft_(\w+)\s*: (.*)")
+trace_regex = re.compile(r"\d+\s+[\w.?]+\s+[\d\w]+ (\w+) \+ (\d+)")
+lldb_out_regex = re.compile(r"\s+Summary: test_\w+.out`(\w+) \+ (\d+) at (.*)$")
 errors_color_name = "errors_color.log"
+
 
 class Fsoares():
 
@@ -42,9 +45,9 @@ class Fsoares():
 	def recompile_with_sanitizer(self):
 		other_dir = Path(self.temp_dir, "..", "__my_srcs")
 		makefile = Path(other_dir, "Makefile").resolve()
-		with open(makefile, 'r') as file :
+		with open(makefile, 'r') as file:
 			filedata = file.read()
-		new_make = re.sub(r"-\bWall\b", "-g -fsanitize=address -Wall", filedata)
+		new_make = re.sub(r"-\bWall\b", f"-gfull {'-fsanitize=address' if is_strict() else ''} -Wall", filedata)
 		logger.info("added sanitization to makefile")
 		with open(makefile, 'w') as file:
 			file.write(new_make)
@@ -64,16 +67,15 @@ class Fsoares():
 	def compile_test(self):
 		text = f"{TC.CYAN}Compiling tests: {TC.B_WHITE}{self.folder}{TC.NC} (my own)"
 		with Halo(text=text) as spinner:
-			if is_strict():
-				self.recompile_with_sanitizer()
+			self.recompile_with_sanitizer()
 
 			os.chdir(self.temp_dir)
 			logger.info(f"On directory {os.getcwd()}")
 
 			for func in self.to_execute:
-				strict = "-g -fsanitize=address -DSTRICT_MEM" if is_strict() else ""
+				strict = "-fsanitize=address -DSTRICT_MEM" if is_strict() else ""
 				bonus = " list_utils.c" if has_bonus() else ""
-				command = (f"gcc {strict} -D TIMEOUT={get_timeout()} -Wall -Wextra -Werror utils.c{bonus} " +
+				command = (f"gcc -gfull {strict} -D TIMEOUT={get_timeout()} -Wall -Wextra -Werror utils.c{bonus} " +
 				           f"test_{func}.c malloc_mock.c -L. -lft -o test_{func}.out -ldl")
 				logger.info(f"executing {command}")
 				res = subprocess.run(command, shell=True, capture_output=True, text=True)
@@ -83,6 +85,68 @@ class Fsoares():
 					print(res.stderr)
 					raise Exception("Problem compiling the tests")
 			spinner.succeed()
+
+	def parse_lldb_out(self, lldb_out: str):
+
+		def get_file_line(line):
+			match = lldb_out_regex.match(line)
+			if match:
+				return "in " + match.group(1) + " " + match.group(3)
+
+		stack_traces = []
+		temp = []
+		highlight_next = False
+		for line in [get_file_line(line) for line in lldb_out.splitlines()]:
+			if line:
+				if "_add_malloc" in line:
+					if temp:
+						stack_traces.append(temp)
+					temp = []
+				if highlight_next:
+					line = TC.YELLOW + "  -> " + line + TC.NC
+					highlight_next = False
+				else:
+					line = "     " + line
+				if line.startswith("     in malloc "):
+					highlight_next = True
+				temp.append(line + '\n')
+		if temp:
+			stack_traces.append(temp)
+		logger.info(stack_traces)
+		return stack_traces
+
+	def add_to_error_file(self, func, traces):
+		result = []
+		i = 0
+		error_file = Path(self.temp_dir, f"errors_{func}.log")
+		with open(error_file) as err:
+			for error in err.readlines():
+				result.append(error)
+				if error.startswith("Memory leak:"):
+					result += traces[i]
+					i += 1
+		with open(error_file, 'w') as err:
+			err.writelines(result)
+
+	def add_leak_stack_trace(self, func):
+
+		def transform(line):
+			match = trace_regex.match(line)
+			if match:
+				if match.group(1) == "0x0" or (match.group(1) == "start" and match.group(2) == "1"):
+					return ''
+				return f"image lookup --address {match.group(1)}+{match.group(2)}\n"
+			return '\n'
+
+		with open(Path(self.temp_dir, "backtrace")) as bf:
+			lines = bf.readlines()
+		lines = [transform(line) for line in lines]
+		with open(Path(self.temp_dir, "lldb_commands"), 'w') as lldbf:
+			lldbf.writelines(lines)
+		p = subprocess.run(f"lldb test_{func}.out -s lldb_commands --batch", shell=True, capture_output=True, text=True)
+		logger.info(p)
+		traces = self.parse_lldb_out(p.stdout)
+		self.add_to_error_file(func, traces)
 
 	def execute_tests(self):
 		Halo(f"{TC.CYAN}Testing:{TC.NC}").info()
@@ -105,11 +169,11 @@ class Fsoares():
 			for line in output.splitlines(keepends=True):
 				error.append(line)
 				if line.startswith("SUMMARY: AddressSanitizer:"):
-					break;
+					break
 			with open(f"errors_{func}.log", "a") as err_file:
 				err_file.writelines(error)
 				err_file.write("\n")
-			return output.splitlines(True)[-1];
+			return output.splitlines(True)[-1]
 
 		def get_output(func, output):
 			new_output = parse_sanitizer(func, output)
@@ -119,10 +183,12 @@ class Fsoares():
 
 		def execute_test(func):
 			spinner.start(f"ft_{func.ljust(13)}:")
-			out, code = run("sh -c " + quote(f"./test_{func}.out"), withexitstatus=1)
+			out, code = run("sh -c " + quote(f'./test_{func}.out'),
+			                withexitstatus=1)  # ASAN_OPTIONS="log_path=asan.log"
 			output = out.decode('ascii', errors="backslashreplace")
 			logger.info(output)
 			output = get_output(func, output)
+			self.add_leak_stack_trace(func)
 			return parse_output(remove_ansi_colors(output), func)
 
 		result = [execute_test(func) for func in self.to_execute]

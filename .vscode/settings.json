@@ -53,6 +53,7 @@
 		"cpiscine",
 		"francinette",
 		"inplace",
+		"lldb",
 		"norminette",
 		"pexpect",
 		"Popen",

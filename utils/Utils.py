@@ -1,6 +1,10 @@
-from pathlib import Path
+import logging
 import re
+from pathlib import Path
+
 from utils.TerminalColors import TC
+
+logger = logging.getLogger("utils")
 
 
 def show_banner(project):
@@ -44,3 +48,15 @@ def show_errors_file(errors_color_path: Path, errors_log_path: Path):
 			log.write(remove_ansi_colors(orig.read()))
 		print(f"...\n\nFile too large. To see full report open: {TC.PURPLE}{dest}{TC.NC}")
 	print()
+
+
+def is_makefile_project(current_path, project_name, project_class):
+	make_path = current_path / "Makefile"
+	logger.info(f"Makefile path: {make_path.resolve()}")
+	if not make_path.exists():
+		return False
+	with open(make_path, "r") as mk:
+		if project_name in mk.read():
+			return project_class
+		else:
+			return False
