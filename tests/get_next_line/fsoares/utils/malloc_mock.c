@@ -21,6 +21,8 @@ void *results[100];
 int res_pos = 0;
 int cur_res_pos = 0;
 
+int bt_fd = -1;
+
 
 #define MALLOC_LIMIT 1000000
 t_node allocations[MALLOC_LIMIT];
@@ -40,11 +42,7 @@ static void _add_malloc(void *ptr, size_t size, void *to_return)
 
 	nptrs = backtrace(buffer, 1000);
 	strings = backtrace_symbols(buffer, nptrs);
-	if (strings == NULL)
-	{
-		perror("backtrace_symbols");
-		exit(EXIT_FAILURE);
-	}
+
 	new_node.strings = strings;
 	new_node.nptrs = nptrs;
 	allocations[alloc_pos] = new_node;
@@ -144,11 +142,11 @@ void print_mallocs()
 	}
 }
 
-void show_stack_trace(char **strings, int nptrs)
+void save_traces(FILE *fd, char **strings, int nptrs)
 {
-	for (size_t i = 0; i < nptrs; i++)
+	for (int i = 0; i < nptrs; i++)
 	{
-		printf(strings[i]);
+		fprintf(fd, "%s\n", strings[i]);
 	}
 }
 
@@ -158,6 +156,7 @@ int check_leaks(void *result)
 		free(result);
 	int temp = alloc_pos;
 	int res = 1;
+	FILE *fd = fopen("backtrace", "a");
 	for (int pos = 0; pos < temp; pos++)
 	{
 		t_node tmp = allocations[pos];
@@ -166,10 +165,11 @@ int check_leaks(void *result)
 			if (res)
 				error("\n");
 			fprintf(errors_file, "Memory leak: %p - %zu bytes\n", tmp.returned, tmp.size);
-			show_stack_trace(tmp.strings, tmp.nptrs);
+			save_traces(fd, tmp.strings, tmp.nptrs);
 			res = 0;
 		}
 	}
+	fclose(fd);
 	if (!res)
 		fprintf(errors_file, "\n");
 	return res;
