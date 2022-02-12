@@ -137,8 +137,10 @@ class Fsoares():
 					return ''
 				return f"image lookup --address {match.group(1)}+{match.group(2)}\n"
 			return '\n'
-
-		with open(Path(self.temp_dir, "backtrace")) as bf:
+		backtrace = Path(self.temp_dir, "backtrace")
+		if not backtrace.exists():
+			return
+		with open(backtrace) as bf:
 			lines = bf.readlines()
 		lines = [transform(line) for line in lines]
 		with open(Path(self.temp_dir, "lldb_commands"), 'w') as lldbf:
@@ -147,6 +149,7 @@ class Fsoares():
 		logger.info(p)
 		traces = self.parse_lldb_out(p.stdout)
 		self.add_to_error_file(func, traces)
+		backtrace.unlink()
 
 	def execute_tests(self):
 		Halo(f"{TC.CYAN}Testing:{TC.NC}").info()
