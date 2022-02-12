@@ -47,7 +47,7 @@ class Fsoares():
 		makefile = Path(other_dir, "Makefile").resolve()
 		with open(makefile, 'r') as file:
 			filedata = file.read()
-		new_make = re.sub(r"-\bWall\b", f"-gfull {'-fsanitize=address' if is_strict() else ''} -Wall", filedata)
+		new_make = re.sub(r"-\bWall\b", f"-gfull '-fsanitize=address' -Wall", filedata)
 		logger.info("added sanitization to makefile")
 		with open(makefile, 'w') as file:
 			file.write(new_make)
@@ -73,9 +73,9 @@ class Fsoares():
 			logger.info(f"On directory {os.getcwd()}")
 
 			for func in self.to_execute:
-				strict = "-fsanitize=address -DSTRICT_MEM" if is_strict() else ""
+				strict = "-DSTRICT_MEM" if is_strict() else ""
 				bonus = " list_utils.c" if has_bonus() else ""
-				command = (f"gcc -gfull {strict} -D TIMEOUT={get_timeout()} -Wall -Wextra -Werror utils.c{bonus} " +
+				command = (f"gcc -gfull -fsanitize=address {strict} -D TIMEOUT={get_timeout()} -Wall -Wextra -Werror utils.c{bonus} " +
 				           f"test_{func}.c malloc_mock.c -L. -lft -o test_{func}.out -ldl")
 				logger.info(f"executing {command}")
 				res = subprocess.run(command, shell=True, capture_output=True, text=True)
