@@ -4,7 +4,7 @@
 int single_test_lstlast(int test_number, t_list **list, t_list *expected)
 {
 	char *list_str = list_to_str(list);
-	set_signature(test_number, "ft_lstlast(%s)", list_str);
+	set_signature_tn(test_number, "ft_lstlast(%s)", list_str);
 	free(list_str);
 
 	int result = same_list_elem(expected, ft_lstlast(*list));
@@ -24,6 +24,6 @@ int test_lstlast()
 
 int	main()
 {
-	handle_signals();
+	handle_signals_with_time();
 	test(lstlast);
 }

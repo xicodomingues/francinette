@@ -1,5 +1,5 @@
 
-#include "utils.h"
+#include "my_utils.h"
 
 int single_test_memcpy(int test_number, char *dest, char *dest_std, char *src, char *src_std, int n)
 {
@@ -12,7 +12,7 @@ int single_test_memcpy(int test_number, char *dest, char *dest_std, char *src, c
 	char *res = ft_memcpy(dest, src, n);
 	char *res_std = memcpy(dest_std, src_std, n);
 
-	set_signature(test_number, "ft_memcpy(dest, src: %s, n: %i)", escape_str(src), n);
+	set_signature_tn(test_number, "ft_memcpy(dest, src: %s, n: %i)", escape_str(src), n);
 	return (same_return(dest, res) && same_mem(res_std, res, MEM_SIZE));
 }
 
@@ -35,6 +35,6 @@ int test_memcpy(void)
 
 int	main()
 {
-	handle_signals();
+	handle_signals_with_time();
 	test(memcpy);
 }

@@ -1,9 +1,9 @@
 
-#include "utils.h"
+#include "my_utils.h"
 
 int single_test_strchr(int test_number, char *str, int ch)
 {
-	set_signature(test_number, "ft_strchr(%p: \"%s\", %i: %s)", str, str, ch, escape_chr(ch));
+	set_signature_tn(test_number, "ft_strchr(%p: \"%s\", %i: %s)", str, str, ch, escape_chr(ch));
 	char *res = ft_strchr(str, ch);
 	char *res_std = strchr(str, ch);
 
@@ -26,6 +26,6 @@ int test_strchr(void)
 
 int	main()
 {
-	handle_signals();
+	handle_signals_with_time();
 	test(strchr);
 }

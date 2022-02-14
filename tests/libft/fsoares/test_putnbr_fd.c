@@ -1,9 +1,9 @@
 
-#include "utils.h"
+#include "my_utils.h"
 
 int single_test_putnbr(int test_number, int n, int fd)
 {
-	set_signature(test_number, "ft_putnbr_fd(%i, fd: %i)", n, fd);
+	set_signature_tn(test_number, "ft_putnbr_fd(%i, fd: %i)", n, fd);
 
 	ft_putnbr_fd(n, fd);
 	ft_putendl_fd("", fd);
@@ -29,7 +29,7 @@ int test_putnbr_fd()
 	if(strcmp(content, expected) != 0)
 		res = error("expected: %s, content of the file: %s\n", escape_str(expected), escape_str(content)) && res;
 
-	set_signature(6, "ft_putnbr_fd(%i, fd: %i)", 10000, fd);
+	set_signature_tn(6, "ft_putnbr_fd(%i, fd: %i)", 10000, fd);
 	null_null_check(ft_putnbr_fd(10000, fd), res);
 
 	remove("./fsoares");
@@ -38,6 +38,6 @@ int test_putnbr_fd()
 
 int	main()
 {
-	handle_signals();
+	handle_signals_with_time();
 	test(putnbr_fd);
 }

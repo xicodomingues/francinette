@@ -5,7 +5,7 @@ int single_test_lstadd_back(int test_number, t_list **list, t_list *new, t_list 
 {
 	char *list_str = list_to_str(list);
 	char *node_str = node_to_str(new);
-	set_signature(test_number, "ft_lstadd_back(%s, %s)", list_str, node_str);
+	set_signature_tn(test_number, "ft_lstadd_back(%s, %s)", list_str, node_str);
 	free(list_str); free(node_str);
 
 	ft_lstadd_back(list, new);
@@ -33,6 +33,6 @@ int test_lstadd_back()
 
 int	main()
 {
-	handle_signals();
+	handle_signals_with_time();
 	test(lstadd_back);
 }

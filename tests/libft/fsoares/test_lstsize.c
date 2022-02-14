@@ -4,7 +4,7 @@
 int single_test_lstsize(int test_number, t_list **list, int expected)
 {
 	char *list_str = list_to_str(list);
-	set_signature(test_number, "ft_lstsize(%s)", list_str);
+	set_signature_tn(test_number, "ft_lstsize(%s)", list_str);
 	free(list_str);
 
 	int result = same_value(expected, ft_lstsize(*list));
@@ -24,6 +24,6 @@ int test_lstsize()
 
 int	main()
 {
-	handle_signals();
+	handle_signals_with_time();
 	test(lstsize);
 }

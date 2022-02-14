@@ -1,9 +1,9 @@
 
-#include "utils.h"
+#include "my_utils.h"
 
 int single_test_itoa(int test_number, char *buffer, int n)
 {
-	set_signature(test_number, "ft_itoa(%i)", n);
+	set_signature_tn(test_number, "ft_itoa(%i)", n);
 	sprintf(buffer, "%i", n);
 	check_alloc_str_return(ft_itoa(n), buffer);
 }
@@ -25,6 +25,6 @@ int test_itoa()
 
 int	main()
 {
-	handle_signals();
+	handle_signals_with_time();
 	test(itoa);
 }

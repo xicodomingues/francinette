@@ -1,9 +1,9 @@
 
-#include "utils.h"
+#include "my_utils.h"
 
 int single_test_strnstr(int test_number, char *str1, char *str2, size_t n)
 {
-	set_signature(test_number, "ft_strnstr(%p: %s, %s, %lu)", str1, escape_str(str1), escape_str(str2), n);
+	set_signature_tn(test_number, "ft_strnstr(%p: %s, %s, %lu)", str1, escape_str(str1), escape_str(str2), n);
 	char * res = ft_strnstr(str1, str2, n);
 	char * res_std = strnstr(str1, str2, n);
 
@@ -64,6 +64,6 @@ int test_strnstr(void)
 
 int	main()
 {
-	handle_signals();
+	handle_signals_with_time();
 	test(strnstr);
 }

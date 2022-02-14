@@ -1,12 +1,12 @@
 
-#include "utils.h"
+#include "my_utils.h"
 
 
 int single_test_strlcat(int test_number, char *dest, char *dest_std, char *orig, char *src, int n)
 {
 	int result = 1;
 
-	set_signature(test_number, "ft_strlcat(\"%s\", \"%s\", %i)", orig, src, n);
+	set_signature_tn(test_number, "ft_strlcat(\"%s\", \"%s\", %i)", orig, src, n);
 	reset_with(dest, dest_std, orig, MEM_SIZE);
 
 	int res = ft_strlcat(dest, src, n);
@@ -33,6 +33,6 @@ int test_strlcat(void)
 
 int	main()
 {
-	handle_signals();
+	handle_signals_with_time();
 	test(strlcat);
 }

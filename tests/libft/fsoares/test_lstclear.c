@@ -25,7 +25,7 @@ int test_single_lstclear(int test_number, t_list **list)
 	int i = 0;
 
 	char *s = list_to_str_fn(list, node_ptr_to_str);
-	set_signature(test_number, "ft_lstclear(%s, [(x) => free(" RED "*" CYN "x)])", s); free(s);
+	set_signature_tn(test_number, "ft_lstclear(%s, [(x) => free(" RED "*" CYN "x)])", s); free(s);
 
 	while (*list != NULL)
 	{
@@ -54,6 +54,6 @@ int test_lstclear()
 
 int	main()
 {
-	handle_signals();
+	handle_signals_with_time();
 	test(lstclear);
 }

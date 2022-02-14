@@ -1,7 +1,7 @@
 #ifndef LIST_UTILS_H
 #define LIST_UTILS_H
 
-#include "utils.h"
+#include "my_utils.h"
 
 int same_list_elem(t_list *expected, t_list *result);
 

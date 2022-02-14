@@ -1,9 +1,9 @@
 
-#include "utils.h"
+#include "my_utils.h"
 
 int test_single_calloc(int test_number, size_t count, size_t size)
 {
-	set_signature(test_number, "ft_calloc(%zu, %zu)", count, size);
+	set_signature_tn(test_number, "ft_calloc(%zu, %zu)", count, size);
 
 	reset_malloc_mock();
 	void *res_calloc = ft_calloc(count, size);
@@ -30,6 +30,6 @@ int test_calloc()
 
 int	main()
 {
-	handle_signals();
+	handle_signals_with_time();
 	test(calloc);
 }

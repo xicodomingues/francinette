@@ -1,9 +1,9 @@
 
-#include "utils.h"
+#include "my_utils.h"
 
 int single_test_strncmp(int test_number, char *str1, char *str2, size_t n)
 {
-	set_signature(test_number, "ft_strncmp(%s, %s, %lu)", escape_str(str1), escape_str(str2), n);
+	set_signature_tn(test_number, "ft_strncmp(%s, %s, %lu)", escape_str(str1), escape_str(str2), n);
 	int res = ft_strncmp(str1, str2, n);
 	int res_std = strncmp(str1, str2, n);
 
@@ -49,6 +49,6 @@ int test_strncmp(void)
 
 int	main()
 {
-	handle_signals();
+	handle_signals_with_time();
 	test(strncmp);
 }

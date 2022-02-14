@@ -1,9 +1,9 @@
 
-#include "utils.h"
+#include "my_utils.h"
 
 int single_test_strdup(int test_number, char *str, char *expected)
 {
-	set_signature(test_number, "ft_strdup(%s)", escape_str(str));
+	set_signature_tn(test_number, "ft_strdup(%s)", escape_str(str));
 	check_alloc_str_return(ft_strdup(str), expected);
 }
 
@@ -18,6 +18,6 @@ int test_strdup()
 
 int	main()
 {
-	handle_signals();
+	handle_signals_with_time();
 	test(strdup);
 }

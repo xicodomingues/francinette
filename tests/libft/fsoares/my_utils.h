@@ -1,56 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.h                                            :+:      :+:    :+:   */
+/*   my_utils.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fsoares- <fsoares-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 13:40:02 by fsoares-          #+#    #+#             */
-/*   Updated: 2022/02/14 19:24:10 by fsoares-         ###   ########.fr       */
+/*   Updated: 2022/02/14 20:36:42 by fsoares-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef UTILS_H
-#define UTILS_H
+#ifndef MY_UTILS_H
+#define MY_UTILS_H
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <ctype.h>
-#include <string.h>
-#include <signal.h>
-#include <stdarg.h>
-#include <limits.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <dlfcn.h>
-#include <fcntl.h>
-#include <stdbool.h>
-#include <time.h>
-
+#include "utils/utils.h"
 #include "libft.h"
-#include "color.h"
-
-#define MEM_SIZE 0x100
-#define REPETITIONS 1000
-
-extern char function[1000];
-extern char signature[100000];
-extern int g_offset;
-extern char escaped[1000];
-extern FILE *errors_file;
-extern int g_test;
-
-typedef struct alloc_node t_node;
-
-struct alloc_node
-{
-	void *ptr;
-	void *returned;
-	size_t size;
-	bool freed;
-	char **strings;
-	int nptrs;
-};
 
 #define create_test_ctype(fn)                                                       \
 	int test_##fn(void)                                                             \
@@ -115,46 +79,6 @@ struct alloc_node
 #define no_test(fn) \
 	printf("ft_%-13s: " YEL "No test yet\n" NC, #fn)
 
-#ifdef STRICT_MEM
-
-#define BASE_NULL_CHECK(fn_call, rst, leak_check)                                  \
-	reset_malloc_mock();                                                           \
-	fn_call;                                                                       \
-	t_node *allocs = get_all_allocs();                                             \
-	int malloc_calls = reset_malloc_mock();                                        \
-	int offset = g_offset;                                                         \
-	for (int i = 0; i < malloc_calls; i++)                                         \
-	{                                                                              \
-		offset = sprintf(                                                          \
-					 signature + g_offset,                                         \
-					 ":\n" MAG "malloc " NC "protection check for %ith malloc:\n", \
-					 i + 1) +                                                      \
-				 g_offset;                                                         \
-		add_trace_to_signature(offset, allocs, i);                                 \
-		malloc_set_null(i);                                                        \
-		leak_check;                                                                \
-	}                                                                              \
-	free_all_allocs(allocs, malloc_calls);
-
-#define null_check(fn_call, rst)                 \
-	BASE_NULL_CHECK(fn_call, rst, {              \
-		void *res = fn_call;                     \
-		rst = check_leaks(res) && rst;           \
-		if (res != NULL)                         \
-			rst = error("Should return NULL\n"); \
-	})
-
-#define null_null_check(fn_call, rst)   \
-	BASE_NULL_CHECK(fn_call, rst, {     \
-		fn_call;                        \
-		rst = check_leaks(NULL) && rst; \
-	})
-
-#else
-#define null_check(fn_call, result)
-#define null_null_check(fn_call, result)
-#endif
-
 /**
  * @brief given a function call that returns an allocated string and the
  * expected return value, this macro will check that the string returned
@@ -170,57 +94,7 @@ struct alloc_node
 	null_check(fn_call, result);                             \
 	return result;
 
-void handle_signals();
-
-void print_mem(void *ptr, int size);
-void print_mem_full(void *ptr, int size);
-
-char *rand_bytes(char *dest, int len);
-char *rand_str(char *dest, int len);
-char *escape_str(char *src);
-char *escape_chr(char ch);
-void reset(void *m1, void *m2, int size);
-void reset_with(void *m1, void *m2, char *content, int size);
-
-int set_signature(int test_number, const char *format, ...);
-int error(const char *format, ...);
-void show_error_file();
-
-int same_ptr(void *res, void *res_std);
-int same_mem(void *expected, void *result, int size);
-int same_value(int expected, int res);
-int same_sign(int expected, int res);
-int same_offset(void *expected_start, void *expected_res, void *start, void *res);
-int same_return(void *expected, void *res);
-int same_size(void *ptr, void *ptr_std);
-int same_string(char *expected, char *actual);
-char *my_strdup(const char *s1);
-char *my_strndup(const char *s1, size_t size);
-/**
- * @brief In normal mode makes sure that you reserved enough space.
- * In strict makes sure that you reserved the correct amount of space.
- *
- * @param ptr The pointer to check how much memory was allocated
- * @param expected_size The expected allocated size
- * @return If it passes or fails the test
- */
-int check_mem_size(void *ptr, size_t expected_size);
-
-int reset_malloc_mock();
-size_t get_malloc_size(void *ptr);
-void malloc_set_result(void *res);
-void malloc_set_null(int nth);
-int check_leaks(void *ptr);
-void print_mallocs();
-t_node *get_all_allocs();
-void free_all_allocs(t_node *allocs, int malloc_calls);
-void add_trace_to_signature(int offset, t_node *allocs, int n);
-void show_malloc_stack(void *ptr);
-
-#ifndef __APPLE__
-size_t strlcat(char *dst, const char *src, size_t size);
-size_t strlcpy(char *dst, const char *src, size_t size);
-char *strnstr(const char *haystack, const char *needle, size_t len);
-#endif
+void handle_signals_with_time();
+int set_signature_tn(int test_number, const char *format, ...);
 
 #endif

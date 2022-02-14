@@ -1,5 +1,5 @@
 
-#include "utils.h"
+#include "my_utils.h"
 
 char **init_str_array(int n, ...)
 {
@@ -54,7 +54,7 @@ int same_strings(char **expected, char **result)
 
 int test_single_split(int test_number, char *s, char c, char **expected)
 {
-	set_signature(test_number, "ft_split(%s, %i:%s)", escape_str(s), c, escape_chr(c));
+	set_signature_tn(test_number, "ft_split(%s, %i:%s)", escape_str(s), c, escape_chr(c));
 
 	char **res = ft_split(s, c);
 
@@ -94,6 +94,6 @@ int test_split()
 
 int main()
 {
-	handle_signals();
+	handle_signals_with_time();
 	test(split);
 }

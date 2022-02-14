@@ -77,8 +77,8 @@ class Fsoares():
 			for func in self.to_execute:
 				strict = "-DSTRICT_MEM" if is_strict() else ""
 				bonus = " list_utils.c" if has_bonus() else ""
-				command = (f"gcc -gfull -fsanitize=address {strict} -D TIMEOUT={get_timeout()} -Wall -Wextra -Werror utils.c{bonus} " +
-				           f"test_{func}.c malloc_mock.c -L. -lft -o test_{func}.out -ldl")
+				command = (f"gcc -gfull -fsanitize=address {strict} -D TIMEOUT={get_timeout()} -Wall -Wextra -Werror my_utils.c {bonus} " +
+				           f"test_{func}.c utils/malloc_mock.c utils/utils.c -L. -lft -o test_{func}.out -ldl")
 				logger.info(f"executing {command}")
 				res = subprocess.run(command, shell=True, capture_output=True, text=True)
 				logger.info(res)

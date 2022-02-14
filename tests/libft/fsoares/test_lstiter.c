@@ -10,7 +10,7 @@ void count_chars(void *s)
 int single_test_lstiter(int test_number, t_list **initial, t_list ** expected)
 {
 	char *l_str = list_to_str(initial);
-	set_signature(test_number, "ft_lstiter(%s, [(s) => (s = strlen(s))])", l_str); free(l_str);
+	set_signature_tn(test_number, "ft_lstiter(%s, [(s) => (s = strlen(s))])", l_str); free(l_str);
 	ft_lstiter(*initial, count_chars);
 	int res = same_list(expected, initial);
 
@@ -31,6 +31,6 @@ int test_lstiter()
 
 int	main()
 {
-	handle_signals();
+	handle_signals_with_time();
 	test(lstiter);
 }

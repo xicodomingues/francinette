@@ -1,9 +1,9 @@
 
-#include "utils.h"
+#include "my_utils.h"
 
 int single_test_putchar(int test_n, char c, int fd)
 {
-	set_signature(test_n, "ft_putchar_fd(%i:%s, fd: %i)", c, escape_chr(c), fd);
+	set_signature_tn(test_n, "ft_putchar_fd(%i:%s, fd: %i)", c, escape_chr(c), fd);
 
 	ft_putchar_fd(c, fd);
 	return check_leaks(NULL);
@@ -27,7 +27,7 @@ int test_putchar_fd()
 	if(strcmp(content, expected) != 0)
 		res = error("expected: %s, content of the file: %s\n", escape_str(expected), escape_str(content)) && res;
 
-	set_signature(6, "ft_putchar_fd(%i:%s, fd: %i)", 't', escape_chr('t'), fd);
+	set_signature_tn(6, "ft_putchar_fd(%i:%s, fd: %i)", 't', escape_chr('t'), fd);
 	null_null_check(ft_putchar_fd('t', fd), res);
 
 	remove("./fsoares");
@@ -36,6 +36,6 @@ int test_putchar_fd()
 
 int	main()
 {
-	handle_signals();
+	handle_signals_with_time();
 	test(putchar_fd);
 }

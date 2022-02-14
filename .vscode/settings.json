@@ -42,7 +42,8 @@
 		"color.h": "c",
 		"cstdio": "cpp",
 		"__hash_table": "c",
-		"__node_handle": "c"
+		"__node_handle": "c",
+		"my_utils.h": "c"
 	},
 	"python.linting.enabled": true,
 	"python.linting.pylintPath": "pylint",

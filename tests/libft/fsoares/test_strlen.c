@@ -1,9 +1,9 @@
 
-#include "utils.h"
+#include "my_utils.h"
 
 int compare_strlen(int test_number, char *str)
 {
-	set_signature(test_number, "ft_strlen(%s)", escape_str(str));
+	set_signature_tn(test_number, "ft_strlen(%s)", escape_str(str));
 	return same_value(strlen(str), ft_strlen(str));
 }
 
@@ -29,6 +29,6 @@ int test_strlen(void)
 
 int	main()
 {
-	handle_signals();
+	handle_signals_with_time();
 	test(strlen);
 }

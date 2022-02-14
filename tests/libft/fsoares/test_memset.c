@@ -1,5 +1,5 @@
 
-#include "utils.h"
+#include "my_utils.h"
 
 int single_test_memset(int test_number, char *m, char *ms, int c, int size)
 {
@@ -9,7 +9,7 @@ int single_test_memset(int test_number, char *m, char *ms, int c, int size)
 	reset(m, ms, MEM_SIZE);
 	res_std = memset(ms, c, size);
 	res = ft_memset(m, c, size);
-	set_signature(test_number, "ft_memset(ptr, %i: %s, %i)", c, escape_chr(c), size);
+	set_signature_tn(test_number, "ft_memset(ptr, %i: %s, %i)", c, escape_chr(c), size);
 	return (same_return(m, res) && same_mem(res_std, res, MEM_SIZE));
 }
 
@@ -32,13 +32,13 @@ int test_memset(void)
 	int *rs = memset(ms2 + 1, 143462, 4);
 	int *r = ft_memset(m2 + 1, 143462, 4);
 
-	set_signature(5, "ft_memset(ptr, %i: %s, %i)", 143462, escape_chr((char)143462), 4);
+	set_signature_tn(5, "ft_memset(ptr, %i: %s, %i)", 143462, escape_chr((char)143462), 4);
 	res = (same_ptr(r, m2 + 1) && same_mem(rs - 1, r - 1, 0x10)) && res;
 	return res;
 }
 
 int	main()
 {
-	handle_signals();
+	handle_signals_with_time();
 	test(memset);
 }

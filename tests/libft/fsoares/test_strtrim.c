@@ -1,9 +1,9 @@
 
-#include "utils.h"
+#include "my_utils.h"
 
 int single_test_strtrim(int test_number, char *str, char *set, char *expected)
 {
-	set_signature(test_number, "ft_strtrim(\"%s\", \"%s\")", str, set);
+	set_signature_tn(test_number, "ft_strtrim(\"%s\", \"%s\")", str, set);
 	check_alloc_str_return(ft_strtrim(str, set), expected);
 }
 
@@ -20,6 +20,6 @@ int test_strtrim()
 
 int	main()
 {
-	handle_signals();
+	handle_signals_with_time();
 	test(strtrim);
 }

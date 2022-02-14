@@ -6,21 +6,35 @@ int g_offset;
 char escaped[1000];
 char escaped_div = 2;
 int where_buffer = 0;
-int g_test = 0;
+int g_test = 1;
+int child_pid = -1;
 
 FILE *errors_file;
 
+void show_timeout()
+{
+	fprintf(errors_file, BRED "Error" NC " in test %i: " CYN "%s" NC ": " BRED "%s" NC "\n",
+			g_test, signature, ("Timeout occurred. You can increase the timeout by executing " BWHT "francinette --timeout <number of seconds>" NC));
+	printf(YEL "%i.KO %s\n" NC, g_test++, "TIMEOUT");
+}
+
 void show_signal_msg(char *message, char *resume, int signal)
 {
-	fprintf(errors_file, BRED "Error" NC " in test %i: " BCYN "%s" NC ": " BRED "%s\n" NC,
+	if (child_pid != -1)
+	{
+		kill(child_pid, SIGKILL);
+		child_pid = -1;
+		printf("\b");
+	}
+	fprintf(errors_file, BRED "Error" NC " in test %i: " CYN "%s" NC ": " BRED "%s"NC"\n",
 			g_test, signature, message);
-	printf("ft_%-13s: " YEL "%s" NC "\n", function, resume);
+	printf(YEL "%i.KO %s\n" NC, g_test++, resume);
 	exit(signal);
 }
 
 void sigsegv(int signal)
 {
-	show_signal_msg("Segmentation fault!", "Segmentation fault", signal);
+	show_signal_msg("Segmentation fault!", "Segfault", signal);
 }
 
 void sigabort(int signal)
@@ -35,18 +49,25 @@ void sigbus(int signal)
 
 void sigalarm(int signal)
 {
-	show_signal_msg("Timeout occurred", "Infinite loop", signal);
+	show_signal_msg(("Timeout occurred. You can increase the timeout by executing " BWHT "francinette --timeout <number of seconds>" NC), "Timeout", signal);
 }
 
 void handle_signals()
 {
-	alarm(TIMEOUT);
 	signal(SIGSEGV, sigsegv);
 	signal(SIGABRT, sigabort);
 	signal(SIGBUS, sigbus);
 	signal(SIGALRM, sigalarm);
 	srand((unsigned int)time(NULL));
 	srandom((unsigned int)time(NULL));
+}
+
+void setup_framework(int argn, char **argv)
+{
+	(void)argn;
+	handle_signals();
+	FILE *file_big = fopen("error_color.log", "a");
+	fprintf(file_big, "##==##==##&&##==##==##%s\n", argv[0]);
 }
 
 static int is_empty(unsigned char *p)
@@ -245,14 +266,12 @@ void reset_with(void *m1, void *m2, char *content, int size)
 	strcpy(m2, content);
 }
 
-int set_signature(int test_number, const char *format, ...)
+int set_signature(const char *format, ...)
 {
-	g_test = test_number;
 	va_list args;
 	va_start(args, format);
 	g_offset = vsprintf(signature, format, args);
 	va_end(args);
-	reset_malloc_mock();
 	return g_offset;
 }
 
@@ -266,24 +285,29 @@ int error(const char *format, ...)
 	return 0;
 }
 
-void show_error_file()
+void add_to_error_file()
 {
 	char buf[1024];
 	fclose(errors_file);
 
-	FILE *file;
+	FILE *file, *file_big;
 	size_t nread;
 	file = fopen("errors.log", "r");
-	if (file)
+	file_big = fopen("error_color.log", "a");
+	if (file && file_big)
 	{
 		while ((nread = fread(buf, 1, sizeof buf, file)) > 0)
-			fwrite(buf, 1, nread, stdout);
+			fwrite(buf, 1, nread, file_big);
 		if (ferror(file))
 		{
-			/* deal with error */
+			fprintf(file_big, "\nProblem reading error output file");
+		}
+		if (ferror(file_big))
+		{
+			printf("\nProblem appending output to error file.n");
 		}
 		fclose(file);
-		printf("\n");
+		fclose(file_big);
 	}
 }
 
@@ -347,7 +371,7 @@ int same_offset(void *expected_start, void *expected_res, void *start, void *res
 		return error("expected: %p, yours: %p\n", expected_res, res);
 
 	return error("\nexpected: %p (offset %i), yours: %p (offset %i)\n\n",
-			expected_res, expected_offset, res, offset);
+				 expected_res, expected_offset, res, offset);
 }
 
 int same_return(void *expected, void *res)
@@ -364,7 +388,9 @@ int same_string(char *expected, char *actual)
 	if (expected == NULL && actual == NULL)
 		return 1;
 	if ((expected == NULL && actual != NULL) || (expected != NULL && actual == NULL))
+	{
 		return error("expected: %s, got: %s\n", escape_str(expected), escape_str(actual));
+	}
 	if (strcmp(expected, actual) != 0)
 	{
 		return error("expected: %s, got: %s\n", escape_str(expected), escape_str(actual));
@@ -404,7 +430,7 @@ char *my_strndup(const char *s1, size_t size)
 	len = strlen(s1);
 	if (size < len)
 		len = size;
-	result = (char *)malloc((len + 1) * sizeof(char));
+	result = (char *)malloc(1 + len * sizeof(char));
 	if (result == NULL)
 		return (result);
 	strlcpy(result, s1, len + 1);

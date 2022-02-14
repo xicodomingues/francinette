@@ -1,9 +1,9 @@
 
-#include "utils.h"
+#include "my_utils.h"
 
 int single_test_memchr(int test_number, char *str, int ch, size_t n)
 {
-	set_signature(test_number, "ft_memchr(%p, %i(%x): %s, %zu)", str, ch, ch % 0x100, escape_chr(ch), n);
+	set_signature_tn(test_number, "ft_memchr(%p, %i(%x): %s, %zu)", str, ch, ch % 0x100, escape_chr(ch), n);
 	char *res = ft_memchr(str, ch, n);
 	char *res_std = memchr(str, ch, n);
 
@@ -30,6 +30,6 @@ int test_memchr(void)
 
 int	main()
 {
-	handle_signals();
+	handle_signals_with_time();
 	test(memchr);
 }

@@ -1,9 +1,9 @@
 
-#include "utils.h"
+#include "my_utils.h"
 
 int single_test_putendl(int test_number, char *str, int fd)
 {
-	set_signature(test_number, "ft_putendl_fd(%s, fd: %i)", escape_str(str), fd);
+	set_signature_tn(test_number, "ft_putendl_fd(%s, fd: %i)", escape_str(str), fd);
 
 	ft_putendl_fd(str, fd);
 	return check_leaks(NULL);
@@ -27,7 +27,7 @@ int test_putendl_fd()
 	if(strcmp(content, expected) != 0)
 		res = error("expected: %s, content of the file: %s\n", escape_str(expected), escape_str(content)) && res;
 
-	set_signature(6, "ft_putendl_fd(\"%s\", fd: %i)", "teste", fd);
+	set_signature_tn(6, "ft_putendl_fd(\"%s\", fd: %i)", "teste", fd);
 	null_null_check(ft_putendl_fd("teste", fd), res);
 
 	remove("./fsoares");
@@ -36,6 +36,6 @@ int test_putendl_fd()
 
 int	main()
 {
-	handle_signals();
+	handle_signals_with_time();
 	test(putendl_fd);
 }

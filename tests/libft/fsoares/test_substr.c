@@ -1,9 +1,9 @@
 
-#include "utils.h"
+#include "my_utils.h"
 
 int test_single_substr(int test_number, char *str, unsigned int start, size_t size, char *expected)
 {
-	set_signature(test_number, "ft_substr(\"%s\", %u, %zu)", str, start, size);
+	set_signature_tn(test_number, "ft_substr(\"%s\", %u, %zu)", str, start, size);
 	check_alloc_str_return(ft_substr(str, start, size), expected);
 }
 
@@ -39,6 +39,6 @@ int test_substr()
 
 int main()
 {
-	handle_signals();
+	handle_signals_with_time();
 	test(substr);
 }

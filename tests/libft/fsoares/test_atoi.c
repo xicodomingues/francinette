@@ -1,9 +1,9 @@
 
-#include "utils.h"
+#include "my_utils.h"
 
 int single_test_atoi(int test_number, char *str)
 {
-	set_signature(test_number, "atoi(%s)", escape_str(str));
+	set_signature_tn(test_number, "atoi(%s)", escape_str(str));
 	return same_value(atoi(str), ft_atoi(str));
 }
 
@@ -43,6 +43,6 @@ int test_atoi(void)
 
 int	main()
 {
-	handle_signals();
+	handle_signals_with_time();
 	test(atoi);
 }

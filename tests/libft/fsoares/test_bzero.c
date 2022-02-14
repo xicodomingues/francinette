@@ -1,9 +1,9 @@
 
-#include "utils.h"
+#include "my_utils.h"
 
 int single_test_bzero(int test_number, char *res, char *expected, int size)
 {
-	set_signature(test_number, "ft_bzero(%p, %i)", res, size);
+	set_signature_tn(test_number, "ft_bzero(%p, %i)", res, size);
 	reset(res, expected, MEM_SIZE);
 	bzero(expected, size);
 	ft_bzero(res, size);
@@ -26,6 +26,6 @@ int test_bzero(void)
 
 int	main()
 {
-	handle_signals();
+	handle_signals_with_time();
 	test(bzero);
 }

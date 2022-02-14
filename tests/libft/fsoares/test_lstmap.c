@@ -22,7 +22,7 @@ void delete(void *content)
 int test_single_lstmap(int test_number, t_list **initial, t_list **expected)
 {
 	char *list_str = list_to_str(initial);
-	set_signature(test_number, "ft_lstmap(%s, [s => __strlen(s)], [x => free(x)])", list_str); free(list_str);
+	set_signature_tn(test_number, "ft_lstmap(%s, [s => __strlen(s)], [x => free(x)])", list_str); free(list_str);
 
 	t_list *res = ft_lstmap(*initial, map_length, delete);
 	int result = same_list(expected, &res);
@@ -66,6 +66,6 @@ int test_lstmap()
 
 int	main()
 {
-	handle_signals();
+	handle_signals_with_time();
 	test(lstmap);
 }

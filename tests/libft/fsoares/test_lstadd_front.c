@@ -4,7 +4,7 @@ int test_single_lstadd_front(int test_number, t_list **list, t_list *to_add, t_l
 {
 	char *list_str = list_to_str(list);
 	char *to_add_str = node_to_str(to_add);
-	set_signature(test_number, "ft_lstadd_front(%s, %s)", list_str, to_add_str);
+	set_signature_tn(test_number, "ft_lstadd_front(%s, %s)", list_str, to_add_str);
 	free(list_str); free(to_add_str);
 
 	ft_lstadd_front(list, to_add);
@@ -31,6 +31,6 @@ int test_lstadd_front()
 
 int	main()
 {
-	handle_signals();
+	handle_signals_with_time();
 	test(lstadd_front);
 }

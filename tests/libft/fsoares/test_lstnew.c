@@ -15,7 +15,7 @@ int check_allocs(void *content, t_list *expected)
 
 int test_single_lstnew(int test_number, char *content, t_list *expected)
 {
-	set_signature(test_number, "ft_lstnew(%p: %s)", content, escape_str(content));
+	set_signature_tn(test_number, "ft_lstnew(%p: %s)", content, escape_str(content));
 	expected->content = content;
 	return check_allocs(content, expected);
 }
@@ -31,6 +31,6 @@ int test_lstnew()
 
 int main()
 {
-	handle_signals();
+	handle_signals_with_time();
 	test(lstnew);
 }

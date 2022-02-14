@@ -1,9 +1,9 @@
 
-#include "utils.h"
+#include "my_utils.h"
 
 int single_test_striteri(int test_number, char *str, void (*fn)(unsigned int, char *), char *func, char *expected)
 {
-	set_signature(test_number, "ft_striteri(\"%s\", %s)", str, func);
+	set_signature_tn(test_number, "ft_striteri(\"%s\", %s)", str, func);
 
 	char buffer[20];
 	strcpy(buffer, str);
@@ -34,6 +34,6 @@ int test_striteri()
 
 int	main()
 {
-	handle_signals();
+	handle_signals_with_time();
 	test(striteri);
 }

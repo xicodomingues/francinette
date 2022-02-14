@@ -1,5 +1,5 @@
 
-#include "utils.h"
+#include "my_utils.h"
 
 int single_test_memmove(int test_number, char *dest, char *dest_std, char *src, char *src_std, char *value, int n)
 {
@@ -8,7 +8,7 @@ int single_test_memmove(int test_number, char *dest, char *dest_std, char *src, 
 	strcpy(src, value);
 	strcpy(src_std, value);
 
-	set_signature(test_number, "ft_memmove(%p, %p: \"%s\", %i)", dest, src, src, n);
+	set_signature_tn(test_number, "ft_memmove(%p, %p: \"%s\", %i)", dest, src, src, n);
 
 	char *result = ft_memmove(dest, src, n);
 	char *expected = memmove(dest_std, src_std, n);
@@ -31,6 +31,6 @@ int test_memmove(void)
 
 int	main()
 {
-	handle_signals();
+	handle_signals_with_time();
 	test(memmove);
 }

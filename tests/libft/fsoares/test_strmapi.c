@@ -1,9 +1,9 @@
 
-#include "utils.h"
+#include "my_utils.h"
 
 int single_test_strmapi(int test_number, char *str, char (*fn)(unsigned int, char), char *func, char *expected)
 {
-	set_signature(test_number, "ft_strmapi(\"%s\", %s)", str, func);
+	set_signature_tn(test_number, "ft_strmapi(\"%s\", %s)", str, func);
 	check_alloc_str_return(ft_strmapi(str, fn), expected);
 }
 
@@ -27,6 +27,6 @@ int test_strmapi()
 
 int	main()
 {
-	handle_signals();
+	handle_signals_with_time();
 	test(strmapi);
 }
