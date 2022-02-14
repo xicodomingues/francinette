@@ -3,6 +3,7 @@ import re
 from pathlib import Path
 
 from utils.TerminalColors import TC
+from utils.TraceToLine import TraceToLine
 
 FILE_SHOW_LINES = 50
 
@@ -39,15 +40,16 @@ def open_ascii(file, mode='r'):
 	return open(file, mode, encoding='ascii', errors="backslashreplace")
 
 
-def show_errors_file(errors_color_path: Path, errors_log_path: Path):
-	with open_ascii(errors_color_path) as f:
-		lines = f.readlines()
+def show_errors_file(temp_dir: Path, errors_color, errors_log):
+	trace_to_line = TraceToLine(temp_dir, errors_color)
+	lines = trace_to_line.parse_stack_traces()
+
 	print(f"{TC.B_RED}Errors found{TC.NC}:")
-	[print(line, end='') for line in lines[:50]]
+	[print(line, end='') for line in list(filter(lambda x: x != '', lines[:200]))[:50]]
 	if len(lines) > FILE_SHOW_LINES:
-		dest = errors_log_path.resolve()
-		with open_ascii(errors_color_path, "r") as orig, open(dest, "w") as log:
-			log.write(remove_ansi_colors(orig.read()))
+		dest = (temp_dir / errors_log).resolve()
+		with open(dest, "w") as log:
+			log.writelines([remove_ansi_colors(line) for line in lines])
 		print(f"...\n\nFile too large. To see full report open: {TC.PURPLE}{dest}{TC.NC}")
 	print()
 

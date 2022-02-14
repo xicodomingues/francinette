@@ -6,7 +6,7 @@
 /*   By: fsoares- <fsoares-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 13:40:02 by fsoares-          #+#    #+#             */
-/*   Updated: 2022/02/12 18:58:24 by fsoares-         ###   ########.fr       */
+/*   Updated: 2022/02/14 16:44:51 by fsoares-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,11 +34,23 @@
 #define REPETITIONS 1000
 
 extern char function[1000];
-extern char signature[10000];
+extern char signature[100000];
 extern int g_offset;
 extern char escaped[1000];
 extern FILE *errors_file;
 extern int g_test;
+
+typedef struct alloc_node t_node;
+
+struct alloc_node
+{
+	void *ptr;
+	void *returned;
+	size_t size;
+	bool freed;
+	char **strings;
+	int nptrs;
+};
 
 #define create_test_ctype(fn)                                                       \
 	int test_##fn(void)                                                             \
@@ -104,31 +116,39 @@ extern int g_test;
 	printf("ft_%-13s: " YEL "No test yet\n" NC, #fn)
 
 #ifdef STRICT_MEM
-#define null_check(fn_call, rst)                                                \
-	reset_malloc_mock();                                                        \
-	fn_call;                                                                    \
-	int malloc_calls = reset_malloc_mock();                                     \
-	for (int i = 0; i < malloc_calls; i++)                                      \
-	{                                                                           \
-		sprintf(signature + g_offset, MAG " malloc " NC "protection check for %ith malloc", i + 1); \
-		malloc_set_null(i);                                                     \
-		void *res = fn_call;                                                    \
-		rst = check_leaks(res) && rst;                                          \
-		if (res != NULL)                                                        \
-			rst = error("Should return NULL\n");                                \
+
+#define BASE_NULL_CHECK(fn_call, rst, leak_check)                                  \
+	reset_malloc_mock();                                                           \
+	fn_call;                                                                       \
+	t_node *allocs = get_all_allocs();                                             \
+	int malloc_calls = reset_malloc_mock();                                        \
+	int offset = g_offset;                                                         \
+	for (int i = 0; i < malloc_calls; i++)                                         \
+	{                                                                              \
+		offset = sprintf(                                                          \
+					 signature + g_offset,                                         \
+					 ":\n" MAG "malloc " NC "protection check for %ith malloc:\n", \
+					 i + 1) +                                                      \
+				 g_offset;                                                         \
+		add_trace_to_signature(offset, allocs, i);                                 \
+		malloc_set_null(i);                                                        \
+		leak_check;                                                                \
 	}
 
-#define null_null_check(fn_call, rst)                                           \
-	reset_malloc_mock();                                                        \
-	fn_call;                                                                    \
-	int malloc_calls = reset_malloc_mock();                                     \
-	for (int i = 0; i < malloc_calls; i++)                                      \
-	{                                                                           \
-		sprintf(signature + g_offset, MAG " malloc" NC " protection check for %ith malloc", i + 1); \
-		fn_call;                                                                \
-		malloc_set_null(i);                                                     \
-		rst = check_leaks(NULL) && rst;                                         \
-	}
+#define null_check(fn_call, rst)                 \
+	BASE_NULL_CHECK(fn_call, rst, {              \
+		void *res = fn_call;                     \
+		rst = check_leaks(res) && rst;           \
+		if (res != NULL)                         \
+			rst = error("Should return NULL\n"); \
+	})
+
+#define null_null_check(fn_call, rst)   \
+	BASE_NULL_CHECK(fn_call, rst, {     \
+		fn_call;                        \
+		rst = check_leaks(NULL) && rst; \
+	})
+
 #else
 #define null_check(fn_call, result)
 #define null_null_check(fn_call, result)
@@ -191,6 +211,8 @@ void malloc_set_result(void *res);
 void malloc_set_null(int nth);
 int check_leaks(void *ptr);
 void print_mallocs();
+t_node *get_all_allocs();
+void add_trace_to_signature(int offset, t_node *allocs, int n);
 
 #ifndef __APPLE__
 size_t strlcat(char *dst, const char *src, size_t size);

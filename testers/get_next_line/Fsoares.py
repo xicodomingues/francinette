@@ -26,7 +26,6 @@ class Fsoares(BaseExecutor):
 
 	def execute(self):
 		bonus_tests = ["open, close, open", "2 file descriptors", "multiple fds", "test limit fds"]
-		trace_to_line = TraceToLine(self.temp_dir, "error_color.log", "test.out")
 
 		def execute_command(command, execute=True, silent=False):
 			if not execute:
@@ -58,7 +57,7 @@ class Fsoares(BaseExecutor):
 
 		def show_errors(errors: Set):
 			if errors:
-				show_errors_file(self.temp_dir / "error_color.log", self.temp_dir / "errors.log")
+				show_errors_file(self.temp_dir, "error_color.log", "errors.log")
 
 			self.show_test_files(errors, bonus_tests, "tester.c", "bonus.c")
 			if has_bonus() and self.exec_bonus:
@@ -72,7 +71,5 @@ class Fsoares(BaseExecutor):
 		timeout = f"TIMEOUT={get_timeout()}"
 		errors = execute_command(f"make {timeout} mandatory", self.exec_mandatory)
 		bonus_errors = set(errors).union(execute_command(f"make {timeout} bonus", self.exec_bonus, True))
-		#if bonus_errors:
-		trace_to_line.parse_stack_traces()
 		bonus_errors = show_errors(bonus_errors)
 		return [self.name] if bonus_errors else []

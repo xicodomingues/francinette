@@ -129,36 +129,3 @@ class BaseExecutor:
 		if not errors and bonus_err:
 			test_path = self.tests_dir / bonus_path
 			print(f"To see the tests open: {TC.PURPLE}{test_path.resolve()}{TC.NC}\n")
-
-
-	def add_to_error_file(self, error_file, traces):
-		result = []
-		i = 0
-		with open(error_file) as err:
-			for error in err.readlines():
-				result.append(error)
-				if error.startswith("Memory leak:"):
-					result += traces[i]
-					i += 1
-		with open(error_file, 'w') as err:
-			err.writelines(result)
-
-	def add_leak_stack_trace(self, prog_name, error_file):
-
-		def transform(line):
-			match = trace_regex.match(line)
-			if match:
-				if match.group(1) == "0x0" or (match.group(1) == "start" and match.group(2) == "1"):
-					return ''
-				return f"image lookup --address {match.group(1)}+{match.group(2)}\n"
-			return line
-
-		with open(Path(self.temp_dir, "backtrace")) as bf:
-			lines = bf.readlines()
-		lines = [transform(line) for line in lines]
-		with open(Path(self.temp_dir, "lldb_commands"), 'w') as lldbf:
-			lldbf.writelines(lines)
-		p = subprocess.run(f"lldb {prog_name} -s lldb_commands --batch", shell=True, capture_output=True, text=True)
-		logger.info(p)
-		traces = self.parse_lldb_out(p.stdout)
-		self.add_to_error_file(error_file, traces)

@@ -40,7 +40,9 @@
 		"complex": "c",
 		"__config": "c",
 		"color.h": "c",
-		"cstdio": "cpp"
+		"cstdio": "cpp",
+		"__hash_table": "c",
+		"__node_handle": "c"
 	},
 	"python.linting.enabled": true,
 	"python.linting.pylintPath": "pylint",

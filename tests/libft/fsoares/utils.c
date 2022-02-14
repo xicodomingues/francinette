@@ -1,7 +1,7 @@
 #include "utils.h"
 
 char function[1000];
-char signature[10000];
+char signature[100000];
 int g_offset;
 char escaped[1000];
 char escaped_div = 2;
@@ -12,9 +12,8 @@ FILE *errors_file;
 
 void show_signal_msg(char *message, char *resume, int signal)
 {
-	fprintf(errors_file, BRED "Error" NC " in test %i: " BCYN "%s" NC ": " BRED "%s\n\n" NC,
+	fprintf(errors_file, BRED "Error" NC " in test %i: " BCYN "%s" NC ": " BRED "%s\n" NC,
 			g_test, signature, message);
-	(void)message;
 	printf("ft_%-13s: " YEL "%s" NC "\n", function, resume);
 	exit(signal);
 }

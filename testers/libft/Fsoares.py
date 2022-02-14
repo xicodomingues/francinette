@@ -5,6 +5,7 @@ import shutil
 import subprocess
 from pathlib import Path
 from pipes import quote
+from tempfile import tempdir
 from typing import Set
 
 from halo import Halo
@@ -12,7 +13,8 @@ from pexpect import run
 from testers.libft.BaseExecutor import remove_ansi_colors
 from utils.ExecutionContext import get_timeout, has_bonus, is_strict
 from utils.TerminalColors import TC
-from utils.Utils import open_ascii
+from utils.Utils import open_ascii, show_errors_file
+from utils.TraceToLine import program_name_start
 
 logger = logging.getLogger("fsoares")
 
@@ -86,71 +88,6 @@ class Fsoares():
 					raise Exception("Problem compiling the tests")
 			spinner.succeed()
 
-	def parse_lldb_out(self, lldb_out: str):
-
-		def get_file_line(line):
-			match = lldb_out_regex.match(line)
-			if match:
-				return "in " + match.group(1) + " " + match.group(3)
-
-		stack_traces = []
-		temp = []
-		highlight_next = False
-		for line in [get_file_line(line) for line in lldb_out.splitlines()]:
-			if line:
-				if "_add_malloc" in line:
-					if temp:
-						stack_traces.append(temp)
-					temp = []
-				if highlight_next:
-					line = TC.YELLOW + "  -> " + line + TC.NC
-					highlight_next = False
-				else:
-					line = "     " + line
-				if line.startswith("     in malloc "):
-					highlight_next = True
-				temp.append(line + '\n')
-		if temp:
-			stack_traces.append(temp)
-		logger.info(stack_traces)
-		return stack_traces
-
-	def add_to_error_file(self, func, traces):
-		result = []
-		i = 0
-		error_file = Path(self.temp_dir, f"errors_{func}.log")
-		with open(error_file) as err:
-			for error in err.readlines():
-				result.append(error)
-				if error.startswith("Memory leak:"):
-					result += traces[i]
-					i += 1
-		with open(error_file, 'w') as err:
-			err.writelines(result)
-
-	def add_leak_stack_trace(self, func):
-
-		def transform(line):
-			match = trace_regex.match(line)
-			if match:
-				if match.group(1) == "0x0" or (match.group(1) == "start" and match.group(2) == "1"):
-					return ''
-				return f"image lookup --address {match.group(1)}+{match.group(2)}\n"
-			return '\n'
-		backtrace = Path(self.temp_dir, "backtrace")
-		if not backtrace.exists():
-			return
-		with open(backtrace) as bf:
-			lines = bf.readlines()
-		lines = [transform(line) for line in lines]
-		with open(Path(self.temp_dir, "lldb_commands"), 'w') as lldbf:
-			lldbf.writelines(lines)
-		p = subprocess.run(f"lldb test_{func}.out -s lldb_commands --batch", shell=True, capture_output=True, text=True)
-		logger.info(p)
-		traces = self.parse_lldb_out(p.stdout)
-		self.add_to_error_file(func, traces)
-		backtrace.unlink()
-
 	def execute_tests(self):
 		Halo(f"{TC.CYAN}Testing:{TC.NC}").info()
 		spinner = Halo(placement="right")
@@ -191,7 +128,6 @@ class Fsoares():
 			output = out.decode('ascii', errors="backslashreplace")
 			logger.info(output)
 			output = get_output(func, output)
-			self.add_leak_stack_trace(func)
 			return parse_output(remove_ansi_colors(output), func)
 
 		result = [execute_test(func) for func in self.to_execute]
@@ -208,22 +144,10 @@ class Fsoares():
 			with open(errors_color_name, "w") as error_log:
 				for func in errors:
 					path = Path(self.tests_dir, f"test_{func}.c").resolve()
+					error_log.write(program_name_start + f"test_{func}.out\n")
 					error_log.write(f"For {TC.CYAN}ft_{func}{TC.NC}, in {TC.B_WHITE}{path}{TC.NC}:\n\n")
 					with open_ascii(f"errors_{func}.log", "r") as f_error:
 						error_log.write(f_error.read())
-
-		def show_errors_file():
-			file = Path(self.temp_dir, errors_color_name)
-			with open_ascii(file) as f:
-				lines = f.readlines()
-			print()
-			[print(line, end='') for line in lines[:50]]
-			if len(lines) > 50:
-				dest = Path(self.temp_dir, 'errors.log').resolve()
-				with open_ascii(file, "r") as orig, open(dest, "w") as log:
-					log.write(remove_ansi_colors(orig.read()))
-				print(f"...\n\nFile too large. To see full report open: {TC.PURPLE}{dest}{TC.NC}\n")
-			print()
 
 		errors = []
 		for func, res, lines in output:
@@ -232,7 +156,7 @@ class Fsoares():
 		logger.warn(f"found errors for functions: {errors}")
 		if errors:
 			build_error_file(errors)
-			show_errors_file()
+			show_errors_file(Path(self.temp_dir), "errors_color.log", "error.log")
 		if not is_strict() and not errors and not self.missing:
 			print(f"Want some more thorough tests? run '{TC.B_WHITE}francinette --strict{TC.NC}'")
 		return errors

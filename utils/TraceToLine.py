@@ -5,6 +5,7 @@ import subprocess
 from halo import Halo
 
 from utils.TerminalColors import TC
+from utils.Utils import open_ascii
 
 LLDB_TRACE_LIMIT = 50
 
@@ -17,28 +18,23 @@ logger = logging.getLogger('lldb')
 
 class TraceToLine:
 
-	def __init__(self, temp_dir, error_file, program_name) -> None:
+	def __init__(self, temp_dir, error_file) -> None:
 		self.remaining_lines = LLDB_TRACE_LIMIT
 		self.temp_dir = temp_dir
 		self.error_file = error_file
-		self.program_name = program_name
 
 	def _write_to_error_file(self, lines, lines_map, traces):
 		if len(lines_map) == 0:
-			return
+			return lines
 		for e_line, t_line_info in lines_map.items():
 			t_prog, t_line = t_line_info
 			if t_line == -1:
-				if lines[e_line - 1] != "\n":
-					lines[e_line] = "\n"
-				else:
-					lines[e_line] = ""
+				lines[e_line] = ""
 			if t_line != -1:
 				lines[e_line] = traces[t_prog][t_line]
 
 				self.remaining_lines -= 1
-		with open(self.error_file, "w") as err_f:
-			err_f.writelines(lines)
+		return lines
 
 	def _parse_lldb_out(self, lldb_out: str):
 
@@ -114,16 +110,15 @@ class TraceToLine:
 		return (map_lines, to_lldb)
 
 	def parse_stack_traces(self):
+		with open_ascii(self.error_file) as bf:
+			lines = bf.readlines()
+		if (self.remaining_lines <= 0):
+			return lines
 		try:
-			if (self.remaining_lines <= 0):
-				return
-
 			with Halo(f"{TC.CYAN}Processing output{TC.NC}"):
-				with open(self.error_file) as bf:
-					lines = bf.readlines()
 				lines_map, to_lldb = self._create_map(lines)
 				traces = self._get_traces(to_lldb)
-				self._write_to_error_file(lines, lines_map, traces)
+				return self._write_to_error_file(lines, lines_map, traces)
 		except Exception as ex:
 			logger.exception(ex)
-			pass
+			return lines
