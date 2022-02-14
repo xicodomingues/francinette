@@ -6,7 +6,7 @@
 /*   By: fsoares- <fsoares-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 13:40:02 by fsoares-          #+#    #+#             */
-/*   Updated: 2022/02/11 18:11:04 by fsoares-         ###   ########.fr       */
+/*   Updated: 2022/02/14 18:02:51 by fsoares-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,60 +31,68 @@
 
 #define MEM_SIZE 0x100
 #define REPETITIONS 1000
+#ifndef TIMEOUT
+#define TIMEOUT 3
+#endif
 
 extern char function[1000];
-extern char signature[10000];
+extern char signature[100000];
 extern int g_offset;
 extern char escaped[1000];
 extern FILE *errors_file;
 extern int g_test;
 extern int child_pid;
 
-#ifdef STRICT_MEM
-#define null_check(fn_call, rst)                                                                    \
-	reset_malloc_mock();                                                                            \
-	fn_call;                                                                                        \
-	int malloc_calls = reset_malloc_mock();                                                         \
-	for (int i = 0; i < malloc_calls; i++)                                                          \
-	{                                                                                               \
-		sprintf(signature + g_offset, MAG " malloc " NC "protection check for %ith malloc", i + 1); \
-		malloc_set_null(i);                                                                         \
-		void *res = fn_call;                                                                        \
-		rst = check_leaks(res) && rst;                                                              \
-		if (res != NULL)                                                                            \
-			rst = error("Should return NULL\n");                                                    \
-	}
+typedef struct alloc_node t_node;
+struct alloc_node
+{
+	void *ptr;
+	void *returned;
+	size_t size;
+	bool freed;
+	char **strings;
+	int nptrs;
+};
 
-#define null_null_check(fn_call, rst)                                                               \
-	reset_malloc_mock();                                                                            \
-	fn_call;                                                                                        \
-	int malloc_calls = reset_malloc_mock();                                                         \
-	for (int i = 0; i < malloc_calls; i++)                                                          \
-	{                                                                                               \
-		sprintf(signature + g_offset, MAG " malloc" NC " protection check for %ith malloc", i + 1); \
-		fn_call;                                                                                    \
-		malloc_set_null(i);                                                                         \
-		rst = check_leaks(NULL) && rst;                                                             \
-	}
+#ifdef STRICT_MEM
+
+#define BASE_NULL_CHECK(fn_call, rst, leak_check)                                  \
+	reset_malloc_mock();                                                           \
+	fn_call;                                                                       \
+	t_node *allocs = get_all_allocs();                                             \
+	int malloc_calls = reset_malloc_mock();                                        \
+	int offset = g_offset;                                                         \
+	for (int i = 0; i < malloc_calls; i++)                                         \
+	{                                                                              \
+		offset = sprintf(                                                          \
+					 signature + g_offset,                                         \
+					 ":\n" MAG "malloc " NC "protection check for %ith malloc:\n", \
+					 i + 1) +                                                      \
+				 g_offset;                                                         \
+		add_trace_to_signature(offset, allocs, i);                                 \
+		malloc_set_null(i);                                                        \
+		leak_check;                                                                \
+	}                                                                              \
+	free_all_allocs(allocs, malloc_calls);
+
+#define null_check(fn_call, rst)                 \
+	BASE_NULL_CHECK(fn_call, rst, {              \
+		void *res = fn_call;                     \
+		rst = check_leaks(res) && rst;           \
+		if (res != NULL)                         \
+			rst = error("Should return NULL\n"); \
+	})
+
+#define null_null_check(fn_call, rst)   \
+	BASE_NULL_CHECK(fn_call, rst, {     \
+		fn_call;                        \
+		rst = check_leaks(NULL) && rst; \
+	})
+
 #else
 #define null_check(fn_call, result)
-#define null_null_check(fn_call, result)
+#define null_null_check(fn_call, rst)
 #endif
-
-/**
- * @brief given a function call that returns an allocated string and the
- * expected return value, this macro will check that the string returned
- * was the one expected as well as that there are no leaks and that it
- * correctly handles allocation errors
- */
-#define check_alloc_str_return(fn_call, exp)                 \
-	int result = 1;                                          \
-	char *res = fn_call;                                     \
-	result = same_string(exp, res);                          \
-	result = check_mem_size(res, strlen(exp) + 1) && result; \
-	result = check_leaks(res) && result;                     \
-	null_check(fn_call, result);                             \
-	return result;
 
 #define BASE_TEST(title, code)                            \
 	{                                                     \
@@ -105,7 +113,7 @@ extern int child_pid;
 				if (c != 0 && WIFEXITED(status))          \
 				{                                         \
 					if (WEXITSTATUS(status) != 0)         \
-						add_to_error_file(title);         \
+						add_to_error_file();              \
 					break;                                \
 				}                                         \
 				total += interval;                        \
@@ -136,7 +144,6 @@ extern int child_pid;
 		reset_malloc_mock();                    \
 		code;                                   \
 		res = leak_check() && res;              \
-		res = null_check_gnl(_title) && res;    \
 		fclose(errors_file);                    \
 		printf("\n");                           \
 		if (res)                                \
@@ -149,6 +156,7 @@ extern int child_pid;
 
 void show_timeout();
 void handle_signals();
+void setup_framework(int argn, char **argv);
 
 void print_mem(void *ptr, int size);
 void print_mem_full(void *ptr, int size);
@@ -190,6 +198,9 @@ void malloc_set_result(void *res);
 void malloc_set_null(int nth);
 int check_leaks(void *ptr);
 void print_mallocs();
+t_node *get_all_allocs();
+free_all_allocs(t_node *allocs, int malloc_calls);
+void add_trace_to_signature(int offset, t_node *allocs, int n);
 
 /* for file tester */
 int check_res(int res, char *prefix);

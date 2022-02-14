@@ -25,7 +25,8 @@ int test_gnl_func(int fd, char *expected, char *input)
 
 	char *next = get_next_line(fd);
 	int res = same_string(expected, next);
-	if (expected != NULL) {
+	if (expected != NULL)
+	{
 		res = check_mem_size(next, strlen(expected) + 1);
 		if (!res)
 			fprintf(errors_file, "should reserve space for the string: %s\n", escape_str(expected));
@@ -41,7 +42,8 @@ int silent_gnl_test(int fd, char *expected)
 
 	char *next = get_next_line(fd);
 	int res = same_string(expected, next);
-	if (!res) {
+	if (!res)
+	{
 		printf("expected: --%s--, result: --%s--\n", expected, next);
 		printf(RED "%i.KO " NC, g_test++);
 	}
@@ -56,27 +58,35 @@ int null_check_gnl(char *file)
 	int lines = 0;
 	reset_malloc_mock();
 	char *res;
-	do {
+	do
+	{
 		res = get_next_line(fd);
 		lines++;
-	}
-	while (res != NULL && lines < 20);
+	} while (res != NULL && lines < 20);
 	close(fd);
 	int result = 1;
 	int total = reset_malloc_mock();
-	for (int i = 0; i < total; i++) {
-		sprintf(signature + g_offset, NC " NULL check for %ith malloc", i + 1);
+	t_node *allocs = get_all_allocs();
+	int offset = g_offset;
+	for (int i = 0; i < total; i++)
+	{
+		offset = sprintf(
+					 signature + g_offset,
+					 ":\n" MAG "malloc " NC "protection check for %ith malloc:\n",
+					 i + 1) +
+				 g_offset;
+		add_trace_to_signature(offset, allocs, i);
 		malloc_set_null(i);
-		int count = 0;
 
+		int count = 0;
 		int fd = open(file, O_RDONLY);
-		do {
+		do
+		{
 			res = get_next_line(fd);
 			free(res);
 			if (res != NULL)
 				count++;
-		}
-		while (res != NULL && count < 20);
+		} while (res != NULL && count < 20);
 		close(fd);
 
 		result = check_leaks(NULL) && result;

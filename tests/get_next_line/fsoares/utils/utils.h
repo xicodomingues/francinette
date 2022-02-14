@@ -6,7 +6,7 @@
 /*   By: fsoares- <fsoares-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 13:40:02 by fsoares-          #+#    #+#             */
-/*   Updated: 2022/02/14 17:09:38 by fsoares-         ###   ########.fr       */
+/*   Updated: 2022/02/14 18:51:04 by fsoares-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ extern int g_test;
 extern int child_pid;
 
 typedef struct alloc_node t_node;
-
 struct alloc_node
 {
 	void *ptr;
@@ -76,7 +75,8 @@ struct alloc_node
 		add_trace_to_signature(offset, allocs, i);                                 \
 		malloc_set_null(i);                                                        \
 		leak_check;                                                                \
-	}
+	}                                                                              \
+	free_all_allocs(allocs, malloc_calls);
 
 #define null_check(fn_call, rst)                 \
 	BASE_NULL_CHECK(fn_call, rst, {              \
@@ -86,24 +86,16 @@ struct alloc_node
 			rst = error("Should return NULL\n"); \
 	})
 
+#define null_null_check(fn_call, rst)   \
+	BASE_NULL_CHECK(fn_call, rst, {     \
+		fn_call;                        \
+		rst = check_leaks(NULL) && rst; \
+	})
+
 #else
 #define null_check(fn_call, result)
+#define null_null_check(fn_call, rst)
 #endif
-
-/**
- * @brief given a function call that returns an allocated string and the
- * expected return value, this macro will check that the string returned
- * was the one expected as well as that there are no leaks and that it
- * correctly handles allocation errors
- */
-#define check_alloc_str_return(fn_call, exp)                 \
-	int result = 1;                                          \
-	char *res = fn_call;                                     \
-	result = same_string(exp, res);                          \
-	result = check_mem_size(res, strlen(exp) + 1) && result; \
-	result = check_leaks(res) && result;                     \
-	null_check(fn_call, result);                             \
-	return result;
 
 #define BASE_TEST(title, code)                            \
 	{                                                     \
@@ -211,6 +203,7 @@ void malloc_set_null(int nth);
 int check_leaks(void *ptr);
 void print_mallocs();
 t_node *get_all_allocs();
+free_all_allocs(t_node *allocs, int malloc_calls);
 void add_trace_to_signature(int offset, t_node *allocs, int n);
 
 /* for file tester */

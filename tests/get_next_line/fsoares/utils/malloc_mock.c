@@ -185,6 +185,19 @@ t_node *get_all_allocs()
 	return result;
 }
 
+free_all_allocs(t_node *allocs, int malloc_calls)
+{
+	for (int i = 0; i < alloc_pos; i++)
+	{
+		for (int j = 0; j < allocs[i].nptrs; j++)
+		{
+			free(allocs[i].strings[j]);
+		}
+		free(allocs[i].strings);
+	}
+	free(allocs);
+}
+
 void add_trace_to_signature(int offset, t_node *allocs, int n)
 {
 	for (int i = 0; i < allocs[n].nptrs; i++)
