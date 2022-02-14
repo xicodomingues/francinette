@@ -5,18 +5,6 @@
 #include "utils.h"
 #include "color.h"
 
-typedef struct node t_node;
-
-struct node
-{
-	void *ptr;
-	void *returned;
-	size_t size;
-	bool freed;
-	char **strings;
-	int	nptrs;
-};
-
 void *results[100];
 int res_pos = 0;
 int cur_res_pos = 0;
@@ -27,9 +15,9 @@ int alloc_pos = 0;
 
 static void _add_malloc(void *ptr, size_t size, void *to_return)
 {
-	void	*buffer[1000];
-	int		nptrs;
-	char	**strings;
+	void *buffer[1000];
+	int nptrs;
+	char **strings;
 
 	t_node new_node = allocations[alloc_pos];
 	new_node.freed = false;
@@ -51,7 +39,8 @@ static void _mark_as_free(void *ptr)
 	for (int pos = 0; pos < alloc_pos && alloc_pos < MALLOC_LIMIT; pos++)
 	{
 		t_node temp = allocations[pos];
-		if (temp.ptr == ptr && !temp.freed) {
+		if (temp.ptr == ptr && !temp.freed)
+		{
 			allocations[pos].freed = true;
 			return;
 		}
@@ -69,7 +58,8 @@ void *malloc(size_t size)
 	{
 		char *s = (char *)p;
 		size_t i = 0;
-		while (i < size) {
+		while (i < size)
+		{
 			s[i] = (char)(i + 1);
 			i++;
 		}
@@ -93,6 +83,10 @@ void free(void *p)
 int reset_malloc_mock()
 {
 	int temp = cur_res_pos;
+	for (int i = 0; i < cur_res_pos; i++)
+	{
+		free(allocations[i].strings);
+	}
 	res_pos = 0;
 	cur_res_pos = 0;
 	alloc_pos = 0;
@@ -163,10 +157,38 @@ int check_leaks(void *result)
 			fprintf(errors_file, "Memory leak: %p - %zu bytes\n", tmp.returned, tmp.size);
 			fprintf(errors_file, "You failed to free the memory allocated at:\n");
 			save_traces(tmp.strings, tmp.nptrs);
+			fprintf(errors_file, "\n");
 			res = 0;
 		}
 	}
 	if (!res)
 		fprintf(errors_file, "\n");
 	return res;
+}
+
+t_node *get_all_allocs()
+{
+	t_node *result = calloc(alloc_pos, sizeof(t_node));
+	for (int i = 0; i < alloc_pos; i++)
+	{
+		t_node temp;
+		temp.ptr = allocations[i].ptr;
+		temp.returned = allocations[i].returned;
+		temp.size = allocations[i].size;
+		temp.freed = allocations[i].freed;
+		temp.nptrs = allocations[i].nptrs;
+		temp.strings = calloc(temp.nptrs, sizeof(char *));
+		for (int j = 0; j < temp.nptrs; j++)
+			temp.strings[j] = strdup(allocations[i].strings[j]);
+		result[i] = temp;
+	}
+	return result;
+}
+
+void add_trace_to_signature(int offset, t_node *allocs, int n)
+{
+	for (int i = 0; i < allocs[n].nptrs; i++)
+	{
+		offset += sprintf(signature + offset, "%s\n", allocs[n].strings[i]);
+	}
 }

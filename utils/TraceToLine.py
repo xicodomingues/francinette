@@ -5,7 +5,6 @@ import subprocess
 from halo import Halo
 
 from utils.TerminalColors import TC
-from utils.Utils import open_ascii
 
 LLDB_TRACE_LIMIT = 50
 
@@ -14,6 +13,10 @@ lldb_out_regex = re.compile(r"\s+Summary: \w+.out`(\w+) \+ (\d+) at (.*)$")
 program_name_start = "##==##==##&&##==##==##"
 
 logger = logging.getLogger('lldb')
+
+
+def open_ascii(file, mode='r'):
+	return open(file, mode, encoding='ascii', errors="backslashreplace")
 
 
 class TraceToLine:
@@ -66,9 +69,9 @@ class TraceToLine:
 			with open(self.temp_dir / lldb_file_name, 'w') as lldbf:
 				lldbf.writelines(lldb_lines)
 			p = subprocess.run(f"lldb {program} -s {lldb_file_name} --batch | tee {lldb_file_name}.out",
-								shell=True,
-								capture_output=True,
-								text=True)
+			                   shell=True,
+			                   capture_output=True,
+			                   text=True)
 			logger.info(p)
 			traces[program] = self._parse_lldb_out(p.stdout)
 		return traces

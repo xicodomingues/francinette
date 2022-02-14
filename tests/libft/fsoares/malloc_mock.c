@@ -9,18 +9,15 @@ void *results[100];
 int res_pos = 0;
 int cur_res_pos = 0;
 
-int bt_fd = -1;
-
-
 #define MALLOC_LIMIT 1000000
 t_node allocations[MALLOC_LIMIT];
 int alloc_pos = 0;
 
 static void _add_malloc(void *ptr, size_t size, void *to_return)
 {
-	void	*buffer[1000];
-	int		nptrs;
-	char	**strings;
+	void *buffer[1000];
+	int nptrs;
+	char **strings;
 
 	t_node new_node = allocations[alloc_pos];
 	new_node.freed = false;
@@ -42,7 +39,8 @@ static void _mark_as_free(void *ptr)
 	for (int pos = 0; pos < alloc_pos && alloc_pos < MALLOC_LIMIT; pos++)
 	{
 		t_node temp = allocations[pos];
-		if (temp.ptr == ptr && !temp.freed) {
+		if (temp.ptr == ptr && !temp.freed)
+		{
 			allocations[pos].freed = true;
 			return;
 		}
@@ -60,7 +58,8 @@ void *malloc(size_t size)
 	{
 		char *s = (char *)p;
 		size_t i = 0;
-		while (i < size) {
+		while (i < size)
+		{
 			s[i] = (char)(i + 1);
 			i++;
 		}
