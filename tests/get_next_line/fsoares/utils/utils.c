@@ -13,7 +13,7 @@ FILE *errors_file;
 
 void show_timeout()
 {
-	fprintf(errors_file, BRED "Error" NC " in test %i: " CYN "%s" NC ": " BRED "%s\n" NC,
+	fprintf(errors_file, BRED "Error" NC " in test %i: " CYN "%s" NC ": " BRED "%s" NC "\n",
 			g_test, signature, ("Timeout occurred. You can increase the timeout by executing " BWHT "francinette --timeout <number of seconds>" NC));
 	printf(YEL "%i.KO %s\n" NC, g_test++, "TIMEOUT");
 }
@@ -26,7 +26,7 @@ void show_signal_msg(char *message, char *resume, int signal)
 		child_pid = -1;
 		printf("\b");
 	}
-	fprintf(errors_file, BRED "Error" NC " in test %i: " CYN "%s" NC ": " BRED "%s\n" NC,
+	fprintf(errors_file, BRED "Error" NC " in test %i: " CYN "%s" NC ": " BRED "%s"NC"\n",
 			g_test, signature, message);
 	printf(YEL "%i.KO %s\n" NC, g_test++, resume);
 	exit(signal);
@@ -60,6 +60,14 @@ void handle_signals()
 	signal(SIGALRM, sigalarm);
 	srand((unsigned int)time(NULL));
 	srandom((unsigned int)time(NULL));
+}
+
+void setup_framework(int argn, char **argv)
+{
+	(void)argn;
+	handle_signals();
+	FILE *file_big = fopen("error_color.log", "a");
+	fprintf(file_big, "##==##==##&&##==##==##%s\n", argv[0]);
 }
 
 static int is_empty(unsigned char *p)
@@ -277,7 +285,7 @@ int error(const char *format, ...)
 	return 0;
 }
 
-void add_to_error_file(char *file_under_test)
+void add_to_error_file()
 {
 	char buf[1024];
 	fclose(errors_file);
@@ -286,9 +294,6 @@ void add_to_error_file(char *file_under_test)
 	size_t nread;
 	file = fopen("errors.log", "r");
 	file_big = fopen("error_color.log", "a");
-	if (ftell(file_big) > 0)
-		fprintf(file_big, "\n");
-	fprintf(file_big, "Error reading '" CYN "%s" NC "':\n", file_under_test);
 	if (file && file_big)
 	{
 		while ((nread = fread(buf, 1, sizeof buf, file)) > 0)
@@ -420,13 +425,13 @@ char *my_strndup(const char *s1, size_t size)
 	size_t len;
 	char *result;
 
-	len = strlen(s1) + 1;
+	len = strlen(s1);
 	if (size < len)
-		len = size + 1;
-	result = (char *)malloc(len * sizeof(char));
+		len = size;
+	result = (char *)malloc(1 + len * sizeof(char));
 	if (result == NULL)
 		return (result);
-	strlcpy(result, s1, len);
+	strlcpy(result, s1, len + 1);
 	result[len] = 0;
 	return (result);
 }

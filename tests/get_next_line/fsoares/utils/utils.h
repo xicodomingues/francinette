@@ -6,7 +6,7 @@
 /*   By: fsoares- <fsoares-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 13:40:02 by fsoares-          #+#    #+#             */
-/*   Updated: 2022/02/11 18:11:04 by fsoares-         ###   ########.fr       */
+/*   Updated: 2022/02/14 14:55:47 by fsoares-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,12 @@
 
 #define MEM_SIZE 0x100
 #define REPETITIONS 1000
+#ifndef TIMEOUT
+#define TIMEOUT 3
+#endif
+#ifndef BUFFER_SIZE
+#define BUFFER_SIZE 3
+#endif
 
 extern char function[1000];
 extern char signature[10000];
@@ -105,7 +111,7 @@ extern int child_pid;
 				if (c != 0 && WIFEXITED(status))          \
 				{                                         \
 					if (WEXITSTATUS(status) != 0)         \
-						add_to_error_file(title);         \
+						add_to_error_file();              \
 					break;                                \
 				}                                         \
 				total += interval;                        \
@@ -149,6 +155,7 @@ extern int child_pid;
 
 void show_timeout();
 void handle_signals();
+void setup_framework(int argn, char **argv);
 
 void print_mem(void *ptr, int size);
 void print_mem_full(void *ptr, int size);

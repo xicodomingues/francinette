@@ -5,6 +5,7 @@ from typing import Set
 from testers.BaseExecutor import BaseExecutor
 from utils.ExecutionContext import get_timeout, has_bonus, is_strict
 from utils.TerminalColors import TC
+from utils.TraceToLine import TraceToLine
 from utils.Utils import show_errors_file
 
 logger = logging.getLogger("gnl-fsoares")
@@ -24,8 +25,8 @@ class Fsoares(BaseExecutor):
 		super().__init__(tests_dir, temp_dir, to_execute, missing)
 
 	def execute(self):
-
 		bonus_tests = ["open, close, open", "2 file descriptors", "multiple fds", "test limit fds"]
+		trace_to_line = TraceToLine(self.temp_dir, "error_color.log", "test.out")
 
 		def execute_command(command, execute=True, silent=False):
 			if not execute:
@@ -71,5 +72,7 @@ class Fsoares(BaseExecutor):
 		timeout = f"TIMEOUT={get_timeout()}"
 		errors = execute_command(f"make {timeout} mandatory", self.exec_mandatory)
 		bonus_errors = set(errors).union(execute_command(f"make {timeout} bonus", self.exec_bonus, True))
+		#if bonus_errors:
+		trace_to_line.parse_stack_traces()
 		bonus_errors = show_errors(bonus_errors)
 		return [self.name] if bonus_errors else []

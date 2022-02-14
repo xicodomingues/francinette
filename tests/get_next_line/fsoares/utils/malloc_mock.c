@@ -21,9 +21,6 @@ void *results[100];
 int res_pos = 0;
 int cur_res_pos = 0;
 
-int bt_fd = -1;
-
-
 #define MALLOC_LIMIT 1000000
 t_node allocations[MALLOC_LIMIT];
 int alloc_pos = 0;
@@ -142,11 +139,11 @@ void print_mallocs()
 	}
 }
 
-void save_traces(FILE *fd, char **strings, int nptrs)
+void save_traces(char **strings, int nptrs)
 {
 	for (int i = 0; i < nptrs; i++)
 	{
-		fprintf(fd, "%s\n", strings[i]);
+		fprintf(errors_file, "%s\n", strings[i]);
 	}
 }
 
@@ -156,7 +153,6 @@ int check_leaks(void *result)
 		free(result);
 	int temp = alloc_pos;
 	int res = 1;
-	FILE *fd = fopen("backtrace", "a");
 	for (int pos = 0; pos < temp; pos++)
 	{
 		t_node tmp = allocations[pos];
@@ -165,11 +161,11 @@ int check_leaks(void *result)
 			if (res)
 				error("\n");
 			fprintf(errors_file, "Memory leak: %p - %zu bytes\n", tmp.returned, tmp.size);
-			save_traces(fd, tmp.strings, tmp.nptrs);
+			fprintf(errors_file, "You failed to free the memory allocated at:\n");
+			save_traces(tmp.strings, tmp.nptrs);
 			res = 0;
 		}
 	}
-	fclose(fd);
 	if (!res)
 		fprintf(errors_file, "\n");
 	return res;

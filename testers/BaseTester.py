@@ -186,17 +186,17 @@ class BaseTester:
 
 		logger.warn(f"norminette errors: {norm_errors}")
 		if norm_errors:
-			print(f"\n{TC.B_YELLOW}Norminette Errors:{TC.NC}", ', '.join(norm_errors))
+			print(f"\n{TC.B_YELLOW}Norminette Errors{TC.NC}:", ', '.join(norm_errors))
 
 		logger.warn(f"missing functions: {missing}")
 		if missing:
-			print(f"\n{TC.B_RED}Missing functions: {TC.NC}{', '.join(missing)}")
+			print(f"\n{TC.B_RED}Missing functions{TC.NC}: {', '.join(missing)}")
 
 		logger.warn(f"errors in functions: {errors}")
 		if error_funcs:
-			print(f"\n{TC.B_RED}Failed tests: {TC.NC}{', '.join(error_funcs)}")
+			print(f"\n{TC.B_RED}Failed tests{TC.NC}: {', '.join(error_funcs)}")
 
 		tests_ok = [test for test in to_execute if test not in errors]
 		if tests_ok:
-			print(f"\n{TC.B_GREEN}Passed tests: {TC.NC}{', '.join(tests_ok)}")
+			print(f"\n{TC.B_GREEN}Passed tests{TC.NC}: {', '.join(tests_ok)}")
 		return False

@@ -10,9 +10,9 @@ void populate_expected(char *buffer, int n)
 	buffer[n] = 0;
 }
 
-int main()
+int main(int argn, char **argv)
 {
-	handle_signals();
+	setup_framework(argn, argv);
 	printf(BMAG "BUFFER_SIZE" NC ": %i\n", BUFFER_SIZE);
 	TEST("Invalid fd", {
 		/* 1 */ test_gnl(-1, NULL);

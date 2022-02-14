@@ -46,8 +46,6 @@ void handle_signals()
 	signal(SIGABRT, sigabort);
 	signal(SIGBUS, sigbus);
 	signal(SIGALRM, sigalarm);
-	signal(SIGTRAP, sigbus);
-
 	srand((unsigned int)time(NULL));
 	srandom((unsigned int)time(NULL));
 }

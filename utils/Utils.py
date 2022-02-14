@@ -4,6 +4,8 @@ from pathlib import Path
 
 from utils.TerminalColors import TC
 
+FILE_SHOW_LINES = 50
+
 logger = logging.getLogger("utils")
 
 
@@ -42,7 +44,7 @@ def show_errors_file(errors_color_path: Path, errors_log_path: Path):
 		lines = f.readlines()
 	print(f"{TC.B_RED}Errors found{TC.NC}:")
 	[print(line, end='') for line in lines[:50]]
-	if len(lines) > 50:
+	if len(lines) > FILE_SHOW_LINES:
 		dest = errors_log_path.resolve()
 		with open_ascii(errors_color_path, "r") as orig, open(dest, "w") as log:
 			log.write(remove_ansi_colors(orig.read()))
