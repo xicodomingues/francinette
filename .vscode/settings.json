@@ -43,7 +43,8 @@
 		"cstdio": "cpp",
 		"__hash_table": "c",
 		"__node_handle": "c",
-		"my_utils.h": "c"
+		"my_utils.h": "c",
+		"system_error": "cpp"
 	},
 	"python.linting.enabled": true,
 	"python.linting.pylintPath": "pylint",

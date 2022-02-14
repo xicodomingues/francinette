@@ -1,17 +1,5 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   utils.h                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: fsoares- <fsoares-@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/01/14 13:40:02 by fsoares-          #+#    #+#             */
-/*   Updated: 2022/02/14 19:26:30 by fsoares-         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-#ifndef UTILS_H
-#define UTILS_H
+#ifndef __UTILS_H_
+#define __UTILS_H_
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -97,7 +85,7 @@ struct alloc_node
 #define null_null_check(fn_call, rst)
 #endif
 
-#define BASE_TEST(title, code)                            \
+#define TEST_WRAPPER(title, code)                         \
 	{                                                     \
 		int status = 0;                                   \
 		int test = fork();                                \
@@ -135,8 +123,8 @@ struct alloc_node
 /**
  * @brief Macro that wraps a get_next_line_test
  */
-#define TEST(title, code)                       \
-	BASE_TEST(title, {                          \
+#define BASE_TEST(title, code)                  \
+	TEST_WRAPPER(title, {                       \
 		g_test = 1;                             \
 		alarm(TIMEOUT);                         \
 		char *_title = title;                   \
@@ -146,8 +134,6 @@ struct alloc_node
 		errors_file = fopen("errors.log", "w"); \
 		reset_malloc_mock();                    \
 		code;                                   \
-		res = leak_check() && res;              \
-		res = null_check_gnl(_title) && res;    \
 		fclose(errors_file);                    \
 		printf("\n");                           \
 		if (res)                                \
@@ -206,14 +192,6 @@ t_node *get_all_allocs();
 void free_all_allocs(t_node *allocs, int malloc_calls);
 void add_trace_to_signature(int offset, t_node *allocs, int n);
 void show_malloc_stack(void *ptr);
-
-/* for file tester */
-int check_res(int res, char *prefix);
-int check_alloc(char *next, char *expected);
-int leak_check();
-int test_gnl_func(int fd, char *expected, char *input);
-int silent_gnl_test(int fd, char *expected);
-int null_check_gnl(char *file);
 
 #ifndef __APPLE__
 size_t strlcat(char *dst, const char *src, size_t size);
