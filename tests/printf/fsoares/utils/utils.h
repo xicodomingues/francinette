@@ -6,7 +6,7 @@
 /*   By: fsoares- <fsoares-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 13:40:02 by fsoares-          #+#    #+#             */
-/*   Updated: 2022/02/14 18:58:25 by fsoares-         ###   ########.fr       */
+/*   Updated: 2022/02/14 19:26:30 by fsoares-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,9 @@
 #define REPETITIONS 1000
 #ifndef TIMEOUT
 #define TIMEOUT 3
+#endif
+#ifndef BUFFER_SIZE
+#define BUFFER_SIZE 3
 #endif
 
 extern char function[1000];
@@ -144,6 +147,7 @@ struct alloc_node
 		reset_malloc_mock();                    \
 		code;                                   \
 		res = leak_check() && res;              \
+		res = null_check_gnl(_title) && res;    \
 		fclose(errors_file);                    \
 		printf("\n");                           \
 		if (res)                                \
@@ -201,6 +205,7 @@ void print_mallocs();
 t_node *get_all_allocs();
 void free_all_allocs(t_node *allocs, int malloc_calls);
 void add_trace_to_signature(int offset, t_node *allocs, int n);
+void show_malloc_stack(void *ptr);
 
 /* for file tester */
 int check_res(int res, char *prefix);

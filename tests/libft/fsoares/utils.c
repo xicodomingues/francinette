@@ -384,7 +384,9 @@ int check_mem_size(void *ptr, size_t expected_size)
 	if (expected_size > res)
 #endif
 	{
-		return error(message, expected_size, res);
+		error(message, expected_size, res);
+		show_malloc_stack(ptr);
+		return 0;
 	}
 	return 1;
 }

@@ -205,3 +205,27 @@ void add_trace_to_signature(int offset, t_node *allocs, int n)
 		offset += sprintf(signature + offset, "%s\n", allocs[n].strings[i]);
 	}
 }
+
+void show_malloc_stack(void *ptr)
+{
+	t_node alloc;
+	alloc.size = -1;
+	for (int pos = 0; pos < alloc_pos; pos++)
+	{
+		t_node temp = allocations[pos];
+		if (temp.ptr == ptr)
+		{
+			if (temp.freed)
+				alloc = temp;
+			else
+			{
+				save_traces(temp.strings, temp.nptrs);
+				return;
+			}
+		}
+	}
+	if (alloc.size != -1)
+		save_traces(alloc.strings, alloc.nptrs);
+	else
+		fprintf(errors_file, "Could not find the corresponding allocation or the pointer %p\n", ptr);
+}
