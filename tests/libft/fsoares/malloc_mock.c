@@ -185,9 +185,9 @@ t_node *get_all_allocs()
 	return result;
 }
 
-free_all_allocs(t_node *allocs, int malloc_calls)
+void free_all_allocs(t_node *allocs, int malloc_calls)
 {
-	for (int i = 0; i < alloc_pos; i++)
+	for (int i = 0; i < malloc_calls; i++)
 	{
 		for (int j = 0; j < allocs[i].nptrs; j++)
 		{

@@ -6,7 +6,7 @@
 /*   By: fsoares- <fsoares-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 13:40:02 by fsoares-          #+#    #+#             */
-/*   Updated: 2022/02/14 18:01:51 by fsoares-         ###   ########.fr       */
+/*   Updated: 2022/02/14 18:56:59 by fsoares-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -213,7 +213,7 @@ void malloc_set_null(int nth);
 int check_leaks(void *ptr);
 void print_mallocs();
 t_node *get_all_allocs();
-free_all_allocs(t_node *allocs, int malloc_calls);
+void free_all_allocs(t_node *allocs, int malloc_calls);
 void add_trace_to_signature(int offset, t_node *allocs, int n);
 
 #ifndef __APPLE__
