@@ -139,6 +139,7 @@ void save_traces(char **strings, int nptrs)
 	{
 		fprintf(errors_file, "%s\n", strings[i]);
 	}
+	fprintf(errors_file, "\n");
 }
 
 int check_leaks(void *result)
@@ -157,7 +158,6 @@ int check_leaks(void *result)
 			fprintf(errors_file, "Memory leak: %p - %zu bytes\n", tmp.returned, tmp.size);
 			fprintf(errors_file, "You failed to free the memory allocated at:\n");
 			save_traces(tmp.strings, tmp.nptrs);
-			fprintf(errors_file, "\n");
 			res = 0;
 		}
 	}
@@ -209,7 +209,7 @@ void add_trace_to_signature(int offset, t_node *allocs, int n)
 void show_malloc_stack(void *ptr)
 {
 	t_node alloc;
-	alloc.size = -1;
+	alloc.ptr = NULL;
 	for (int pos = 0; pos < alloc_pos; pos++)
 	{
 		t_node temp = allocations[pos];
@@ -224,7 +224,7 @@ void show_malloc_stack(void *ptr)
 			}
 		}
 	}
-	if (alloc.size != -1)
+	if (alloc.ptr != NULL)
 		save_traces(alloc.strings, alloc.nptrs);
 	else
 		fprintf(errors_file, "Could not find the corresponding allocation or the pointer %p\n", ptr);

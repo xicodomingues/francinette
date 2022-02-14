@@ -4,7 +4,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 current_dir=$PWD
 
 # check for updates
-version=54
+version=55
 
 cd "$HOME"/francinette || exit
 
@@ -22,20 +22,25 @@ launch_update()
 	curl "$git_url/utils/update.sh" -o new_francinette_update.sh
 	bash new_francinette_update.sh
 	rm -f new_francinette_update.sh
-	exit
 }
 
 cd "$HOME"/francinette || exit
 if [[ (! -e donotupdate) && ($new_version -gt $version) ]]; then
-	while true; do
-		read -r -p "There is a new version of francinette, do you wish to update? ([Y]es/[N]o/[D]on't ask again): " yn
-		case $yn in
-			[Yy]* ) launch_update; break ;;
-			[Dd]* ) touch donotupdate; break ;;
-			[Nn]* ) break ;;
-			* ) echo "Please answer yes, no or don't ask again." ;;
-		esac
-	done
+	if [[ -e alwaysupdate ]]; then
+		launch_update
+	else
+		while true; do
+			echo "There is a new version of francinette, do you wish to update?"
+			read -r -p "[Y]es / [N]o / [A]lways / [D]o not update ever: " yn
+			case $yn in
+				[Yy]* ) launch_update; break ;;
+				[Dd]* ) touch donotupdate; break ;;
+				[Aa]* ) touch alwaysupdate; break ;;
+				[Nn]* ) break ;;
+				* ) echo "Please answer yes, no, always, or don't ask again." ;;
+			esac
+		done
+	fi
 fi
 
 cd "$current_dir" || exit
