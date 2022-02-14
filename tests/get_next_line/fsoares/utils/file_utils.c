@@ -65,8 +65,8 @@ int null_check_gnl(char *file)
 	} while (res != NULL && lines < 20);
 	close(fd);
 	int result = 1;
-	int total = reset_malloc_mock();
 	t_node *allocs = get_all_allocs();
+	int total = reset_malloc_mock();
 	int offset = g_offset;
 	for (int i = 0; i < total; i++)
 	{

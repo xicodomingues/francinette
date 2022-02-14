@@ -8,6 +8,7 @@
 #define YEL   "\x1B[0;33m"
 #define BLU   "\x1B[0;34m"
 #define BMAG   "\x1B[1;35m"
+#define MAG   "\x1B[0;35m"
 #define CYN   "\x1B[0;36m"
 #define BCYN   "\x1B[1;36m"
 #define BWHT   "\x1B[1;37m"
