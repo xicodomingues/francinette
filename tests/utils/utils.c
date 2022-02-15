@@ -33,8 +33,8 @@ void show_signal_msg(char *message, char *resume, int signal)
 	fprintf(errors_file, BRED "Error" NC " in test %i: " CYN "%s" NC ": " BRED "%s"NC"\n",
 			g_test, signature, message);
 
-	void *buffer[1000];
-	int nptrs = backtrace(buffer, 1000);
+	void *buffer[20];
+	int nptrs = backtrace(buffer, 20);
 	char **strings = backtrace_symbols(buffer, nptrs);
 	save_traces(strings, nptrs);
 

@@ -15,7 +15,7 @@ int alloc_pos = 0;
 
 static void _add_malloc(void *ptr, size_t size, void *to_return)
 {
-	void *buffer[1000];
+	void *buffer[20];
 	int nptrs;
 	char **strings;
 
@@ -25,7 +25,7 @@ static void _add_malloc(void *ptr, size_t size, void *to_return)
 	new_node.returned = to_return;
 	new_node.size = size;
 
-	nptrs = backtrace(buffer, 1000);
+	nptrs = backtrace(buffer, 20);
 	strings = backtrace_symbols(buffer, nptrs);
 
 	new_node.strings = strings;
