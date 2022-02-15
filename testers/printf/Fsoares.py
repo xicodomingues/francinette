@@ -14,3 +14,10 @@ class Fsoares(BaseExecutor):
 
 	def execute(self):
 		return []
+
+"""
+Test ideas:
+	- %%c %%%c %c%c %<valid_flag>c
+	- width: 0, 1 - 10, 10000
+	
+"""

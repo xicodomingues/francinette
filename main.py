@@ -149,7 +149,7 @@ def main():
 	parser.add_argument("--part2", action="store_true", help="Execute tests of part2")
 	parser.add_argument("--mandatory", action="store_true", help="Executes test of the mandatory part")
 	parser.add_argument("--bonus", action="store_true", help="Execute tests of bonus part")
-	parser.add_argument("--timeout", action='store', default='3', help="The new timeout in seconds (by default is 3)")
+	parser.add_argument("--timeout", action='store', default='10', help="The new timeout in seconds (by default is 10)")
 	parser.add_argument("--clean-cache",
 	                    action='store_true',
 	                    help="Executes a script that will clean the most significant caches")
