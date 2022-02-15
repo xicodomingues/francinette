@@ -8,7 +8,7 @@ from utils.TerminalColors import TC
 
 LLDB_TRACE_LIMIT = 50
 
-trace_regex = re.compile(r"^\d+\s+[\w.?]+\s+0x[\da-f]+ (\w+) \+ (\d+)")
+trace_regex = re.compile(r"^\d+\s+([\w.?]+)\s+0x[\da-f]+ (\w+) \+ (\d+)")
 lldb_out_regex = re.compile(r"\s+Summary: \w+.out`(\w+) \+ (\d+) at (.*)$")
 program_name_start = "##==##==##&&##==##==##"
 
@@ -55,7 +55,7 @@ class TraceToLine:
 					highlight_next = False
 				else:
 					line = "     " + line
-				if line.startswith("     in malloc "):
+				if line.startswith("     in malloc ") or line.startswith("     in free "):
 					highlight_next = True
 				stack_traces.append(line + '\n')
 		return stack_traces
@@ -77,11 +77,16 @@ class TraceToLine:
 		return traces
 
 	def _transform(self, line):
+
+		def is_ignorable(match):
+			return (not match.group(1).endswith(".out") or match.group(2).startswith("show_signal_msg") or
+			        match.group(2) == "0x0" or (match.group(2) == "start" and match.group(3) == "1"))
+
 		match = trace_regex.match(line)
 		if match:
-			if match.group(1) == "0x0" or (match.group(1) == "start" and match.group(2) == "1"):
+			if is_ignorable(match):
 				return ''
-			return f"image lookup --address {match.group(1)}+{match.group(2)}\n"
+			return f"image lookup --address {match.group(2)}+{match.group(3)}\n"
 		return line
 
 	def _create_map(self, lines):

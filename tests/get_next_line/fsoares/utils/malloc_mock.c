@@ -36,15 +36,27 @@ static void _add_malloc(void *ptr, size_t size, void *to_return)
 
 static void _mark_as_free(void *ptr)
 {
+	int previous_free = false;
 	for (int pos = 0; pos < alloc_pos && alloc_pos < MALLOC_LIMIT; pos++)
 	{
 		t_node temp = allocations[pos];
-		if (temp.ptr == ptr && !temp.freed)
+		if (temp.ptr == ptr)
 		{
-			allocations[pos].freed = true;
-			return;
+			if (!temp.freed) {
+				allocations[pos].freed = true;
+				return;
+			}
+			else
+			{
+				previous_free = true;
+			}
 		}
 	}
+
+	if (previous_free)
+		fprintf(errors_file, "You are trying to free a pointer that was already freed\n");
+	else
+		fprintf(errors_file, "The pointer you are trying to free was never allocated by you\n");
 }
 
 void *malloc(size_t size)

@@ -44,7 +44,8 @@
 		"__hash_table": "c",
 		"__node_handle": "c",
 		"my_utils.h": "c",
-		"system_error": "cpp"
+		"system_error": "cpp",
+		"execinfo.h": "c"
 	},
 	"python.linting.enabled": true,
 	"python.linting.pylintPath": "pylint",

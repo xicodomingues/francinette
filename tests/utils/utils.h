@@ -192,6 +192,7 @@ t_node *get_all_allocs();
 void free_all_allocs(t_node *allocs, int malloc_calls);
 void add_trace_to_signature(int offset, t_node *allocs, int n);
 void show_malloc_stack(void *ptr);
+void save_traces(char **strings, int nptrs);
 
 #ifndef __APPLE__
 size_t strlcat(char *dst, const char *src, size_t size);

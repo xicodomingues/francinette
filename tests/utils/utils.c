@@ -1,3 +1,7 @@
+#define _GNU_SOURCE
+#include <dlfcn.h>
+#include <execinfo.h>
+
 #include "utils.h"
 
 char function[1000];
@@ -28,6 +32,12 @@ void show_signal_msg(char *message, char *resume, int signal)
 	}
 	fprintf(errors_file, BRED "Error" NC " in test %i: " CYN "%s" NC ": " BRED "%s"NC"\n",
 			g_test, signature, message);
+
+	void *buffer[1000];
+	int nptrs = backtrace(buffer, 1000);
+	char **strings = backtrace_symbols(buffer, nptrs);
+	save_traces(strings, nptrs);
+
 	printf(YEL "%i.KO %s\n" NC, g_test++, resume);
 	exit(signal);
 }
