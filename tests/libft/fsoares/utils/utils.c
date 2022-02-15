@@ -80,6 +80,16 @@ void setup_framework(int argn, char **argv)
 	fprintf(file_big, "##==##==##&&##==##==##%s\n", argv[0]);
 }
 
+int show_res(int res, char *prefix)
+{
+	if (!res)
+		printf(RED "%i.KO%s " NC, g_test++, prefix);
+	else
+		printf(GRN "%i.OK%s " NC, g_test++, prefix);
+	fflush(stdout);
+	return res;
+}
+
 static int is_empty(unsigned char *p)
 {
 	for (int i = 0; i < 16; i++)

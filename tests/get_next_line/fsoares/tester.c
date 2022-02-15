@@ -1,4 +1,4 @@
-#include "utils/file_utils.h"
+#include "file_utils.h"
 
 void populate_expected(char *buffer, int n)
 {

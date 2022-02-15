@@ -1,15 +1,5 @@
-#include "utils.h"
+#include "file_utils.h"
 #include "../../get_next_line.h"
-
-int check_res(int res, char *prefix)
-{
-	if (!res)
-		printf(RED "%i.KO%s " NC, g_test++, prefix);
-	else
-		printf(GRN "%i.OK%s " NC, g_test++, prefix);
-	fflush(stdout);
-	return res;
-}
 
 int leak_check()
 {

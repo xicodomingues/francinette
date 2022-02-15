@@ -147,6 +147,7 @@ struct alloc_node
 void show_timeout();
 void handle_signals();
 void setup_framework(int argn, char **argv);
+int show_res(int res, char *prefix);
 
 void print_mem(void *ptr, int size);
 void print_mem_full(void *ptr, int size);
