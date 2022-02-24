@@ -369,6 +369,13 @@ int same_value(int expected, int res)
 	return 1;
 }
 
+int same_return_value(int expected, int res)
+{
+	if (res != expected)
+		return error("returned: %i, but expected: %i\n", res, expected);
+	return 1;
+}
+
 int same_sign(int expected, int res)
 {
 	int expected_sign = (expected > 0 ? 1 : (expected < 0 ? -1 : 0));

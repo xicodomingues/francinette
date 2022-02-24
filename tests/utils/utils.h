@@ -166,6 +166,7 @@ void add_to_error_file();
 int same_ptr(void *res, void *res_std);
 int same_mem(void *expected, void *result, int size);
 int same_value(int expected, int res);
+int same_return_value(int expected, int res);
 int same_sign(int expected, int res);
 int same_offset(void *expected_start, void *expected_res, void *start, void *res);
 int same_return(void *expected, void *res);

@@ -1,7 +1,7 @@
 TIMEOUT		= 10
 CFLAGS		= -gfull -fsanitize=address -Wall -Wextra -Werror
 STRICT		=
-UTILS 		= utils/malloc_mock.c utils/utils.c main.c
+UTILS 		= utils/malloc_mock.c utils/utils.c pf_utils.c mandatory.c
 PRINTF_LIB	= ../__my_srcs/libftprintf.a
 TIMEOUT_ARG	= -D TIMEOUT=$(TIMEOUT)
 
