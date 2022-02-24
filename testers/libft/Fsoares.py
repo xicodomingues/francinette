@@ -113,7 +113,7 @@ class Fsoares():
 			with open(f"errors_{func}.log", "a") as err_file:
 				err_file.writelines(error)
 				err_file.write("\n")
-			return output.splitlines(True)[-1]
+			return "".join(output.splitlines(keepends=True)[-2:])
 
 		def get_output(func, output):
 			new_output = parse_sanitizer(func, output)
