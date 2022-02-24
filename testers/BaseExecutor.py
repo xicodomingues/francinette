@@ -1,4 +1,5 @@
 import abc
+import glob
 import logging
 import os
 import re
@@ -8,7 +9,7 @@ from typing import Set
 
 import pexpect
 from halo import Halo
-from utils.ExecutionContext import get_context, has_bonus
+from utils.ExecutionContext import get_context, get_timeout, has_bonus, is_strict
 from utils.TerminalColors import TC
 from utils.Utils import remove_ansi_colors
 
@@ -80,7 +81,7 @@ class BaseExecutor:
 		logger.info(f"on dir {os.getcwd()}")
 		p = pexpect.spawn(command)
 		p.interact(output_filter=parse_out)
-		print(TC.NC)
+		print(TC.NC, end="")
 		return remove_ansi_colors(output)
 
 	def run_tests(self, command, show_message=True):
@@ -129,3 +130,31 @@ class BaseExecutor:
 		if not errors and bonus_err:
 			test_path = self.tests_dir / bonus_path
 			print(f"To see the tests open: {TC.PURPLE}{test_path.resolve()}{TC.NC}\n")
+
+	def get_all_makefiles_in_path(self):
+		return glob.glob('../__my_srcs/**/Makefile', recursive=True)
+
+	def add_sanitizer_to_makefiles(self):
+		def rewrite_makefiles(makefile_path):
+			makefile = Path(makefile_path).resolve()
+			with open(makefile, 'r') as file:
+				filedata = file.read()
+			new_make = re.sub(r"-\bWall\b", f"-gfull '-fsanitize=address' -Wall", filedata)
+			logger.info(f"added sanitization to makefile {makefile_path}")
+			with open(makefile, 'w') as file:
+				file.write(new_make)
+
+		makefiles = self.get_all_makefiles_in_path()
+		for make_path in makefiles:
+			rewrite_makefiles(make_path)
+
+	def execute_make_command(self, command, execute=True, silent=False):
+		if not execute:
+			return []
+		timeout = f"TIMEOUT={get_timeout()}"
+		strict = "EXEC_STRICT=1" if is_strict() else ""
+		command = f"make {timeout} {strict} {command}"
+		logger.info(f"executing: {command}")
+		output = self.run_tests(command, show_message=not silent)
+		logger.info(output)
+		return list(self.check_errors(output))

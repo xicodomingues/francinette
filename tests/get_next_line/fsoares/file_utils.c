@@ -1,11 +1,11 @@
 #include "file_utils.h"
-#include "../../get_next_line.h"
+#include "../get_next_line.h"
 
 int leak_check()
 {
 	int res = 1;
 	res = check_leaks(NULL);
-	check_res(res, "_LEAKS");
+	show_res(res, "_LEAKS");
 	return res;
 }
 
@@ -21,7 +21,7 @@ int test_gnl_func(int fd, char *expected, char *input)
 		if (!res)
 			fprintf(errors_file, "should reserve space for the string: %s\n", escape_str(expected));
 	}
-	check_res(res, "");
+	show_res(res, "");
 	free(next);
 	return res;
 }
@@ -83,7 +83,7 @@ int null_check_gnl(char *file)
 		if (lines == count)
 			result = error("Should exit early and return NULL\n");
 	}
-	check_res(result, "_NULL_CHECK");
+	show_res(result, "_NULL_CHECK");
 	return result;
 #else
 	(void)file;

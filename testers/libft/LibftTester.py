@@ -22,18 +22,6 @@ logger = logging.getLogger("libft")
 func_regex = re.compile(r"(?:\w+\s+)+\**ft_(\w+)\s*\(.*")
 
 
-def run_command(command: str, spinner: Halo):
-	to_execute = command.split(" ")
-	process = subprocess.run(to_execute, capture_output=True, text=True)
-	logger.info(process)
-
-	if process.returncode != 0:
-		spinner.fail()
-		print(process.stderr)
-		raise Exception("Problem creating the library")
-	return process
-
-
 class LibftTester(BaseTester):
 
 	name = "libft"
@@ -67,30 +55,6 @@ class LibftTester(BaseTester):
 			set_bonus(True)
 		return all_funcs
 
-	def has_bonus(self):
-		makefile = Path(self.temp_dir, "Makefile")
-		with open(makefile, "r") as m_file:
-			bonus = [line for line in m_file.readlines() if re.match(r"^\s*bonus\s*:.*", line)]
-			logger.info(f"bonus investigation: {bonus}")
-			return len(bonus) != 0
-
-	def check_norminette(self):
-		res = super().check_norminette()
-
-		srcs_path = Path(self.temp_dir, "__my_srcs")
-		logger.info(f"copying {self.source_dir} to {srcs_path}")
-		shutil.copytree(self.source_dir, srcs_path)
-		return res
-
-	def compile_source(self):
-		os.chdir(os.path.join(self.temp_dir))
-		command = "make re" + (" bonus" if has_bonus() else "")
-		logger.info(f"Calling '{command}' on directory {os.getcwd()}")
-
-		text = f"{TC.CYAN}Executing: {TC.B_WHITE}{command}{TC.NC}"
-		with Halo(text=text) as spinner:
-			run_command(command, spinner)
-			spinner.succeed()
 
 	def prepare_tests(self, tester):
 		super().prepare_tests(tester)

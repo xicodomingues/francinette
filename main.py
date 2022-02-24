@@ -141,7 +141,8 @@ def main():
 	parser.add_argument("exercise", nargs="*", help="If present, it executes the passed tests")
 	parser.add_argument("-v", "--verbose", action="store_true", help="Activates verbose mode")
 	parser.add_argument("-u", "--update", action="store_true", help="forces francinette to update")
-	parser.add_argument("-s", "--strict",
+	parser.add_argument("-s",
+	                    "--strict",
 	                    action="store_true",
 	                    help=("It restricts the tests around memory allocation so that it reserves the correct " +
 	                          "amount of memory and that checks nulls when allocating memory"))
@@ -153,6 +154,10 @@ def main():
 	parser.add_argument("--clean-cache",
 	                    action='store_true',
 	                    help="Executes a script that will clean the most significant caches")
+	parser.add_argument("-in",
+	                    "--ignore-norm",
+	                    action="store_true",
+	                    help="If this flag is present then norminette will not be executed")
 	parser.add_argument("-t",
 	                    "--testers",
 	                    nargs="*",

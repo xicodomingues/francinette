@@ -27,16 +27,6 @@ class Fsoares(BaseExecutor):
 	def execute(self):
 		bonus_tests = ["open, close, open", "2 file descriptors", "multiple fds", "test limit fds"]
 
-		def execute_command(command, execute=True, silent=False):
-			if not execute:
-				return []
-			strict = "EXEC_STRICT=1" if is_strict() else ""
-			command = f"{command} {strict}"
-			logger.info(f"executing: {command}")
-			output = self.run_tests(command, show_message=not silent)
-			logger.info(output)
-			return list(self.check_errors(output))
-
 		def validate_one_static():
 			static_regex = re.compile(r".*static.*;.*")
 			static_count = 0
@@ -68,8 +58,7 @@ class Fsoares(BaseExecutor):
 				      f"Moulinette will not do these checks, it's only a matter of pride.")
 			return errors
 
-		timeout = f"TIMEOUT={get_timeout()}"
-		errors = execute_command(f"make {timeout} mandatory", self.exec_mandatory)
-		bonus_errors = set(errors).union(execute_command(f"make {timeout} bonus", self.exec_bonus, True))
+		errors = self.execute_make_command("mandatory", self.exec_mandatory)
+		bonus_errors = set(errors).union(self.execute_make_command("bonus", self.exec_bonus, True))
 		bonus_errors = show_errors(bonus_errors)
 		return [self.name] if bonus_errors else []
