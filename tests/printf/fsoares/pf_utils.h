@@ -5,7 +5,7 @@
 #define MAX(a, b) ((a) > (b) ? a : b)
 
 #define TEST(title, code)                          \
-	BASE_TEST(title, {                             \
+	BASE_TEST_OFFSET(12, title, {                             \
 		int out_pipe[2];                           \
 		int saved_stdout;                          \
 		char expected[PF_BUF_SIZE] = {0};          \

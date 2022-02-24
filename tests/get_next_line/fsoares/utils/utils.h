@@ -142,6 +142,25 @@ struct alloc_node
 			exit(1);                            \
 	})
 
+#define BASE_TEST_OFFSET(offset, title, code)        \
+	TEST_WRAPPER(title, {                            \
+		g_test = 1;                                  \
+		alarm(TIMEOUT);                              \
+		char *_title = title;                        \
+		printf(BLU "%-" offset "s" NC ": ", _title); \
+		fflush(stdout);                              \
+		int res = 1;                                 \
+		errors_file = fopen("errors.log", "w");      \
+		reset_malloc_mock();                         \
+		code;                                        \
+		fclose(errors_file);                         \
+		printf("\n");                                \
+		if (res)                                     \
+			exit(EXIT_SUCCESS);                      \
+		else                                         \
+			exit(1);                                 \
+	})
+
 #define test_gnl(fd, expected) res = test_gnl_func(fd, expected, _title) && res;
 
 void show_timeout();

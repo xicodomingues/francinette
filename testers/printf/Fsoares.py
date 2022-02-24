@@ -1,6 +1,8 @@
 
 
+import random
 import re
+import string
 from testers.BaseExecutor import BaseExecutor
 from utils.ExecutionContext import get_timeout, is_strict
 from utils.Utils import show_errors_file
@@ -19,11 +21,40 @@ class Fsoares(BaseExecutor):
 		super().__init__(tests_dir, temp_dir, to_execute, missing)
 
 	def execute(self):
+		print('aa', self.generate_random_formats())
 		self.add_sanitizer_to_makefiles()
 		errors = self.execute_make_command(f"build", self.exec_mandatory)
 		if errors:
 			show_errors_file(self.temp_dir, "error_color.log", "errors.log")
 		return []
+
+	def generate_random_formats(self):
+		def random_int():
+			return random.randint(-2**31, 2**31 - 1)
+
+		def random_long():
+			return random.randint(-2**63, 2**63 - 1)
+
+		def random_str():
+			return ''.join(random.choices(string.printable, k=random.randint(1, 1643)))
+
+		generators = {
+			'c' : random_int,
+			's' : random_str,
+			'p' : random_long,
+			'd' : random_int,
+			'i' : random_int,
+			'u' : random_int,
+			'x' : random_int,
+			'X' : random_int,
+			'%' : lambda: '%',
+		}
+
+		return random.choices(list(generators.items()), k=random.randint(2, 10))
+
+	def generate_random_mandatory(self):
+		base = 	"\t\ttest_printf(##format, ##arguments);\n"
+
 
 """
 Test ideas:
