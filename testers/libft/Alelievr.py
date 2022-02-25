@@ -27,7 +27,7 @@ class Alelievr():
 	def __init__(self, tests_dir, temp_dir, to_execute: List[str], missing) -> None:
 		self.temp_dir = os.path.join(temp_dir, self.folder)
 		self.to_execute = to_execute
-		self.missing = missing
+		self.missing = list(missing)
 		self.tests_dir = os.path.join(tests_dir, self.folder)
 
 		if not has_bonus():

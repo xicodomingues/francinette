@@ -55,8 +55,6 @@ static void _mark_as_free(void *ptr)
 
 	if (previous_free)
 		fprintf(errors_file, "You are trying to free a pointer that was already freed\n");
-	else
-		fprintf(errors_file, "The pointer you are trying to free was never allocated by you\n");
 }
 
 void *malloc(size_t size)
