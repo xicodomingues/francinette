@@ -147,7 +147,7 @@ struct alloc_node
 		g_test = 1;                                  \
 		alarm(TIMEOUT);                              \
 		char *_title = title;                        \
-		printf(BLU "%-" offset "s" NC ": ", _title); \
+		printf(BLU "%-" #offset "s" NC ": ", _title); \
 		fflush(stdout);                              \
 		int res = 1;                                 \
 		errors_file = fopen("errors.log", "w");      \

@@ -89,10 +89,13 @@ class BaseExecutor:
 			Halo(f"{TC.CYAN}Running tests: {TC.B_WHITE}{self.name}{TC.NC} ({self.git_url})").info()
 		return self.execute_command(command)
 
+	def get_info_message(self, action):
+		return f"{TC.CYAN}{action}: {TC.B_WHITE}{self.name}{TC.NC} ({self.git_url})"
+
 	def compile_tests(self, command):
 		logger.info(f"on dir {os.getcwd()}")
 
-		text = f"{TC.CYAN}Compiling tests: {TC.B_WHITE}{self.name}{TC.NC} ({self.git_url})"
+		text = self.get_info_message("Compiling tests")
 		with Halo(text) as spinner:
 			self.execute_command(command, spinner)
 			if (spinner and spinner.enabled):

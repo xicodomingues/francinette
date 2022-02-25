@@ -1,11 +1,11 @@
 #include "utils/utils.h"
 #include "../ft_printf.h"
 
-#define PF_BUF_SIZE 105
+#define PF_BUF_SIZE 1000005
 #define MAX(a, b) ((a) > (b) ? a : b)
 
 #define TEST(title, code)                          \
-	BASE_TEST_OFFSET(12, title, {                             \
+	BASE_TEST_OFFSET(12, title, {                  \
 		int out_pipe[2];                           \
 		int saved_stdout;                          \
 		char expected[PF_BUF_SIZE] = {0};          \
@@ -22,7 +22,7 @@
 		dup2(saved_stdout, STDOUT_FILENO);         \
 	})
 
-#define __test_printf(format_str, signature, fn_call)                              \
+#define __test_printf(format_str, signature, fn_call, silent)                      \
 	{                                                                              \
 		memset(expected, 0x11, PF_BUF_SIZE);                                       \
 		memset(actual, 0x11, PF_BUF_SIZE);                                         \
@@ -49,15 +49,24 @@
 		result = same_return_value(expected_ret, actual_ret) && result;            \
 		result = same_mem(expected, actual, MAX(ex_read, act_read) + 2) && result; \
 		result = check_leaks(NULL) && result;                                      \
-		show_result(result, "");                                                   \
+		if (silent)                                                                \
+		{                                                                          \
+			if (!result)                                                           \
+				show_result(result, "");                                           \
+		}                                                                          \
+		else                                                                       \
+			show_result(result, "");                                               \
 		res = res && result;                                                       \
 	}
 
 #define test_printf(format_str, ...) \
-	__test_printf(format_str, ", " #__VA_ARGS__, printf(format_str, __VA_ARGS__));
+	__test_printf(format_str, ", " #__VA_ARGS__, printf(format_str, __VA_ARGS__), 0);
 
 #define test_printf_noarg(format_str) \
-	__test_printf(format_str, "", printf(format_str));
+	__test_printf(format_str, "", printf(format_str), 0);
+
+#define test_printf_silent(format_str, ...) \
+	__test_printf(format_str, ", " #__VA_ARGS__, printf(format_str, __VA_ARGS__), 1);
 
 static int output_fd = -1;
 

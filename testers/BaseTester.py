@@ -48,7 +48,9 @@ class BaseTester:
 	def execute_testers(self):
 		show_banner(self.name)
 		testers = self.test_selector()
-		self.prepare_ex_files()
+		with Halo(TC.CYAN + "Preparing framework" + TC.NC) as spinner:
+			self.prepare_ex_files()
+			spinner.succeed()
 
 		norm_res = ""
 		if not self.info.args.ignore_norm:
