@@ -1,6 +1,7 @@
 import logging
 import re
 from pathlib import Path
+import sys
 
 from utils.TerminalColors import TC
 from utils.TraceToLine import TraceToLine
@@ -66,3 +67,11 @@ def is_makefile_project(current_path, project_name, project_class):
 				return project_class
 
 	return False
+
+
+def is_linux():
+	return sys.platform.startswith("linux")
+
+
+def is_mac():
+	return not is_linux()

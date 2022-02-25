@@ -15,9 +15,6 @@ int alloc_pos = 0;
 
 static void _add_malloc(void *ptr, size_t size, void *to_return)
 {
-	void *buffer[20];
-	int nptrs;
-	char **strings;
 
 	t_node new_node = allocations[alloc_pos];
 	new_node.freed = false;
@@ -25,11 +22,16 @@ static void _add_malloc(void *ptr, size_t size, void *to_return)
 	new_node.returned = to_return;
 	new_node.size = size;
 
+#ifdef __APPLE__
+	void *buffer[20];
+	int nptrs;
+	char **strings;
 	nptrs = backtrace(buffer, 20);
 	strings = backtrace_symbols(buffer, nptrs);
-
 	new_node.strings = strings;
 	new_node.nptrs = nptrs;
+#endif
+
 	allocations[alloc_pos] = new_node;
 	alloc_pos++;
 }
@@ -66,17 +68,7 @@ void *malloc(size_t size)
 		to_return = results[cur_res_pos];
 	else if (size < MALLOC_LIMIT)
 	{
-		char *s = (char *)p;
-		size_t i = 0;
-		while (i < size)
-		{
-			s[i] = (char)(i + 1);
-			i++;
-		}
-		if (i > 2)
-			s[1] = 0;
-		if (size > 3)
-			strncpy(s + 2, "calloc should set the memory to zeros!", size - 2);
+		memset(p, 0x11, size);
 	}
 	cur_res_pos++;
 	_add_malloc(p, size, to_return);
@@ -93,10 +85,13 @@ void free(void *p)
 int reset_malloc_mock()
 {
 	int temp = cur_res_pos;
+
+#ifdef __APPLE__
 	for (int i = 0; i < cur_res_pos; i++)
 	{
 		free(allocations[i].strings);
 	}
+#endif
 	res_pos = 0;
 	cur_res_pos = 0;
 	alloc_pos = 0;
@@ -145,11 +140,16 @@ void print_mallocs()
 
 void save_traces(char **strings, int nptrs)
 {
+#ifdef __APPLE__
 	for (int i = 0; i < nptrs; i++)
 	{
 		fprintf(errors_file, "%s\n", strings[i]);
 	}
 	fprintf(errors_file, "\n");
+#else
+	(void)strings;
+	(void)nptrs;
+#endif
 }
 
 int check_leaks(void *result)
@@ -197,6 +197,7 @@ t_node *get_all_allocs()
 
 void free_all_allocs(t_node *allocs, int malloc_calls)
 {
+#ifdef __APPLE__
 	for (int i = 0; i < malloc_calls; i++)
 	{
 		for (int j = 0; j < allocs[i].nptrs; j++)
@@ -205,15 +206,24 @@ void free_all_allocs(t_node *allocs, int malloc_calls)
 		}
 		free(allocs[i].strings);
 	}
+#else
+	(void)malloc_calls;
+#endif
 	free(allocs);
 }
 
 void add_trace_to_signature(int offset, t_node *allocs, int n)
 {
+#ifdef __APPLE__
 	for (int i = 0; i < allocs[n].nptrs; i++)
 	{
 		offset += sprintf(signature + offset, "%s\n", allocs[n].strings[i]);
 	}
+#else
+	(void)offset;
+	(void)allocs;
+	(void)n;
+#endif
 }
 
 void show_malloc_stack(void *ptr)

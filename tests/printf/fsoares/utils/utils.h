@@ -14,6 +14,7 @@
 #include <fcntl.h>
 #include <stdbool.h>
 #include <time.h>
+#include <sys/wait.h>
 
 #include "color.h"
 

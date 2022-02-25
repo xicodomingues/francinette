@@ -5,13 +5,14 @@ import os
 import re
 import subprocess
 from pathlib import Path
+import sys
 from typing import Set
 
 import pexpect
 from halo import Halo
 from utils.ExecutionContext import get_context, get_timeout, has_bonus, is_strict
 from utils.TerminalColors import TC
-from utils.Utils import remove_ansi_colors
+from utils.Utils import is_linux, remove_ansi_colors
 
 logger = logging.getLogger('base_exec')
 trace_regex = re.compile(r"\d+\s+[\w.?]+\s+[\d\w]+ (\w+) \+ (\d+)")
@@ -143,7 +144,9 @@ class BaseExecutor:
 			makefile = Path(makefile_path).resolve()
 			with open(makefile, 'r') as file:
 				filedata = file.read()
-			new_make = re.sub(r"-\bWall\b", f"-gfull '-fsanitize=address' -Wall", filedata)
+			new_make = re.sub(r"-\bWall\b", f"-g -fsanitize=address -Wall", filedata)
+			if is_linux():
+				new_make = re.sub(r"-\bWall\b", f"-g -Wall", filedata)
 			logger.info(f"added sanitization to makefile {makefile_path}")
 			with open(makefile, 'w') as file:
 				file.write(new_make)

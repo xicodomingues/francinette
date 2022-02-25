@@ -45,7 +45,8 @@
 		"__node_handle": "c",
 		"my_utils.h": "c",
 		"system_error": "cpp",
-		"execinfo.h": "c"
+		"execinfo.h": "c",
+		"pf_utils.h": "c"
 	},
 	"python.linting.enabled": true,
 	"python.linting.pylintPath": "pylint",

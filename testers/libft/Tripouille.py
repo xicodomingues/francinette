@@ -8,6 +8,7 @@ from halo import Halo
 from testers.libft.BaseExecutor import remove_ansi_colors
 from utils.ExecutionContext import get_timeout
 from utils.TerminalColors import TC
+from utils.Utils import is_linux
 
 logger = logging.getLogger("tripouille")
 
@@ -79,7 +80,7 @@ class Tripouille():
 				return (func_name, res)
 
 		def get_command(function):
-			if sys.platform.startswith("linux"):
+			if is_linux():
 				return f"valgrind -q --leak-check=full ./ft_{function}.out"
 			else:
 				return f"./ft_{function}.out"

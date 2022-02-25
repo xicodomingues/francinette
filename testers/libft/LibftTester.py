@@ -2,10 +2,7 @@ import logging
 import os
 import re
 import shutil
-import subprocess
-from pathlib import Path
 
-from halo import Halo
 from testers.BaseTester import BaseTester
 from testers.libft.Alelievr import Alelievr
 from testers.libft.BaseExecutor import (BONUS_FUNCTIONS, PART_1_FUNCTIONS,
@@ -13,7 +10,7 @@ from testers.libft.BaseExecutor import (BONUS_FUNCTIONS, PART_1_FUNCTIONS,
 from testers.libft.Fsoares import Fsoares
 from testers.libft.Tripouille import Tripouille
 from testers.libft.WarMachine import WarMachine
-from utils.ExecutionContext import TestRunInfo, has_bonus, is_strict, set_bonus
+from utils.ExecutionContext import TestRunInfo, set_bonus
 from utils.TerminalColors import TC
 from utils.Utils import is_makefile_project
 

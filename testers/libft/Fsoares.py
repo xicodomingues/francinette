@@ -13,7 +13,7 @@ from pexpect import run
 from testers.libft.BaseExecutor import remove_ansi_colors
 from utils.ExecutionContext import get_timeout, has_bonus, is_strict
 from utils.TerminalColors import TC
-from utils.Utils import open_ascii, show_errors_file
+from utils.Utils import is_linux, is_mac, open_ascii, show_errors_file
 from utils.TraceToLine import program_name_start
 
 logger = logging.getLogger("fsoares")
@@ -49,7 +49,9 @@ class Fsoares():
 		makefile = Path(other_dir, "Makefile").resolve()
 		with open(makefile, 'r') as file:
 			filedata = file.read()
-		new_make = re.sub(r"-\bWall\b", f"-gfull '-fsanitize=address' -Wall", filedata)
+		new_make = re.sub(r"-\bWall\b", f"-g -fsanitize=address -Wall", filedata)
+		if is_linux():
+			new_make = re.sub(r"-\bWall\b", f"-g -Wall", filedata)
 		logger.info("added sanitization to makefile")
 		with open(makefile, 'w') as file:
 			file.write(new_make)
@@ -77,8 +79,10 @@ class Fsoares():
 			for func in self.to_execute:
 				strict = "-DSTRICT_MEM" if is_strict() else ""
 				bonus = " list_utils.c" if has_bonus() else ""
-				command = (f"gcc -gfull -fsanitize=address {strict} -D TIMEOUT={get_timeout()} -Wall -Wextra -Werror my_utils.c {bonus} " +
-				           f"test_{func}.c utils/malloc_mock.c utils/utils.c -L. -lft -o test_{func}.out -ldl")
+				sanitize = "-fsanitize=address" if is_mac() else ""
+				command = (
+				    f"gcc -g {sanitize} {strict} -D TIMEOUT={get_timeout()} -Wall -Wextra -Werror my_utils.c {bonus} "
+				    + f"test_{func}.c utils/malloc_mock.c utils/utils.c -L. -lft -o test_{func}.out -ldl")
 				logger.info(f"executing {command}")
 				res = subprocess.run(command, shell=True, capture_output=True, text=True)
 				logger.info(res)
@@ -123,8 +127,7 @@ class Fsoares():
 
 		def execute_test(func):
 			spinner.start(f"ft_{func.ljust(13)}:")
-			out, code = run("sh -c " + quote(f'./test_{func}.out'),
-			                withexitstatus=1)  # ASAN_OPTIONS="log_path=asan.log"
+			out, code = run("sh -c " + quote(f'./test_{func}.out'), withexitstatus=1)
 			output = out.decode('ascii', errors="backslashreplace")
 			logger.info(output)
 			output = get_output(func, output)
