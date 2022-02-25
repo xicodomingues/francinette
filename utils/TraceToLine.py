@@ -40,7 +40,10 @@ class TraceToLine:
 		return lines
 
 	def _parse_lldb_out(self, lldb_out: str):
-
+		def before_your_line(line):
+			return (line.startswith("     in malloc ")
+					or line.startswith("     in free ")
+					or re.match("     in (?:pf_)?sig(?:abort|segv|bus|alarm) utils", line))
 		def get_file_line(line):
 			match = lldb_out_regex.match(line)
 			if match:
@@ -55,7 +58,7 @@ class TraceToLine:
 					highlight_next = False
 				else:
 					line = "     " + line
-				if line.startswith("     in malloc ") or line.startswith("     in free "):
+				if before_your_line(line):
 					highlight_next = True
 				stack_traces.append(line + '\n')
 		return stack_traces

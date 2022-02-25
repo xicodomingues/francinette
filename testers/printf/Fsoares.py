@@ -27,11 +27,14 @@ class Fsoares(BaseExecutor):
 		with Halo(text=text) as spinner:
 			self.gen_tests_mandatory()
 			self.add_sanitizer_to_makefiles()
-			errors = self.execute_make_command(f"build_m", self.exec_mandatory, silent=True)
-			spinner.succeed()
+			self.call_make_command(f"build_m", self.exec_mandatory, silent=True, spinner=spinner)
+			if spinner.enabled:
+				spinner.succeed()
+			else:
+				raise Exception(f"{TC.RED}Problem compiling the tests{TC.NC}")
 
-		self.run_tests("./printf.out")
-
+		errors = self.check_errors(self.run_tests("./printf.out"))
+		logger.info(f"errors: {errors}")
 		if errors:
 			show_errors_file(self.temp_dir, "error_color.log", "errors.log")
 		return errors
@@ -40,14 +43,14 @@ class Fsoares(BaseExecutor):
 
 		def get_rand_str(n_min, n_max):
 			return ''.join(random.choices(string.printable, k=random.randint(n_min, n_max))) \
-			  .replace('\\', '\\\\') \
-			  .replace('??', r'?\?') \
-              .replace('"', r'\"') \
-              .replace('\t', r'\t') \
-              .replace('\n', r'\n') \
-              .replace('\f', r'\f') \
-              .replace('\v', r'\v') \
-              .replace('\r', r'\r')
+                     .replace('\\', '\\\\') \
+                     .replace('??', r'?\?') \
+                     .replace('"', r'\"') \
+                     .replace('\t', r'\t') \
+                     .replace('\n', r'\n') \
+                     .replace('\f', r'\f') \
+                     .replace('\v', r'\v') \
+                     .replace('\r', r'\r')
 
 		def generate_random_formats():
 
@@ -88,15 +91,15 @@ class Fsoares(BaseExecutor):
 			return ", ".join([x for x in [arg[1]() for arg in args] if x != ''])
 
 		def write_to_mandatory(lines):
-			indicator = '\t\t//==%%^^&&++=='
+			indicator = '//==%%^^&&++=='
 			logger.info("reading mandatory")
 			with open('mandatory.c') as m:
-				content = m.read().replace(indicator, "".join(lines))
+				content = m.read().replace(indicator, "\n\t\t".join(lines))
 			logger.info(f'writing to mandatory:\n{content}')
 			with open('mandatory.c', 'w') as m:
 				m.write(content)
 
-		base_template = '\t\ttest_printf_silent("##format", ##args);\n'
+		base_template = 'test_printf_silent("##format", ##args);'
 
 		lines = []
 		for _ in range(1, 100):

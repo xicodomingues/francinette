@@ -84,10 +84,10 @@ class BaseExecutor:
 		print(TC.NC, end="")
 		return remove_ansi_colors(output)
 
-	def run_tests(self, command, show_message=True):
+	def run_tests(self, command, show_message=True, spinner=None):
 		if show_message:
 			Halo(f"{TC.CYAN}Running tests: {TC.B_WHITE}{self.name}{TC.NC} ({self.git_url})").info()
-		return self.execute_command(command)
+		return self.execute_command(command, spinner=spinner)
 
 	def get_info_message(self, action):
 		return f"{TC.CYAN}{action}: {TC.B_WHITE}{self.name}{TC.NC} ({self.git_url})"
@@ -119,7 +119,7 @@ class BaseExecutor:
 			if self.line_regex.match(line):
 				return get_errors(parse_line(line))
 
-		return filter(lambda x: x is not None, [get_errors_line(line) for line in output.splitlines()])
+		return list(filter(lambda x: x is not None, [get_errors_line(line) for line in output.splitlines()]))
 
 	def show_test_files(self, errors: Set, bonus_set, mandatory_path, bonus_path):
 		bonus_err = errors.intersection(bonus_set)
@@ -138,6 +138,7 @@ class BaseExecutor:
 		return glob.glob('../__my_srcs/**/Makefile', recursive=True)
 
 	def add_sanitizer_to_makefiles(self):
+
 		def rewrite_makefiles(makefile_path):
 			makefile = Path(makefile_path).resolve()
 			with open(makefile, 'r') as file:
@@ -151,13 +152,19 @@ class BaseExecutor:
 		for make_path in makefiles:
 			rewrite_makefiles(make_path)
 
-	def execute_make_command(self, command, execute=True, silent=False):
+	def call_make_command(self, command, execute=True, silent=False, spinner=None):
 		if not execute:
-			return []
+			return ""
 		timeout = f"TIMEOUT={get_timeout()}"
 		strict = "EXEC_STRICT=1" if is_strict() else ""
 		command = f"make {timeout} {strict} {command}"
 		logger.info(f"executing: {command}")
-		output = self.run_tests(command, show_message=not silent)
+		output = self.run_tests(command, show_message=not silent, spinner=spinner)
 		logger.info(output)
+		return output
+
+	def execute_make_command(self, command, execute=True, silent=False, spinner=None):
+		if not execute:
+			return []
+		output = self.call_make_command(command, execute, silent, spinner)
 		return list(self.check_errors(output))

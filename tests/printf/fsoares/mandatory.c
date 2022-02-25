@@ -1,9 +1,23 @@
 #include "pf_utils.h"
 
-int main(int argn, char **argv)
+void simple_test()
 {
-	pf_setup_framework(argn, argv);
+	TEST("no format", {
+		test_printf_noarg("");
+		test_printf_noarg("\x01\x02\a\v\b\f\r\n");
+	})
 
+	TEST("%% format", {
+		test_printf_noarg("%%");
+		test_printf_noarg(" %%");
+		test_printf_noarg("%%c");
+		test_printf_noarg("%%%%%%");
+		test_printf("%%%c", 'x');
+	})
+}
+
+void test_c()
+{
 	TEST("%c format", {
 		test_printf("%c", 'x');
 		test_printf(" %c", 'x');
@@ -12,7 +26,10 @@ int main(int argn, char **argv)
 		test_printf("%cc%cc%c", 'a', '\t', 'b');
 		test_printf("%cs%cs%c", 'c', 'b', 'a');
 	})
+}
 
+void test_s()
+{
 	TEST("%s format", {
 		test_printf("%s", "");
 		test_printf("%s", NULL);
@@ -22,7 +39,10 @@ int main(int argn, char **argv)
 		test_printf("%s%s%s", "And ", "some", "joined");
 		test_printf("%ss%ss%ss", "And ", "some other", "joined");
 	})
+}
 
+void test_p()
+{
 	TEST("%p format", {
 		test_printf("%p", "");
 		test_printf("%p", NULL);
@@ -30,7 +50,10 @@ int main(int argn, char **argv)
 		test_printf("0x%p-", (void *)ULONG_MAX);
 		test_printf("%pp%p%p", (void *)LONG_MAX + 423856, (void *)0, (void *)INT_MAX);
 	})
+}
 
+void test_d()
+{
 	TEST("%d format", {
 		test_printf("%d", 0);
 		test_printf("%d", -10);
@@ -44,7 +67,10 @@ int main(int argn, char **argv)
 		test_printf("dgs%dxx", 10);
 		test_printf("%d%dd%d", 1, 2, -3);
 	})
+}
 
+void test_i()
+{
 	TEST("%i format", {
 		test_printf("%i", 0);
 		test_printf("%i", -10);
@@ -58,7 +84,10 @@ int main(int argn, char **argv)
 		test_printf("dgs%ixx", 10);
 		test_printf("%i%ii%i", 1, 2, -3);
 	})
+}
 
+void test_u()
+{
 	TEST("%u format", {
 		test_printf("%u", 0);
 		test_printf("%u", -10);
@@ -73,7 +102,10 @@ int main(int argn, char **argv)
 		test_printf("dgs%uxx", 10);
 		test_printf("%u%uu%u", 1, 2, -3);
 	})
+}
 
+void test_x()
+{
 	TEST("%x format", {
 		test_printf("%x", 0);
 		test_printf("%x", -10);
@@ -90,7 +122,10 @@ int main(int argn, char **argv)
 		test_printf("dgs%xxx", 10);
 		test_printf("%x%xx%x", 1, 2, -3);
 	})
+}
 
+void test_X()
+{
 	TEST("%X format", {
 		test_printf("%X", 0);
 		test_printf("%X", -10);
@@ -107,21 +142,24 @@ int main(int argn, char **argv)
 		test_printf("dgs%Xxx", 10);
 		test_printf("%X%Xx%X", 1, 2, -3);
 	})
+}
 
-	TEST("%% format", {
-		test_printf_noarg("%%");
-		test_printf_noarg(" %%");
-		test_printf_noarg("%%c");
-		test_printf_noarg("%%%%%%");
-	})
+int main(int argn, char **argv)
+{
+	pf_setup_framework(argn, argv);
 
-	TEST("no format", {
-		test_printf_noarg("");
-		test_printf_noarg("\x01\x02\a\v\b\f\r\n");
-	})
+	simple_test();
+	test_c();
+	test_s();
+	test_p();
+	test_d();
+	test_i();
+	test_u();
+	test_x();
+	test_X();
 
 	TEST("random", {
-		//generated in python
+		// generated in python
 		//==%%^^&&++==
-	})
+	});
 }
