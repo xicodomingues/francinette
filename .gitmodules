@@ -13,3 +13,6 @@
 [submodule "tests/printf/printfTester"]
 	path = tests/printf/printfTester
 	url = https://github.com/xicodomingues/printfTester
+[submodule "tests/printf/unit-test"]
+	path = tests/printf/unit-test
+	url = https://github.com/xicodomingues/printf-unit-test

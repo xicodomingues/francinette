@@ -18,7 +18,11 @@ class Tripouille(BaseExecutor):
 
 	category_map = {
 		'X' : 'upperx',
-		'%' : 'percent'
+		'%' : 'percent',
+		'.' : 'dot',
+		' ' : 'space',
+		'#' : 'sharp',
+		'-' : 'minus'
 	}
 
 	def __init__(self, tests_dir, temp_dir, to_execute, missing) -> None:
@@ -33,15 +37,16 @@ class Tripouille(BaseExecutor):
 			temp = [test[0] for test in result if not test[1].startswith("OK")]
 			return temp
 
-		result = []
+		result = {}
 		for line in output.splitlines():
 			line = remove_ansi_colors(line)
 			if line.startswith("category: "):
 				category = line.split(' ')[1].strip()
-			if line.startswith("1."):
+			if re.match(r"\d+\..*", line):
 				errors = get_errors(parse_tests(line))
 				if errors:
-					result.append((category, errors))
+					existing = result.get(category, [])
+					result[category] = existing + errors
 		return result
 
 	def execute(self):
@@ -64,9 +69,8 @@ class Tripouille(BaseExecutor):
 		output_bonus = execute_make(f"make {timeout} b", self.exec_bonus, True)
 		print()
 		errors = handle_output(output, self.exec_mandatory)
-		#all_errors = set([errors]).union(handle_output(output_bonus, self.exec_bonus))
+		errors = dict(errors, **handle_output(output_bonus, self.exec_bonus))
 		errors = self.show_failed_tests(errors)
-		#self.show_test_files(all_errors, ["multiple fd"], "tests/mandatory.cpp", "tests/bonus.cpp")
 		return [self.name] if errors else []
 
 	def show_failed_tests(self, errors):
@@ -95,7 +99,7 @@ class Tripouille(BaseExecutor):
 			category = self.category_map.get(category, category)
 			return self.tests_dir / "tests" / f"{category}_test.cpp"
 
-		for category, tests in errors:
+		for category, tests in errors.items():
 			tests = [test for test in tests if test != 'LEAKS']
 			test_file = get_file_path(category)
 			if tests:
