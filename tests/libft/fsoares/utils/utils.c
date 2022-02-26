@@ -78,8 +78,8 @@ void setup_framework(int argn, char **argv)
 {
 	(void)argn;
 	handle_signals();
-	FILE *file_big = fopen("error_color.log", "a");
-	fprintf(file_big, "##==##==##&&##==##==##%s\n", argv[0]);
+	FILE *final_file = fopen("error_color.log", "a");
+	fprintf(final_file, "##==##==##&&##==##==##%s\n", argv[0]);
 }
 
 int show_res(int res, char *prefix)
@@ -312,24 +312,33 @@ void add_to_error_file()
 	char buf[1024];
 	fclose(errors_file);
 
-	FILE *file, *file_big;
+	FILE *file, *final_file;
 	size_t nread;
 	file = fopen("errors.log", "r");
-	file_big = fopen("error_color.log", "a");
-	if (file && file_big)
+	final_file = fopen("error_color.log", "a");
+	if (file && final_file)
 	{
 		while ((nread = fread(buf, 1, sizeof buf, file)) > 0)
-			fwrite(buf, 1, nread, file_big);
+			fwrite(buf, 1, nread, final_file);
 		if (ferror(file))
 		{
-			fprintf(file_big, "\nProblem reading error output file");
+			fprintf(final_file, "\nProblem reading error output file");
 		}
-		if (ferror(file_big))
+		if (ferror(final_file))
 		{
 			printf("\nProblem appending output to error file.n");
 		}
+		fseek(final_file, -2, SEEK_END);
+		nread = fread(buf, 1, sizeof buf, final_file);
+		if (nread == 2)
+			if(buf[0] != '\n')
+			{
+				fwrite("\n", 1, 1, final_file);
+			}
+			if (buf[1] != '\n')
+				fwrite("\n\n", 1, 2, final_file);
 		fclose(file);
-		fclose(file_big);
+		fclose(final_file);
 	}
 }
 

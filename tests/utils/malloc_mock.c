@@ -171,8 +171,6 @@ int check_leaks(void *result)
 			res = 0;
 		}
 	}
-	if (!res)
-		fprintf(errors_file, "\n");
 	return res;
 }
 

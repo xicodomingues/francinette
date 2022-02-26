@@ -7,7 +7,7 @@ void simple_test()
 		test_printf_noarg("\x01\x02\a\v\b\f\r\n");
 	})
 
-	TEST("%% format", {
+	TEST("% format", {
 		test_printf_noarg("%%");
 		test_printf_noarg(" %%");
 		test_printf_noarg("%%c");
@@ -18,7 +18,7 @@ void simple_test()
 
 void test_c()
 {
-	TEST("%c format", {
+	TEST("c format", {
 		test_printf("%c", 'x');
 		test_printf(" %c", 'x');
 		test_printf("%c ", 'x');
@@ -30,7 +30,7 @@ void test_c()
 
 void test_s()
 {
-	TEST("%s format", {
+	TEST("s format", {
 		test_printf("%s", "");
 		test_printf("%s", NULL);
 		test_printf("%s", "some string with %s hehe");
@@ -43,7 +43,7 @@ void test_s()
 
 void test_p()
 {
-	TEST("%p format", {
+	TEST("p format", {
 		test_printf("%p", "");
 		test_printf("%p", NULL);
 		test_printf("%p", (void *)-14523);
@@ -54,7 +54,7 @@ void test_p()
 
 void test_d()
 {
-	TEST("%d format", {
+	TEST("d format", {
 		test_printf("%d", 0);
 		test_printf("%d", -10);
 		test_printf("%d", -200000);
@@ -71,7 +71,7 @@ void test_d()
 
 void test_i()
 {
-	TEST("%i format", {
+	TEST("i format", {
 		test_printf("%i", 0);
 		test_printf("%i", -10);
 		test_printf("%i", -200000);
@@ -88,7 +88,7 @@ void test_i()
 
 void test_u()
 {
-	TEST("%u format", {
+	TEST("u format", {
 		test_printf("%u", 0);
 		test_printf("%u", -10);
 		test_printf("%u", -200000);
@@ -106,7 +106,7 @@ void test_u()
 
 void test_x()
 {
-	TEST("%x format", {
+	TEST("x format", {
 		test_printf("%x", 0);
 		test_printf("%x", -10);
 		test_printf("%x", -200000);
@@ -126,7 +126,7 @@ void test_x()
 
 void test_X()
 {
-	TEST("%X format", {
+	TEST("X format", {
 		test_printf("%X", 0);
 		test_printf("%X", -10);
 		test_printf("%X", -200000);

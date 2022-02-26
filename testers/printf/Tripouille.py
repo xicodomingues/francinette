@@ -64,10 +64,10 @@ class Tripouille(BaseExecutor):
 		output_bonus = execute_make(f"make {timeout} b", self.exec_bonus, True)
 		print()
 		errors = handle_output(output, self.exec_mandatory)
-		all_errors = set(errors).union(handle_output(output_bonus, self.exec_bonus))
+		#all_errors = set([errors]).union(handle_output(output_bonus, self.exec_bonus))
 		errors = self.show_failed_tests(errors)
 		#self.show_test_files(all_errors, ["multiple fd"], "tests/mandatory.cpp", "tests/bonus.cpp")
-		return [self.name] if all_errors else []
+		return [self.name] if errors else []
 
 	def show_failed_tests(self, errors):
 

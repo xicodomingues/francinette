@@ -99,16 +99,19 @@ class Fsoares(BaseExecutor):
 			with open('mandatory.c', 'w') as m:
 				m.write(content)
 
-		base_template = 'test_printf_silent("##format", ##args);'
+		base_template = '/* ##i */ test_printf_silent("##format", ##args);'
 
 		lines = []
-		for _ in range(1, 100):
+		for n in range(0, 100):
 			args = generate_random_formats()
 			format_str = get_format_str(args)
 			args_str = get_arguments_str(args)
 			if args_str == '':
 				continue
-			lines.append(base_template.replace("##format", format_str).replace("##args", args_str))
+			lines.append(base_template
+					.replace("##format", format_str)
+					.replace("##args", args_str)
+					.replace("##i", str(n + 1)))
 		lines[-1] = lines[-1].replace("test_printf_silent", "test_printf")
 		write_to_mandatory(lines)
 

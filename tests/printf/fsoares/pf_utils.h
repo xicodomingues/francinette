@@ -4,22 +4,23 @@
 #define PF_BUF_SIZE 1000005
 #define MAX(a, b) ((a) > (b) ? a : b)
 
-#define TEST(title, code)                          \
-	BASE_TEST_OFFSET(12, title, {                  \
-		int out_pipe[2];                           \
-		int saved_stdout;                          \
-		char expected[PF_BUF_SIZE] = {0};          \
-		char actual[PF_BUF_SIZE] = {0};            \
-		saved_stdout = dup(STDOUT_FILENO);         \
-		if (pipe(out_pipe) != 0)                   \
-		{                                          \
-			error("Problem setting up the tests"); \
-			exit(1);                               \
-		}                                          \
-		dup2(out_pipe[1], STDOUT_FILENO);          \
-		close(out_pipe[1]);                        \
-		code;                                      \
-		dup2(saved_stdout, STDOUT_FILENO);         \
+#define TEST(title, code)                                      \
+	BASE_TEST_OFFSET(12, title, {                              \
+		fprintf(errors_file, "For " CYN "%s" NC ":\n", title); \
+		int out_pipe[2];                                       \
+		int saved_stdout;                                      \
+		char expected[PF_BUF_SIZE] = {0};                      \
+		char actual[PF_BUF_SIZE] = {0};                        \
+		saved_stdout = dup(STDOUT_FILENO);                     \
+		if (pipe(out_pipe) != 0)                               \
+		{                                                      \
+			error("Problem setting up the tests");             \
+			exit(1);                                           \
+		}                                                      \
+		dup2(out_pipe[1], STDOUT_FILENO);                      \
+		close(out_pipe[1]);                                    \
+		code;                                                  \
+		dup2(saved_stdout, STDOUT_FILENO);                     \
 	})
 
 #define __test_printf(format_str, signature, fn_call, silent)                      \
@@ -53,6 +54,8 @@
 		{                                                                          \
 			if (!result)                                                           \
 				show_result(result, "");                                           \
+			else                                                                   \
+				g_test++;                                                          \
 		}                                                                          \
 		else                                                                       \
 			show_result(result, "");                                               \
