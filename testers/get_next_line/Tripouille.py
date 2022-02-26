@@ -37,6 +37,7 @@ class Tripouille(BaseExecutor):
 		timeout = f"TIMEOUT_US={get_timeout() * 1_000_000}"
 		output = execute_make(f"make {timeout} m", self.exec_mandatory)
 		output_bonus = execute_make(f"make {timeout} b", self.exec_bonus, True)
+		print()
 		errors = handle_output(output, self.exec_mandatory)
 
 		all_errors = set(errors).union(handle_output(output_bonus, self.exec_bonus))
