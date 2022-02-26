@@ -10,3 +10,6 @@
 [submodule "tests/get_next_line/gnlTester"]
 	path = tests/get_next_line/gnlTester
 	url = https://github.com/xicodomingues/gnlTester
+[submodule "tests/printf/printfTester"]
+	path = tests/printf/printfTester
+	url = https://github.com/xicodomingues/printfTester
