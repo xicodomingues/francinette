@@ -3,7 +3,8 @@
 import logging
 from testers.BaseTester import BaseTester
 from testers.printf.Fsoares import Fsoares
-from utils.ExecutionContext import TestRunInfo, is_strict, set_bonus
+from testers.printf.Tripouille import Tripouille
+from utils.ExecutionContext import TestRunInfo
 from utils.Utils import is_makefile_project
 
 logger = logging.getLogger('printf')
@@ -12,7 +13,7 @@ class PrintfTester(BaseTester):
 
 	name = "printf"
 	my_tester = Fsoares
-	testers = [Fsoares]
+	testers = [Tripouille, Fsoares]
 
 	def __init__(self, info: TestRunInfo) -> None:
 		super().__init__(info)

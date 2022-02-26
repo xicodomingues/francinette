@@ -131,6 +131,8 @@ class BaseExecutor:
 			if bonus_err:
 				test_path = self.tests_dir / bonus_path
 				print(f"and the bonus open: {TC.PURPLE}{test_path.resolve()}{TC.NC}\n")
+			else:
+				print()
 		if not errors and bonus_err:
 			test_path = self.tests_dir / bonus_path
 			print(f"To see the tests open: {TC.PURPLE}{test_path.resolve()}{TC.NC}\n")

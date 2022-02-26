@@ -43,14 +43,14 @@ class Fsoares(BaseExecutor):
 
 		def get_rand_str(n_min, n_max):
 			return ''.join(random.choices(string.printable, k=random.randint(n_min, n_max))) \
-                     .replace('\\', '\\\\') \
-                     .replace('??', r'?\?') \
-                     .replace('"', r'\"') \
-                     .replace('\t', r'\t') \
-                     .replace('\n', r'\n') \
-                     .replace('\f', r'\f') \
-                     .replace('\v', r'\v') \
-                     .replace('\r', r'\r')
+					 .replace('\\', '\\\\') \
+					 .replace('??', r'?\?') \
+					 .replace('"', r'\"') \
+					 .replace('\t', r'\t') \
+					 .replace('\n', r'\n') \
+					 .replace('\f', r'\f') \
+					 .replace('\v', r'\v') \
+					 .replace('\r', r'\r')
 
 		def generate_random_formats():
 
@@ -95,7 +95,7 @@ class Fsoares(BaseExecutor):
 			logger.info("reading mandatory")
 			with open('mandatory.c') as m:
 				content = m.read().replace(indicator, "\n\t\t".join(lines))
-			logger.info(f'writing to mandatory:\n{content}')
+			logger.info(f'writing to mandatory')
 			with open('mandatory.c', 'w') as m:
 				m.write(content)
 
