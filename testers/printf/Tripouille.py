@@ -17,14 +17,7 @@ class Tripouille(BaseExecutor):
 	git_url = 'https://github.com/Tripouille/printfTester'
 	test_regex = re.compile(r"(\d+|LEAKS)\.([^ ]+)")
 
-	category_map = {
-		'X' : 'upperx',
-		'%' : 'percent',
-		'.' : 'dot',
-		"'" : 'space',
-		'#' : 'sharp',
-		'-' : 'minus'
-	}
+	category_map = {'X': 'upperx', '%': 'percent', '.': 'dot', "'": 'space', '#': 'sharp', '-': 'minus'}
 
 	def __init__(self, tests_dir, temp_dir, to_execute, missing) -> None:
 		super().__init__(tests_dir, temp_dir, to_execute, missing)
@@ -118,6 +111,6 @@ class Tripouille(BaseExecutor):
 		f.close()
 		errors = list(errors.keys())
 		if errors:
-			show_errors_file(self.temp_dir, "errors_color.log", "errors.log")
+			show_errors_file(self.temp_dir, "errors_color.log", "errors.log", 20)
 
 		return errors

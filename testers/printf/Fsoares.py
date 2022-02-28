@@ -1,28 +1,27 @@
-from email.mime import base
 import itertools
 import logging
-from ntpath import join
 import random
 import re
 import string
+
+from halo import Halo
 from testers.BaseExecutor import BaseExecutor
 from utils.TerminalColors import TC
 from utils.Utils import show_errors_file
-from halo import Halo
 
 logger = logging.getLogger('pf-fsoares')
 
 
 def get_rand_str(n_min, n_max):
 	return ''.join(random.choices(string.printable, k=random.randint(n_min, n_max))) \
-             .replace('\\', '\\\\') \
-             .replace('??', r'?\?') \
-             .replace('"', r'\"') \
-             .replace('\t', r'\t') \
-             .replace('\n', r'\n') \
-             .replace('\f', r'\f') \
-             .replace('\v', r'\v') \
-             .replace('\r', r'\r')
+		.replace('\\', '\\\\') \
+		.replace('??', r'?\?') \
+		.replace('"', r'\"') \
+		.replace('\t', r'\t') \
+		.replace('\n', r'\n') \
+		.replace('\f', r'\f') \
+		.replace('\v', r'\v') \
+		.replace('\r', r'\r')
 
 
 def random_int():
@@ -35,6 +34,7 @@ def random_pointer():
 
 def random_str():
 	return '"' + get_rand_str(0, 1000) + '"'
+
 
 def write_to(lines, file):
 	indicator = '//==%%^^&&++=='
@@ -66,9 +66,7 @@ class Fsoares(BaseExecutor):
 			self.add_sanitizer_to_makefiles()
 			self.call_make_command(f"build_m", self.exec_mandatory, silent=True, spinner=spinner)
 			self.call_make_command(f"build_b", self.exec_bonus, silent=True, spinner=spinner)
-			if spinner.enabled:
-				spinner.succeed()
-			else:
+			if not spinner.enabled:
 				raise Exception(f"{TC.RED}Problem compiling the tests{TC.NC}")
 
 		errors = self.check_errors(self.run_tests("./printf.out"))
@@ -76,7 +74,7 @@ class Fsoares(BaseExecutor):
 			errors = set(errors).union(self.check_errors(self.run_tests("./printf_b.out", show_message=False)))
 		logger.info(f"errors: {errors}")
 		if errors:
-			show_errors_file(self.temp_dir, "error_color.log", "errors.log")
+			show_errors_file(self.temp_dir, "error_color.log", "errors.log", 20)
 		return [self.name] if errors else []
 
 	def gen_tests_mandatory(self):
@@ -113,14 +111,16 @@ class Fsoares(BaseExecutor):
 		base_template = '\t\t/* ##i */ test_printf_silent("##format", ##args);'
 
 		lines = []
-		for n in range(0, 100):
+		i = 0
+		while i < 100:
 			args = generate_random_formats()
 			format_str = get_format_str(args)
 			args_str = get_arguments_str(args)
 			if args_str == '':
 				continue
+			i += 1
 			lines.append(
-			    base_template.replace("##format", format_str).replace("##args", args_str).replace("##i", str(n + 1)))
+			    base_template.replace("##format", format_str).replace("##args", args_str).replace("##i", str(i + 1)))
 		lines[-1] = lines[-1].replace("test_printf_silent", "test_printf")
 		write_to(lines, 'mandatory.c')
 
@@ -130,7 +130,9 @@ class Fsoares(BaseExecutor):
 		formats = {
 		    'c': ('-', ["'5'", "'x'", r"'\n'"]),
 		    's': ('-.', ['NULL', '""', '"test"', r'"joihwhhgsdkhksdgsdg\t\v\n\r\f\a25252\b6"']),
-		    'p': ('-', ['(void *)0', '(void *)0xABCDE', '(void *)ULONG_MAX', '(void *)LONG_MIN', '(void *)-1', '(void *)-2352']),
+		    'p': ('-', [
+		        '(void *)0', '(void *)0xABCDE', '(void *)ULONG_MAX', '(void *)LONG_MIN', '(void *)-1', '(void *)-2352'
+		    ]),
 		    'd': ('-. 0+', [0, 5, -1, -10, 100, -1862, 'INT_MIN', 'INT_MAX']),
 		    'i': ('-. 0+', [0, 5, -1, -10, 100, -1862, 'INT_MIN', 'INT_MAX']),
 		    'u': ('-.0', [0, 5, -1, -10, 100, -1862, '0xABCDE', 'INT_MIN', 'INT_MAX', 'UINT_MAX']),
@@ -140,15 +142,12 @@ class Fsoares(BaseExecutor):
 		}
 
 		entry_str = "%{minus}{zero}{space}{sharp}{plus}{width}{dot}{precision}{format}"
-		i = 1;
-		lines = [
-			"void test_c() {",
-			f"\tTEST(\"c format\", {'{'}"
-		]
+		i = 1
+		lines = ["void test_c() {", f"\tTEST(\"c format\", {'{'}"]
 		last_fmt = 'c'
 		for fmt, minus, zero, space, sharp, plus, dot, width, precision in itertools.product(
-		    'cspdiuxX%', ['', '-'], ['', '0'], ['', ' '], ['', '#'], ['', '+'], ['', '.'],
-		    ['', 1, 5, 10, 100], ['', 0, 1, 5, 10, 100]):
+		    'cspdiuxX%', ['', '-'], ['', '0'], ['', ' '], ['', '#'], ['', '+'], ['', '.'], ['', 1, 5, 10, 100],
+		    ['', 0, 1, 5, 10, 100]):
 			if minus and '-' not in formats[fmt][0]:
 				continue
 			if zero and '0' not in formats[fmt][0]:
@@ -169,17 +168,15 @@ class Fsoares(BaseExecutor):
 				continue
 			if fmt == '%' and width:
 				continue
-			entry_fmt = entry_str.format(
-			        minus=minus,
-			        zero=zero,
-			        space=space,
-			        sharp=sharp,
-			        plus=plus,
-			        width=width,
-			        dot=dot,
-			        precision=precision,
-			        format=fmt
-			    )
+			entry_fmt = entry_str.format(minus=minus,
+			                             zero=zero,
+			                             space=space,
+			                             sharp=sharp,
+			                             plus=plus,
+			                             width=width,
+			                             dot=dot,
+			                             precision=precision,
+			                             format=fmt)
 			format_str = [entry_fmt for _ in formats[fmt][1]]
 			arguments = [str(test) for test in formats[fmt][1]]
 			if fmt == '%':
@@ -193,14 +190,13 @@ class Fsoares(BaseExecutor):
 				lines.append(f"void test_{fmt if fmt != '%' else 'percent'}() {'{'}")
 				lines.append(f"\tTEST(\"{fmt} format\", {'{'}")
 
-			to_add = (base_template
-				.replace("##format", ', '.join(format_str))
-				.replace("##args", ', '.join(arguments))
-				.replace("##i", str(i + 1)))
+			to_add = (base_template.replace("##format", ', '.join(format_str)).replace("##args",
+			                                                                           ', '.join(arguments)).replace(
+			                                                                               "##i", str(i + 1)))
 			if fmt == '%':
 				to_add = to_add.replace(", );", ");").replace("test_printf_silent", "test_printf_silent_noarg")
 			lines.append(to_add)
-			i += 1;
+			i += 1
 		lines[-1] = lines[-1].replace("test_printf_silent", "test_printf")
 		lines.append("\t});")
 		lines.append("}\n")

@@ -41,12 +41,12 @@ def open_ascii(file, mode='r'):
 	return open(file, mode, encoding='ascii', errors="backslashreplace")
 
 
-def show_errors_file(temp_dir: Path, errors_color, errors_log):
+def show_errors_file(temp_dir: Path, errors_color, errors_log, n_lines=50):
 	trace_to_line = TraceToLine(temp_dir, errors_color)
 	lines = trace_to_line.parse_stack_traces()
 
 	print(f"{TC.B_RED}Errors found{TC.NC}:")
-	[print(line, end='') for line in list(filter(lambda x: x != '', lines[:200]))[:50]]
+	[print(line, end='') for line in list(filter(lambda x: x != '', lines[:n_lines * 4]))[:n_lines]]
 	if len(lines) > FILE_SHOW_LINES:
 		dest = (temp_dir / errors_log).resolve()
 		with open(dest, "w") as log:

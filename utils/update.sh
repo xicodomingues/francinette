@@ -26,8 +26,9 @@ cd "$HOME"/francinette || exit
 # activate venv
 . venv/bin/activate
 
+echo "Updating python dependencies..."
 # install requirements
-if ! pip3 install -r requirements.txt ; then
+if ! pip3 install --disable-pip-version-check -q -r requirements.txt ; then
 	echo "Problem launching the installer. Contact me (fsoares- on slack)"
 	exit 1
 fi

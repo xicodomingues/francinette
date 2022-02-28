@@ -1,6 +1,5 @@
-
-
 import logging
+
 from testers.BaseTester import BaseTester
 from testers.printf.Fsoares import Fsoares
 from testers.printf.Tripouille import Tripouille
@@ -10,11 +9,12 @@ from utils.Utils import is_makefile_project
 
 logger = logging.getLogger('printf')
 
+
 class PrintfTester(BaseTester):
 
 	name = "printf"
 	my_tester = Fsoares
-	testers = [Tripouille, Fsoares]
+	testers = [Tripouille, UnitTest, Fsoares]
 
 	def __init__(self, info: TestRunInfo) -> None:
 		super().__init__(info)
