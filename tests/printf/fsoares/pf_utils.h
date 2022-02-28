@@ -68,6 +68,9 @@
 #define test_printf_noarg(format_str) \
 	__test_printf(format_str, "", printf(format_str), 0);
 
+#define test_printf_silent_noarg(format_str) \
+	__test_printf(format_str, "", printf(format_str), 1);
+
 #define test_printf_silent(format_str, ...) \
 	__test_printf(format_str, ", " #__VA_ARGS__, printf(format_str, __VA_ARGS__), 1);
 

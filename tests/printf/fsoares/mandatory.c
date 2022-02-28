@@ -146,6 +146,7 @@ void test_X()
 
 int main(int argn, char **argv)
 {
+	printf(YEL "Mandatory:" NC "\n");
 	pf_setup_framework(argn, argv);
 
 	simple_test();

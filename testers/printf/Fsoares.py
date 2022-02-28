@@ -1,5 +1,7 @@
 from email.mime import base
+import itertools
 import logging
+from ntpath import join
 import random
 import re
 import string
@@ -9,6 +11,39 @@ from utils.Utils import show_errors_file
 from halo import Halo
 
 logger = logging.getLogger('pf-fsoares')
+
+
+def get_rand_str(n_min, n_max):
+	return ''.join(random.choices(string.printable, k=random.randint(n_min, n_max))) \
+             .replace('\\', '\\\\') \
+             .replace('??', r'?\?') \
+             .replace('"', r'\"') \
+             .replace('\t', r'\t') \
+             .replace('\n', r'\n') \
+             .replace('\f', r'\f') \
+             .replace('\v', r'\v') \
+             .replace('\r', r'\r')
+
+
+def random_int():
+	return str(random.randint(-2**31, 2**31 - 1))
+
+
+def random_pointer():
+	return "(void *)" + str(random.randint(-2**63, 2**63 - 1))
+
+
+def random_str():
+	return '"' + get_rand_str(0, 1000) + '"'
+
+def write_to(lines, file):
+	indicator = '//==%%^^&&++=='
+	logger.info(f"reading {file}")
+	with open(file) as m:
+		content = m.read().replace(indicator, "\n".join(lines))
+	logger.info(f'writing to {file}')
+	with open(file, 'w') as m:
+		m.write(content)
 
 
 class Fsoares(BaseExecutor):
@@ -23,45 +58,30 @@ class Fsoares(BaseExecutor):
 		super().__init__(tests_dir, temp_dir, to_execute, missing)
 
 	def execute(self):
-		text = self.get_info_message("Preparing tests")
+		text = self.get_info_message("Compiling tests")
 		with Halo(text=text) as spinner:
 			self.gen_tests_mandatory()
+			if self.exec_bonus:
+				self.generate_bonus()
 			self.add_sanitizer_to_makefiles()
 			self.call_make_command(f"build_m", self.exec_mandatory, silent=True, spinner=spinner)
+			self.call_make_command(f"build_b", self.exec_bonus, silent=True, spinner=spinner)
 			if spinner.enabled:
 				spinner.succeed()
 			else:
 				raise Exception(f"{TC.RED}Problem compiling the tests{TC.NC}")
 
 		errors = self.check_errors(self.run_tests("./printf.out"))
+		if self.exec_bonus:
+			errors = set(errors).union(self.check_errors(self.run_tests("./printf_b.out", show_message=False)))
 		logger.info(f"errors: {errors}")
 		if errors:
 			show_errors_file(self.temp_dir, "error_color.log", "errors.log")
-		return errors
+		return [self.name] if errors else []
 
 	def gen_tests_mandatory(self):
 
-		def get_rand_str(n_min, n_max):
-			return ''.join(random.choices(string.printable, k=random.randint(n_min, n_max))) \
-					 .replace('\\', '\\\\') \
-					 .replace('??', r'?\?') \
-					 .replace('"', r'\"') \
-					 .replace('\t', r'\t') \
-					 .replace('\n', r'\n') \
-					 .replace('\f', r'\f') \
-					 .replace('\v', r'\v') \
-					 .replace('\r', r'\r')
-
 		def generate_random_formats():
-
-			def random_int():
-				return str(random.randint(-2**31, 2**31 - 1))
-
-			def random_pointer():
-				return "(void *)" + str(random.randint(-2**63, 2**63 - 1))
-
-			def random_str():
-				return '"' + get_rand_str(0, 1000) + '"'
 
 			generators = {
 			    'c': random_int,
@@ -90,16 +110,7 @@ class Fsoares(BaseExecutor):
 		def get_arguments_str(args):
 			return ", ".join([x for x in [arg[1]() for arg in args] if x != ''])
 
-		def write_to_mandatory(lines):
-			indicator = '//==%%^^&&++=='
-			logger.info("reading mandatory")
-			with open('mandatory.c') as m:
-				content = m.read().replace(indicator, "\n\t\t".join(lines))
-			logger.info(f'writing to mandatory')
-			with open('mandatory.c', 'w') as m:
-				m.write(content)
-
-		base_template = '/* ##i */ test_printf_silent("##format", ##args);'
+		base_template = '\t\t/* ##i */ test_printf_silent("##format", ##args);'
 
 		lines = []
 		for n in range(0, 100):
@@ -108,24 +119,89 @@ class Fsoares(BaseExecutor):
 			args_str = get_arguments_str(args)
 			if args_str == '':
 				continue
-			lines.append(base_template
-					.replace("##format", format_str)
-					.replace("##args", args_str)
-					.replace("##i", str(n + 1)))
+			lines.append(
+			    base_template.replace("##format", format_str).replace("##args", args_str).replace("##i", str(n + 1)))
 		lines[-1] = lines[-1].replace("test_printf_silent", "test_printf")
-		write_to_mandatory(lines)
+		write_to(lines, 'mandatory.c')
 
+	def generate_bonus(self):
+		base_template = '\t\t/* ##i */ test_printf_silent("##format", ##args);'
 
-"""
-Test ideas:
-	- %%c %%%c %c%c %<valid_flag>c => width, -
-	- width: 0, 1 - 10, 10000
+		formats = {
+		    'c': ('-', ["'5'", "'x'", r"'\n'"]),
+		    's': ('-.', ['NULL', '""', '"test"', r'"joihwhhgsdkhksdgsdg\t\v\n\r\f\a25252\b6"']),
+		    'p': ('-', ['(void *)0', '(void *)0xABCDE', '(void *)ULONG_MAX', '(void *)LONG_MIN', '(void *)-1', '(void *)-2352']),
+		    'd': ('-. 0+', [0, 5, -1, -10, 100, -1862, 'INT_MIN', 'INT_MAX']),
+		    'i': ('-. 0+', [0, 5, -1, -10, 100, -1862, 'INT_MIN', 'INT_MAX']),
+		    'u': ('-.0', [0, 5, -1, -10, 100, -1862, '0xABCDE', 'INT_MIN', 'INT_MAX', 'UINT_MAX']),
+		    'x': ('-.0#', [0, 5, -1, -10, '0x1234', -1862, '0xABCDE', 'INT_MIN', 'INT_MAX', 'UINT_MAX']),
+		    'X': ('-.0#', [0, 5, -1, -10, '0x1234', -1862, '0xABCDE', 'INT_MIN', 'INT_MAX', 'UINT_MAX']),
+		    '%': ('', ['']),
+		}
 
-	printf("%05d\n", -123);  // Outputs -0123 (pad to 5 characters)
-	printf("%.5d\n", -123);  // Outputs -00123 (pad to 5 digits)
+		entry_str = "%{minus}{zero}{space}{sharp}{plus}{width}{dot}{precision}{format}"
+		i = 1;
+		lines = [
+			"void test_c() {",
+			f"\tTEST(\"c format\", {'{'}"
+		]
+		last_fmt = 'c'
+		for fmt, minus, zero, space, sharp, plus, dot, width, precision in itertools.product(
+		    'cspdiuxX%', ['', '-'], ['', '0'], ['', ' '], ['', '#'], ['', '+'], ['', '.'],
+		    ['', 1, 5, 10, 100], ['', 0, 1, 5, 10, 100]):
+			if minus and '-' not in formats[fmt][0]:
+				continue
+			if zero and '0' not in formats[fmt][0]:
+				continue
+			if sharp and '#' not in formats[fmt][0]:
+				continue
+			if space and ' ' not in formats[fmt][0]:
+				continue
+			if plus and '+' not in formats[fmt][0]:
+				continue
+			if plus and space:
+				continue
+			if zero and minus:
+				continue
+			if dot and '.' not in formats[fmt][0]:
+				continue
+			if dot != '.' and precision != '':
+				continue
+			if fmt == '%' and width:
+				continue
+			entry_fmt = entry_str.format(
+			        minus=minus,
+			        zero=zero,
+			        space=space,
+			        sharp=sharp,
+			        plus=plus,
+			        width=width,
+			        dot=dot,
+			        precision=precision,
+			        format=fmt
+			    )
+			format_str = [entry_fmt for _ in formats[fmt][1]]
+			arguments = [str(test) for test in formats[fmt][1]]
+			if fmt == '%':
+				arguments = ''
+			if last_fmt != fmt:
+				i = 1
+				last_fmt = fmt
+				lines[-1] = lines[-1].replace("test_printf_silent", "test_printf")
+				lines.append("\t});")
+				lines.append("}\n")
+				lines.append(f"void test_{fmt if fmt != '%' else 'percent'}() {'{'}")
+				lines.append(f"\tTEST(\"{fmt} format\", {'{'}")
 
-	printf("|%0d|%0d|\n", 0, 1);   // Outputs |0|1|
-	printf("|%.0d|%.0d|\n", 0, 1); // Outputs ||1|
-
-	https://github.com/alelievr/printf-unit-test/blob/master/inc/source-generator.h
-"""
+			to_add = (base_template
+				.replace("##format", ', '.join(format_str))
+				.replace("##args", ', '.join(arguments))
+				.replace("##i", str(i + 1)))
+			if fmt == '%':
+				to_add = to_add.replace(", );", ");").replace("test_printf_silent", "test_printf_silent_noarg")
+			lines.append(to_add)
+			i += 1;
+		lines[-1] = lines[-1].replace("test_printf_silent", "test_printf")
+		lines.append("\t});")
+		lines.append("}\n")
+		write_to(lines, 'bonus.c')

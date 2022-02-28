@@ -1,10 +1,11 @@
 import logging
 import re
+import sys
 
 from testers.BaseExecutor import BaseExecutor
 from utils.ExecutionContext import get_timeout
 from utils.TerminalColors import TC
-from utils.Utils import remove_ansi_colors
+from utils.Utils import remove_ansi_colors, show_errors_file
 
 logger = logging.getLogger('pf-trip')
 
@@ -20,7 +21,7 @@ class Tripouille(BaseExecutor):
 		'X' : 'upperx',
 		'%' : 'percent',
 		'.' : 'dot',
-		' ' : 'space',
+		"'" : 'space',
 		'#' : 'sharp',
 		'-' : 'minus'
 	}
@@ -53,7 +54,7 @@ class Tripouille(BaseExecutor):
 
 		def handle_output(output, execute=True):
 			if not execute or not output:
-				return []
+				return {}
 			lines = output.splitlines()
 			if lines[1].startswith("../"):
 				raise Exception(f"{TC.B_RED}Problem compiling tests.{TC.NC}")
@@ -99,6 +100,10 @@ class Tripouille(BaseExecutor):
 			category = self.category_map.get(category, category)
 			return self.tests_dir / "tests" / f"{category}_test.cpp"
 
+		orig_stdout = sys.stdout
+		f = open('errors_color.log', 'w')
+		sys.stdout = f
+
 		for category, tests in errors.items():
 			tests = [test for test in tests if test != 'LEAKS']
 			test_file = get_file_path(category)
@@ -108,4 +113,9 @@ class Tripouille(BaseExecutor):
 				print()
 			else:
 				print(f"Leaks in tests from: {TC.PURPLE}{test_file}{TC.NC}\n")
-		return [category for category, _ in errors]
+
+		sys.stdout = orig_stdout
+		f.close()
+		show_errors_file(self.temp_dir, "errors_color.log", "errors.log")
+
+		return list(errors.keys())
