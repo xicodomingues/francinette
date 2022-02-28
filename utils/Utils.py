@@ -57,7 +57,7 @@ def show_errors_file(temp_dir: Path, errors_color, errors_log):
 
 def is_makefile_project(current_path, project_name, project_class):
 	make_path = current_path / "Makefile"
-	name_matcher = re.compile(rf"^\s*NAME\s*=\s*{project_name}\s*$")
+	name_matcher = re.compile(rf"^\s*NAME\s*:?=\s*{project_name}\s*$")
 	logger.info(f"Makefile path: {make_path.resolve()}")
 	if not make_path.exists():
 		return False
