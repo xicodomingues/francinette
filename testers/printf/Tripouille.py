@@ -116,6 +116,8 @@ class Tripouille(BaseExecutor):
 
 		sys.stdout = orig_stdout
 		f.close()
-		show_errors_file(self.temp_dir, "errors_color.log", "errors.log")
+		errors = list(errors.keys())
+		if errors:
+			show_errors_file(self.temp_dir, "errors_color.log", "errors.log")
 
-		return list(errors.keys())
+		return errors
