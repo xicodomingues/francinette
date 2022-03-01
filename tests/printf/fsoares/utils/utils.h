@@ -82,6 +82,7 @@ struct alloc_node
 	})
 
 #else
+#define BASE_NULL_CHECK(fn_call, rst, leak_check)
 #define null_check(fn_call, result)
 #define null_null_check(fn_call, rst)
 #endif
@@ -98,7 +99,7 @@ struct alloc_node
 		{                                                 \
 			long total = 0;                               \
 			long interval = 50000;                        \
-			while (total < TIMEOUT * 1000000)             \
+			while (total < TIMEOUT * 1000000L)             \
 			{                                             \
 				usleep(interval);                         \
 				int c = waitpid(test, &status, WNOHANG);  \
@@ -110,7 +111,7 @@ struct alloc_node
 				}                                         \
 				total += interval;                        \
 			}                                             \
-			if (total >= TIMEOUT * 1000000)               \
+			if (total >= TIMEOUT * 1000000L)               \
 			{                                             \
 				if (waitpid(test, &status, WNOHANG) == 0) \
 				{                                         \

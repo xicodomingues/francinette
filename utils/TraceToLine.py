@@ -43,7 +43,8 @@ class TraceToLine:
 		def before_your_line(line):
 			return (line.startswith("in malloc ")
 					or line.startswith("in free ")
-					or re.match("in (?:pf_)?sig(?:abort|segv|bus|alarm) utils", line))
+					or re.match("in (?:pf_)?sig(?:abort|segv|bus|alarm) (?:pf_)utils", line)
+					or line.startswith("in _write "))
 		def get_file_line(line):
 			match = lldb_out_regex.match(line)
 			if match:

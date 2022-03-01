@@ -6,6 +6,7 @@ import string
 
 from halo import Halo
 from testers.BaseExecutor import BaseExecutor
+from utils.ExecutionContext import get_context, is_strict
 from utils.TerminalColors import TC
 from utils.Utils import show_errors_file
 
@@ -56,6 +57,8 @@ class Fsoares(BaseExecutor):
 
 	def __init__(self, tests_dir, temp_dir, to_execute, missing) -> None:
 		super().__init__(tests_dir, temp_dir, to_execute, missing)
+		if is_strict():
+			get_context().args.timeout = str(int(get_context().args.timeout) * 10);
 
 	def execute(self):
 		text = self.get_info_message("Compiling tests")
@@ -75,6 +78,10 @@ class Fsoares(BaseExecutor):
 		logger.info(f"errors: {errors}")
 		if errors:
 			show_errors_file(self.temp_dir, "error_color.log", "errors.log", 20)
+		else:
+			if not is_strict():
+				print(f"Want some more thorough tests? run '{TC.B_WHITE}francinette --strict{TC.NC}'. " +
+				      f"Moulinette will not do these checks, it's only a matter of pride.")
 		return [self.name] if errors else []
 
 	def gen_tests_mandatory(self):
@@ -192,7 +199,9 @@ class Fsoares(BaseExecutor):
 
 			to_add = (base_template.replace("##format", ', '.join(format_str)).replace("##args",
 			                                                                           ', '.join(arguments)).replace(
-			                                                                               "##i", str(i + 1)))
+			                                                                               "##i", str(i)))
+			if (i % 50 == 0):
+				to_add = to_add.replace("test_printf_silent", "test_printf")
 			if fmt == '%':
 				to_add = to_add.replace(", );", ");").replace("test_printf_silent", "test_printf_silent_noarg")
 			lines.append(to_add)
