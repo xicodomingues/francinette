@@ -1,6 +1,7 @@
 import logging
 
 from testers.BaseTester import BaseTester
+from testers.printf.Cacharle import Cacharle
 from testers.printf.Fsoares import Fsoares
 from testers.printf.Tripouille import Tripouille
 from testers.printf.UnitTest import UnitTest
@@ -14,7 +15,7 @@ class PrintfTester(BaseTester):
 
 	name = "printf"
 	my_tester = Fsoares
-	testers = [Tripouille, UnitTest, Fsoares]
+	testers = [Tripouille, UnitTest, Cacharle, Fsoares]
 
 	def __init__(self, info: TestRunInfo) -> None:
 		super().__init__(info)

@@ -34,10 +34,13 @@ void show_signal_msg(char *message, char *resume, int signal)
 			g_test, signature, message);
 
 #ifdef __APPLE__
-	void *buffer[20];
-	int nptrs = backtrace(buffer, 20);
-	char **strings = backtrace_symbols(buffer, nptrs);
-	save_traces(strings, nptrs);
+	if (signal != SIGALRM)
+	{
+		void *buffer[20];
+		int nptrs = backtrace(buffer, 20);
+		char **strings = backtrace_symbols(buffer, nptrs);
+		save_traces(strings, nptrs);
+	}
 #endif
 
 	printf(YEL "%i.KO %s\n" NC, g_test++, resume);

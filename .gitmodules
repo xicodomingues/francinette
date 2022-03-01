@@ -16,3 +16,6 @@
 [submodule "tests/printf/unit-test"]
 	path = tests/printf/unit-test
 	url = https://github.com/xicodomingues/printf-unit-test
+[submodule "tests/printf/ft_printf_test"]
+	path = tests/printf/ft_printf_test
+	url = https://github.com/xicodomingues/ft_printf_test

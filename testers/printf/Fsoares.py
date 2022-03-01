@@ -33,7 +33,7 @@ def random_pointer():
 
 
 def random_str():
-	return '"' + get_rand_str(0, 1000) + '"'
+	return '"' + get_rand_str(0, 100) + '"'
 
 
 def write_to(lines, file):

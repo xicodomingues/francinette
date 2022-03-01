@@ -3,14 +3,9 @@ import logging
 from halo import Halo
 from testers.BaseExecutor import BaseExecutor
 
-logger = logging.getLogger('pf-trip')
+logger = logging.getLogger('pf-unit')
 
 
-#add later
-# https://github.com/gavinfielder/pft
-# https://github.com/Mazoise/42TESTERS-PRINTF
-# https://github.com/charMstr/printf_lover_v2
-# https://github.com/cacharle/ft_printf_test
 class UnitTest(BaseExecutor):
 
 	name = 'printf-unit-test'
@@ -21,6 +16,8 @@ class UnitTest(BaseExecutor):
 		super().__init__(tests_dir, temp_dir, to_execute, missing)
 
 	def execute(self):
+		if not self.exec_bonus:
+			return []
 		with Halo(self.get_info_message("Compiling tests")) as spinner:
 			self.call_make_command('', self.exec_bonus, True, spinner=spinner)
 		output = self.run_tests("./run_test -e -r")
