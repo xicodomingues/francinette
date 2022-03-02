@@ -46,7 +46,8 @@
 		"my_utils.h": "c",
 		"system_error": "cpp",
 		"execinfo.h": "c",
-		"pf_utils.h": "c"
+		"pf_utils.h": "c",
+		"ft_printf.h": "c"
 	},
 	"python.linting.enabled": true,
 	"python.linting.pylintPath": "pylint",

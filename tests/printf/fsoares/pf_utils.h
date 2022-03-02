@@ -1,5 +1,4 @@
 #include "utils/utils.h"
-#include "../ft_printf.h"
 
 #define PF_BUF_SIZE 100005
 #define MAX(a, b) ((a) > (b) ? a : b)
@@ -120,6 +119,8 @@
 	__test_printf(format_str, ", " #__VA_ARGS__, printf(format_str, __VA_ARGS__), 1);
 
 static int output_fd = -1;
+
+int		ft_printf(const char *format, ...);
 
 void cout(const char *f, ...);
 int show_result(int res, char *prefix);
