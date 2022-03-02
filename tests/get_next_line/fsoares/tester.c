@@ -85,18 +85,18 @@ int main(int argn, char **argv)
 
 	TEST("giant_line.txt", {
 		int fd = open(_title, O_RDONLY);
-		char expected[200000 + 1];
-		populate_expected(expected, 200000);
+		char expected[20000 + 1];
+		populate_expected(expected, 20000);
 		/* 1 */ test_gnl(fd, expected);
 		/* 2 */ test_gnl(fd, NULL);
 	});
 
 	TEST("giant_line_nl.txt", {
 		int fd = open(_title, O_RDONLY);
-		char expected[200000 + 2];
-		populate_expected(expected, 200000);
-		expected[200000] = '\n';
-		expected[200001] = 0;
+		char expected[20000 + 2];
+		populate_expected(expected, 20000);
+		expected[20000] = '\n';
+		expected[20001] = 0;
 		/* 1 */ test_gnl(fd, expected);
 		/* 2 */ test_gnl(fd, "another line!!!");
 		/* 3 */ test_gnl(fd, NULL);

@@ -80,10 +80,10 @@ int main(int argn, char **argv)
 	TEST("multiple fds", {
 		char *name = "lines_around_10.txt";
 
-		char expected[200000 + 2];
-		populate_expected(expected, 200000);
-		expected[200000] = '\n';
-		expected[200001] = 0;
+		char expected[20000 + 2];
+		populate_expected(expected, 20000);
+		expected[20000] = '\n';
+		expected[20001] = 0;
 
 		int fd_1 = open(name, O_RDONLY);
 		int fd_2 = open(name, O_RDONLY);
