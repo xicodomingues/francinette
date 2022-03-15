@@ -16,13 +16,14 @@ from git import Repo
 from testers.cpiscine.CPiscineTester import CPiscineTester
 from testers.get_next_line.GetNextLineTester import GetNextLineTester
 from testers.libft.LibftTester import LibftTester
+from testers.minitalk.Minitalk import Minitalk
 from testers.printf.PrintfTester import PrintfTester
 from utils.ExecutionContext import TestRunInfo, set_contex
 from utils.TerminalColors import TC
 
 logger = logging.getLogger("main")
 
-PROJECTS = [CPiscineTester, LibftTester, GetNextLineTester, PrintfTester]
+PROJECTS = [CPiscineTester, LibftTester, GetNextLineTester, PrintfTester, Minitalk]
 
 
 def is_repo(string: str):
@@ -118,7 +119,7 @@ class Formatter(argparse.HelpFormatter):
 
 parser = argparse.ArgumentParser(formatter_class=Formatter)
 
-
+#TODO: clean part one and part 2, and -m, -b, -c
 def main():
 	"""
 	Executes the test framework with the given args
@@ -129,7 +130,6 @@ def main():
 	exercises = None
 
 	parser = ArgumentParser("francinette",
-	                        formatter_class=Formatter,
 	                        description=textwrap.dedent("""
 			A micro framework that allows you to test your code with more ease.
 
@@ -162,7 +162,8 @@ def main():
 	                    "--testers",
 	                    nargs="*",
 	                    help=("Executes the corresponding testers. If no arguments are passed, it asks the user. " +
-	                          f"{TC.YELLOW}This parameter should be the last one in the command line{TC.NC}"))
+	                          f"{TC.YELLOW}This parameter should be the last one in the command line even after "+
+							  f"the positional parameters{TC.NC}"))
 	args = parser.parse_args()
 
 	if args.update:

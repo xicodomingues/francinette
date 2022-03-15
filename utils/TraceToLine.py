@@ -9,7 +9,7 @@ from utils.TerminalColors import TC
 LLDB_TRACE_LIMIT = 50
 
 trace_regex = re.compile(r"^\d+\s+([\w.?]+)\s+0x[\da-f]+ (\w+) \+ (\d+)")
-lldb_out_regex = re.compile(r"\s+Summary: \w+.out`(\w+) \+ (\d+) at (.*)$")
+lldb_out_regex = re.compile(r"\s+Summary: [\w.]+`(\w+) \+ (\d+) at (.*)$")
 program_name_start = "##==##==##&&##==##==##"
 
 logger = logging.getLogger('lldb')
@@ -84,7 +84,7 @@ class TraceToLine:
 	def _transform(self, line):
 
 		def is_ignorable(match):
-			return (not match.group(1).endswith(".out") or match.group(2).startswith("show_signal_msg") or
+			return (match.group(1).endswith(".dylib") or match.group(2).startswith("show_signal_msg") or
 			        match.group(2) == "0x0" or (match.group(2) == "start" and match.group(3) == "1"))
 
 		match = trace_regex.match(line)
@@ -103,7 +103,7 @@ class TraceToLine:
 			if line.startswith(program_name_start):
 				if current_prog != None:
 					to_lldb[current_prog] = to_add
-				current_prog = line.replace(program_name_start, "").replace("./", "").strip()
+				current_prog = line.replace(program_name_start, "").split("/")[-1].strip()
 				lines[i] = ""
 				to_add = to_lldb.get(current_prog, [])
 				to_lldb[current_prog] = to_add
