@@ -167,7 +167,7 @@ class BaseTester:
 		command = "make fclean " + ("bonus" if has_bonus() else "all")
 		logger.info(f"Calling '{command}' on directory {os.getcwd()}")
 
-		text = f"{TC.CYAN}Executing: {TC.B_WHITE}{command}{TC.NC}"
+		text = f"{TC.CYAN}Executing: {TC.B_WHITE}{command}{TC.NC} " + ("" if has_bonus() else "(no bonus)")
 		with Halo(text=text) as spinner:
 			run_command(command, spinner)
 			spinner.succeed()
@@ -222,7 +222,7 @@ class BaseTester:
 			logger.info("All tests ok!")
 			return True
 
-		print(f"\n{TC.B_CYAN}Summary{TC.NC}:")
+		print(f"\n{TC.B_CYAN}Summary{TC.NC}: {'' if has_bonus() else 'no bonus'}")
 
 		logger.warn(f"norminette errors: {norm_errors}")
 		if norm_errors:

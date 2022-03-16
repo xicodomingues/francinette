@@ -1,16 +1,60 @@
+from itertools import takewhile
 import logging
+import os
+from pathlib import Path
+from pipes import quote
+from quopri import encode
 import re
 import shutil
 import subprocess
 from signal import SIGINFO
+import threading
+from time import sleep
 
 import pexpect
 from halo import Halo
 from testers.BaseExecutor import BaseExecutor
+from utils.ExecutionContext import get_timeout, has_bonus
 from utils.TerminalColors import TC
-from utils.Utils import open_ascii, show_errors_file
+from utils.Utils import escape_str, open_ascii, show_errors_file
 
 logger = logging.getLogger('mt-fsoares')
+UNRELIABLE_MSG = ("\nThis Tester is not super reliable, so executing again can solve the problem. " +
+                  "You can also try to increase the sleep time inside your minitalk app.")
+
+
+def get_server_pid(logfile):
+	with open_ascii(logfile, "r") as log:
+		return log.readline().split(' ')[1].strip()
+
+
+def start_process(command, logfile):
+	child = pexpect.spawn(command,
+	                      logfile=open(logfile, "w", encoding="utf-8"),
+	                      encoding="utf-8",
+	                      timeout=get_timeout())
+	child.expect("__PID: .*\n")
+	return child, get_server_pid(logfile)
+
+
+def wait_for(process, string):
+	if process.expect([string, pexpect.TIMEOUT], timeout=get_timeout()) == 1:
+		raise Exception("Problem with the threads." + UNRELIABLE_MSG)
+
+
+class BgThread(threading.Thread):
+
+	def __init__(self, command):
+		self.stdout = None
+		self.stderr = None
+		self.pid = None
+		self.command = command
+		threading.Thread.__init__(self)
+
+	def run(self):
+		p = subprocess.Popen(self.command.split(), shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+		self.pid = p.pid
+		self.stdout, self.stderr = p.communicate()
 
 
 class Fsoares(BaseExecutor):
@@ -25,58 +69,89 @@ class Fsoares(BaseExecutor):
 		super().__init__(tests_dir, temp_dir, to_execute, missing)
 
 	def execute(self):
-		self.rewrite_mains()
-		self.add_sanitizer_to_makefiles()
-		# TODO: test mandatory
-		# TODO: test bonus
-
 		with Halo(self.get_info_message("Preparing tests")) as spinner:
-			self.call_make_command('fclean all', self.exec_mandatory, silent=True, spinner=spinner)
-		with Halo(self.get_info_message("Running tests")) as spinner:
-			if self.test_leaks() != 0:
-				spinner.fail()
-				show_errors_file(self.temp_dir, "server.log", "errors.log", 20)
-				return [self.name]
+			self.rewrite_mains()
+			self.add_sanitizer_to_makefiles()
+			command = 'fclean all'
+			if has_bonus():
+				command = 'fclean bonus'
+			output = self.call_make_command(command, self.exec_mandatory, silent=True, spinner=spinner)
+			if output:
+				raise f'Problem preprating the testes, please contact me at {TC.CYAN}fsoares{TC.NC} in slack'
 
-			spinner.succeed()
+		Halo(self.get_info_message("Running tests")).info()
+		result = self.test_communication()
+		if self.test_leaks() != 0:
+			show_errors_file(self.temp_dir, "server.log", "errors.log", 20)
+			result = False
+		if result:
 			print(f"{TC.GREEN}Tests OK!{TC.NC}")
 			return []
+		else:
+			print(f"{TC.GREEN}Tests KO!{TC.NC}")
+			return [self.name]
+
+	def test_communication(self):
+		server_thread = BgThread(str((self.temp_dir / '../__my_srcs/server')))
+		server_thread.start()
+		sleep(0.1)
+		server_pid = str(server_thread.pid)
+		middle, middle_pid = start_process(f"./middleman.out {server_thread.pid}", "middleman.log")
+
+		message = "Test rand stuff ~(*123!@#$%^&*(_+-=][}{';:.></|?)"
+		if has_bonus():
+			message += " Ž (╯°□°)╯︵ ┻━┻"
+		print(f'{TC.BLUE}Test string{TC.NC}: "{escape_str(message)}"')
+
+		self.send_message(middle_pid, '=====' + message + '=====\n')
+		self.send_signal(middle_pid, "INT")
+		wait_for(middle, "=====")
+		self.send_signal(middle_pid, "INT")
+		self.send_signal(server_pid, "INT")
+		server_thread.join(get_timeout())
+		output = escape_str(server_thread.stdout.decode('utf-8', errors="backslashreplace").split("=====")[1])
+		color = TC.GREEN
+		if message not in output:
+			color = TC.RED
+		print(f'{color}Received   {TC.NC}: "{escape_str(output)}"')
+		# TODO: check the codes used in the communication
+		# TODO: on bonus check back communication
+		return color is not TC.RED
 
 	def test_leaks(self):
-		server, server_pid = self.start_server()
+		server, server_pid = start_process(str((self.temp_dir / '../__my_srcs/server').resolve()), 'my_server.log')
 		self.send_message(server_pid, "teste\n-----\n")
-		server.expect("-----")
+		wait_for(server, "-----")
 		self.send_signal(server_pid, "INFO")
-		server.expect("reseted")
+		wait_for(server, "reseted")
 		self.send_message(server_pid, "A giant string that can be done as a teste to see if there is any memory leaks")
-		self.send_message(server_pid,
-		                  "v2 A giant string that can be done as a teste to see if there is any memory leaks")
-		self.send_message(server_pid,
-		                  "v4 A giant string that can be done as a teste to see if there is any memory leaks")
+		self.send_message(server_pid, "v2 A giant string that can be done as a teste to see if")
+		self.send_message(server_pid, "v4 A giant string that can be done as a teste to see if")
 		self.send_message(server_pid, "\n=====\n")
-		server.expect("=====")
+		wait_for(server, "=====")
 		self.send_signal(server_pid, "INT")
-		server.expect("==leaks==")
+		wait_for(server, "==leaks==")
 		result = server.wait()
 		shutil.copy2(self.temp_dir / '../__my_srcs/server.log', self.temp_dir)
 		shutil.copy2(self.temp_dir / '../__my_srcs/server', self.temp_dir)
 		return result
 
-	def start_server(self):
-
-		def get_server_pid():
-			with open_ascii("my_server.log", "r") as log:
-				return log.readline().split(' ')[1].strip()
-
-		child = pexpect.spawn(str((self.temp_dir / '..' / '__my_srcs' / 'server').resolve()))
-		child.logfile = open("my_server.log", "wb")
-		child.expect("__PID: .*\n")
-		return child, get_server_pid()
-
 	def send_message(self, server_pid, message):
-		client_path = str((self.temp_dir / '..' / '__my_srcs' / 'client').resolve())
-		client = subprocess.run([client_path, str(server_pid), message], capture_output=True, text=True)
-		logger.info(client)
+		client_path = str((self.temp_dir / '../__my_srcs/client').resolve())
+		client = None
+		try:
+			client = subprocess.run(f'{client_path} {server_pid} {quote(message)}',
+			                        capture_output=True,
+			                        timeout=get_timeout(),
+			                        shell=True)
+			logger.info(client)
+		except Exception as ex:
+			raise Exception("Timeout when sending message to the server." + UNRELIABLE_MSG) from ex
+		if client.stderr:
+			error = client.stderr.decode('utf-8', errors="backslashreplace")
+			error = takewhile(lambda line: "Shadow bytes around" not in line, error.splitlines())
+			print("\n".join(error))
+			raise Exception("Memory problems")
 
 	def send_signal(self, pid, signal):
 		res = subprocess.run(["kill", f"-{signal}", pid], capture_output=True)

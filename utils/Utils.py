@@ -75,3 +75,13 @@ def is_linux():
 
 def is_mac():
 	return not is_linux()
+
+
+def escape_str(string):
+	return string.replace('\\', '\\\\') \
+		.replace('"', r'\"') \
+		.replace('\t', r'\t') \
+		.replace('\n', r'\n') \
+		.replace('\f', r'\f') \
+		.replace('\v', r'\v') \
+		.replace('\r', r'\r')

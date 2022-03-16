@@ -351,7 +351,7 @@ void handle_termination(int signal)
 {
 	(void)signal;
 	int res = check_leaks(NULL);
-	printf("==leaks==: %i\n", res);
+	printf("=====\n==leaks==: %i\n", res);
 	fflush(stdout);
 	exit(!res);
 }
