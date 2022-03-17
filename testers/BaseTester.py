@@ -239,4 +239,4 @@ class BaseTester:
 		tests_ok = [test for test in to_execute if test not in errors]
 		if tests_ok:
 			print(f"\n{TC.B_GREEN}Passed tests{TC.NC}: {', '.join(tests_ok)}")
-		return False
+		exit(0)

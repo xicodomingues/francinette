@@ -127,4 +127,4 @@ try to fix it and create a pull request for that change!
 * To [alelievr](https://github.com/alelievr) for [libft-unit-test](https://github.com/alelievr/libft-unit-test) and [printf-unit-test](https://github.com/alelievr/printf-unit-test)
 * To [cacharle](https://github.com/cacharle) for [ft_printf_test](https://github.com/cacharle/ft_printf_test)
 * To [ombhd](https://github.com/ombhd) for [Cleaner_42](https://github.com/ombhd/Cleaner_42)
-* To Alberto for the help in the minitalk tester <!-- TODO: missing attribution-->
+* To [arsalas](https://github.com/arsalas) for the help in the minitalk tester

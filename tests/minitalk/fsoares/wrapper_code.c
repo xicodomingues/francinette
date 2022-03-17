@@ -366,7 +366,7 @@ void reset_mocks(int signal)
 
 int main(int argn, char **args)
 {
-	setup_framework(argn, args);
+	setup_framework(argn, (char **)args);
 	set_signature("on %s", __FILE__);
 	signal(SIGINFO, reset_mocks);
 	signal(SIGINT, handle_termination);

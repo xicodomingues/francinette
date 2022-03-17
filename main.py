@@ -16,13 +16,14 @@ from testers.cpiscine.CPiscineTester import CPiscineTester
 from testers.get_next_line.GetNextLineTester import GetNextLineTester
 from testers.libft.LibftTester import LibftTester
 from testers.minitalk.Minitalk import Minitalk
+from testers.pipex.Pipex import Pipex
 from testers.printf.PrintfTester import PrintfTester
 from utils.ExecutionContext import TestRunInfo, set_contex
 from utils.TerminalColors import TC
 
 logger = logging.getLogger("main")
 
-PROJECTS = [CPiscineTester, LibftTester, GetNextLineTester, PrintfTester, Minitalk]
+PROJECTS = [CPiscineTester, LibftTester, GetNextLineTester, PrintfTester, Minitalk, Pipex]
 
 
 def is_repo(string: str):

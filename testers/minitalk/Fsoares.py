@@ -1,6 +1,8 @@
 import logging
+import random
 import re
 import shutil
+import string
 import subprocess
 import threading
 from itertools import takewhile
@@ -12,12 +14,12 @@ from halo import Halo
 from testers.BaseExecutor import BaseExecutor
 from utils.ExecutionContext import get_timeout, has_bonus
 from utils.TerminalColors import TC
-from utils.Utils import escape_str, open_ascii, show_errors_file
+from utils.Utils import decode_ascii, escape_str, open_ascii, show_errors_file
 
 logger = logging.getLogger('mt-fsoares')
 UNRELIABLE_MSG = ("\nThis Tester is not super reliable, so executing again can solve the problem. " +
                   "You can also try to increase the sleep time inside your minitalk app.")
-
+MSG_DELIM = '====='
 
 def get_server_pid(logfile):
 	with open_ascii(logfile, "r") as log:
@@ -45,12 +47,14 @@ class BgThread(threading.Thread):
 		self.stderr = None
 		self.pid = None
 		self.command = command
+		self.return_code = None
 		threading.Thread.__init__(self)
 
 	def run(self):
 		p = subprocess.Popen(self.command.split(), shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-		self.pid = p.pid
+		self.pid = str(p.pid)
 		self.stdout, self.stderr = p.communicate()
+		self.return_code = p.returncode
 
 
 class Fsoares(BaseExecutor):
@@ -68,53 +72,137 @@ class Fsoares(BaseExecutor):
 		with Halo(self.get_info_message("Preparing tests")) as spinner:
 			self.rewrite_mains()
 			self.add_sanitizer_to_makefiles()
-			command = 'fclean all'
-			if has_bonus():
-				command = 'fclean bonus'
-			output = self.call_make_command(command, self.exec_mandatory, silent=True, spinner=spinner)
-			if output:
-				raise f'Problem preprating the testes, please contact me at {TC.CYAN}fsoares{TC.NC} in slack'
+			self.compile('fclean all', spinner)
 
 		Halo(self.get_info_message("Running tests")).info()
-		result = self.test_communication()
-		if self.test_leaks() != 0:
-			show_errors_file(self.temp_dir, "server.log", "errors.log", 20)
-			result = False
-		if result:
-			print(f"{TC.GREEN}Tests OK!{TC.NC}")
-			return []
-		else:
-			print(f"{TC.GREEN}Tests KO!{TC.NC}")
-			return [self.name]
+		result = self.test_client_server()
+		if has_bonus():
+			print(f"{TC.PURPLE}\n[Bonus]{TC.NC}")
+			self.compile('fclean bonus', None)
+			result = self.test_client_server(bonus=True) and result
+		return [self.name] if not result else []
 
-	def test_communication(self):
-		server_thread = BgThread(str((self.temp_dir / '../__my_srcs/server')))
+	def compile(self, command, spinner):
+		output = self.call_make_command(command, self.exec_mandatory, silent=True, spinner=spinner)
+		if output:
+			raise f'Problem preprating the testes, please contact me at {TC.CYAN}fsoares{TC.NC} in slack'
+
+	def test_client_server(self, bonus=False):
+		no_leaks = self.test_leaks()
+		res = no_leaks and self.test_messages(bonus)
+		res = self.test_communication(bonus) and res
+		if not no_leaks:
+			show_errors_file(self.temp_dir, "leaks.log", "errors.log", 20)
+		return res and no_leaks
+
+	def start_bg_process(self, command):
+		server_thread = BgThread(command)
 		server_thread.start()
 		sleep(0.1)
-		server_pid = str(server_thread.pid)
-		middle, middle_pid = start_process(f"./middleman.out {server_thread.pid}", "middleman.log")
+		return server_thread
 
-		message = "Test rand stuff ~(*123!@#$%^&*(_+-=][}{';:.></|?)"
-		if has_bonus():
+	def start_server(self):
+		return self.start_bg_process(str((self.temp_dir / '../__my_srcs/server')))
+
+	def test_messages(self, bonus=False):
+		message = "Test `~(*123!@#$%^&*(_+-=][}{';:.></|\\?)"
+		if bonus:
 			message += " Ž (╯°□°)╯︵ ┻━┻"
-		print(f'{TC.BLUE}Test string{TC.NC}: "{escape_str(message)}"')
+		return self.send_message_wrapper(message) and self.send_giant_message() and self.send_multiple_messages()
 
-		client_pid = self.send_message(middle_pid, '=====' + message + '=====\n')
-		logger.info(f"client_pid: {client_pid}, server_pid: {server_pid}, middle_pid: {middle_pid}")
-		self.send_signal(middle_pid, "INT")
-		wait_for(middle, "=====")
-		self.send_signal(middle_pid, "INT")
-		self.send_signal(server_pid, "INT")
-		server_thread.join(get_timeout())
-		output = escape_str(server_thread.stdout.decode('utf-8', errors="backslashreplace").split("=====")[1])
+	def send_message_wrapper(self, message):
+		server = self.start_server()
+		try:
+			print(f'{TC.BLUE}Test string{TC.NC}: "{message}"')
+			self.send_message(server,MSG_DELIM + message + MSG_DELIM)
+		finally:
+			self.send_signal(server.pid, "INT")
+			server.join(0.2)
+		actual = server.stdout.decode("utf-8", errors="replace").split(MSG_DELIM)[1]
 		color = TC.GREEN
-		if message not in output:
+		if (actual != message):
 			color = TC.RED
-		print(f'{color}Received   {TC.NC}: "{escape_str(output)}"')
-		correct_signals = self.check_only_used_usr_signals(server_pid, client_pid)
-		return color is not TC.RED and correct_signals
+		print(f'{color}Received   {TC.NC}: "{actual[:len(message)]}"')
+		return actual == message
 
-	def check_only_used_usr_signals(self, server_id, client_id):
+	def send_giant_message(self):
+
+		def correctly_received(output, expected, spinner):
+
+			def show_error(string, start, i, end):
+				middle = string[i]
+				after = string[i + 1:end]
+				if middle == '\\' and string[i + 1] == 'x':
+					middle = string[i:i + 3]
+					after = string[i + 4:end]
+				return (escape_str(string[start:i]) + TC.RED + escape_str(middle) + TC.NC + escape_str(after))
+
+			actual = output.split(MSG_DELIM)[1]
+			if actual != expected:
+				for i, c in enumerate(actual):
+					if c != expected[i]:
+						if i < 10:
+							part_ex = escape_str(expected[:i + 10]) + "..."
+							part_ac = show_error(actual, 0, i, i + 10) + "..."
+						elif i > len(actual) - 10:
+							part_ex = "..." + escape_str(expected[i - 10:])
+							part_ac = "..." + show_error(actual, i - 10, i, len(expected))
+						else:
+							part_ex = "..." + escape_str(expected[i - 10:i + 10]) + "..."
+							part_ac = "..." + show_error(actual, i - 10, i, i + 10) + "..."
+						spinner.fail()
+						spinner.enabled = False
+						print(f"At position {i}:\n{TC.BLUE}Expected{TC.NC}: \"{part_ex}\"\n" +
+						      f"{TC.RED}Actual  {TC.NC}: \"{part_ac}\"")
+						return False
+			return True
+
+		server = self.start_server()
+		try:
+			message = ''.join(random.choices(string.printable, k=5000))
+			spinner = Halo("Sending 5000 characters: ", placement="right").start()
+			self.send_message(server, MSG_DELIM + message + MSG_DELIM)
+		finally:
+			self.send_signal(server.pid, "INT")
+			server.join(0.2)
+		result = correctly_received(decode_ascii(server.stdout), message, spinner)
+		if spinner.enabled:
+			spinner.succeed() if result else spinner.fail()
+		return result and server.return_code == 0
+
+	def send_multiple_messages(self):
+		with Halo("Multiple messages: ", placement="right") as spinner:
+			server = self.start_server()
+			messages = ["Hola", "Tudo bien?", "E como vai o tempo?", "vai andando"];
+			try:
+				for message in messages:
+					self.send_message(server, MSG_DELIM + message + MSG_DELIM)
+			finally:
+				self.send_signal(server.pid, "INT")
+				server.join(0.2)
+			output = decode_ascii(server.stdout)
+			for message in messages:
+				if message not in output:
+					spinner.fail()
+					return False
+			spinner.succeed()
+			return True
+
+
+	def test_communication(self, bonus=False):
+		server = self.start_server()
+		try:
+			middle = self.start_bg_process(f"./middleman.out {server.pid}")
+			client_pid = self.send_message(middle, "teste")
+			logger.info(f"client_pid: {client_pid}, server_pid: {server.pid}, middle_pid: {middle.pid}")
+		finally:
+			self.send_signal(middle.pid, "INT")
+			self.send_signal(server.pid, "INT")
+			server.join(0.2)
+			middle.join(1)
+		return self.check_only_used_usr_signals(server.pid, client_pid, bonus, decode_ascii(middle.stdout))
+
+	def check_only_used_usr_signals(self, server_id, client_id, bonus, output):
 
 		def check_process_signals(lines, proc_id):
 			for line in lines:
@@ -124,8 +212,7 @@ class Fsoares(BaseExecutor):
 			return True
 
 		line_regex = re.compile(r"(\d+) from (\d+)")
-		with open_ascii("middleman.log") as log:
-			entries = [line_regex.match(line) for line in log.readlines() if line_regex.match(line)]
+		entries = [line_regex.match(line) for line in output.splitlines() if line_regex.match(line)]
 		logger.info(entries)
 		only_usr = check_process_signals(entries, client_id)
 		spinner = Halo("Client only uses SIGUSR1 and SIGUSR2: ", placement="right")
@@ -137,44 +224,55 @@ class Fsoares(BaseExecutor):
 			spinner = Halo("Server only uses SIGUSR1 and SIGUSR2: ", placement="right")
 			spinner.succeed() if server_only_usr else spinner.fail()
 
-		if has_bonus():
-			spinner = Halo("Server sends client acknowledgements (bonus): ", placement="right")
+		if bonus:
+			spinner = Halo("Server sends client acknowledgements: ", placement="right")
 			spinner.succeed() if has_server_sigs else spinner.fail()
 		return only_usr and server_only_usr and (has_server_sigs if has_bonus() else True)
 
 	def test_leaks(self):
-		server, server_pid = start_process(str((self.temp_dir / '../__my_srcs/server').resolve()), 'my_server.log')
-		self.send_message(server_pid, "teste\n-----\n")
-		wait_for(server, "-----")
-		self.send_signal(server_pid, "INFO")
-		wait_for(server, "reseted")
-		self.send_message(server_pid, "A giant string that can be done as a teste to see if there is any memory leaks")
-		self.send_message(server_pid, "v2 A giant string that can be done as a teste to see if")
-		self.send_message(server_pid, "v4 A giant string that can be done as a teste to see if")
-		self.send_message(server_pid, "\n=====\n")
-		wait_for(server, "=====")
-		self.send_signal(server_pid, "INT")
-		wait_for(server, "==leaks==")
-		result = server.wait()
-		shutil.copy2(self.temp_dir / '../__my_srcs/server.log', self.temp_dir)
-		shutil.copy2(self.temp_dir / '../__my_srcs/server', self.temp_dir)
-		return result
+		server = self.start_server()
+		spinner = Halo("Leaks: ", placement="right").start()
+		try:
+			self.send_message(server, "teste\n-----\n")
+			self.send_signal(server.pid, "INFO")
+			self.send_message(server, "Hello!!")
+			self.send_message(server, "Hello!!")
+			self.send_message(server, "Hello!!")
+		finally:
+			self.send_signal(server.pid, "INT")
+			server.join(0.2)
 
-	def send_message(self, server_pid, message):
+		shutil.copy2(self.temp_dir / '../__my_srcs/server', self.temp_dir)
+		shutil.copy2(self.temp_dir / '../__my_srcs/server.log', self.temp_dir / 'leaks.log')
+		spinner.succeed() if server.return_code == 0 else spinner.fail()
+		return server.return_code == 0
+
+	def send_message(self, server, message):
+
+		def terminate_server():
+			self.send_signal(server.pid, "INT")
+			try:
+				server.join(0.2)
+			except:
+				pass
+
 		client_path = str((self.temp_dir / '../__my_srcs/client').resolve())
 		client = None
 		try:
-			client = subprocess.run(f'{client_path} {server_pid} {quote(message)}',
+			client = subprocess.run(f'{client_path} {server.pid} {quote(message)}',
 			                        capture_output=True,
-			                        timeout=get_timeout(),
+			                        timeout=get_timeout() * 2,
 			                        shell=True)
 			logger.info(client)
 		except Exception as ex:
-			raise Exception("Timeout when sending message to the server." + UNRELIABLE_MSG) from ex
+			terminate_server()
+			raise Exception(
+			    "Timeout when sending message to the server, please increase it with the --timeout option.") from ex
 		if client.stderr:
 			error = client.stderr.decode('utf-8', errors="backslashreplace")
 			error = takewhile(lambda line: "Shadow bytes around" not in line, error.splitlines())
 			print("\n".join(error))
+			terminate_server()
 			raise Exception("Memory problems")
 		return re.match(r"__PID: (\d+)", client.stdout.decode('utf-8', errors="backslashreplace")).group(1)
 
@@ -183,12 +281,14 @@ class Fsoares(BaseExecutor):
 		logger.info(res)
 
 	def rewrite_mains(self):
-		main_regex = re.compile(r"^(?:int|void)\s+main\(([^\)]+)\).*$")
+		main_regex = re.compile(r"^(?:int|void)\s+main\s*\(([^\)]+)\).*$")
+		main_const_regex = re.compile(r"^(?:int|void)\s+main\s*\((.*,.*\bconst\b.*)\).*$")
 
 		def rewrite_main(file):
 			with open(file, 'r') as f:
 				content = f.readlines()
 			no_args = False
+			const_main = False
 			for i, line in enumerate(content):
 				match = main_regex.match(line)
 				if match:
@@ -196,9 +296,13 @@ class Fsoares(BaseExecutor):
 					if "void" in args:
 						no_args = True
 					content[i] = line.replace("main", "__main2")
+				if main_const_regex.match(line):
+					const_main = True
 			with open("wrapper_code.c") as wrap:
 				to_add = wrap.readlines()
 				for i, line in enumerate(to_add):
+					if "int main(" in line and const_main:
+						to_add[i] = "int main(int argn, char const *args[])"
 					if '//**main_here' in line:
 						if no_args:
 							to_add[i] = "\t__main2();\n"

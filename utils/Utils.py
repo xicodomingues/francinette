@@ -1,6 +1,7 @@
 import logging
 import re
 from pathlib import Path
+import shutil
 import sys
 
 from utils.TerminalColors import TC
@@ -12,6 +13,8 @@ logger = logging.getLogger("utils")
 
 
 def show_banner(project):
+	columns = shutil.get_terminal_size((80, 23)).columns
+	#print(columns)
 	message = f"{TC.BLUE}Welcome to {TC.B_PURPLE}Francinette{TC.BLUE}, a 42 tester framework!"
 	submessage = f"{project}"
 	project_message = f"{TC.B_YELLOW}{project}{TC.CYAN}"
@@ -82,8 +85,8 @@ def is_mac():
 
 
 def escape_str(string):
-	return string.replace('\\', '\\\\') \
-		.replace('"', r'\"') \
+	temp = re.sub(r"\\(?!x)", r"\\\\", string)
+	return temp.replace('"', r'\"') \
 		.replace('\t', r'\t') \
 		.replace('\n', r'\n') \
 		.replace('\f', r'\f') \

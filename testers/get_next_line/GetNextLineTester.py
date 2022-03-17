@@ -23,7 +23,6 @@ class GetNextLineTester(BaseTester):
 			logger.info("Has bonus")
 			set_bonus(True)
 		self.execute_testers()
-		pass
 
 	@staticmethod
 	def is_project(current_path):
