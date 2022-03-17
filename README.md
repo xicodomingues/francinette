@@ -26,7 +26,7 @@ worrying about compiling and executing tests on the cloned code.
 
 You can also use it as a local test battery, so that you can test your own code.
 
-#### Example:
+#### Example execution:
 ![Example Image](example.png)
 
 ## Install:
@@ -113,9 +113,9 @@ the project.
 
 #### This test that you put up is incorrect!
 
-Please contact me on slack (under `fsoares-`) indicating for what exercise which test fails,
-and a description of what you think is wrong. You can also try to fix it and create a pull
-request for that change!
+Please contact me on slack (under `fsoares-`), or create a new github issue,  indicating for
+what exercise which test fails, and a description of what you think is wrong. You can also
+try to fix it and create a pull request for that change!
 
 ## Acknowledgments
 
@@ -125,4 +125,4 @@ request for that change!
 * To [alelievr](https://github.com/alelievr) for [libft-unit-test](https://github.com/alelievr/libft-unit-test) and [printf-unit-test](https://github.com/alelievr/printf-unit-test)
 * To [cacharle](https://github.com/cacharle) for [ft_printf_test](https://github.com/cacharle/ft_printf_test)
 * To [ombhd](https://github.com/ombhd) for [Cleaner_42](https://github.com/ombhd/Cleaner_42)
-* To [alberto] for the help in creating the minitalk tester <!-- TODO: missing attribution-->
+* To Alberto for the help in the minitalk tester <!-- TODO: missing attribution-->
