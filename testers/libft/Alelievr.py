@@ -11,7 +11,7 @@ from testers.libft.BaseExecutor import BONUS_FUNCTIONS
 from utils.ExecutionContext import get_timeout, has_bonus
 
 from utils.TerminalColors import TC
-from utils.Utils import open_ascii
+from utils.Utils import decode_ascii, open_ascii
 
 logger = logging.getLogger("alelievr")
 
@@ -69,9 +69,12 @@ class Alelievr():
 				raise Exception("Problem compiling tests")
 			spinner.succeed()
 		Halo(text=f"{TC.CYAN}Testing:{TC.NC}").info()
-		p = subprocess.run("./run_test")
+		p = subprocess.Popen("./run_test", stdout=subprocess.PIPE)
+		for line in p.stdout:
+			line_str = decode_ascii(line).rstrip()
+			print(line_str)
+
 		logger.info(p)
-		print('\n')
 		return self.parse_output()
 
 	def parse_output(self):

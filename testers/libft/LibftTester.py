@@ -35,11 +35,10 @@ class LibftTester(BaseTester):
 
 	def select_tests_to_execute(self):
 		args = self.info.args
-		if (args.part1 or args.part2 or args.bonus):
+		if (args.mandatory or args.bonus):
 			all_funcs = []
-			if (args.part1):
+			if (args.mandatory):
 				all_funcs.extend(PART_1_FUNCTIONS)
-			if (args.part2):
 				all_funcs.extend(PART_2_FUNCTIONS)
 			if (args.bonus):
 				all_funcs.extend(BONUS_FUNCTIONS)

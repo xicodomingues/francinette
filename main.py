@@ -1,5 +1,4 @@
 import argparse
-import importlib
 import logging
 import os
 import re
@@ -119,7 +118,7 @@ class Formatter(argparse.HelpFormatter):
 
 parser = argparse.ArgumentParser(formatter_class=Formatter)
 
-#TODO: clean part one and part 2, and -m, -b, -c
+
 def main():
 	"""
 	Executes the test framework with the given args
@@ -139,21 +138,24 @@ def main():
 	"""))
 	parser.add_argument("git_repo", nargs="?", help="If present, it uses this repository to clone the exercises from")
 	parser.add_argument("exercise", nargs="*", help="If present, it executes the passed tests")
-	parser.add_argument("-v", "--verbose", action="store_true", help="Activates verbose mode")
+	parser.add_argument("-v", "--verbose", action="store_true", help="Activates verbose mode (basically debug)")
 	parser.add_argument("-u", "--update", action="store_true", help="forces francinette to update")
 	parser.add_argument("-s",
 	                    "--strict",
 	                    action="store_true",
 	                    help=("It restricts the tests around memory allocation so that it reserves the correct " +
 	                          "amount of memory and that checks nulls when allocating memory"))
-	parser.add_argument("--part1", action="store_true", help="Execute tests of part1")
-	parser.add_argument("--part2", action="store_true", help="Execute tests of part2")
-	parser.add_argument("--mandatory", action="store_true", help="Executes test of the mandatory part")
-	parser.add_argument("--bonus", action="store_true", help="Execute tests of bonus part")
-	parser.add_argument("--timeout", action='store', default='10', help="The new timeout in seconds (by default is 10)")
-	parser.add_argument("--clean-cache",
+	parser.add_argument("-m", "--mandatory", action="store_true", help="Executes test of the mandatory part")
+	parser.add_argument("-b", "--bonus", action="store_true", help="Execute tests of bonus part")
+	parser.add_argument("-tm",
+	                    "--timeout",
+	                    action='store',
+	                    default='10',
+	                    help="The new timeout in seconds (by default is 10)")
+	parser.add_argument("-c",
+	                    "--clean",
 	                    action='store_true',
-	                    help="Executes a script that will clean the most significant caches")
+	                    help="Executes a script that will clean the caches and other temporary files")
 	parser.add_argument("-in",
 	                    "--ignore-norm",
 	                    action="store_true",
@@ -162,8 +164,8 @@ def main():
 	                    "--testers",
 	                    nargs="*",
 	                    help=("Executes the corresponding testers. If no arguments are passed, it asks the user. " +
-	                          f"{TC.YELLOW}This parameter should be the last one in the command line even after "+
-							  f"the positional parameters{TC.NC}"))
+	                          f"{TC.YELLOW}This parameter should be the last one in the command line even after " +
+	                          f"the positional parameters{TC.NC}"))
 	args = parser.parse_args()
 
 	if args.update:
@@ -172,7 +174,7 @@ def main():
 		subprocess.run(file, shell=True)
 		exit(0)
 
-	if args.clean_cache:
+	if args.clean:
 		file = Path(os.path.realpath(__file__), "..", "utils", "clean_cache.sh").resolve()
 		logger.info(f"executing cleaning of the cache with script: {file}")
 		subprocess.run(str(file), shell=True)

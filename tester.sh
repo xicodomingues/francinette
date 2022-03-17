@@ -35,7 +35,7 @@ if [[ (! -e donotupdate) && ($new_version -gt $version) ]]; then
 			case $yn in
 				[Yy]* ) launch_update; break ;;
 				[Dd]* ) touch donotupdate; break ;;
-				[Aa]* ) touch alwaysupdate; break ;;
+				[Aa]* ) touch alwaysupdate; launch_update; break ;;
 				[Nn]* ) break ;;
 				* ) echo "Please answer yes, no, always, or don't ask again." ;;
 			esac

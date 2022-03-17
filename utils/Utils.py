@@ -41,6 +41,10 @@ def open_ascii(file, mode='r'):
 	return open(file, mode, encoding='ascii', errors="backslashreplace")
 
 
+def decode_ascii(bytes):
+	return bytes.decode('ascii', errors="backslashreplace")
+
+
 def show_errors_file(temp_dir: Path, errors_color, errors_log, n_lines=50):
 	trace_to_line = TraceToLine(temp_dir, errors_color)
 	lines = trace_to_line.parse_stack_traces()

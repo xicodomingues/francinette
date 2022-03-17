@@ -69,6 +69,8 @@ it is and execute the corresponding tests.
 
 You can also use the shorter version of the command: `paco`
 
+To see all the available options execute `paco -h`
+
 ```
 /C00 $> francinette                  # Execute the tests for C00
 
