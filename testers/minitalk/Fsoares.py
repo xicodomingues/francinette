@@ -1,14 +1,10 @@
-from itertools import takewhile
 import logging
-import os
-from pathlib import Path
-from pipes import quote
-from quopri import encode
 import re
 import shutil
 import subprocess
-from signal import SIGINFO
 import threading
+from itertools import takewhile
+from pipes import quote
 from time import sleep
 
 import pexpect
@@ -103,7 +99,8 @@ class Fsoares(BaseExecutor):
 			message += " Ž (╯°□°)╯︵ ┻━┻"
 		print(f'{TC.BLUE}Test string{TC.NC}: "{escape_str(message)}"')
 
-		self.send_message(middle_pid, '=====' + message + '=====\n')
+		client_pid = self.send_message(middle_pid, '=====' + message + '=====\n')
+		logger.info(f"client_pid: {client_pid}, server_pid: {server_pid}, middle_pid: {middle_pid}")
 		self.send_signal(middle_pid, "INT")
 		wait_for(middle, "=====")
 		self.send_signal(middle_pid, "INT")
@@ -114,9 +111,36 @@ class Fsoares(BaseExecutor):
 		if message not in output:
 			color = TC.RED
 		print(f'{color}Received   {TC.NC}: "{escape_str(output)}"')
-		# TODO: check the codes used in the communication
-		# TODO: on bonus check back communication
-		return color is not TC.RED
+		correct_signals = self.check_only_used_usr_signals(server_pid, client_pid)
+		return color is not TC.RED and correct_signals
+
+	def check_only_used_usr_signals(self, server_id, client_id):
+
+		def check_process_signals(lines, proc_id):
+			for line in lines:
+				sig, pid = line.group(1), line.group(2)
+				if pid == proc_id and sig != "30" and sig != "31":
+					return False
+			return True
+
+		line_regex = re.compile(r"(\d+) from (\d+)")
+		with open_ascii("middleman.log") as log:
+			entries = [line_regex.match(line) for line in log.readlines() if line_regex.match(line)]
+		logger.info(entries)
+		only_usr = check_process_signals(entries, client_id)
+		spinner = Halo("Client only uses SIGUSR1 and SIGUSR2: ", placement="right")
+		spinner.succeed() if only_usr else spinner.fail()
+		has_server_sigs = [entry for entry in entries if entry.group(2) == server_id]
+		server_only_usr = True
+		if has_server_sigs:
+			server_only_usr = check_process_signals(entries, server_id)
+			spinner = Halo("Server only uses SIGUSR1 and SIGUSR2: ", placement="right")
+			spinner.succeed() if server_only_usr else spinner.fail()
+
+		if has_bonus():
+			spinner = Halo("Server sends client acknowledgements (bonus): ", placement="right")
+			spinner.succeed() if has_server_sigs else spinner.fail()
+		return only_usr and server_only_usr and (has_server_sigs if has_bonus() else True)
 
 	def test_leaks(self):
 		server, server_pid = start_process(str((self.temp_dir / '../__my_srcs/server').resolve()), 'my_server.log')
@@ -152,6 +176,7 @@ class Fsoares(BaseExecutor):
 			error = takewhile(lambda line: "Shadow bytes around" not in line, error.splitlines())
 			print("\n".join(error))
 			raise Exception("Memory problems")
+		return re.match(r"__PID: (\d+)", client.stdout.decode('utf-8', errors="backslashreplace")).group(1)
 
 	def send_signal(self, pid, signal):
 		res = subprocess.run(["kill", f"-{signal}", pid], capture_output=True)
