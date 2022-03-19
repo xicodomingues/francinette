@@ -1,8 +1,5 @@
 [tool.commitizen]
 name = "cz_conventional_commits"
 version = "0.1.0"
-version_files = ["utils/version.py"]
+version_files = [ "utils/version.py",]
 changelog_file = "doc/CHANGELOG.md"
-
-[paco]
-last_run = ""

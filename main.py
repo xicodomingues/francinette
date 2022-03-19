@@ -18,6 +18,7 @@ from testers.pipex.Pipex import Pipex
 from testers.printf.Printf import Printf
 from utils.ExecutionContext import TestRunInfo, set_contex
 from utils.TerminalColors import TC
+from utils.update import do_update
 
 logger = logging.getLogger("main")
 
@@ -142,9 +143,7 @@ def main():
 	#TODO: check if needs update
 
 	if args.update:
-		file = os.path.join(os.path.dirname(os.path.realpath(__file__)), "bin/update.sh")
-		logger.info(f"executing update with script: {file}")
-		subprocess.run(file, shell=True)
+		do_update()
 		exit(0)
 
 	if args.clean:
