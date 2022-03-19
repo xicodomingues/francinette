@@ -1,6 +1,6 @@
 import logging
 import os
-from pathlib import Path
+
 from testers.BaseTester import BaseTester
 from testers.cpiscine.C00Tester import C00Tester
 from testers.cpiscine.C01Tester import C01Tester
@@ -19,10 +19,10 @@ def has_file(ex_path, file):
 	return os.path.exists(path)
 
 
-class CPiscineTester(BaseTester):
+class CPiscine(BaseTester):
+
 	def __init__(self, info: TestRunInfo) -> None:
 		super().__init__(info)
-
 
 	@staticmethod
 	def is_project(current_path):

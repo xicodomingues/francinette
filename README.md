@@ -27,7 +27,9 @@ worrying about compiling and executing tests on the cloned code.
 You can also use it as a local test battery, so that you can test your own code.
 
 #### Example execution:
-![Example Image](example.png)
+
+![Example Image](doc/example.png)
+
 
 ## Install:
 Francinette has an automatic installer.
@@ -40,7 +42,7 @@ In linux it will also download and install the necessary packages for it to run.
 admin permission to do that.
 
 ```
-bash -c "$(curl -fsSL https://raw.github.com/xicodomingues/francinette/master/utils/install.sh)"
+bash -c "$(curl -fsSL https://raw.github.com/xicodomingues/francinette/master/bin/install.sh)"
 ```
 
 The francinette folder will be under your `$HOME` directory (`/User/<you_username>/`)
@@ -58,11 +60,11 @@ You can also force it from francinette itself:
 If the above does not work you can also execute the command bellow:
 
 ```
-bash -c "$(curl -fsSL https://raw.github.com/xicodomingues/francinette/master/utils/update.sh)"
+bash -c "$(curl -fsSL https://raw.github.com/xicodomingues/francinette/master/bin/update.sh)"
 ```
 
 
-## Runnning:
+## Running:
 
 If you are on a root of a project, `francinette` should be able to tell which project
 it is and execute the corresponding tests.

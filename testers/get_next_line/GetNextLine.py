@@ -10,7 +10,7 @@ from utils.Utils import show_banner
 logger = logging.getLogger("gnl")
 
 
-class GetNextLineTester(BaseTester):
+class GetNextLine(BaseTester):
 
 	name = "get_next_line"
 	my_tester = Fsoares
@@ -30,4 +30,4 @@ class GetNextLineTester(BaseTester):
 		logger.info(f"Testing: {file_path}")
 		if not file_path.exists():
 			return False
-		return GetNextLineTester
+		return GetNextLine

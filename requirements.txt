@@ -1,3 +1,5 @@
 GitPython
 halo
 pexpect
+rich
+toml

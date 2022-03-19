@@ -8,7 +8,7 @@ version=67
 
 cd "$HOME"/francinette || exit
 
-git_url='https://raw.githubusercontent.com/xicodomingues/francinette/master'
+git_url='https://raw.githubusercontent.com/xicodomingues/francinette/master/bin'
 curl -sS "$git_url/tester.sh" -o new_tester
 
 new_version=$(grep -E '^version=\d+' new_tester)

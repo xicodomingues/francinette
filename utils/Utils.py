@@ -8,6 +8,7 @@ from utils.TerminalColors import TC
 from utils.TraceToLine import TraceToLine
 
 FILE_SHOW_LINES = 50
+REPO_URL = "https://raw.githubusercontent.com/xicodomingues/francinette/master/"
 
 logger = logging.getLogger("utils")
 

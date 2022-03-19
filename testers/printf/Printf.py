@@ -11,7 +11,7 @@ from utils.Utils import is_makefile_project
 logger = logging.getLogger('printf')
 
 
-class PrintfTester(BaseTester):
+class Printf(BaseTester):
 
 	name = "printf"
 	my_tester = Fsoares
@@ -24,4 +24,4 @@ class PrintfTester(BaseTester):
 
 	@staticmethod
 	def is_project(current_path):
-		return is_makefile_project(current_path, "libftprintf.a", PrintfTester)
+		return is_makefile_project(current_path, "libftprintf.a", Printf)

@@ -19,7 +19,7 @@ logger = logging.getLogger("libft")
 func_regex = re.compile(r"(?:\w+\s+)+\**ft_(\w+)\s*\(.*")
 
 
-class LibftTester(BaseTester):
+class Libft(BaseTester):
 
 	name = "libft"
 	my_tester = Fsoares
@@ -31,7 +31,7 @@ class LibftTester(BaseTester):
 
 	@staticmethod
 	def is_project(current_path):
-		return is_makefile_project(current_path, "libft.a", LibftTester)
+		return is_makefile_project(current_path, "libft.a", Libft)
 
 	def select_tests_to_execute(self):
 		args = self.info.args

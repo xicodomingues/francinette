@@ -11,7 +11,7 @@ rm -rf francinette
 git clone --recursive https://github.com/xicodomingues/francinette.git
 
 if [ "$(uname)" != "Darwin" ]; then
-	echo "Admin permissions needed to install C compilers, python, unzip and upgrade current packages"
+	echo "Admin permissions needed to install C compilers, python, and upgrade current packages"
 	sudo apt update
 	sudo apt upgrade
 	sudo apt install gcc clang libpq-dev libbsd-dev libncurses-dev valgrind-y
