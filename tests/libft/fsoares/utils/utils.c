@@ -334,12 +334,14 @@ void add_to_error_file()
 		fseek(final_file, -2, SEEK_END);
 		nread = fread(buf, 1, sizeof buf, final_file);
 		if (nread == 2)
+		{
 			if(buf[0] != '\n')
 			{
 				fwrite("\n", 1, 1, final_file);
 			}
 			if (buf[1] != '\n')
 				fwrite("\n\n", 1, 2, final_file);
+		}
 		fclose(file);
 		fclose(final_file);
 	}

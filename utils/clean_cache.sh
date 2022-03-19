@@ -6,7 +6,7 @@
 echo -e	"\n"
 echo -e	" 		█▀▀ █▀▀ █░░ █▀▀ ▄▀█ █▄░█ "
 echo -e	" 		█▄▄ █▄▄ █▄▄ ██▄ █▀█ █░▀█ "
-echo -e "\n    	    	   By: "
+echo -en "\n    	    	   By: "
 echo -e "\033[33mOMBHD\033[0m [𝒐𝒃𝒐𝒖𝒚𝒌𝒐𝒖]\n"
 
 #calculating the current available storage
@@ -56,6 +56,9 @@ find "$HOME"/Desktop -name .DS_Store -depth -exec /bin/rm {} \; &>/dev/null
 #things related to pool (piscine)
 /bin/rm -rf "$HOME"/Desktop/Piscine\ Rules\ *.mp4
 /bin/rm -rf "$HOME"/Desktop/PLAY_ME.webloc
+
+#Remove temp francinette folder
+/bin/rm -rf "$HOME"/francinette/temp
 
 #calculating the new available storage after cleaning
 Storage=$(df -h "$HOME" | grep "$HOME" | awk '{print($4)}' | tr 'i' 'B')
