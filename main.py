@@ -168,7 +168,7 @@ def main():
 		    f"Found exXX in the current dir '{exercises}'. Saving the exercise and going up a dir: '{current_dir}'")
 		os.chdir("..")
 
-	base = Path(__file__, "../..").resolve()
+	base = Path(__file__, "..").resolve()
 	exercises = args.exercise or exercises
 	if args.git_repo and not is_repo(args.git_repo):
 		if not exercises:
