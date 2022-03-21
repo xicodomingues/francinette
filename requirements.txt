@@ -4,3 +4,4 @@ pexpect
 rich
 toml
 certifi
+packaging
