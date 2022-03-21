@@ -3,3 +3,4 @@ halo
 pexpect
 rich
 toml
+certifi
