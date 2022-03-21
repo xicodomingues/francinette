@@ -19,6 +19,10 @@ def open_ascii(file, mode='r'):
 	return open(file, mode, encoding='ascii', errors="backslashreplace")
 
 
+def open_utf8(file, mode='r'):
+	return open(file, mode, encoding='utf-8', errors="backslashreplace")
+
+
 class TraceToLine:
 
 	def __init__(self, temp_dir, error_file) -> None:
@@ -123,7 +127,7 @@ class TraceToLine:
 		return (map_lines, to_lldb)
 
 	def parse_stack_traces(self):
-		with open_ascii(self.error_file) as bf:
+		with open_utf8(self.error_file) as bf:
 			lines = bf.readlines()
 		if (self.remaining_lines <= 0):
 			return lines

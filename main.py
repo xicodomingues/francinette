@@ -202,7 +202,10 @@ def main():
 			print(f"You can see the cloned repository in {TC.B_WHITE}{git_dir}{TC.NC}")
 	except Exception as ex:
 		print(f"{TC.B_RED}{ex}{TC.NC}")
-		logger.exception(ex)
+		if 'fraaaa' in str(base):
+			raise ex
+		else:
+			logger.exception(ex)
 
 
 def entry_point():

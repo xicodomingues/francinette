@@ -5,7 +5,7 @@ import shutil
 import sys
 
 from utils.TerminalColors import TC
-from utils.TraceToLine import TraceToLine
+from utils.TraceToLine import TraceToLine, open_utf8
 
 FILE_SHOW_LINES = 50
 REPO_URL = "https://raw.githubusercontent.com/xicodomingues/francinette/master/"
@@ -49,15 +49,15 @@ def decode_ascii(bytes):
 	return bytes.decode('ascii', errors="backslashreplace")
 
 
-def show_errors_file(temp_dir: Path, errors_color, errors_log, n_lines=50):
+def show_errors_file(temp_dir: Path, errors_color, errors_log, n_lines=FILE_SHOW_LINES):
 	trace_to_line = TraceToLine(temp_dir, errors_color)
 	lines = trace_to_line.parse_stack_traces()
 
 	print(f"{TC.B_RED}Errors found{TC.NC}:")
 	[print(line, end='') for line in list(filter(lambda x: x != '', lines[:n_lines * 4]))[:n_lines]]
-	if len(lines) > FILE_SHOW_LINES:
+	if len(lines) > n_lines:
 		dest = (temp_dir / errors_log).resolve()
-		with open(dest, "w") as log:
+		with open_utf8(dest, "w") as log:
 			log.writelines([remove_ansi_colors(line) for line in lines])
 		print(f"...\n\nFile too large. To see full report open: {TC.PURPLE}{dest}{TC.NC}")
 	print()

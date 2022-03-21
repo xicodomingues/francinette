@@ -8,7 +8,7 @@ from pathlib import Path
 
 import git
 from halo import Halo
-from utils.ExecutionContext import TestRunInfo, has_bonus, is_strict, set_bonus
+from utils.ExecutionContext import TestRunInfo, get_context, has_bonus, is_strict, set_bonus
 from utils.TerminalColors import TC
 from utils.Utils import intersection, show_banner
 
@@ -180,7 +180,10 @@ class BaseTester:
 			return (tester.name, tx.execute())
 		except Exception as ex:
 			print(ex)
-			logger.exception(ex)
+			if 'fraaaa' in str(get_context().base_dir):
+				raise ex
+			else:
+				logger.exception(ex)
 			return (tester.name, [tester.name])
 
 	def prepare_tests(self, tester):
