@@ -3,6 +3,10 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import List
 
+from rich.console import Console
+
+console = Console()
+
 
 @dataclass
 class TestRunInfo:
@@ -36,6 +40,6 @@ def has_bonus() -> bool:
 def is_strict():
 	return _saved_context.args.strict
 
+
 def get_timeout():
 	return int(_saved_context.args.timeout)
-

@@ -134,3 +134,4 @@ dmypy.json
 /c??/
 .DS_Store
 /logs/
+utils/update.toml

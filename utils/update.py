@@ -1,19 +1,26 @@
+import logging
+import os
+import ssl
+from asyncio import subprocess
 from datetime import datetime, timedelta
 from pathlib import Path
-import ssl
-import certifi
+from subprocess import run
 from urllib.request import urlopen
-from git import Repo
 
+import certifi
 import toml
+from git import Repo
+from packaging import version as vs
 from rich import print
 
-from packaging import version as vs
+from utils.ExecutionContext import console
 from utils.Utils import REPO_URL
-from version import version as current
+from utils.version import version as current
 
 DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
 toml_path = Path(__file__, "../update.toml").resolve()
+
+logger = logging.getLogger("update")
 
 
 def save_settings(settings):
@@ -33,9 +40,10 @@ def do_not_update_ever(settings):
 
 def get_settings():
 	try:
-		settings = toml.load(toml_path)
+		return toml.load(toml_path)
 	except:
-		settings = {'paco': {'last_run': None}}
+		return {'paco': {'last_run': None}}
+
 
 def update_paco():
 	settings = get_settings()
@@ -45,8 +53,8 @@ def update_paco():
 		do_update()
 
 	last_run = settings['paco']['last_run']
-	# last_run and datetime.strptime(last_run, DATETIME_FORMAT) > datetime.now() - timedelta(hours=1):
-	# 	return save_settings(settings)
+	if last_run and datetime.strptime(last_run, DATETIME_FORMAT) > datetime.now() - timedelta(hours=1):
+		return save_settings(settings)
 	settings['paco']['last_run'] = datetime.strftime(datetime.now(), DATETIME_FORMAT)
 
 	with urlopen(REPO_URL + "utils/version.py", context=ssl.create_default_context(cafile=certifi.where())) as data:
@@ -73,8 +81,19 @@ def update_paco():
 	save_settings(settings)
 	do_update()
 
+
 def do_update():
-	repo = Repo(Path(__file__).parent.parent.resolve())
-	origin = repo.remote()
-	for fetch_info in origin.fetch(progress=)
-	pass
+	base_dir = Path(__file__).parent.parent.resolve()
+	repo = Repo(base_dir)
+	logger.info(repo.heads.master.checkout())
+	logger.info(repo.remotes.origin.pull())
+	logger.info(repo.git.submodule('update', '--init'))
+
+	old_dir = os.getcwd()
+	os.chdir(base_dir)
+	p = run("pip3 install --disable-pip-version-check -r requirements.txt", shell=True)
+	if p.returncode != 0:
+		console.print("Problem launching the installer. Contact me (fsoares- on slack)")
+	else:
+		console.print("[white bold]Francinette is updated. You can use it again!")
+	os.chdir(old_dir)

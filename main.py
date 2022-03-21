@@ -18,7 +18,7 @@ from testers.pipex.Pipex import Pipex
 from testers.printf.Printf import Printf
 from utils.ExecutionContext import TestRunInfo, set_contex
 from utils.TerminalColors import TC
-from utils.update import do_update
+from utils.update import do_update, update_paco
 
 logger = logging.getLogger("main")
 
@@ -140,18 +140,6 @@ def main():
 	                          f"the positional parameters{TC.NC}"))
 	args = parser.parse_args()
 
-	#TODO: check if needs update
-
-	if args.update:
-		do_update()
-		exit(0)
-
-	if args.clean:
-		file = Path(os.path.realpath(__file__), "../bin/clean_cache.sh").resolve()
-		logger.info(f"executing cleaning of the cache with script: {file}")
-		subprocess.run(str(file), shell=True)
-		exit(0)
-
 	if args.verbose:
 		root = logging.getLogger()
 		handler = logging.StreamHandler(sys.stdout)
@@ -159,6 +147,18 @@ def main():
 		formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 		handler.setFormatter(formatter)
 		root.addHandler(handler)
+
+	if args.update:
+		do_update()
+		exit(0)
+
+	update_paco()
+
+	if args.clean:
+		file = Path(os.path.realpath(__file__), "../bin/clean_cache.sh").resolve()
+		logger.info(f"executing cleaning of the cache with script: {file}")
+		subprocess.run(str(file), shell=True)
+		exit(0)
 
 	logger.info(f"current_dir: {current_dir}")
 	if re.fullmatch(r"ex\d{2}", current_dir):
