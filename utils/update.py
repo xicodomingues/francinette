@@ -1,10 +1,9 @@
 import logging
 import os
 import ssl
-from asyncio import subprocess
 from datetime import datetime, timedelta
 from pathlib import Path
-from subprocess import run
+import subprocess
 from urllib.request import urlopen
 
 import certifi
@@ -83,17 +82,19 @@ def update_paco():
 
 
 def do_update():
-	base_dir = Path(__file__).parent.parent.resolve()
-	repo = Repo(base_dir)
-	logger.info(repo.heads.master.checkout())
-	logger.info(repo.remotes.origin.pull())
-	logger.info(repo.git.submodule('update', '--init'))
+	with console.status("Updating francinette...") as status:
+		base_dir = Path(__file__).parent.parent.resolve()
+		repo = Repo(base_dir)
+		repo.heads.master.checkout()
+		repo.remotes.origin.pull()
+		repo.git.submodule('update', '--init')
 
-	old_dir = os.getcwd()
-	os.chdir(base_dir)
-	p = run("pip3 install --disable-pip-version-check -r requirements.txt", shell=True)
+		old_dir = os.getcwd()
+		os.chdir(base_dir)
+		p = subprocess.run("pip3 install --disable-pip-version-check -r requirements.txt".split(), text=True, capture_output=True)
 	if p.returncode != 0:
-		console.print("Problem launching the installer. Contact me (fsoares- on slack)")
+		console.print(p.stderr)
+		console.print("[yellow]Problem updating francinette. Contact me (fsoares- on slack)")
 	else:
 		console.print("[white bold]Francinette is updated. You can use it again!")
 	os.chdir(old_dir)
