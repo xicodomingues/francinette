@@ -1,3 +1,9 @@
+## 0.2.0 (2022-04-07)
+
+### Feat
+
+- Added my pipex tester (mandatory only)
+
 ## 0.1.1 (2022-03-21)
 
 ### Refactor
