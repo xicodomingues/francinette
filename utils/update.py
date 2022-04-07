@@ -86,6 +86,7 @@ def do_update():
 		base_dir = Path(__file__).parent.parent.resolve()
 		repo = Repo(base_dir)
 		repo.git.reset('--hard')
+		repo.git.clean('-fdx')
 		repo.heads.master.checkout()
 		repo.remotes.origin.pull()
 		repo.git.submodule('update', '--init')
