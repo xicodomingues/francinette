@@ -14,7 +14,7 @@ from utils.Utils import intersection, show_banner
 
 logger = logging.getLogger("base")
 
-norm_func_regex = re.compile(r"^([\w\\]+\.(?:c|h)): Error!")
+norm_func_regex = re.compile(r"^([\w\\/]+\.(?:c|h)): Error!")
 
 
 def run_command(command: str, spinner: Halo):
