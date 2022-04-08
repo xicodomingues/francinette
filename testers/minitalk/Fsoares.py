@@ -78,17 +78,19 @@ class Fsoares(BaseExecutor):
 			self.compile('fclean all', spinner)
 
 		Halo(self.get_info_message("Running tests")).info()
-		result = self.test_client_server()
-		if has_bonus():
+		result = True
+		if (self.exec_mandatory):
+			result = self.test_client_server()
+		if self.exec_bonus:
 			print(f"{TC.PURPLE}\n[Bonus]{TC.NC}")
-			self.compile('fclean bonus', None, bonus=True)
+			self.compile('fclean bonus', None)
 			result = self.test_client_server(bonus=True) and result
 		return self.result(not result)
 
-	def compile(self, command, spinner, bonus=False):
-		output = self.call_make_command(command, self.exec_mandatory, silent=True, spinner=spinner)
+	def compile(self, command, spinner):
+		output = self.call_make_command(command, True, silent=True, spinner=spinner)
 		if output:
-			raise f'Problem preprating the testes, please contact me at {TC.CYAN}fsoares{TC.NC} in slack'
+			raise Exception(f'Problem preprating the testes, please contact me at fsoares- in slack')
 
 	def test_client_server(self, bonus=False):
 		no_leaks = self.test_leaks()
@@ -111,8 +113,7 @@ class Fsoares(BaseExecutor):
 		message = "Test `~(*123!@#$%^&*(_+-=][}{';:.></|\\?)"
 		if bonus:
 			message += " Ž (╯°□°)╯︵ ┻━┻"
-		return (self.send_message_wrapper(message) #FIXME and self.send_giant_message()
-				and self.send_multiple_messages())
+		return self.send_message_wrapper(message) and self.send_giant_message() and self.send_multiple_messages()
 
 	def send_message_wrapper(self, message):
 		server = self.start_server()
@@ -315,6 +316,7 @@ class Fsoares(BaseExecutor):
 			content += to_add
 			with open(file, 'w') as f:
 				f.writelines(content)
+			logger.info(f"file {file} rewritten")
 
 		p = subprocess.run('grep --include=\*.{c,h} -rnw ../__my_srcs -e "\\bmain\\b"',
 		                   capture_output=True,
