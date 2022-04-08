@@ -1,4 +1,6 @@
+from inspect import BoundArguments
 import logging
+import os
 import random
 import re
 import shutil
@@ -12,7 +14,7 @@ from time import sleep
 import pexpect
 from halo import Halo
 from testers.BaseExecutor import BaseExecutor
-from utils.ExecutionContext import get_timeout, has_bonus
+from utils.ExecutionContext import get_timeout, has_bonus, console
 from utils.TerminalColors import TC
 from utils.Utils import decode_ascii, escape_str, open_ascii, show_errors_file
 
@@ -20,6 +22,7 @@ logger = logging.getLogger('mt-fsoares')
 UNRELIABLE_MSG = ("\nThis Tester is not super reliable, so executing again can solve the problem. " +
                   "You can also try to increase the sleep time inside your minitalk app.")
 MSG_DELIM = '====='
+
 
 def get_server_pid(logfile):
 	with open_ascii(logfile, "r") as log:
@@ -78,11 +81,11 @@ class Fsoares(BaseExecutor):
 		result = self.test_client_server()
 		if has_bonus():
 			print(f"{TC.PURPLE}\n[Bonus]{TC.NC}")
-			self.compile('fclean bonus', None)
+			self.compile('fclean bonus', None, bonus=True)
 			result = self.test_client_server(bonus=True) and result
 		return self.result(not result)
 
-	def compile(self, command, spinner):
+	def compile(self, command, spinner, bonus=False):
 		output = self.call_make_command(command, self.exec_mandatory, silent=True, spinner=spinner)
 		if output:
 			raise f'Problem preprating the testes, please contact me at {TC.CYAN}fsoares{TC.NC} in slack'
@@ -108,13 +111,14 @@ class Fsoares(BaseExecutor):
 		message = "Test `~(*123!@#$%^&*(_+-=][}{';:.></|\\?)"
 		if bonus:
 			message += " Ž (╯°□°)╯︵ ┻━┻"
-		return self.send_message_wrapper(message) and self.send_giant_message() and self.send_multiple_messages()
+		return (self.send_message_wrapper(message) #FIXME and self.send_giant_message()
+				and self.send_multiple_messages())
 
 	def send_message_wrapper(self, message):
 		server = self.start_server()
 		try:
 			print(f'{TC.BLUE}Test string{TC.NC}: "{message}"')
-			self.send_message(server,MSG_DELIM + message + MSG_DELIM)
+			self.send_message(server, MSG_DELIM + message + MSG_DELIM)
 		finally:
 			self.send_signal(server.pid, "INT")
 			server.join(0.2)
@@ -173,7 +177,7 @@ class Fsoares(BaseExecutor):
 	def send_multiple_messages(self):
 		with Halo("Multiple messages: ", placement="right") as spinner:
 			server = self.start_server()
-			messages = ["Hola", "Tudo bien?", "E como vai o tempo?", "vai andando"];
+			messages = ["Hola", "Tudo bien?", "E como vai o tempo?", "vai andando"]
 			try:
 				for message in messages:
 					self.send_message(server, MSG_DELIM + message + MSG_DELIM)
@@ -187,7 +191,6 @@ class Fsoares(BaseExecutor):
 					return False
 			spinner.succeed()
 			return True
-
 
 	def test_communication(self, bonus=False):
 		server = self.start_server()
@@ -318,4 +321,5 @@ class Fsoares(BaseExecutor):
 		                   shell=True,
 		                   text=True)
 		for file in [line.split(":")[0] for line in p.stdout.splitlines()]:
+			logger.info(f"rewriting main file: {file}")
 			rewrite_main(file)

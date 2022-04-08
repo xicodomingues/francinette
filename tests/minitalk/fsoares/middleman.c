@@ -21,7 +21,7 @@ void sighandler(int signum, int c_pid)
 
 	signals_val[signal_pos] = signum;
 	signals_source[signal_pos++] = c_pid;
-	if (c_pid != server_pid)
+	if (c_pid != server_pid && client_pid == -1)
 		client_pid = c_pid;
 	if (c_pid == client_pid)
 		kill(server_pid, signum);
