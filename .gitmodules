@@ -19,3 +19,9 @@
 [submodule "tests/printf/ft_printf_test"]
 	path = tests/printf/ft_printf_test
 	url = https://github.com/xicodomingues/ft_printf_test
+[submodule "tests/pipex/pipex-tester"]
+	path = tests/pipex/pipex-tester
+	url = https://github.com/xicodomingues/pipex-tester
+[submodule "tests/pipex/pipexMedic"]
+	path = tests/pipex/pipexMedic
+	url = https://github.com/xicodomingues/pipexMedic

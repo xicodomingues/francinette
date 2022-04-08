@@ -80,7 +80,7 @@ class Fsoares(BaseExecutor):
 			print(f"{TC.PURPLE}\n[Bonus]{TC.NC}")
 			self.compile('fclean bonus', None)
 			result = self.test_client_server(bonus=True) and result
-		return [self.name] if not result else []
+		return self.result(not result)
 
 	def compile(self, command, spinner):
 		output = self.call_make_command(command, self.exec_mandatory, silent=True, spinner=spinner)
@@ -93,7 +93,7 @@ class Fsoares(BaseExecutor):
 		res = self.test_communication(bonus) and res
 		if not no_leaks:
 			show_errors_file(self.temp_dir, "leaks.log", "errors.log", 20)
-		return res and no_leaks
+		return res
 
 	def start_bg_process(self, command):
 		server_thread = BgThread(command)
@@ -196,6 +196,7 @@ class Fsoares(BaseExecutor):
 			client_pid = self.send_message(middle, "teste")
 			logger.info(f"client_pid: {client_pid}, server_pid: {server.pid}, middle_pid: {middle.pid}")
 		finally:
+			sleep(0.2)
 			self.send_signal(middle.pid, "INT")
 			self.send_signal(server.pid, "INT")
 			server.join(0.2)
@@ -227,7 +228,7 @@ class Fsoares(BaseExecutor):
 		if bonus:
 			spinner = Halo("Server sends client acknowledgements: ", placement="right")
 			spinner.succeed() if has_server_sigs else spinner.fail()
-		return only_usr and server_only_usr and (has_server_sigs if has_bonus() else True)
+		return only_usr and server_only_usr and (bool(has_server_sigs) if bonus else True)
 
 	def test_leaks(self):
 		server = self.start_server()

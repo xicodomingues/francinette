@@ -173,3 +173,6 @@ class BaseExecutor:
 			return []
 		output = self.call_make_command(command, execute, silent, spinner)
 		return list(self.check_errors(output))
+
+	def result(self, has_errors: bool):
+		return [self.name] if has_errors else []

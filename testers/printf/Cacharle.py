@@ -22,7 +22,4 @@ class Cacharle(BaseExecutor):
 			self.call_make_command('all', self.exec_bonus, True, spinner=spinner)
 
 		output = self.run_tests("make quiet")
-		if not output.splitlines()[-2].startswith('====='):
-			return [self.name]
-		else:
-			return []
+		return self.result(not output.splitlines()[-2].startswith('====='))

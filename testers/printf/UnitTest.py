@@ -22,10 +22,7 @@ class UnitTest(BaseExecutor):
 			self.call_make_command('', self.exec_bonus, True, spinner=spinner)
 		output = self.run_tests("./run_test -e -r")
 		print()
-		if "Total tested" not in output.splitlines()[-1]:
-			return [self.name]
-		else:
-			return []
+		return self.result("Total tested" not in output.splitlines()[-1])
 
 	def check_errors(self, output):
 		if output:

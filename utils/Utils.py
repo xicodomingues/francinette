@@ -63,6 +63,12 @@ def show_errors_file(temp_dir: Path, errors_color, errors_log, n_lines=FILE_SHOW
 	print()
 
 
+def show_errors_str(errors: str, temp_dir: Path, n_lines=FILE_SHOW_LINES):
+	with open('error_color.log', 'w', encoding='utf-8') as f:
+		f.write(errors)
+	show_errors_file(temp_dir, "error_color.log", "errors.log", n_lines)
+
+
 def is_makefile_project(current_path, project_name, project_class):
 	make_path = current_path / "Makefile"
 	name_matcher = re.compile(rf"^\s*NAME\s*:?=\s*{project_name}\s*$")

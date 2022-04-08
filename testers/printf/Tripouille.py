@@ -65,7 +65,7 @@ class Tripouille(BaseExecutor):
 		errors = handle_output(output, self.exec_mandatory)
 		errors = dict(errors, **handle_output(output_bonus, self.exec_bonus))
 		errors = self.show_failed_tests(errors)
-		return [self.name] if errors else []
+		return self.result(errors)
 
 	def show_failed_tests(self, errors):
 

@@ -70,6 +70,7 @@
 		"pexpect",
 		"Popen",
 		"rglob",
-		"Tripouille"
+		"Tripouille",
+		"Vfurname"
 	]
 }

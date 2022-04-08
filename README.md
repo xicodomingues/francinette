@@ -130,3 +130,4 @@ try to fix it and create a pull request for that change!
 * To [cacharle](https://github.com/cacharle) for [ft_printf_test](https://github.com/cacharle/ft_printf_test)
 * To [ombhd](https://github.com/ombhd) for [Cleaner_42](https://github.com/ombhd/Cleaner_42)
 * To [arsalas](https://github.com/arsalas) for the help in the minitalk tester
+* To [vfurmane](https://github.com/vfurmane) for [pipex-tester](https://github.com/vfurmane/pipex-tester)
