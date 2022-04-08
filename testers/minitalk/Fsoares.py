@@ -43,6 +43,19 @@ def wait_for(process, string):
 		raise Exception("Problem with the threads." + UNRELIABLE_MSG)
 
 
+def send_signal(pid, signal):
+	res = subprocess.run(["kill", f"-{signal}", pid], capture_output=True)
+	logger.info(res)
+
+
+def kill_proc(process, timeout=0.2):
+	send_signal(process.pid, "INT")
+	process.join(timeout)
+	if (process.is_alive()):
+		send_signal(process.pid, "KILL")
+		process.join(timeout)
+
+
 class BgThread(threading.Thread):
 
 	def __init__(self, command):
@@ -113,7 +126,7 @@ class Fsoares(BaseExecutor):
 		message = "Test `~(*123!@#$%^&*(_+-=][}{';:.></|\\?)"
 		if bonus:
 			message += " Ž (╯°□°)╯︵ ┻━┻"
-		return self.send_message_wrapper(message) and self.send_giant_message() and self.send_multiple_messages()
+		return (self.send_message_wrapper(message) and self.send_giant_message() and self.send_multiple_messages())
 
 	def send_message_wrapper(self, message):
 		server = self.start_server()
@@ -121,8 +134,7 @@ class Fsoares(BaseExecutor):
 			print(f'{TC.BLUE}Test string{TC.NC}: "{message}"')
 			self.send_message(server, MSG_DELIM + message + MSG_DELIM)
 		finally:
-			self.send_signal(server.pid, "INT")
-			server.join(0.2)
+			kill_proc(server)
 		actual = server.stdout.decode("utf-8", errors="replace").split(MSG_DELIM)[1]
 		color = TC.GREEN
 		if (actual != message):
@@ -166,10 +178,9 @@ class Fsoares(BaseExecutor):
 		try:
 			message = ''.join(random.choices(string.printable, k=5000))
 			spinner = Halo("Sending 5000 characters: ", placement="right").start()
-			self.send_message(server, MSG_DELIM + message + MSG_DELIM)
+			self.send_message(server, MSG_DELIM + message + MSG_DELIM, get_timeout() * 2)
 		finally:
-			self.send_signal(server.pid, "INT")
-			server.join(0.2)
+			kill_proc(server)
 		result = correctly_received(decode_ascii(server.stdout), message, spinner)
 		if spinner.enabled:
 			spinner.succeed() if result else spinner.fail()
@@ -183,8 +194,7 @@ class Fsoares(BaseExecutor):
 				for message in messages:
 					self.send_message(server, MSG_DELIM + message + MSG_DELIM)
 			finally:
-				self.send_signal(server.pid, "INT")
-				server.join(0.2)
+				kill_proc(server)
 			output = decode_ascii(server.stdout)
 			for message in messages:
 				if message not in output:
@@ -197,14 +207,17 @@ class Fsoares(BaseExecutor):
 		server = self.start_server()
 		try:
 			middle = self.start_bg_process(f"./middleman.out {server.pid}")
+			logger.info(f"server_pid: {server.pid}, middle_pid: {middle.pid}")
 			client_pid = self.send_message(middle, "teste")
-			logger.info(f"client_pid: {client_pid}, server_pid: {server.pid}, middle_pid: {middle.pid}")
+			logger.info(f"client_pid: {client_pid}")
+		except Exception as ex:
+			console.print("[yellow]Problem checking the use of only SIGUSR1 and SIGUSR2 signals. Please verify it manually[/yellow]")
+			return True
 		finally:
 			sleep(0.2)
-			self.send_signal(middle.pid, "INT")
-			self.send_signal(server.pid, "INT")
-			server.join(0.2)
-			middle.join(1)
+			kill_proc(server)
+			kill_proc(middle, 0.5)
+
 		return self.check_only_used_usr_signals(server.pid, client_pid, bonus, decode_ascii(middle.stdout))
 
 	def check_only_used_usr_signals(self, server_id, client_id, bonus, output):
@@ -239,51 +252,38 @@ class Fsoares(BaseExecutor):
 		spinner = Halo("Leaks: ", placement="right").start()
 		try:
 			self.send_message(server, "teste\n-----\n")
-			self.send_signal(server.pid, "INFO")
+			send_signal(server.pid, "INFO")
 			self.send_message(server, "Hello!!")
 			self.send_message(server, "Hello!!")
 			self.send_message(server, "Hello!!")
 		finally:
-			self.send_signal(server.pid, "INT")
-			server.join(0.2)
+			kill_proc(server)
 
 		shutil.copy2(self.temp_dir / '../__my_srcs/server', self.temp_dir)
 		shutil.copy2(self.temp_dir / '../__my_srcs/server.log', self.temp_dir / 'leaks.log')
 		spinner.succeed() if server.return_code == 0 else spinner.fail()
 		return server.return_code == 0
 
-	def send_message(self, server, message):
-
-		def terminate_server():
-			self.send_signal(server.pid, "INT")
-			try:
-				server.join(0.2)
-			except:
-				pass
-
+	def send_message(self, server, message, timeout=3):
 		client_path = str((self.temp_dir / '../__my_srcs/client').resolve())
 		client = None
 		try:
 			client = subprocess.run(f'{client_path} {server.pid} {quote(message)}',
 			                        capture_output=True,
-			                        timeout=get_timeout() * 2,
+			                        timeout=timeout,
 			                        shell=True)
 			logger.info(client)
 		except Exception as ex:
-			terminate_server()
+			kill_proc(server)
 			raise Exception(
 			    "Timeout when sending message to the server, please increase it with the --timeout option.") from ex
 		if client.stderr:
 			error = client.stderr.decode('utf-8', errors="backslashreplace")
 			error = takewhile(lambda line: "Shadow bytes around" not in line, error.splitlines())
 			print("\n".join(error))
-			terminate_server()
+			kill_proc(server)
 			raise Exception("Memory problems")
 		return re.match(r"__PID: (\d+)", client.stdout.decode('utf-8', errors="backslashreplace")).group(1)
-
-	def send_signal(self, pid, signal):
-		res = subprocess.run(["kill", f"-{signal}", pid], capture_output=True)
-		logger.info(res)
 
 	def rewrite_mains(self):
 		main_regex = re.compile(r"^(?:int|void)\s+main\s*\(([^\)]+)\).*$")

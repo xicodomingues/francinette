@@ -9,7 +9,4 @@ version=68
 cd "$current_dir" || exit
 source "$DIR"/venv/bin/activate
 
-trap '' 30
-trap '' 31
-
 python "$DIR"/main.py "$@"

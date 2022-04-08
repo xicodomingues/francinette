@@ -7,6 +7,7 @@ int server_pid;
 int signals_val[1000000];
 int signals_source[1000000];
 int signal_pos = 0;
+FILE *outfile;
 
 void sighandler(int signum, int c_pid)
 {
@@ -22,11 +23,18 @@ void sighandler(int signum, int c_pid)
 	signals_val[signal_pos] = signum;
 	signals_source[signal_pos++] = c_pid;
 	if (c_pid != server_pid && client_pid == -1)
+	{
+		fprintf(outfile, "setting client to: %i\n", c_pid);
 		client_pid = c_pid;
-	if (c_pid == client_pid)
+	}
+	if (c_pid == client_pid) {
+		//fprintf(outfile, "sending %i to server %i\n", signum, server_pid);
 		kill(server_pid, signum);
-	else if (c_pid == server_pid)
+	}
+	else if (c_pid == server_pid) {
+		//fprintf(outfile, "sending %i to client %i\n", signum, client_pid);
 		kill(client_pid, signum);
+	}
 }
 
 void get_pid(int signum, siginfo_t *info, void *context)
@@ -39,6 +47,7 @@ int main(int argc, char *argv[])
 {
 	struct sigaction sa;
 
+	outfile = fopen("signals_middle.log", "w");
 	printf("__PID: %i\n-----\n", getpid());
 	server_pid = atoi(argv[1]);
 	sa.sa_flags = SA_SIGINFO;
