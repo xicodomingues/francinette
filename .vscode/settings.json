@@ -65,6 +65,7 @@
 		"getpid",
 		"infile",
 		"inplace",
+		"libftprintf",
 		"lldb",
 		"norminette",
 		"pexpect",

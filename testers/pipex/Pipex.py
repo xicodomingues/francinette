@@ -11,6 +11,7 @@ class Pipex(BaseTester):
 	name = "pipex"
 	my_tester = Fsoares
 	testers = [Vfurname, Medic, Fsoares]
+	timeout = 1
 
 	def __init__(self, info: TestRunInfo) -> None:
 		super().__init__(info)

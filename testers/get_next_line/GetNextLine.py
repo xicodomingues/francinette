@@ -15,6 +15,7 @@ class GetNextLine(BaseTester):
 	name = "get_next_line"
 	my_tester = Fsoares
 	testers = [Tripouille, Fsoares]
+	timeout = 10
 
 	def __init__(self, info: TestRunInfo) -> None:
 		super().__init__(info)

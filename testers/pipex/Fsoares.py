@@ -10,7 +10,7 @@ from halo import Halo
 from rich import box
 from rich.table import Table
 from testers.BaseExecutor import BaseExecutor
-from utils.ExecutionContext import console, get_timeout
+from utils.ExecutionContext import console, get_timeout, has_bonus
 from utils.TraceToLine import open_ascii
 from utils.Utils import show_errors_str
 
@@ -159,7 +159,7 @@ class Fsoares(BaseExecutor):
 		return [test, problems]
 
 	def get_tests(self):
-		return [
+		mandatory =  [
 		    TestCase(['infile.txt', 'cat', 'wc', 'outfile.txt'],
 		             'Normal parameters, simple commands, everything should go ok'),
 		    TestCase(['infile.txt', 'cat', 'wc', 'inexistent.txt'], "Output file does not exist"),
@@ -225,3 +225,9 @@ class Fsoares(BaseExecutor):
 		    TestCase(['infile.txt', 'subdir/script.sh', 'wc', 'outfile.txt'],
 		             "It should execute commands in the subdirectory")
 		]
+
+		bonus = []
+		result = mandatory
+		if self.exec_bonus:
+			result += bonus
+		return result

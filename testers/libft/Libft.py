@@ -24,6 +24,7 @@ class Libft(BaseTester):
 	name = "libft"
 	my_tester = Fsoares
 	testers = [WarMachine, Tripouille, Alelievr, Fsoares]
+	timeout = 2
 
 	def __init__(self, info: TestRunInfo) -> None:
 		super().__init__(info)

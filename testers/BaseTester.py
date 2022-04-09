@@ -8,7 +8,7 @@ from pathlib import Path
 
 import git
 from halo import Halo
-from utils.ExecutionContext import TestRunInfo, get_context, has_bonus, is_strict, set_bonus
+from utils.ExecutionContext import TestRunInfo, get_context, get_timeout, has_bonus, is_strict, set_bonus, set_timeout
 from utils.TerminalColors import TC
 from utils.Utils import intersection, show_banner
 
@@ -33,12 +33,14 @@ class BaseTester:
 
 	name = "base"
 	testers = []
+	timeout = 10
 
 	def __init__(self, info: TestRunInfo) -> None:
 		self.info = info
 		self.temp_dir = info.base_dir / "temp" / self.name
 		self.tests_dir = info.base_dir / "tests" / self.name
 		self.source_dir = info.source_dir
+		set_timeout(self.timeout)
 
 	@staticmethod
 	@abc.abstractmethod

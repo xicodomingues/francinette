@@ -154,7 +154,7 @@ class Fsoares(BaseExecutor):
 		try:
 			message = ''.join(random.choices(string.printable, k=5000))
 			spinner = Halo("Sending 5000 characters: ", placement="right").start()
-			self.send_message(server, MSG_DELIM + message + MSG_DELIM, get_timeout() * 2)
+			self.send_message(server, MSG_DELIM + message + MSG_DELIM, get_timeout())
 		finally:
 			kill_proc(server)
 		result = correctly_received(decode_ascii(server.stdout), message, spinner)

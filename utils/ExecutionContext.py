@@ -43,3 +43,7 @@ def is_strict():
 
 def get_timeout():
 	return int(_saved_context.args.timeout)
+
+
+def set_timeout(timeout: int):
+	_saved_context.args.timeout = timeout
