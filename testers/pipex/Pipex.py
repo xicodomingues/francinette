@@ -10,7 +10,7 @@ class Pipex(BaseTester):
 
 	name = "pipex"
 	my_tester = Fsoares
-	testers = [Vfurname, Fsoares]
+	testers = [Vfurname, Medic, Fsoares]
 
 	def __init__(self, info: TestRunInfo) -> None:
 		super().__init__(info)

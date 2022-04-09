@@ -12,7 +12,7 @@ import pexpect
 from halo import Halo
 from utils.ExecutionContext import get_context, get_timeout, has_bonus, is_strict
 from utils.TerminalColors import TC
-from utils.Utils import is_linux, remove_ansi_colors
+from utils.Utils import is_linux, remove_ansi_colors, show_errors_file
 
 logger = logging.getLogger('base_exec')
 trace_regex = re.compile(r"\d+\s+[\w.?]+\s+[\d\w]+ (\w+) \+ (\d+)")
@@ -103,6 +103,13 @@ class BaseExecutor:
 				spinner.succeed()
 
 	def check_errors(self, output):
+		"""
+		Checks the output for errors given a line_regex and test_regex.
+		Both these regexes must have two groups.
+		The returned value is an array with the first match of the line for each line that has errors
+
+		Basically if it does not return an empty list, then it has errors
+		"""
 
 		def parse_tests(tests):
 			return [(match.group(1), match.group(2)) for match in self.test_regex.finditer(tests)]
@@ -176,3 +183,6 @@ class BaseExecutor:
 
 	def result(self, has_errors: bool):
 		return [self.name] if has_errors else []
+
+	def show_errors_file(self, file_name, n_lines=20):
+		show_errors_file(self.temp_dir, file_name, "errors.log", n_lines)

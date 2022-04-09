@@ -1,20 +1,18 @@
-from dataclasses import dataclass
 import logging
 import os
-from pathlib import Path
+from pipes import quote
 import shutil
-from typing import List
+from dataclasses import dataclass
 from subprocess import CompletedProcess, run
+from typing import List
 
+from halo import Halo
+from rich import box
+from rich.table import Table
 from testers.BaseExecutor import BaseExecutor
 from utils.ExecutionContext import console
 from utils.TraceToLine import open_ascii
-from rich.table import Table
-from rich import box
-from halo import Halo
-
-from utils.Utils import show_errors_file, show_errors_str
-from distutils.dir_util import copy_tree
+from utils.Utils import show_errors_str
 
 logger = logging.getLogger("pipex-fso")
 
@@ -38,7 +36,7 @@ class TestCase:
 def get_commands(test: TestCase):
 	infile, cmd1, cmd2, outfile = test.params
 	native = f"< {infile} {cmd1} | {cmd2} > {outfile}"
-	pipex = f'./pipex {infile} "{cmd1}" "{cmd2}" {outfile}'
+	pipex = f'./pipex {infile} {quote(cmd1)} {quote(cmd2)} {outfile}'
 	path = test.path
 	if path == os.environ['PATH']:
 		path = 'default'
@@ -67,7 +65,7 @@ class Fsoares(BaseExecutor):
 			else:
 				console.print(f"[green]{i + 1}.OK ", end="")
 			result.append(res)
-		console.print("", style="default")
+		console.print("\n", style="default")
 		os.chdir(self.temp_dir)
 
 		has_errors = self.show_test_results(result)
@@ -135,11 +133,19 @@ class Fsoares(BaseExecutor):
 		os.chmod("no_w_perm", 0o555)
 
 	def compare_output(self, test, native: CompletedProcess, native_outfile, pipex, pipex_outfile):
+
+		def adapt_stderr(stderr, actual_stderr):
+			if "No such file or directory" in actual_stderr:
+				return stderr.replace("/bin/sh", "pipex")
+			else:
+				return stderr.replace("/bin/sh", "pipex").replace("No such file or directory", "command not found")
+
 		problems = []
 		if native.stdout != pipex.stdout:
 			problems.append(["stdout", native.stdout, pipex.stdout])
-		if len(native.stderr.splitlines()) != len(pipex.stderr.splitlines()):
-			problems.append(["stderr", native.stderr, pipex.stderr])
+		native_stderr = adapt_stderr(native.stderr, pipex.stderr)
+		if native_stderr != pipex.stderr:
+			problems.append(["stderr", native_stderr, pipex.stderr])
 		if native.returncode != pipex.returncode != 0:
 			problems.append(["return code", str(native.returncode), str(pipex.returncode)])
 		if native_outfile != pipex_outfile:
@@ -163,15 +169,12 @@ class Fsoares(BaseExecutor):
 		    TestCase(
 		        ['infile.txt', 'sed "s/And/But/"', "awk '{count++} END {printf \"count: %i\", count}'", 'outfile.txt'],
 		        'program that has double quotes inside single quotes (awk argument)'),
-		    TestCase([
-		        'infile.txt', 'sed "s/And/But/"', "awk '{count++} END {printf \\'count: %i\\', count}'", 'outfile.txt'
-		    ], 'program that has escaped single quotes inside single quotes (awk argument)'),
 		    TestCase(['infile.txt', "./script.sh", 'wc', 'outfile.txt'], 'Command that is in the same folder'),
 		    TestCase(['infile.txt', './"script space.sh"', 'wc', 'outfile.txt'],
 		             'The script is in the same folder, but has a name that contains a space with double quotes'),
 		    TestCase(['infile.txt', "./'script space.sh'", 'wc', 'outfile.txt'],
 		             'The script is in the same folder, but has a name that contains a space with single quotes'),
-		    TestCase(['infile.txt', (self.tests_dir / "script.sh").resolve(), 'wc', 'outfile.txt'],
+		    TestCase(['infile.txt', str((self.tests_dir / "script.sh").resolve()), 'wc', 'outfile.txt'],
 		             'Command that contains the complete path'),
 		    TestCase(['no_in', 'cat', 'wc', 'outfile.txt'], "Input files does not exist"),
 		    TestCase(['infile.txt', 'non_existent_comm', 'wc', 'outfile.txt'], "first command does not exist"),

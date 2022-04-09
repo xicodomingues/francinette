@@ -4,6 +4,7 @@ A small and easy to use testing framework for the 42 projects.
 
 Use `francinette` or `paco` inside a project folder to run it.
 
+Currently has tests for: `libft`, `ft_printf`, `get_next_line`, `minitalk` and `pipex`.
 
 ## Table of Contents
 1. [Purpose](#purpose)
@@ -121,6 +122,19 @@ Please contact me on slack (under `fsoares-`), or create a new github issue,  in
 what exercise which test fails, and a description of what you think is wrong. You can also
 try to fix it and create a pull request for that change!
 
+## Troubleshooting
+
+#### I've installed francinette, but when I try to execute it I get the message: `command not found: francinette`
+
+In the install script I try to set two alias to for `francinette`: `francinette` and `paco`. If you are in MacOS I do that by adding two lines to the `.zshrc` file, and to `.bashrc` in linux. If by some chance you are using other shell, or for some other reason it does not work, You can try to set the aliases yourself, by adding:
+
+```
+alias francinette="$HOME"/francinette/tester.sh
+alias paco="$HOME"/francinette/tester.sh
+```
+
+Now it should work. If it does not, don't be afraid to contact me.
+
 ## Acknowledgments
 
 * To 42 for providing me this opportunity
@@ -131,3 +145,4 @@ try to fix it and create a pull request for that change!
 * To [ombhd](https://github.com/ombhd) for [Cleaner_42](https://github.com/ombhd/Cleaner_42)
 * To [arsalas](https://github.com/arsalas) for the help in the minitalk tester
 * To [vfurmane](https://github.com/vfurmane) for [pipex-tester](https://github.com/vfurmane/pipex-tester)
+* To [gmarcha](https://github.com/gmarcha) for [pipexMedic](https://github.com/gmarcha/pipexMedic)
