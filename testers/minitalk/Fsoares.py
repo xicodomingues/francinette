@@ -1,6 +1,4 @@
-from inspect import BoundArguments
 import logging
-import os
 import random
 import re
 import shutil
@@ -11,36 +9,14 @@ from itertools import takewhile
 from pipes import quote
 from time import sleep
 
-import pexpect
 from halo import Halo
 from testers.BaseExecutor import BaseExecutor
-from utils.ExecutionContext import get_timeout, has_bonus, console
+from utils.ExecutionContext import get_timeout, console
 from utils.TerminalColors import TC
-from utils.Utils import decode_ascii, escape_str, open_ascii, show_errors_file
+from utils.Utils import decode_ascii, escape_str, show_errors_file
 
 logger = logging.getLogger('mt-fsoares')
-UNRELIABLE_MSG = ("\nThis Tester is not super reliable, so executing again can solve the problem. " +
-                  "You can also try to increase the sleep time inside your minitalk app.")
 MSG_DELIM = '====='
-
-
-def get_server_pid(logfile):
-	with open_ascii(logfile, "r") as log:
-		return log.readline().split(' ')[1].strip()
-
-
-def start_process(command, logfile):
-	child = pexpect.spawn(command,
-	                      logfile=open(logfile, "w", encoding="utf-8"),
-	                      encoding="utf-8",
-	                      timeout=get_timeout())
-	child.expect("__PID: .*\n")
-	return child, get_server_pid(logfile)
-
-
-def wait_for(process, string):
-	if process.expect([string, pexpect.TIMEOUT], timeout=get_timeout()) == 1:
-		raise Exception("Problem with the threads." + UNRELIABLE_MSG)
 
 
 def send_signal(pid, signal):

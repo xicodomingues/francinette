@@ -1,10 +1,8 @@
 import logging
 import re
-import subprocess
 
 from halo import Halo
 from testers.BaseExecutor import BaseExecutor
-from utils.Utils import show_errors_file
 
 logger = logging.getLogger("px-medic")
 

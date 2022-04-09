@@ -1,8 +1,8 @@
 import logging
 import os
-from pipes import quote
 import shutil
 from dataclasses import dataclass
+from pipes import quote
 from subprocess import CompletedProcess, run
 from typing import List
 
@@ -10,7 +10,7 @@ from halo import Halo
 from rich import box
 from rich.table import Table
 from testers.BaseExecutor import BaseExecutor
-from utils.ExecutionContext import console
+from utils.ExecutionContext import console, get_timeout
 from utils.TraceToLine import open_ascii
 from utils.Utils import show_errors_str
 
@@ -23,7 +23,13 @@ def run_bash(command, path):
 		my_env["PATH"] = path
 	if path == None:
 		my_env.pop("PATH")
-	return run(command, capture_output=True, shell="True", encoding="ascii", errors="backslashreplace", env=my_env)
+	return run(command,
+	           capture_output=True,
+	           shell="True",
+	           encoding="ascii",
+	           errors="backslashreplace",
+	           env=my_env,
+	           timeout=get_timeout())
 
 
 @dataclass
@@ -165,7 +171,8 @@ class Fsoares(BaseExecutor):
 		             'program that has spaces in the middle of string argument with double quotes (awk argument)'),
 		    TestCase([
 		        'infile.txt', 'sed "s/And/But/"', 'awk "{count++} END {printf \\"count: %i\\" , count}"', 'outfile.txt'
-		    ], 'Argument with escaped double quotes and then a space [yellow](\\" ,)[\yellow], inside double quotes (awk argument)'),
+		    ], 'Argument with escaped double quotes and then a space [yellow](\\" ,)[\yellow], inside double quotes (awk argument)'
+		            ),
 		    TestCase(
 		        ['infile.txt', 'sed "s/And/But/"', "awk '{count++} END {printf \"count: %i\", count}'", 'outfile.txt'],
 		        'program that has double quotes inside single quotes (awk argument)'),
