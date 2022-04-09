@@ -157,21 +157,23 @@ class Fsoares(BaseExecutor):
 		    TestCase(['infile.txt', 'cat', 'wc', 'outfile.txt'],
 		             'Normal parameters, simple commands, everything should go ok'),
 		    TestCase(['infile.txt', 'cat', 'wc', 'inexistent.txt'], "Output file does not exist"),
-		    TestCase(['infile.txt', 'sed "s/And/But/"', 'grep But', 'outfile.txt'],
+		    TestCase(['infile.txt', 'sed    "s/And/But/"', 'grep But', 'outfile.txt'],
 		             'Normal parameters, commands with arguments, everything should go ok'),
 		    TestCase(['infile.txt', 'sed "s/And/But/"', "awk '{count++} END {print count}'", 'outfile.txt'],
 		             'program that has spaces in the middle of string argument with single quotes (awk argument)'),
 		    TestCase(['infile.txt', 'sed "s/And/But/"', 'awk "{count++} END {print count}"', 'outfile.txt'],
 		             'program that has spaces in the middle of string argument with double quotes (awk argument)'),
 		    TestCase([
-		        'infile.txt', 'sed "s/And/But/"', 'awk "{count++} END {printf \\"count: %i\\", count}"', 'outfile.txt'
-		    ], 'program that has quotes inside quotes with spaces everywhere (double quotes) (awk argument)'),
+		        'infile.txt', 'sed "s/And/But/"', 'awk "{count++} END {printf \\"count: %i\\" , count}"', 'outfile.txt'
+		    ], 'Argument with escaped double quotes and then a space [yellow](\\" ,)[\yellow], inside double quotes (awk argument)'),
 		    TestCase(
 		        ['infile.txt', 'sed "s/And/But/"', "awk '{count++} END {printf \"count: %i\", count}'", 'outfile.txt'],
 		        'program that has double quotes inside single quotes (awk argument)'),
 		    TestCase(['infile.txt', "./script.sh", 'wc', 'outfile.txt'], 'Command that is in the same folder'),
 		    TestCase(['infile.txt', './"script space.sh"', 'wc', 'outfile.txt'],
 		             'The script is in the same folder, but has a name that contains a space with double quotes'),
+		    TestCase(['infile.txt', './"script\\"quote.sh"', 'wc', 'outfile.txt'],
+		             'The script is in the same folder, but has a name that contains an escaped quote'),
 		    TestCase(['infile.txt', "./'script space.sh'", 'wc', 'outfile.txt'],
 		             'The script is in the same folder, but has a name that contains a space with single quotes'),
 		    TestCase(['infile.txt', str((self.tests_dir / "script.sh").resolve()), 'wc', 'outfile.txt'],
