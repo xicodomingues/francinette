@@ -1,0 +1,62 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                Welcome to Francinette, a 42 tester framework!                ║
+╚═══════════════════════╦══════════════════════════════╦═══════════════════════╝
+                        ║             libft            ║
+                        ╚══════════════════════════════╝
+✔ Preparing framework
+✔ Executing: norminette
+✔ Executing: make fclean bonus
+ℹ Executing: libft-war-machine (https://github.com/y3ll0w42/libft-war-machine)
+--------------------------------------------------------------------------------
+| COMPILING LIBFT |
+--------------------------------------------------------------------------------
+rules:
+all $(NAME) fclean re clean bonus libft.a
+ok ok ok ok ok ok found
+FUNCTION TESTS RESULT
+ft_lstnew ✓✓✓ OK
+ft_lstadd_front ✓ OK
+ft_lstsize ✓ OK
+ft_lstlast ✓ OK
+ft_lstadd_back ✓ OK
+ft_lstdelone ✓ OK
+ft_lstclear ✓ OK
+ft_lstiter ✓ OK
+ft_lstmap ✓ OK
+✔ Compiling tests: libftTester (https://github.com/Tripouille/libftTester)
+ℹ Testing:
+ft_lstnew	: 1.OK 2.OK 3.MOK
+ft_lstadd_front	: 1.OK 2.OK 3.OK 4.OK 5.OK
+ft_lstsize	: 1.OK 2.OK 3.OK
+ft_lstlast	: 1.OK 2.OK 3.OK 4.OK
+ft_lstadd_back	: 1.OK 2.OK 3.OK 4.OK 5.OK 6.OK 7.OK 8.OK 9.OK 10.OK
+ft_lstdelone	:
+ft_lstclear	: 1.OK
+ft_lstiter	: 1.OK 2.OK 3.OK 4.OK
+ft_lstmap	: 1.OK 2.OK 3.OK 4.OK 5.OK 6.OK 7.OK 8.OK
+✔ Compiling tests: libft-unit-test (https://github.com/alelievr/libft-unit-test)
+ℹ Testing:
+ft_lstnew       : [OK] [OK] [OK] [OK]
+ft_lstadd_front : [OK] [OK] [OK]
+ft_lstsize      : [OK] [OK]
+ft_lstlast      : [OK] [OK]
+ft_lstadd_back  : [OK] [OK] [OK]
+ft_lstdelone    : [OK]
+ft_lstclear     : [OK] [OK] [OK]
+ft_lstiter      : [OK]
+ft_lstmap       : [OK]
+✔ Compiling tests: fsoares (my own)
+ℹ Testing:
+ft_lstnew       : OK
+ft_lstadd_front : OK
+ft_lstsize      : OK
+ft_lstlast      : OK
+ft_lstadd_back  : OK
+ft_lstdelone    : OK
+ft_lstclear     : OK
+ft_lstiter      : OK
+ft_lstmap       : OK
+Want some more thorough tests? run 'francinette --strict'. Moulinette will not do these checks, it's only a matter of pride!
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                 🎉🥳 All tests passed! Congratulations! 🥳🎉                 ║
+╚══════════════════════════════════════════════════════════════════════════════╝

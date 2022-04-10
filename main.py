@@ -10,6 +10,7 @@ from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
 from git import Repo
+from self_tests.tester import integration_test
 from testers.cpiscine.CPiscine import CPiscine
 from testers.get_next_line.GetNextLine import GetNextLine
 from testers.libft.Libft import Libft
@@ -138,6 +139,7 @@ def main():
 	                    help=("Executes the corresponding testers. If no arguments are passed, it asks the user. " +
 	                          f"{TC.YELLOW}This parameter should be the last one in the command line even after " +
 	                          f"the positional parameters{TC.NC}"))
+	parser.add_argument("--integration-tests", action="store_true")
 	args = parser.parse_args()
 
 	if args.verbose:
@@ -154,6 +156,11 @@ def main():
 
 	update_paco()
 
+	base = Path(__file__, "..").resolve()
+	if args.integration_tests:
+		integration_test(base)
+		exit(0)
+
 	if args.clean:
 		file = Path(os.path.realpath(__file__), "../bin/clean_cache.sh").resolve()
 		logger.info(f"executing cleaning of the cache with script: {file}")
@@ -168,7 +175,6 @@ def main():
 		    f"Found exXX in the current dir '{exercises}'. Saving the exercise and going up a dir: '{current_dir}'")
 		os.chdir("..")
 
-	base = Path(__file__, "..").resolve()
 	exercises = args.exercise or exercises
 	if args.git_repo and not is_repo(args.git_repo):
 		if not exercises:

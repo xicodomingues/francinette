@@ -56,8 +56,12 @@ def update_paco():
 		return save_settings(settings)
 	settings['paco']['last_run'] = datetime.strftime(datetime.now(), DATETIME_FORMAT)
 
-	with urlopen(REPO_URL + "utils/version.py", context=ssl.create_default_context(cafile=certifi.where())) as data:
-		new_version = data.read().decode("utf-8").split('"')[1]
+	try:
+		with urlopen(REPO_URL + "utils/version.py", context=ssl.create_default_context(cafile=certifi.where()), timeout=2) as data:
+			new_version = data.read().decode("utf-8").split('"')[1]
+	except:
+		logger.warn("Problem establishing connection to github to check for update")
+		return
 
 	if (vs.parse(current) >= vs.parse(new_version) or
 	    vs.parse(settings['paco'].get('ignored', '0.0.0')) >= vs.parse(new_version)):

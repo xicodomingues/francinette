@@ -7,8 +7,8 @@ import subprocess
 from sys import platform
 from halo import Halo
 from typing import List
-from testers.libft.BaseExecutor import BONUS_FUNCTIONS
-from utils.ExecutionContext import get_timeout, has_bonus
+from testers.libft.BaseExecutor import BONUS_FUNCTIONS, PART_1_FUNCTIONS, PART_2_FUNCTIONS
+from utils.ExecutionContext import get_context, get_timeout, has_bonus
 
 from utils.TerminalColors import TC
 from utils.Utils import decode_ascii, open_ascii
@@ -29,6 +29,9 @@ class Alelievr():
 		self.to_execute = to_execute
 		self.missing = list(missing)
 		self.tests_dir = os.path.join(tests_dir, self.folder)
+
+		if get_context().args.bonus and not get_context().args.mandatory:
+			self.missing += PART_1_FUNCTIONS + PART_2_FUNCTIONS
 
 		if not has_bonus():
 			self.missing += BONUS_FUNCTIONS
@@ -74,6 +77,7 @@ class Alelievr():
 			line_str = decode_ascii(line).rstrip()
 			print(line_str)
 
+		print()
 		logger.info(p)
 		return self.parse_output()
 

@@ -1,0 +1,28 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                Welcome to Francinette, a 42 tester framework!                ║
+╚═══════════════════════╦══════════════════════════════╦═══════════════════════╝
+                        ║             libft            ║
+                        ╚══════════════════════════════╝
+✔ Preparing framework
+✔ Executing: norminette
+✔ Executing: make fclean bonus
+ℹ Executing: libft-war-machine (https://github.com/y3ll0w42/libft-war-machine)
+FUNCTION TESTS RESULT
+ft_memset ✓✓✓✓ OK
+ft_split ✓✓✓✓✓✓ OK
+ft_lstnew ✓✓✓ OK
+✔ Compiling tests: libftTester (https://github.com/Tripouille/libftTester)
+ℹ Testing:
+ft_split	: 1.MOK 2.OK 3.MOK 4.OK 5.MOK 6.OK 7.OK 8.OK 9.OK 10.OK 11.MOK 12.OK 13.OK 14.MOK 15.OK 16.MOK 17.OK 18.OK 19.MOK 20.OK 21.OK 22.MOK 23.OK 24.OK 25.MOK 26.OK 27.MOK 28.OK 29.MOK 30.OK 31.MOK 32.OK 33.MOK 34.OK 35.MOK 36.OK 37.MOK 38.OK 39.MOK 40.OK 41.MOK 42.OK
+ft_lstnew	: 1.OK 2.OK 3.MOK
+ft_memset	: 1.OK 2.OK
+✔ Compiling tests: libft-unit-test (https://github.com/alelievr/libft-unit-test)
+ℹ Testing:
+ft_memset       : [OK] [OK] [OK] [OK] [OK] [OK] [OK]
+ft_split        : [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK]
+ft_lstnew       : [OK] [OK] [OK] [OK]
+✔ Compiling tests: fsoares (my own)
+ℹ Testing:
+ft_split        : OK
+ft_lstnew       : OK
+ft_memset       : OK
