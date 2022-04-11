@@ -1,0 +1,1454 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                Welcome to Francinette, a 42 tester framework!                ║
+╚═══════════════════════╦══════════════════════════════╦═══════════════════════╝
+                        ║             libft            ║
+                        ╚══════════════════════════════╝
+✔ Preparing framework
+✖ Executing: norminette
+ft_atoi.c: OK!
+ft_bzero.c: OK!
+ft_calloc.c: OK!
+ft_isalnum.c: OK!
+ft_isalpha.c: OK!
+ft_isascii.c: OK!
+ft_isdigit.c: OK!
+ft_isprint.c: OK!
+ft_isspace.c: OK!
+ft_itoa.c: OK!
+ft_lstadd_back.c: OK!
+ft_lstadd_front.c: OK!
+ft_lstclear.c: OK!
+ft_lstdelone.c: OK!
+ft_lstiter.c: OK!
+ft_lstlast.c: OK!
+ft_lstmap.c: OK!
+ft_lstnew.c: OK!
+ft_lstsize.c: Error!
+Error: WRONG_SCOPE_COMMENT  (line:  25, col:   5):	Comment is invalid in this scope
+ft_memchr.c: OK!
+ft_memcmp.c: OK!
+ft_memcpy.c: OK!
+ft_memmove.c: OK!
+ft_memset.c: OK!
+ft_putchar_fd.c: OK!
+ft_putendl_fd.c: OK!
+ft_putnbr_fd.c: OK!
+ft_putstr_fd.c: OK!
+ft_split.c: OK!
+ft_strchr.c: OK!
+ft_strdup.c: OK!
+ft_striteri.c: OK!
+ft_strjoin.c: OK!
+ft_strlcat.c: OK!
+ft_strlcpy.c: OK!
+ft_strlen.c: OK!
+ft_strmapi.c: OK!
+ft_strncmp.c: OK!
+ft_strnstr.c: OK!
+ft_strrchr.c: OK!
+ft_strrev.c: OK!
+ft_strtrim.c: OK!
+ft_substr.c: OK!
+ft_tolower.c: OK!
+ft_toupper.c: OK!
+libft.h: OK!
+✔ Executing: make fclean bonus
+ℹ Executing: libft-war-machine (https://github.com/y3ll0w42/libft-war-machine)
+--------------------------------------------------------------------------------
+| COMPILING LIBFT |
+--------------------------------------------------------------------------------
+rules:
+all $(NAME) fclean re clean bonus libft.a
+ok ok ok ok ok ok found
+FUNCTION TESTS RESULT
+ft_isalpha ✓✓✓✓✓✓✓ OK
+ft_isdigit ✓✓✓✓✓✓✓ OK
+ft_isalnum ✓✓✓✓✓✓✓ OK
+ft_isascii ✓✓✓✓✓✓✓✗ KO
+ft_isprint ✓✓✓✓✓✓✓ OK
+ft_strlen ✓✓✓✓✓✓ OK
+ft_memset ✗✗✗✗ KO
+ft_bzero ✓✗ KO
+ft_memcpy ✓✓✓ OK
+ft_memmove ✓✓✓✗✓ KO
+ft_strlcpy ✓✓✓✓✓ OK
+ft_strlcat ✓✓✓✓✓✓✓✓✓ OK
+ft_toupper ✓✓✓✓✓✓✓ OK
+ft_tolower ✓✓✓✓✓✓✓ OK
+ft_strchr ✓✓✓✓✓✓ OK
+ft_strrchr ✓✓✓✓✓✓✓✓ OK
+ft_strncmp ✓✓✓✓✓✓✓✓✓✓✓ OK
+ft_memchr ✓✓✓✓✓✓ OK
+ft_memcmp ✓✓✓✓✓✓✓✓✓ OK
+ft_strnstr ✓✓✓✓✓✓✓✓✓✓ OK
+ft_atoi ✓✓✓✗✓✓✓✓✓✓✗✓✓✓✓✓✓✓✓ KO
+ft_calloc ✓ OK
+ft_strdup ✓ OK
+ft_substr AA✓✓✓ KO
+ft_strjoin ✓✓✓✓ OK
+ft_strtrim AAAA✓ KO
+ft_split AAAAA✗ KO
+ft_itoa ✓✓✓✓✓✓✓✓✓✓ OK
+ft_strmapi ✓ OK
+ft_striteri ✓ OK
+ft_putchar_fd ✓✓✓✓✓✓✓ OK
+ft_putstr_fd ✓✓✓✓ OK
+ft_putendl_fd ✓✓✓✓ OK
+ft_putnbr_fd ✓✓✓✓✓✓✓✓✓ OK
+ft_lstnew ✓✓✓ OK
+ft_lstadd_front ✓ OK
+ft_lstsize ✓ OK
+ft_lstlast T KO
+ft_lstadd_back T KO
+ft_lstdelone ✓ OK
+ft_lstclear ✓ OK
+ft_lstiter ✓ OK
+ft_lstmap ✓ OK
+Abort : A Bus error : B Segmentation fault : S Timeout : T
+More information in: /Users/fsoares-/fraaaaa/temp/libft/war-machine/deepthought
+Errors in isascii: /Users/fsoares-/fraaaaa/temp/libft/war-machine/tests/Part1_functions/ft_isascii
+Test 8:
+    i = 128;
+    while (i <= 138)
+    {
+        ft_print_result(ft_isascii(i));
+        i++;
+    }
+Expected (cat -e test08.output):
+00000000000
+Your result (cat -e user_output_test08):
+10000000000
+Errors in memset: /Users/fsoares-/fraaaaa/temp/libft/war-machine/tests/Part1_functions/ft_memset
+Test 1:
+    if (mem != ft_memset(mem, 'c', 5))
+        write(1, "mem's adress was not returned\n", 30);
+    write(1, mem, 15);
+Expected (cat -e test01.output):
+cccccjjjjjjjjjj
+Your result (cat -e user_output_test01):
+ccccccjjjjjjjjj
+Test 2:
+    if (mem != ft_memset(mem, 'c', 14))
+        write(1, "mem's adress was not returned\n", 30);
+    write(1, mem, 15);
+Expected (cat -e test02.output):
+ccccccccccccccj
+Your result (cat -e user_output_test02):
+ccccccccccccccc
+Test 3:
+    if (mem != ft_memset(mem, '\n', 6))
+        write(1, "mem's adress was not returned\n", 30);
+    write(1, mem, 15);
+Expected (cat -e test03.output):
+$
+$
+$
+$
+$
+$
+jjjjjjjjj
+Your result (cat -e user_output_test03):
+$
+$
+$
+$
+$
+$
+$
+jjjjjjjj
+...
+File too large. To see full report open: /Users/fsoares-/fraaaaa/temp/libft/war-machine/errors.log
+✔ Compiling tests: libftTester (https://github.com/Tripouille/libftTester)
+ℹ Testing:
+ft_isalpha	: 1.OK 2.OK 3.OK 4.OK 5.OK 6.OK 7.OK 8.OK
+ft_isdigit	: 1.OK 2.OK 3.OK 4.OK
+ft_isalnum	: 1.OK 2.OK 3.OK 4.OK 5.OK 6.OK 7.OK 8.OK 9.OK 10.OK 11.OK 12.OK
+ft_isascii	: 1.OK 2.OK 3.KO 4.OK
+ft_isprint	: 1.OK 2.OK 3.OK 4.OK
+ft_strlen	: 1.OK 2.OK
+ft_memset	: 1.KO 2.KO
+ft_bzero	: 1.KO 2.KO 3.KO
+ft_memcpy	: 1.OK 2.OK
+ft_memmove	: 1.OK 2.OK 3.OK 4.OK
+ft_strlcpy	: 1.OK 2.OK 3.OK 4.OK 5.OK 6.OK 7.OK 8.OK 9.OK
+ft_strlcat	: 1.OK 2.OK 3.OK 4.OK 5.OK 6.OK 7.OK 8.OK 9.OK 10.OK 11.OK 12.OK 13.OK 14.OK 15.OK 16.OK 17.OK
+ft_toupper	: 1.OK 2.OK 3.OK 4.OK
+ft_tolower	: 1.OK 2.OK 3.OK 4.OK
+ft_strchr	: 1.OK 2.OK 3.OK 4.OK 5.OK
+ft_strrchr	: 1.OK 2.OK 3.OK 4.OK 5.OK 6.OK 7.OK
+ft_strncmp	: 1.OK 2.OK 3.OK 4.OK 5.OK 6.OK 7.OK 8.OK 9.OK 10.OK 11.OK 12.OK 13.OK 14.OK 15.OK 16.OK
+ft_memchr	: 1.OK 2.OK 3.OK 4.OK 5.OK
+ft_memcmp	: 1.OK 2.OK 3.OK 4.OK 5.OK
+ft_strnstr	: 1.OK 2.OK 3.OK 4.OK 5.OK 6.OK 7.OK 8.OK 9.OK 10.OK 11.OK 12.OK 13.OK 14.OK
+ft_atoi		: 1.OK 2.OK 3.OK 4.OK 5.KO 6.OK 7.OK 8.KO 9.KO 10.OK 11.OK 12.OK 13.OK 14.OK 15.OK 16.OK 17.OK
+ft_calloc	: 1.OK 2.MOK
+ft_strdup	: 1.OK 2.MOK 3.OK 4.MOK
+ft_substr	: 1.OK 2.MOK 3.OK 4.MOK 5.OK 6.MOK 7.OK 8.MOK 9.OK 10.MOK 11.OK 12.MOK 13.OK 14.MOK 15.OK 16.MOK
+ft_strjoin	: 1.OK 2.MOK LEAKS.KO [0x_address : 123] 3.OK 4.MOK LEAKS.KO [0x_address : 123] 5.OK 6.MOK LEAKS.KO [0x_address : 123] 7.OK 8.MOK LEAKS.KO [0x_address : 123]
+ft_strtrim	: 1.OK 2.MOK 3.OK 4.MOK 5.OK 6.MOK 7.OK 8.MOK 9.OK 10.MOK 11.OK 12.MOK 13.OK 14.MOK 15.OK 16.MOK
+ft_itoa		: 1.OK 2.MOK 3.OK 4.MOK 5.OK 6.MOK 7.OK 8.MOK
+ft_strmapi	: 1.OK 2.MOK 3.OK 4.MOK
+ft_striteri	: 1.OK 2.OK 3.OK
+ft_putchar_fd	: 1.OK
+ft_putstr_fd	: 1.OK
+ft_putendl_fd	: 1.OK
+ft_putnbr_fd	: 1.OK 2.OK 3.OK 4.OK 5.OK
+ft_lstnew	: 1.OK 2.OK 3.MOK
+ft_lstadd_front	: 1.OK 2.OK 3.OK 4.OK 5.OK
+ft_lstsize	: 1.OK 2.OK 3.OK
+ft_lstlast	: 1.TIMEOUT
+ft_lstadd_back	: 1.TIMEOUT
+ft_lstdelone	:
+ft_lstclear	: 1.OK
+ft_lstiter	: 1.TIMEOUT
+ft_lstmap	: 1.TIMEOUT
+Errors in:
+For /Users/fsoares-/fraaaaa/tests/libft/Tripouille/tests/ft_isascii_test.cpp:
+KO  20: 	/* 3 */ check(!ft_isascii(128)); showLeaks();
+For /Users/fsoares-/fraaaaa/tests/libft/Tripouille/tests/ft_memset_test.cpp:
+KO  22: 	/* 1 */ check(tab[0] == 0); showLeaks();
+KO  27: 	/* 2 */ check(i == 42 && tab[42] == 0); showLeaks();
+For /Users/fsoares-/fraaaaa/tests/libft/Tripouille/tests/ft_bzero_test.cpp:
+KO  21: 	/* 1 */ check(tab[0] == 'A'); showLeaks();
+KO  26: 	/* 2 */ check(i == 42 && tab[42] == 'A'); showLeaks();
+KO  32: 	/* 3 */ check(i == 42); showLeaks();
+For /Users/fsoares-/fraaaaa/tests/libft/Tripouille/tests/ft_atoi_test.cpp:
+KO  25: 	/* 5 */ check(ft_atoi((e + "+1").c_str()) == 1); showLeaks();
+KO  28: 	/* 8 */ check(ft_atoi((e + "+42lyon").c_str()) == 42); showLeaks();
+KO  29: 	/* 9 */ check(ft_atoi((e + "+101").c_str()) == 101); showLeaks();
+For /Users/fsoares-/fraaaaa/tests/libft/Tripouille/tests/ft_split_test.cpp:
+KO  39: 	/* 8 */ check(tab[1] == NULL);
+For /Users/fsoares-/fraaaaa/tests/libft/Tripouille/tests/ft_lstlast_test.cpp:
+TIMEOUT 21: 	/* 1 */ check(ft_lstlast(l) == 0);
+For /Users/fsoares-/fraaaaa/tests/libft/Tripouille/tests/ft_lstadd_back_test.cpp:
+TIMEOUT 22: 	/* 1 */ check(l->content == (void*)1);
+For /Users/fsoares-/fraaaaa/tests/libft/Tripouille/tests/ft_lstiter_test.cpp:
+TIMEOUT 27: 	/* 1 2 3 4 */ for (int i = 0; i < 4; ++i)
+For /Users/fsoares-/fraaaaa/tests/libft/Tripouille/tests/ft_lstmap_test.cpp:
+TIMEOUT 27: 	/* 1 2 3 4 */ for (int i = 0; i < 4; ++i)
+✔ Compiling tests: libft-unit-test (https://github.com/alelievr/libft-unit-test)
+ℹ Testing:
+ft_isalpha      : [OK]
+ft_isdigit      : [OK]
+ft_isalnum      : [OK]
+ft_isascii      : [FAILED]
+[fail]: your isascii just doesn't work, REALLY ?!
+ft_isprint      : [OK]
+ft_strlen       : [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK]
+ft_memset       : [FAILED] [CRASH] [FAILED] [OK] [FAILED] [OK] [CRASH]
+[fail]: basic memset test (fill a buffer with 'A')
+[crash]: your memset return address is false/your memset does not work
+[fail]: your memset does not cast the memory into unsigned chars
+[fail]: your memset change something when call with a size of 0 !
+[crash]: your memset crash because it read too many bytes !
+ft_bzero        : [FAILED] [FAILED] [OK] [CRASH]
+[fail]: bzero with normal params fail !
+[fail]: your bzero change something when call with 0 !
+[crash]: your bzero crash because it read too many bytes !
+ft_memcpy       : [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK]
+ft_memmove      : [OK] [OK] [OK] [OK] [OK] [FAILED] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK]
+[fail]: your memmove does not support the overlap (test 2)
+ft_strlcpy      : [OK] [OK] [OK] [OK] [OK] [OK] [OK]
+ft_strlcat      : [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK]
+ft_toupper      : [OK]
+ft_tolower      : [OK]
+ft_strchr       : [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK]
+ft_strrchr      : [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK]
+ft_strncmp      : [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK]
+ft_memchr       : [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK]
+ft_memcmp       : [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK]
+ft_strnstr      : [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK]
+ft_atoi         : [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [KO] [OK] [OK] [OK]
+[KO]: your atoi does not work with the plus sign
+ft_calloc       : [OK] [OK] [OK] [OK] [OK]
+ft_strdup       : [OK] [OK] [OK] [OK] [OK] [OK] [OK]
+ft_substr       : [OK] [OK] [OK] [FAILED] [OK] [OK] [OK] [OK] [OK]
+[fail]: your substr did not allocate the good size so the \0 test may be false
+ft_strjoin      : [OK] [OK] [OK] [OK] [OK]
+ft_strtrim      : [OK] [OK] [OK] [OK] [OK] [KO] [OK] [OK] [OK]
+[KO]: your strtrim did not allocate the good size so the \0 test may be false
+ft_split        : [OK] [OK] [OK] [OK] [OK] [OK] [FAILED] [OK] [OK] [CRASH]
+[fail]: your split will segfault in case --> *str="\0aa\0bbb" c='\0'
+[crash]: your split does not work with basic input
+ft_itoa         : [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK]
+ft_strmapi      : [OK] [OK] [OK] [OK] [OK]
+ft_striteri     : [OK] [OK]
+ft_putchar_fd   : [OK] [OK]
+ft_putstr_fd    : [OK] [OK]
+ft_putendl_fd   : [OK] [OK]
+ft_putnbr_fd    : [OK] [OK] [OK] [OK] [OK]
+ft_lstnew       : [OK] [OK] [OK] [OK]
+ft_lstadd_front : [OK] [OK] [OK]
+ft_lstsize      : [OK] [OK]
+ft_lstlast      : [TIMEOUT] [TIMEOUT]
+[timeout]: see the log file for informations
+[timeout]: see the log file for informations
+ft_lstadd_back  : [TIMEOUT] [TIMEOUT] [TIMEOUT]
+[timeout]: see the log file for informations
+[timeout]: see the log file for informations
+[timeout]: see the log file for informations
+ft_lstdelone    : [OK]
+ft_lstclear     : [OK] [OK] [OK]
+ft_lstiter      : [OK]
+ft_lstmap       : [OK]
+[fail]: your isascii just doesn't work, REALLY ?!
+ Test code:
+ 	int i;
+
+ 	i = -1;
+ 	while (i < 530)
+ 	{
+ 		if (!!ft_isascii(i) != !!isascii(i))
+ 		{
+ 			exit(TEST_FAILED);
+ 		}
+ 		i++;
+ 	}
+ 	exit(TEST_SUCCESS);
+
+ Diffs:
+      isascii: |0|
+   ft_isascii: |1|
+ param: (128)
+
+ [fail]: basic memset test (fill a buffer with 'A')
+ Test code:
+ 	const int size = 20;
+ 	char b1[0xF00];
+ 	char b2[0xF00];
+
+ 	__builtin___memset_chk (b1, 'B', 0xF00, __builtin_object_size (b1, 0));
+ 	__builtin___memset_chk (b2, 'B', 0xF00, __builtin_object_size (b2, 0));
+ 	__builtin___memset_chk (b1, 'A', size, __builtin_object_size (b1, 0));
+ 	ft_memset(b2, 'A', size);
+ 	if (!memcmp(b1, b2, 0xF00))
+ 		exit(TEST_SUCCESS);
+ 	for (register int __i = 0; __i < size + 2; ++__i)
+ 	for (register int __i = 0; __i < size + 2; ++__i)
+ 	exit(TEST_FAILED);
+
+ Diffs:
+       memset: |\x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x42 \x42 |
+    ft_memset: |\x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x42 |
+
+ [crash]: your memset return address is false/your memset does not work
+ Test code:
+ 	const int size = 18;
+ 	char b1[0xF00];
+
+ 	__builtin___memset_chk (b1, 'B', 0xF00, __builtin_object_size (b1, 0));
+ 	char *r1 = __builtin___memset_chk (b1, 'A', size, __builtin_object_size (b1, 0));
+ 	char *r2 = ft_memset(b1, 'A', size);
+ 	for (register int __i = 0; __i < size; ++__i)
+ 	for (register int __i = 0; __i < size; ++__i)
+...
+File too large. To see full report open: /Users/fsoares-/fraaaaa/temp/libft/alelievr/result.log
+✔ Compiling tests: fsoares (my own)
+ℹ Testing:
+ft_isalpha      : OK
+ft_isdigit      : OK
+ft_isalnum      : OK
+ft_isascii      : KO
+ft_isprint      : OK
+ft_strlen       : OK
+ft_memset       : KO
+ft_bzero        : KO
+ft_memcpy       : OK
+ft_memmove      : KO
+ft_strlcpy      : OK
+ft_strlcat      : OK
+ft_toupper      : OK
+ft_tolower      : OK
+ft_strchr       : OK
+ft_strrchr      : OK
+ft_strncmp      : OK
+ft_memchr       : OK
+ft_memcmp       : OK
+ft_strnstr      : OK
+ft_atoi         : KO
+ft_calloc       : 3.KO Abort
+ft_strdup       : OK
+ft_substr       : 5.KO Abort
+ft_strjoin      : KO
+ft_strtrim      : 2.KO Abort
+ft_split        : 1.KO Abort
+ft_itoa         : 1.KO Abort
+ft_strmapi      : OK
+ft_striteri     : OK
+ft_putchar_fd   : OK
+ft_putstr_fd    : OK
+ft_putendl_fd   : OK
+ft_putnbr_fd    : OK
+ft_lstnew       : OK
+ft_lstadd_front : OK
+ft_lstsize      : OK
+ft_lstlast      : 1.KO Timeout
+ft_lstadd_back  : 1.KO Timeout
+ft_lstdelone    : OK
+ft_lstclear     : OK
+ft_lstiter      : OK
+ft_lstmap       : OK
+Errors found:
+For ft_isascii, in /Users/fsoares-/fraaaaa/tests/libft/fsoares/test_isascii.c:
+fn_isascii(128: '\x80'): std: 0, yours: 1
+For ft_memset, in /Users/fsoares-/fraaaaa/tests/libft/fsoares/test_memset.c:
+Error in test 1: ft_memset(ptr, 120: 'x', 0): different memory
+expected:
+0000: 1111 1111 1111 1111 1111 1111 1111 1111 ->  ................
+yours:
+0000: 7811 1111 1111 1111 1111 1111 1111 1111 ->  x...............
+Error in test 2: ft_memset(ptr, 103: 'g', 12): different memory
+expected:
+0000: 6767 6767 6767 6767 6767 6767 1111 1111 ->  gggggggggggg....
+yours:
+0000: 6767 6767 6767 6767 6767 6767 6711 1111 ->  ggggggggggggg...
+Error in test 4: ft_memset(ptr, 300: ',', 12): different memory
+expected:
+0000: 2c2c 2c2c 2c2c 2c2c 2c2c 2c2c 1111 1111 ->  ,,,,,,,,,,,,....
+yours:
+0000: 2c2c 2c2c 2c2c 2c2c 2c2c 2c2c 2c11 1111 ->  ,,,,,,,,,,,,,...
+Error in test 4: ft_memset(ptr, 257: '\x01', 19): different memory
+expected:
+0000: 0101 0101 0101 0101 0101 0101 0101 0101 ->  ................
+0010: 0101 0111 1111 1111 1111 1111 1111 1111 ->  ................
+yours:
+0000: 0101 0101 0101 0101 0101 0101 0101 0101 ->  ................
+0010: 0101 0101 1111 1111 1111 1111 1111 1111 ->  ................
+Error in test 5: ft_memset(ptr, 143462: 'f', 4): different memory
+expected:
+0000: 1111 1111 6666 6666 1111 1111 1111 1111 ->  ....ffff........
+yours:
+0000: 1111 1111 6666 6666 6611 1111 1111 1111 ->  ....fffff.......
+For ft_bzero, in /Users/fsoares-/fraaaaa/tests/libft/fsoares/test_bzero.c:
+Error in test 1: ft_bzero(0x_address, 0): different memory
+expected:
+0000: 1111 1111 1111 1111 1111 1111 1111 1111 ->  ................
+yours:
+0000: 0011 1111 1111 1111 1111 1111 1111 1111 ->  ................
+Error in test 2: ft_bzero(0x_address, 12): different memory
+expected:
+0000: 0000 0000 0000 0000 0000 0000 1111 1111 ->  ................
+...
+File too large. To see full report open: /Users/fsoares-/fraaaaa/temp/libft/fsoares/error.log
+Summary:
+Norminette Errors: ft_lstsize.c
+Failed tests: lstadd_back, ft_lstiter, lstlast, strjoin, split, ft_isascii, itoa, isascii, ft_split, substr, memset, ft_lstadd_back, ft_memset, calloc, ft_bzero, strtrim, bzero, atoi, memmove, ft_lstlast, ft_lstmap, ft_atoi
+Passed tests: isalpha, isdigit, isalnum, isascii, isprint, strlen, memset, bzero, memcpy, memmove, strlcpy, strlcat, toupper, tolower, strchr, strrchr, strncmp, memchr, memcmp, strnstr, atoi, calloc, strdup, substr, strjoin, strtrim, split, itoa, strmapi, striteri, putchar_fd, putstr_fd, putendl_fd, putnbr_fd, lstnew, lstadd_front, lstsize, lstlast, lstadd_back, lstdelone, lstclear, lstiter, lstmap
+
+=====> File /Users/fsoares-/fraaaaa/temp/libft/war-machine/errors.log contents:
+Errors in isascii: /Users/fsoares-/fraaaaa/temp/libft/war-machine/tests/Part1_functions/ft_isascii
+Test 8:
+    i = 128;
+    while (i <= 138)
+    {
+        ft_print_result(ft_isascii(i));
+        i++;
+    }
+Expected (cat -e test08.output):
+00000000000
+Your result (cat -e user_output_test08):
+10000000000
+Errors in memset: /Users/fsoares-/fraaaaa/temp/libft/war-machine/tests/Part1_functions/ft_memset
+Test 1:
+    if (mem != ft_memset(mem, 'c', 5))
+        write(1, "mem's adress was not returned\n", 30);
+    write(1, mem, 15);
+Expected (cat -e test01.output):
+cccccjjjjjjjjjj
+Your result (cat -e user_output_test01):
+ccccccjjjjjjjjj
+Test 2:
+    if (mem != ft_memset(mem, 'c', 14))
+        write(1, "mem's adress was not returned\n", 30);
+    write(1, mem, 15);
+Expected (cat -e test02.output):
+ccccccccccccccj
+Your result (cat -e user_output_test02):
+ccccccccccccccc
+Test 3:
+    if (mem != ft_memset(mem, '\n', 6))
+        write(1, "mem's adress was not returned\n", 30);
+    write(1, mem, 15);
+Expected (cat -e test03.output):
+$
+$
+$
+$
+$
+$
+jjjjjjjjj
+Your result (cat -e user_output_test03):
+$
+$
+$
+$
+$
+$
+$
+jjjjjjjj
+Test 4:
+    if (mem != ft_memset(mem, '\0', 1))
+        write(1, "mem's adress was not returned\n", 30);
+    write(1, mem, 15);
+Expected (cat -e test04.output):
+^@jjjjjjjjjjjjjj
+Your result (cat -e user_output_test04):
+^@^@jjjjjjjjjjjjj
+Errors in bzero: /Users/fsoares-/fraaaaa/temp/libft/war-machine/tests/Part1_functions/ft_bzero
+Test 2:
+    memset(mem, 'e', 5);
+    ft_bzero(mem, 0);
+    write(1, mem, 5);
+Expected (cat -e test02.output):
+eeeee
+Your result (cat -e user_output_test02):
+^@eeee
+Errors in memmove: /Users/fsoares-/fraaaaa/temp/libft/war-machine/tests/Part1_functions/ft_memmove
+Test 4:
+    if (src != ft_memmove(src, dest, 8))
+        write(1, "dest's adress was not returned\n", 31);
+    write(1, dest, 22);
+Expected (cat -e test04.output):
+rem ipssum dolor sit a
+Your result (cat -e user_output_test04):
+ssssssssum dolor sit a
+Errors in atoi: /Users/fsoares-/fraaaaa/temp/libft/war-machine/tests/Part1_functions/ft_atoi
+Test 4:
+    ft_print_result(ft_atoi("+548"));
+Expected (cat -e test04.output):
+548
+Your result (cat -e user_output_test04):
+0
+Test 11:
+    ft_print_result(ft_atoi("+47+5"));
+Expected (cat -e test11.output):
+47
+Your result (cat -e user_output_test11):
+0
+Errors in substr: /Users/fsoares-/fraaaaa/temp/libft/war-machine/tests/Part2_functions/ft_substr
+Test 1:
+    if (!(strsub = ft_substr(str, 0, 10)))
+        ft_print_result("NULL");
+    else
+        ft_print_result(strsub);
+    if (str == strsub)
+        ft_print_result("\nA new string was not returned");
+Expected (cat -e test01.output):
+lorem ipsu
+Your result (cat -e user_output_test01):
+
+Test 2:
+    if (!(strsub = ft_substr(str, 7, 10)))
+        ft_print_result("NULL");
+    else
+        ft_print_result(strsub);
+    if (str == strsub)
+        ft_print_result("\nA new string was not returned");
+Expected (cat -e test02.output):
+psum dolor
+Your result (cat -e user_output_test02):
+
+Errors in strtrim: /Users/fsoares-/fraaaaa/temp/libft/war-machine/tests/Part2_functions/ft_strtrim
+Test 1:
+    char s1[] = "lorem \n ipsum \t dolor \n sit \t amet";
+    if (!(strtrim = ft_strtrim(s1, " ")))
+        ft_print_result("NULL");
+    else
+        ft_print_result(strtrim);
+    if (strtrim == s1)
+        ft_print_result("\nA new string was not returned");
+Expected (cat -e test01.output):
+lorem $
+ ipsum 	 dolor $
+ sit 	 amet
+Your result (cat -e user_output_test01):
+
+Test 2:
+    char s1[] = "lorem ipsum dolor sit amet";
+    if (!(strtrim = ft_strtrim(s1, "te")))
+        ft_print_result("NULL");
+    else
+        ft_print_result(strtrim);
+    if (strtrim == s1)
+        ft_print_result("\nA new string was not returned");
+Expected (cat -e test02.output):
+lorem ipsum dolor sit am
+Your result (cat -e user_output_test02):
+
+Test 3:
+    char s1[] = " lorem ipsum dolor sit amet";
+    if (!(strtrim = ft_strtrim(s1, "l ")))
+        ft_print_result("NULL");
+    else
+        ft_print_result(strtrim);
+    if (strtrim == s1)
+        ft_print_result("\nA new string was not returned");
+Expected (cat -e test03.output):
+orem ipsum dolor sit amet
+Your result (cat -e user_output_test03):
+
+Test 4:
+    char s1[] = "lorem ipsum dolor sit amet";
+    if (!(strtrim = ft_strtrim(s1, "tel")))
+        ft_print_result("NULL");
+    else
+        ft_print_result(strtrim);
+    if (strtrim == s1)
+        ft_print_result("\nA new string was not returned");
+Expected (cat -e test04.output):
+orem ipsum dolor sit am
+Your result (cat -e user_output_test04):
+
+Errors in split: /Users/fsoares-/fraaaaa/temp/libft/war-machine/tests/Part2_functions/ft_split
+Test 1:
+    if (!(tabstr = ft_split("          ", ' ')))
+        ft_print_result("NULL");
+    else
+    {
+        while (tabstr[i] != NULL)
+        {
+            ft_print_result(tabstr[i]);
+            write(1, "\n", 1);
+            i++;
+        }
+    }
+Expected (cat -e test01.output):
+
+Your result (cat -e user_output_test01):
+
+Test 2:
+    if (!(tabstr = ft_split("lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse", ' ')))
+        ft_print_result("NULL");
+    else
+    {
+        while (tabstr[i] != NULL)
+        {
+            ft_print_result(tabstr[i]);
+            write(1, "\n", 1);
+            i++;
+        }
+    }
+Expected (cat -e test02.output):
+lorem$
+ipsum$
+dolor$
+sit$
+amet,$
+consectetur$
+adipiscing$
+elit.$
+Sed$
+non$
+risus.$
+Suspendisse$
+
+Your result (cat -e user_output_test02):
+
+Test 3:
+    if (!(tabstr = ft_split("   lorem   ipsum dolor     sit amet, consectetur   adipiscing elit. Sed non risus. Suspendisse   ", ' ')))
+        ft_print_result("NULL");
+    else
+    {
+        while (tabstr[i] != NULL)
+        {
+            ft_print_result(tabstr[i]);
+            write(1, "\n", 1);
+            i++;
+        }
+    }
+Expected (cat -e test03.output):
+lorem$
+ipsum$
+dolor$
+sit$
+amet,$
+consectetur$
+adipiscing$
+elit.$
+Sed$
+non$
+risus.$
+Suspendisse$
+
+Your result (cat -e user_output_test03):
+
+Test 4:
+    if (!(tabstr = ft_split("lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultricies diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi.", 'i')))
+        ft_print_result("NULL");
+    else
+    {
+        while (tabstr[i] != NULL)
+        {
+            ft_print_result(tabstr[i]);
+            write(1, "\n", 1);
+            i++;
+        }
+    }
+Expected (cat -e test04.output):
+lorem $
+psum dolor s$
+t amet, consectetur ad$
+p$
+sc$
+ng el$
+t. Sed non r$
+sus. Suspend$
+sse lectus tortor, d$
+gn$
+ss$
+m s$
+t amet, ad$
+p$
+sc$
+ng nec, ultr$
+c$
+es sed, dolor. Cras elementum ultr$
+c$
+es d$
+am. Maecenas l$
+gula massa, var$
+us a, semper congue, eu$
+smod non, m$
+.$
+
+Your result (cat -e user_output_test04):
+
+Test 5:
+    if (!(tabstr = ft_split("lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultricies diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi.", 'z')))
+        ft_print_result("NULL");
+    else
+    {
+        while (tabstr[i] != NULL)
+        {
+            ft_print_result(tabstr[i]);
+            write(1, "\n", 1);
+            i++;
+        }
+    }
+Expected (cat -e test05.output):
+lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultricies diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi.$
+
+Your result (cat -e user_output_test05):
+
+Test 6:
+    if (!(tabstr = ft_split("", 'z')))
+        ft_print_result("NULL");
+    else
+        if (!tabstr[0])
+            ft_print_result("ok\n");
+Expected (cat -e test06.output):
+ok$
+
+Your result (cat -e user_output_test06):
+
+Errors in lstlast: /Users/fsoares-/fraaaaa/temp/libft/war-machine/tests/Bonus_functions/ft_lstlast
+Test 1:
+    elem->next = elem2;
+    elem2->next = elem3;
+    elem3->next = elem4;
+    val = ft_lstlast(elem);
+    i = 0;
+    content = val->content;
+    while (content[i])
+        write(1, &(content[i++]), 1);
+    write(1, "\n", 1);
+    elem->next = NULL;
+    val = ft_lstlast(elem);
+    content = val->content;
+    i = 0;
+    while (content[i])
+        write(1, &(content[i++]), 1);
+    write(1, "\n", 1);
+    elem = NULL;
+    val = ft_lstlast(elem);
+    if (val == NULL)
+        write(1, "NULL", 4);
+    write(1, "\n", 1);
+Expected (cat -e test01.output):
+sit$
+lorem$
+NULL$
+
+Your result (cat -e user_output_test01):
+
+Errors in lstadd_back: /Users/fsoares-/fraaaaa/temp/libft/war-machine/tests/Bonus_functions/ft_lstadd_back
+Test 1:
+    begin = NULL;
+    ft_lstadd_back(&begin, elem);
+    ft_lstadd_back(&begin, elem2);
+    ft_lstadd_back(&begin, elem3);
+    ft_lstadd_back(&begin, elem4);
+    while (begin)
+    {
+        ft_print_result(begin);
+        begin = begin->next;
+    }
+Expected (cat -e test01.output):
+lorem$
+ipsum$
+dolor$
+sit$
+
+Your result (cat -e user_output_test01):
+
+
+
+=====> File /Users/fsoares-/fraaaaa/temp/libft/alelievr/result.log contents:
+ft_isalpha:    [OK]
+ft_isdigit:    [OK]
+ft_isalnum:    [OK]
+ft_isascii:    [FAILED]
+[fail]: your isascii just doesn't work, REALLY ?!
+Test code:
+	int i;
+
+	i = -1;
+	while (i < 530)
+	{
+		if (!!ft_isascii(i) != !!isascii(i))
+		{
+			exit(TEST_FAILED);
+		}
+		i++;
+	}
+	exit(TEST_SUCCESS);
+
+Diffs:
+     isascii: |0|
+  ft_isascii: |1|
+param: (128)
+
+ft_isprint:    [OK]
+ft_strlen:     [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK]
+ft_memset:     [FAILED] [CRASH] [FAILED] [OK] [FAILED] [OK] [CRASH]
+[fail]: basic memset test (fill a buffer with 'A')
+Test code:
+	const int size = 20;
+	char b1[0xF00];
+	char b2[0xF00];
+
+	__builtin___memset_chk (b1, 'B', 0xF00, __builtin_object_size (b1, 0));
+	__builtin___memset_chk (b2, 'B', 0xF00, __builtin_object_size (b2, 0));
+	__builtin___memset_chk (b1, 'A', size, __builtin_object_size (b1, 0));
+	ft_memset(b2, 'A', size);
+	if (!memcmp(b1, b2, 0xF00))
+		exit(TEST_SUCCESS);
+	for (register int __i = 0; __i < size + 2; ++__i)
+	for (register int __i = 0; __i < size + 2; ++__i)
+	exit(TEST_FAILED);
+
+Diffs:
+      memset: |\x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x42 \x42 |
+   ft_memset: |\x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x41 \x42 |
+
+[crash]: your memset return address is false/your memset does not work
+Test code:
+	const int size = 18;
+	char b1[0xF00];
+
+	__builtin___memset_chk (b1, 'B', 0xF00, __builtin_object_size (b1, 0));
+	char *r1 = __builtin___memset_chk (b1, 'A', size, __builtin_object_size (b1, 0));
+	char *r2 = ft_memset(b1, 'A', size);
+	for (register int __i = 0; __i < size; ++__i)
+	for (register int __i = 0; __i < size; ++__i)
+	if (r1 != r2)
+		exit(TEST_FAILED);
+	r1 = __builtin___memset_chk ("", 'A', (0), __builtin_object_size ("", 0));
+	r2 = ft_memset("", 'A', 0);
+	if (r1 != r2)
+		exit(TEST_FAILED);
+	exit(TEST_SUCCESS);
+
+
+[fail]: your memset does not cast the memory into unsigned chars
+Test code:
+	const int size = 22;
+	char b1[0xF00];
+	char b2[0xF00];
+
+	__builtin___memset_chk (b1, 'B', 0xF00, __builtin_object_size (b1, 0));
+	__builtin___memset_chk (b2, 'B', 0xF00, __builtin_object_size (b2, 0));
+	__builtin___memset_chk (b1, '\200', size, __builtin_object_size (b1, 0));
+	ft_memset(b2, '\200', size);
+	if (!memcmp(b1, b2, 0xF00))
+		exit(TEST_SUCCESS);
+	for (register int __i = 0; __i < size; ++__i)
+	for (register int __i = 0; __i < size; ++__i)
+	exit(TEST_FAILED);
+
+Diffs:
+      memset: |\x80 \x80 \x80 \x80 \x80 \x80 \x80 \x80 \x80 \x80 \x80 \x80 \x80 \x80 \x80 \x80 \x80 \x80 \x80 \x80 \x80 \x80 |
+   ft_memset: |\x80 \x80 \x80 \x80 \x80 \x80 \x80 \x80 \x80 \x80 \x80 \x80 \x80 \x80 \x80 \x80 \x80 \x80 \x80 \x80 \x80 \x80 |
+
+[fail]: your memset change something when call with a size of 0 !
+Test code:
+	char buff[0xF00];
+	char buff2[0xF00];
+
+	__builtin___memset_chk (buff, 0, sizeof(buff), __builtin_object_size (buff, 0));
+	__builtin___memset_chk (buff2, 0, sizeof(buff2), __builtin_object_size (buff2, 0));
+	ft_memset(buff, '\xff', 0);
+	__builtin___memset_chk (buff2, '\xff', (0), __builtin_object_size (buff2, 0));
+	if (!memcmp(buff, buff2, 0xF00))
+		exit(TEST_SUCCESS);
+	exit(TEST_FAILED);
+
+Diffs:
+      memset: |\xff|
+   ft_memset: ||
+
+[crash]: your memset crash because it read too many bytes !
+Test code:
+	const size_t size = 10;
+	char *buff = electric_alloc(size);
+
+	__builtin___memset_chk (buff, 0, size, __builtin_object_size (buff, 0));
+	ft_memset(buff, '\xff', size);
+	exit(TEST_SUCCESS);
+
+
+ft_bzero:      [FAILED] [FAILED] [OK] [CRASH]
+[fail]: bzero with normal params fail !
+Test code:
+	char str[0xF00];
+	char str2[0xF00];
+
+	__builtin___memset_chk (str, 'a', 0xF00, __builtin_object_size (str, 0));
+	__builtin___memset_chk (str2, 'a', 0xF00, __builtin_object_size (str2, 0));
+	__builtin___memset_chk (str, 0, 20, __builtin_object_size (str, 0));
+	ft_bzero(str2, 20);
+	if (!memcmp(str, str2, 0xF00))
+		exit(TEST_SUCCESS);
+	for (register int __i = 0; __i < 22; ++__i)
+	for (register int __i = 0; __i < 22; ++__i)
+	exit(TEST_FAILED);
+
+Diffs:
+       bzero: |\x0  \x0  \x0  \x0  \x0  \x0  \x0  \x0  \x0  \x0  \x0  \x0  \x0  \x0  \x0  \x0  \x0  \x0  \x0  \x0  \x61 \x61 |
+    ft_bzero: |\x0  \x0  \x0  \x0  \x0  \x0  \x0  \x0  \x0  \x0  \x0  \x0  \x0  \x0  \x0  \x0  \x0  \x0  \x0  \x0  \x0  \x61 |
+
+[fail]: your bzero change something when call with 0 !
+Test code:
+	char buff[0xF00];
+	char buff2[0xF00];
+
+	__builtin___memset_chk (buff, '\x1', sizeof(buff), __builtin_object_size (buff, 0));
+	__builtin___memset_chk (buff2, '\x1', sizeof(buff2), __builtin_object_size (buff2, 0));
+	ft_bzero(buff, 0);
+	__builtin___memset_chk (buff2, 0, (0), __builtin_object_size (buff2, 0));
+	if (!memcmp(buff, buff2, 0xF00))
+		exit(TEST_SUCCESS);
+	for (register int __i = 0; __i < 10; ++__i)
+	for (register int __i = 0; __i < 10; ++__i)
+	exit(TEST_FAILED);
+
+Diffs:
+       bzero: |\x0  \x1  \x1  \x1  \x1  \x1  \x1  \x1  \x1  \x1  |
+    ft_bzero: |\x1  \x1  \x1  \x1  \x1  \x1  \x1  \x1  \x1  \x1  |_bzero: |\x0  \x0  \x0  \x0  \x0  \x0  \x0  \x0  \x0  \x0  \x0  \x0  \x0  \x0  \x0  \x0  \x0  \x0  \x0  \x0  \x0  \x61 |
+
+[crash]: your bzero crash because it read too many bytes !
+Test code:
+	const size_t size = 10;
+	char *buff = electric_alloc(size);
+
+	__builtin___memset_chk (buff, '\x1', size, __builtin_object_size (buff, 0));
+	ft_bzero(buff, size);
+	exit(TEST_SUCCESS);
+
+
+ft_memcpy:     [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK]
+ft_memmove:    [OK] [OK] [OK] [OK] [OK] [FAILED] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK]
+[fail]: your memmove does not support the overlap (test 2)
+Test code:
+	char dst1[0xF0];
+	char dst2[0xF0];
+	char *data = "thiß ß\xde\xad\xbe\xeftriñg will be øvérlapéd !\r\n";
+	int size = 0xF0 - 0xF;
+
+	__builtin___memset_chk (dst1, 'A', sizeof(dst1), __builtin_object_size (dst1, 0));
+	__builtin___memset_chk (dst2, 'A', sizeof(dst2), __builtin_object_size (dst2, 0));
+	__builtin___memcpy_chk (dst1, data, strlen(data), __builtin_object_size (dst1, 0));
+	__builtin___memcpy_chk (dst2, data, strlen(data), __builtin_object_size (dst2, 0));
+	__builtin___memmove_chk (dst1, dst1 + 3, size, __builtin_object_size (dst1, 0));
+	ft_memmove(dst2, dst2 + 3, size);
+	if (!memcmp(dst1, dst2, size))
+		exit(TEST_SUCCESS);
+	exit(TEST_FAILED);
+
+Diffs:
+     memmove: |ß ßޭ\xbe\xeftriñg will be øvérlapéd !
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAz|
+  ft_memmove: |AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAß ßޭ\xbe\xeftriñg will be øvérlapéd !
+AAAAAAAAAAAAAAAAAAAA|
+
+ft_strlcpy:    [OK] [OK] [OK] [OK] [OK] [OK] [OK]
+ft_strlcat:    [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK]
+ft_toupper:    [OK]
+ft_tolower:    [OK]
+ft_strchr:     [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK]
+ft_strrchr:    [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK]
+ft_strncmp:    [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK]
+ft_memchr:     [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK]
+ft_memcmp:     [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK]
+ft_strnstr:    [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK]
+ft_atoi:       [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [KO] [OK] [OK] [OK]
+[KO]: your atoi does not work with the plus sign
+Test code:
+	char n[40] = "+1234";
+	int i1 = atoi(n);
+	int i2 = ft_atoi(n);
+
+	if (i1 == i2)
+		exit(TEST_SUCCESS);
+	exit(TEST_KO);
+
+Diffs:
+        atoi: |1234|
+     ft_atoi: |0|
+
+ft_calloc:     [OK] [OK] [OK] [OK] [OK]
+ft_strdup:     [OK] [OK] [OK] [OK] [OK] [OK] [OK]
+ft_substr:     [OK] [OK] [OK] [FAILED] [OK] [OK] [OK] [OK] [OK]
+[fail]: your substr did not allocate the good size so the \0 test may be false
+Test code:
+	char *str = "i just want this part #############";
+	size_t size = 10;
+	int ret_size;
+
+	ft_substr(str, 5, size);
+	ret_size = get_last_malloc_size();
+	if ((int)size + 1 == ret_size)
+	{
+		exit(TEST_SUCCESS);
+	}
+	exit(TEST_FAILED);
+
+Diffs:
+      substr: |11|
+   ft_substr: |10|
+
+ft_strjoin:    [OK] [OK] [OK] [OK] [OK]
+ft_strtrim:    [OK] [OK] [OK] [OK] [OK] [KO] [OK] [OK] [OK]
+[KO]: your strtrim did not allocate the good size so the \0 test may be false
+Test code:
+	char *s1 = "\t   \n\n\n  \n\n\t    Hello \t  Please\n Trim me !\t\t\t\n  \t\t\t\t  ";
+	char *s2 = "Hello \t  Please\n Trim me !";
+	int r_size = strlen(s2);
+	int size;
+
+	ft_strtrim(s1, " \n\t");
+	size = get_last_malloc_size();
+	if (size == r_size + 1)
+		exit(TEST_SUCCESS);
+	exit(TEST_KO);
+
+Diffs:
+     strtrim: |27|
+  ft_strtrim: |26|
+
+ft_split:      [OK] [OK] [OK] [OK] [OK] [OK] [FAILED] [OK] [OK] [CRASH]
+[fail]: your split will segfault in case --> *str="\0aa\0bbb" c='\0'
+Test code:
+	char **expected = ft_split("\0aa\0bbb", '\0');
+
+	for (int i = 0; expected[i]; i++)
+	{
+		if (expected[i] != ((void *)0))
+			exit(TEST_FAILED);
+	}
+	exit(TEST_SUCCESS);
+
+Diffs:
+
+
+[crash]: your split does not work with basic input
+Test code:
+	char *s = "      split       this for   me  !       ";
+
+	char **result = ft_split(s, ' ');
+	while (*result)
+	{
+		if (strcmp(*result, *expected))
+		{
+			exit(TEST_FAILED);
+		}
+		result++;
+		expected++;
+	}
+	exit(TEST_SUCCESS);
+
+
+ft_itoa:       [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK] [OK]
+ft_strmapi:    [OK] [OK] [OK] [OK] [OK]
+ft_striteri:   [OK] [OK]
+ft_putchar_fd: [OK] [OK]
+ft_putstr_fd:  [OK] [OK]
+ft_putendl_fd: [OK] [OK]
+ft_putnbr_fd:  [OK] [OK] [OK] [OK] [OK]
+ft_lstnew:     [OK] [OK] [OK] [OK]
+ft_lstadd_front: [OK] [OK] [OK]
+ft_lstsize:    [OK] [OK]
+ft_lstlast:    [TIMEOUT] [TIMEOUT] Test code:
+	t_list *l;
+	t_list *expected;
+	t_list *actual;
+
+	l = lstnew(strdup("1"));
+	l->next = lstnew(strdup("2"));
+	l->next->next = lstnew(strdup("3"));
+	expected = l->next->next;
+	actual = ft_lstlast(l);
+	if (actual == expected)
+		exit(TEST_SUCCESS);
+	exit(TEST_FAILED);
+
+Test code:
+	t_list *l = ((void *)0);
+	t_list *expected;
+	t_list *actual;
+
+	expected = ((void *)0);
+	actual = ft_lstlast(l);
+	if (actual == expected)
+		exit(TEST_SUCCESS);
+	exit(TEST_FAILED);
+
+
+ft_lstadd_back:[TIMEOUT] [TIMEOUT] [TIMEOUT] Test code:
+	t_list *l = lstnew(strdup("nyacat"));
+	t_list *n = lstnew(strdup("OK"));
+
+	ft_lstadd_back(&l, n);
+	if (l->next == n && !strcmp(l->next->content, "OK"))
+	{
+		exit(TEST_SUCCESS);
+	}
+	exit(TEST_FAILED);
+
+Test code:
+	t_list *l = lstnew(strdup("nyacat"));
+	t_list *n = lstnew(strdup("OK"));
+
+	ft_lstadd_back(&l, n);
+	if (l->next == n && !strcmp(l->next->content, "OK"))
+	{
+		free(l->next);
+		free(l);
+		exit(TEST_SUCCESS);
+	}
+	free(l->next);
+	free(l);
+	exit(TEST_FAILED);
+
+Test code:
+	t_list *l = ((void *)0);
+	t_list *n = lstnew(strdup("OK"));
+
+	ft_lstadd_back(&l, n);
+	if (l == n && !strcmp(l->content, "OK"))
+	{
+		free(l->next);
+		free(l);
+		exit(TEST_SUCCESS);
+	}
+	free(l->next);
+	free(l);
+	exit(TEST_FAILED);
+
+
+ft_lstdelone:  [OK]
+ft_lstclear:   [OK] [OK] [OK]
+ft_lstiter:    [OK]
+ft_lstmap:     [OK]
+
+
+=====> File /Users/fsoares-/fraaaaa/temp/libft/fsoares/error.log contents:
+For ft_isascii, in /Users/fsoares-/fraaaaa/tests/libft/fsoares/test_isascii.c:
+
+fn_isascii(128: '\x80'): std: 0, yours: 1
+
+For ft_memset, in /Users/fsoares-/fraaaaa/tests/libft/fsoares/test_memset.c:
+
+Error in test 1: ft_memset(ptr, 120: 'x', 0): different memory
+expected:
+0000: 1111 1111 1111 1111 1111 1111 1111 1111 ->  ................
+yours:
+0000: 7811 1111 1111 1111 1111 1111 1111 1111 ->  x...............
+
+Error in test 2: ft_memset(ptr, 103: 'g', 12): different memory
+expected:
+0000: 6767 6767 6767 6767 6767 6767 1111 1111 ->  gggggggggggg....
+yours:
+0000: 6767 6767 6767 6767 6767 6767 6711 1111 ->  ggggggggggggg...
+
+Error in test 4: ft_memset(ptr, 300: ',', 12): different memory
+expected:
+0000: 2c2c 2c2c 2c2c 2c2c 2c2c 2c2c 1111 1111 ->  ,,,,,,,,,,,,....
+yours:
+0000: 2c2c 2c2c 2c2c 2c2c 2c2c 2c2c 2c11 1111 ->  ,,,,,,,,,,,,,...
+
+Error in test 4: ft_memset(ptr, 257: '\x01', 19): different memory
+expected:
+0000: 0101 0101 0101 0101 0101 0101 0101 0101 ->  ................
+0010: 0101 0111 1111 1111 1111 1111 1111 1111 ->  ................
+yours:
+0000: 0101 0101 0101 0101 0101 0101 0101 0101 ->  ................
+0010: 0101 0101 1111 1111 1111 1111 1111 1111 ->  ................
+
+Error in test 5: ft_memset(ptr, 143462: 'f', 4): different memory
+expected:
+0000: 1111 1111 6666 6666 1111 1111 1111 1111 ->  ....ffff........
+yours:
+0000: 1111 1111 6666 6666 6611 1111 1111 1111 ->  ....fffff.......
+
+
+For ft_bzero, in /Users/fsoares-/fraaaaa/tests/libft/fsoares/test_bzero.c:
+
+Error in test 1: ft_bzero(0x_address, 0): different memory
+expected:
+0000: 1111 1111 1111 1111 1111 1111 1111 1111 ->  ................
+yours:
+0000: 0011 1111 1111 1111 1111 1111 1111 1111 ->  ................
+
+Error in test 2: ft_bzero(0x_address, 12): different memory
+expected:
+0000: 0000 0000 0000 0000 0000 0000 1111 1111 ->  ................
+yours:
+0000: 0000 0000 0000 0000 0000 0000 0011 1111 ->  ................
+
+
+For ft_memmove, in /Users/fsoares-/fraaaaa/tests/libft/fsoares/test_memmove.c:
+
+Error in test 1: ft_memmove(0x_address, 0x_address: "123456", 4): different memory
+expected:
+0000: 3132 3334 3334 3536 0011 1111 1111 1111 ->  12343456........
+yours:
+0000: 3334 3334 3334 3536 0011 1111 1111 1111 ->  34343456........
+
+
+For ft_atoi, in /Users/fsoares-/fraaaaa/tests/libft/fsoares/test_atoi.c:
+
+Error in test 4: atoi("+0000000000000000000000000000000000000000000000000000123"): expected: 123, yours: 0
+Error in test 61: atoi("+44"): expected: 44, yours: 0
+
+For ft_calloc, in /Users/fsoares-/fraaaaa/tests/libft/fsoares/test_calloc.c:
+
+Error in test 3: ft_calloc(10, 8): Memory problems!
+     in sigabort utils.c:58:1
+     in ft_memset ft_memset.c:20:11
+     in ft_bzero ft_bzero.c:18:1
+     in ft_calloc ft_calloc.c:24:10
+     in test_single_calloc test_calloc.c:9:8
+     in test_calloc test_calloc.c:26:8
+     in main test_calloc.c:34:2
+
+=================================================================
+==pid==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x_address at pc 0x_address bp 0x_address sp 0x_address
+WRITE of size 1 at 0x_address thread T0
+    #0 0x_address in ft_memset ft_memset.c:20
+    #1 0x_address in ft_bzero ft_bzero.c:17
+    #2 0x_address in ft_calloc ft_calloc.c:23
+    #3 0x_address in test_single_calloc test_calloc.c:9
+    #4 0x_address in test_calloc test_calloc.c:26
+    #5 0x_address in main test_calloc.c:34
+    #6 0x_address in start+0x0 (libdyld.dylib:x86_64+0x1acc8)
+
+0x_address is located 0 bytes to the right of 80-byte region [0x_address,0x_address)
+allocated by thread T0 here:
+    #0 0x_address in wrap_malloc+0x9d (libclang_rt.asan_osx_dynamic.dylib:x86_64h+0x4917d)
+    #1 0x_address in malloc malloc_mock.c:65
+    #2 0x_address in ft_calloc ft_calloc.c:20
+    #3 0x_address in test_single_calloc test_calloc.c:9
+    #4 0x_address in test_calloc test_calloc.c:26
+    #5 0x_address in main test_calloc.c:34
+    #6 0x_address in start+0x0 (libdyld.dylib:x86_64+0x1acc8)
+
+SUMMARY: AddressSanitizer: heap-buffer-overflow ft_memset.c:20 in ft_memset
+
+For ft_substr, in /Users/fsoares-/fraaaaa/tests/libft/fsoares/test_substr.c:
+
+Error in test 5: ft_substr("hola", 0, 18446744073709551615): Memory problems!
+     in sigabort utils.c:58:1
+     in ft_strlcpy ft_strlcpy.c:25:20
+     in ft_substr ft_substr.c:35:10
+     in test_single_substr test_substr.c:7:2
+     in test_substr test_substr.c:17:8
+     in main test_substr.c:43:2
+
+=================================================================
+==pid==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x_address at pc 0x_address bp 0x_address sp 0x_address
+WRITE of size 1 at 0x_address thread T0
+    #0 0x_address in ft_strlcpy ft_strlcpy.c:25
+    #1 0x_address in ft_substr ft_substr.c:34
+    #2 0x_address in test_single_substr test_substr.c:7
+    #3 0x_address in test_substr test_substr.c:17
+    #4 0x_address in main test_substr.c:43
+    #5 0x_address in start+0x0 (libdyld.dylib:x86_64+0x1acc8)
+
+0x_address is located 0 bytes to the right of 4-byte region [0x_address,0x_address)
+allocated by thread T0 here:
+    #0 0x_address in wrap_malloc+0x9d (libclang_rt.asan_osx_dynamic.dylib:x86_64h+0x4917d)
+    #1 0x_address in malloc malloc_mock.c:65
+    #2 0x_address in ft_substr ft_substr.c:29
+    #3 0x_address in test_single_substr test_substr.c:7
+    #4 0x_address in test_substr test_substr.c:17
+    #5 0x_address in main test_substr.c:43
+    #6 0x_address in start+0x0 (libdyld.dylib:x86_64+0x1acc8)
+
+SUMMARY: AddressSanitizer: heap-buffer-overflow ft_strlcpy.c:25 in ft_strlcpy
+
+For ft_strjoin, in /Users/fsoares-/fraaaaa/tests/libft/fsoares/test_strjoin.c:
+
+Error in test 1: ft_strjoin("", ""):
+Memory leak: 0x_address - 123 bytes
+You failed to free the memory allocated at:
+     in _add_malloc malloc_mock.c:29:8
+     in malloc malloc_mock.c:75:10
+  -> in ft_strjoin ft_strjoin.c:22:9
+     in test_single_strjoin test_strjoin.c:7:2
+     in test_strjoin test_strjoin.c:13:8
+     in main test_strjoin.c:24:2
+
+Error in test 2: ft_strjoin("abc", ""):
+Memory leak: 0x_address - 123 bytes
+You failed to free the memory allocated at:
+     in _add_malloc malloc_mock.c:29:8
+     in malloc malloc_mock.c:75:10
+  -> in ft_strjoin ft_strjoin.c:22:9
+     in test_single_strjoin test_strjoin.c:7:2
+     in test_strjoin test_strjoin.c:14:8
+     in main test_strjoin.c:24:2
+
+Error in test 3: ft_strjoin("", "abc"):
+Memory leak: 0x_address - 123 bytes
+You failed to free the memory allocated at:
+     in _add_malloc malloc_mock.c:29:8
+     in malloc malloc_mock.c:75:10
+  -> in ft_strjoin ft_strjoin.c:22:9
+     in test_single_strjoin test_strjoin.c:7:2
+     in test_strjoin test_strjoin.c:15:8
+     in main test_strjoin.c:24:2
+
+Error in test 4: ft_strjoin("abcd", "efghi"):
+Memory leak: 0x_address - 123 bytes
+You failed to free the memory allocated at:
+     in _add_malloc malloc_mock.c:29:8
+     in malloc malloc_mock.c:75:10
+  -> in ft_strjoin ft_strjoin.c:22:9
+     in test_single_strjoin test_strjoin.c:7:2
+     in test_strjoin test_strjoin.c:16:8
+     in main test_strjoin.c:24:2
+
+
+For ft_strtrim, in /Users/fsoares-/fraaaaa/tests/libft/fsoares/test_strtrim.c:
+
+Error in test 2: ft_strtrim("abcd", ""): Memory problems!
+     in sigabort utils.c:58:1
+     in ft_strlcpy ft_strlcpy.c:25:20
+     in ft_strlcpy ft_strlcpy.c:25:20
+     in ft_substr ft_substr.c:35:10
+     in ft_strtrim ft_strtrim.c:30:2
+     in single_test_strtrim test_strtrim.c:7:2
+     in test_strtrim test_strtrim.c:13:8
+     in main test_strtrim.c:24:2
+
+=================================================================
+==pid==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x_address at pc 0x_address bp 0x_address sp 0x_address
+WRITE of size 1 at 0x_address thread T0
+    #0 0x_address in ft_strlcpy ft_strlcpy.c:25
+    #1 0x_address in ft_substr ft_substr.c:34
+    #2 0x_address in ft_strtrim ft_strtrim.c:30
+    #3 0x_address in single_test_strtrim test_strtrim.c:7
+    #4 0x_address in test_strtrim test_strtrim.c:13
+    #5 0x_address in main test_strtrim.c:24
+    #6 0x_address in start+0x0 (libdyld.dylib:x86_64+0x1acc8)
+
+0x_address is located 0 bytes to the right of 4-byte region [0x_address,0x_address)
+allocated by thread T0 here:
+    #0 0x_address in wrap_malloc+0x9d (libclang_rt.asan_osx_dynamic.dylib:x86_64h+0x4917d)
+    #1 0x_address in malloc malloc_mock.c:65
+    #2 0x_address in ft_substr ft_substr.c:29
+    #3 0x_address in ft_strtrim ft_strtrim.c:30
+    #4 0x_address in single_test_strtrim test_strtrim.c:7
+    #5 0x_address in test_strtrim test_strtrim.c:13
+    #6 0x_address in main test_strtrim.c:24
+    #7 0x_address in start+0x0 (libdyld.dylib:x86_64+0x1acc8)
+
+SUMMARY: AddressSanitizer: heap-buffer-overflow ft_strlcpy.c:25 in ft_strlcpy
+
+For ft_split, in /Users/fsoares-/fraaaaa/tests/libft/fsoares/test_split.c:
+
+Error in test 1: ft_split("hello!", 32:' '): Memory problems!
+     in sigabort utils.c:58:1
+     in ft_strlcpy ft_strlcpy.c:25:20
+     in ft_strlcpy ft_strlcpy.c:25:20
+     in ft_substr ft_substr.c:35:10
+     in populate ft_split.c:52:2
+     in ft_split ft_split.c:88:8
+     in test_single_split test_split.c:59:9
+     in test_split test_split.c:79:6
+     in main test_split.c:98:2
+
+=================================================================
+==pid==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x_address at pc 0x_address bp 0x_address sp 0x_address
+WRITE of size 1 at 0x_address thread T0
+    #0 0x_address in ft_strlcpy ft_strlcpy.c:25
+    #1 0x_address in ft_substr ft_substr.c:34
+    #2 0x_address in populate ft_split.c:52
+    #3 0x_address in ft_split ft_split.c:88
+    #4 0x_address in test_single_split test_split.c:59
+    #5 0x_address in test_split test_split.c:79
+    #6 0x_address in main test_split.c:98
+    #7 0x_address in start+0x0 (libdyld.dylib:x86_64+0x1acc8)
+
+0x_address is located 0 bytes to the right of 6-byte region [0x_address,0x_address)
+allocated by thread T0 here:
+    #0 0x_address in wrap_malloc+0x9d (libclang_rt.asan_osx_dynamic.dylib:x86_64h+0x4917d)
+    #1 0x_address in malloc malloc_mock.c:65
+    #2 0x_address in ft_substr ft_substr.c:29
+    #3 0x_address in populate ft_split.c:52
+    #4 0x_address in ft_split ft_split.c:88
+    #5 0x_address in test_single_split test_split.c:59
+    #6 0x_address in test_split test_split.c:79
+    #7 0x_address in main test_split.c:98
+    #8 0x_address in start+0x0 (libdyld.dylib:x86_64+0x1acc8)
+
+SUMMARY: AddressSanitizer: heap-buffer-overflow ft_strlcpy.c:25 in ft_strlcpy
+
+For ft_itoa, in /Users/fsoares-/fraaaaa/tests/libft/fsoares/test_itoa.c:
+
+Error in test 1: ft_itoa(0): Memory problems!
+     in sigabort utils.c:58:1
+     in ft_memset ft_memset.c:20:11
+     in ft_bzero ft_bzero.c:18:1
+     in ft_itoa ft_itoa.c:38:2
+     in single_test_itoa test_itoa.c:8:2
+     in test_itoa test_itoa.c:14:6
+     in main test_itoa.c:29:2
+
+=================================================================
+==pid==ERROR: AddressSanitizer: stack-buffer-overflow on address 0x_address at pc 0x_address bp 0x_address sp 0x_address
+WRITE of size 1 at 0x_address thread T0
+    #0 0x_address in ft_memset ft_memset.c:20
+    #1 0x_address in ft_bzero ft_bzero.c:17
+    #2 0x_address in ft_itoa ft_itoa.c:38
+    #3 0x_address in single_test_itoa test_itoa.c:8
+    #4 0x_address in test_itoa test_itoa.c:14
+    #5 0x_address in main test_itoa.c:29
+    #6 0x_address in start+0x0 (libdyld.dylib:x86_64+0x1acc8)
+
+Address 0x_address is located in stack of thread T0 at offset 52 in frame
+    #0 0x_address in ft_itoa ft_itoa.c:35
+
+  This frame has 1 object(s):
+    [32, 52) 'digits' (line 36) <== Memory access at offset 52 overflows this variable
+HINT: this may be a false positive if your program uses some custom stack unwind mechanism, swapcontext or vfork
+      (longjmp and C++ exceptions *are* supported)
+SUMMARY: AddressSanitizer: stack-buffer-overflow ft_memset.c:20 in ft_memset
+
+For ft_lstlast, in /Users/fsoares-/fraaaaa/tests/libft/fsoares/test_lstlast.c:
+
+Error in test 1: ft_lstlast(<list: (null)>): Timeout occurred. You can increase the timeout by executing francinette --timeout <number of seconds>
+For ft_lstadd_back, in /Users/fsoares-/fraaaaa/tests/libft/fsoares/test_lstadd_back.c:
+
+Error in test 1: ft_lstadd_back(<list: (null)>, {node: "last"}): Timeout occurred. You can increase the timeout by executing francinette --timeout <number of seconds>

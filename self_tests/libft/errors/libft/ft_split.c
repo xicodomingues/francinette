@@ -6,7 +6,7 @@
 /*   By: fsoares- <fsoares-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/19 15:03:04 by fsoares-          #+#    #+#             */
-/*   Updated: 2022/04/11 01:00:40 by fsoares-         ###   ########.fr       */
+/*   Updated: 2022/04/11 14:03:29 by fsoares-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ char	**ft_split(char const *s, char c)
 	int		temp;
 
 	n_words = count_words(s, c);
-	result = malloc(n_words * sizeof(char *) + 1);
+	result = malloc((n_words + 2) * sizeof(char *));
 	if (result == NULL)
 		return (NULL);
 	i = 0;

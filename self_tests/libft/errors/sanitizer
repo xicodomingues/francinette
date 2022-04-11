@@ -1,0 +1,249 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                Welcome to Francinette, a 42 tester framework!                ║
+╚═══════════════════════╦══════════════════════════════╦═══════════════════════╝
+                        ║             libft            ║
+                        ╚══════════════════════════════╝
+✔ Preparing framework
+✖ Executing: norminette
+ft_atoi.c: OK!
+ft_bzero.c: OK!
+ft_calloc.c: OK!
+ft_isalnum.c: OK!
+ft_isalpha.c: OK!
+ft_isascii.c: OK!
+ft_isdigit.c: OK!
+ft_isprint.c: OK!
+ft_isspace.c: OK!
+ft_itoa.c: OK!
+ft_lstadd_back.c: OK!
+ft_lstadd_front.c: OK!
+ft_lstclear.c: OK!
+ft_lstdelone.c: OK!
+ft_lstiter.c: OK!
+ft_lstlast.c: OK!
+ft_lstmap.c: OK!
+ft_lstnew.c: OK!
+ft_lstsize.c: Error!
+Error: WRONG_SCOPE_COMMENT  (line:  25, col:   5):	Comment is invalid in this scope
+ft_memchr.c: OK!
+ft_memcmp.c: OK!
+ft_memcpy.c: OK!
+ft_memmove.c: OK!
+ft_memset.c: OK!
+ft_putchar_fd.c: OK!
+ft_putendl_fd.c: OK!
+ft_putnbr_fd.c: OK!
+ft_putstr_fd.c: OK!
+ft_split.c: OK!
+ft_strchr.c: OK!
+ft_strdup.c: OK!
+ft_striteri.c: OK!
+ft_strjoin.c: OK!
+ft_strlcat.c: OK!
+ft_strlcpy.c: OK!
+ft_strlen.c: OK!
+ft_strmapi.c: OK!
+ft_strncmp.c: OK!
+ft_strnstr.c: OK!
+ft_strrchr.c: OK!
+ft_strrev.c: OK!
+ft_strtrim.c: OK!
+ft_substr.c: OK!
+ft_tolower.c: OK!
+ft_toupper.c: OK!
+libft.h: OK!
+✔ Executing: make fclean bonus
+ℹ Executing: libft-war-machine (https://github.com/y3ll0w42/libft-war-machine)
+FUNCTION TESTS RESULT
+ft_substr AA✓✓✓ KO
+Abort : A Bus error : B Segmentation fault : S Timeout : T
+More information in: /Users/fsoares-/fraaaaa/temp/libft/war-machine/deepthought
+Errors in substr: /Users/fsoares-/fraaaaa/temp/libft/war-machine/tests/Part2_functions/ft_substr
+Test 1:
+    if (!(strsub = ft_substr(str, 0, 10)))
+        ft_print_result("NULL");
+    else
+        ft_print_result(strsub);
+    if (str == strsub)
+        ft_print_result("\nA new string was not returned");
+Expected (cat -e test01.output):
+lorem ipsu
+Your result (cat -e user_output_test01):
+Test 2:
+    if (!(strsub = ft_substr(str, 7, 10)))
+        ft_print_result("NULL");
+    else
+        ft_print_result(strsub);
+    if (str == strsub)
+        ft_print_result("\nA new string was not returned");
+Expected (cat -e test02.output):
+psum dolor
+Your result (cat -e user_output_test02):
+✔ Compiling tests: libftTester (https://github.com/Tripouille/libftTester)
+ℹ Testing:
+ft_substr	: 1.OK 2.MOK 3.OK 4.MOK 5.OK 6.MOK 7.OK 8.MOK 9.OK 10.MOK 11.OK 12.MOK 13.OK 14.MOK 15.OK 16.MOK
+✔ Compiling tests: libft-unit-test (https://github.com/alelievr/libft-unit-test)
+ℹ Testing:
+ft_substr       : [OK] [OK] [OK] [FAILED] [OK] [OK] [OK] [OK] [OK]
+[fail]: your substr did not allocate the good size so the \0 test may be false
+[fail]: your substr did not allocate the good size so the \0 test may be false
+ Test code:
+ 	char *str = "i just want this part #############";
+ 	size_t size = 10;
+ 	int ret_size;
+
+ 	ft_substr(str, 5, size);
+ 	ret_size = get_last_malloc_size();
+ 	if ((int)size + 1 == ret_size)
+ 	{
+ 		exit(TEST_SUCCESS);
+ 	}
+ 	exit(TEST_FAILED);
+
+ Diffs:
+       substr: |11|
+    ft_substr: |10|
+
+✔ Compiling tests: fsoares (my own)
+ℹ Testing:
+ft_substr       : 5.KO Abort
+Errors found:
+For ft_substr, in /Users/fsoares-/fraaaaa/tests/libft/fsoares/test_substr.c:
+Error in test 5: ft_substr("hola", 0, 18446744073709551615): Memory problems!
+     in sigabort utils.c:58:1
+     in ft_strlcpy ft_strlcpy.c:25:20
+     in ft_substr ft_substr.c:35:10
+     in test_single_substr test_substr.c:7:2
+     in test_substr test_substr.c:17:8
+     in main test_substr.c:43:2
+=================================================================
+==pid==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x_address at pc 0x_address bp 0x_address sp 0x_address
+WRITE of size 1 at 0x_address thread T0
+    #0 0x_address in ft_strlcpy ft_strlcpy.c:25
+    #1 0x_address in ft_substr ft_substr.c:34
+    #2 0x_address in test_single_substr test_substr.c:7
+    #3 0x_address in test_substr test_substr.c:17
+    #4 0x_address in main test_substr.c:43
+    #5 0x_address in start+0x0 (libdyld.dylib:x86_64+0x1acc8)
+0x_address is located 0 bytes to the right of 4-byte region [0x_address,0x_address)
+allocated by thread T0 here:
+    #0 0x_address in wrap_malloc+0x9d (libclang_rt.asan_osx_dynamic.dylib:x86_64h+0x4917d)
+    #1 0x_address in malloc malloc_mock.c:65
+    #2 0x_address in ft_substr ft_substr.c:29
+    #3 0x_address in test_single_substr test_substr.c:7
+    #4 0x_address in test_substr test_substr.c:17
+    #5 0x_address in main test_substr.c:43
+    #6 0x_address in start+0x0 (libdyld.dylib:x86_64+0x1acc8)
+SUMMARY: AddressSanitizer: heap-buffer-overflow ft_strlcpy.c:25 in ft_strlcpy=====> File /Users/fsoares-/fraaaaa/temp/libft/war-machine/errors.log contents:
+Configured with: --prefix=/Applications/Xcode.app/Contents/Developer/usr --with-gxx-include-dir=/Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk/usr/include/c++/4.2.1
+=================================================================
+==pid==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x_address at pc 0x_address bp 0x_address sp 0x_address
+READ of size 1 at 0x_address thread T0
+    #0 0x_address in ft_print_result main.c:22
+    #1 0x_address in main main.c:41
+    #2 0x_address in start+0x0 (libdyld.dylib:x86_64+0x1acc8)
+0x_address is located 0 bytes to the right of 10-byte region [0x_address,0x_address)
+allocated by thread T0 here:
+    #0 0x_address in wrap_malloc+0x9d (libclang_rt.asan_osx_dynamic.dylib:x86_64h+0x4917d)
+    #1 0x_address in ft_substr+0x99 (user_exe:x86_64+0x_address)
+    #2 0x_address in main main.c:38
+    #3 0x_address in start+0x0 (libdyld.dylib:x86_64+0x1acc8)
+SUMMARY: AddressSanitizer: heap-buffer-overflow main.c:22 in ft_print_result
+Shadow bytes around the buggy address:
+  0x_address: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x_address: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x_address: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x_address: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x_address: fa fa fd fd fa fa 00 00 fa fa 00 00 fa fa 00 00
+=>0x_address: fa fa 00 04 fa fa 00 00 fa fa 00 06 fa fa 00[02]
+  0x_address: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x_address: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x_address: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x_address: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x_address: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+  Shadow gap:              cc
+==pid==ABORTING
+/Users/fsoares-/fraaaaa/temp/libft/war-machine/srcs/diff_test.sh: line 16: pid Abort trap: 6           "${PATH_TEST}"/user_exe $k > "${PATH_TEST}"/tests/$(echo ${part}tions)/$(echo $1 | cut -d . -f 1 | sed 's/_bonus//g')/user_output_test${text}$k
+=================================================================
+==pid==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x_address at pc 0x_address bp 0x_address sp 0x_address
+READ of size 1 at 0x_address thread T0
+    #0 0x_address in ft_print_result main.c:22
+    #1 0x_address in main main.c:50
+    #2 0x_address in start+0x0 (libdyld.dylib:x86_64+0x1acc8)
+0x_address is located 0 bytes to the right of 10-byte region [0x_address,0x_address)
+allocated by thread T0 here:
+    #0 0x_address in wrap_malloc+0x9d (libclang_rt.asan_osx_dynamic.dylib:x86_64h+0x4917d)
+    #1 0x_address in ft_substr+0x99 (user_exe:x86_64+0x_address)
+    #2 0x_address in main main.c:47
+    #3 0x_address in start+0x0 (libdyld.dylib:x86_64+0x1acc8)
+SUMMARY: AddressSanitizer: heap-buffer-overflow main.c:22 in ft_print_result
+Shadow bytes around the buggy address:
+  0x_address: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x_address: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x_address: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x_address: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x_address: fa fa fd fd fa fa 00 00 fa fa 00 00 fa fa 00 00
+=>0x_address: fa fa 00 04 fa fa 00 00 fa fa 00 06 fa fa 00[02]
+  0x_address: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x_address: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x_address: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x_address: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x_address: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+  Shadow gap:              cc
+==pid==ABORTING
+/Users/fsoares-/fraaaaa/temp/libft/war-machine/srcs/diff_test.sh: line 16: pid Abort trap: 6           "${PATH_TEST}"/user_exe $k > "${PATH_TEST}"/tests/$(echo ${part}tions)/$(echo $1 | cut -d . -f 1 | sed 's/_bonus//g')/user_output_test${text}$k
+=====> File /Users/fsoares-/fraaaaa/temp/libft/alelievr/result.log contents:
+ft_substr:     [OK] [OK] [OK] [FAILED] [OK] [OK] [OK] [OK] [OK]
+[fail]: your substr did not allocate the good size so the \0 test may be false
+Test code:
+	char *str = "i just want this part #############";
+	size_t size = 10;
+	int ret_size;
+	ft_substr(str, 5, size);
+	ret_size = get_last_malloc_size();
+	if ((int)size + 1 == ret_size)
+	{
+		exit(TEST_SUCCESS);
+	}
+	exit(TEST_FAILED);
+Diffs:
+      substr: |11|
+   ft_substr: |10|

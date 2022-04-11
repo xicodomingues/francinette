@@ -166,7 +166,9 @@ class BaseTester:
 		makefile = Path(self.temp_dir, "Makefile")
 		if not makefile.exists():
 			return
-		command = "make fclean " + ("bonus" if has_bonus() else "all")
+		command = "make fclean all"
+		if has_bonus():
+			command = "make fclean bonus"
 		logger.info(f"Calling '{command}' on directory {os.getcwd()}")
 
 		text = f"{TC.CYAN}Executing: {TC.B_WHITE}{command}{TC.NC} " + ("" if has_bonus() else "(no bonus)")
