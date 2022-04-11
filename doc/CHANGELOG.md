@@ -1,3 +1,13 @@
+## 0.5.0 (2022-04-11)
+
+### Fix
+
+- fixed the update.sh script
+
+### Feat
+
+- #1: Added timeouts per project
+
 ## 0.4.0 (2022-04-09)
 
 ### Feat
