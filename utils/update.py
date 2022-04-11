@@ -82,21 +82,4 @@ def update_paco():
 
 
 def do_update():
-	with console.status("Updating francinette...") as status:
-		base_dir = Path(__file__).parent.parent.resolve()
-		repo = Repo(base_dir)
-		repo.git.reset('--hard')
-		repo.git.clean('-fdx')
-		repo.heads.master.checkout()
-		repo.remotes.origin.pull()
-		repo.git.submodule('update', '--init')
-
-		old_dir = os.getcwd()
-		os.chdir(base_dir)
-		p = subprocess.run("pip3 install --disable-pip-version-check -r requirements.txt".split(), text=True, capture_output=True)
-	if p.returncode != 0:
-		console.print(p.stderr)
-		console.print("[yellow]Problem updating francinette. Contact me (fsoares- on slack)")
-	else:
-		console.print("[white bold]Francinette is updated. You can use it again!")
-	os.chdir(old_dir)
+	subprocess.run("bin/update.sh")
