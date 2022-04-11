@@ -82,4 +82,5 @@ def update_paco():
 
 
 def do_update():
-	subprocess.run("bin/update.sh")
+	path = Path(__file__, "../../bin/update.sh").resolve()
+	subprocess.run(str(path), shell=True)
