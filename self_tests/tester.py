@@ -12,13 +12,14 @@ ansi_columns = re.compile(r'\x1B(?:\[[0-?]*G)')
 ansi_colors = re.compile(r'\x1B(?:\[\??[\d;]+(?:m|l|h))')
 pointer_addr = re.compile(r'0x[0-9a-f]{8,16}')
 sanitizer_pid = re.compile(r'==(\d+)==')
+pid_clock = re.compile(r'\d+ Alarm clock')
 
 TESTS = [
     # (project, path, [(output_file, paco_params)], [files_to_check])
     #('libft', 'libft/ok', [("expected", ""), ("mandatory", "-m"), ("bonus", "-b"), ("strict", "--strict"),
     #                       ("some", "memset split lstnew")], []),
-	('libft', 'libft/errors', [#("errors", ''), ('norm', 'lstsize'),
-	 ("sanitizer", "substr"), #("leaks", "strjoin"), ("null_check", "split lstmap --strict"), ("timeout", "lstlast")
+	('libft', 'libft/errors', [("errors", ''), ('norm', 'lstsize'),
+	 ("sanitizer", "substr"), ("leaks", "strjoin"), ("null_check", "split lstmap --strict"), ("timeout", "lstlast")
 	 ], ["war-machine/errors.log", "alelievr/result.log", "fsoares/error.log"])
 ]
 
@@ -27,10 +28,11 @@ def clean_output(text):
 	text = ansi_colors.sub('', text).replace('\0', '')
 	text = ansi_columns.sub(' ', text)
 	text = pointer_addr.sub("0x_address", text)
+	text = pid_clock.sub('<pid> Alarm clock', text)
 	if sanitizer_pid.search(text):
 		pids = set(sanitizer_pid.findall(text))
 		for pid in pids:
-			text = re.sub(r'\b' + re.escape(pid) + r'\b', "pid", text)
+			text = re.sub(r'\b' + re.escape(pid) + r'\b', "<pid>", text)
 	lines = text.splitlines()
 	for i, line in enumerate(lines):
 		if '\x1B[K' in line:

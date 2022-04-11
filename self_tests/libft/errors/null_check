@@ -104,12 +104,9 @@ You failed to free the memory allocated at:
      in main test_lstmap.c:70:2
 Most likely you are not calling del on the content when a new list node allocation fails.
 ...
-File too large. To see full report open: /Users/fsoares-/fraaaaa/temp/libft/fsoares/error.log
-
-=====> File /Users/fsoares-/fraaaaa/temp/libft/fsoares/error.log contents:
+File too large. To see full report open: /Users/fsoares-/fraaaaa/temp/libft/fsoares/error.log=====> File /Users/fsoares-/fraaaaa/temp/libft/fsoares/error.log contents:
 For ft_lstmap, in /Users/fsoares-/fraaaaa/tests/libft/fsoares/test_lstmap.c:
-
-Error in test 2: ft_lstmap(<list: {node: "hello!"}->(null)>, [s => __strlen(s)], [x => free(x)]) NULL check for 1th malloc: 
+Error in test 2: ft_lstmap(<list: {node: "hello!"}->(null)>, [s => __strlen(s)], [x => free(x)]) NULL check for 1th malloc:
 Memory leak: 0x_address - 10 bytes
 You failed to free the memory allocated at:
      in _add_malloc malloc_mock.c:29:8
@@ -120,8 +117,7 @@ You failed to free the memory allocated at:
      in test_lstmap test_lstmap.c:60:6
      in main test_lstmap.c:70:2
 Most likely you are not calling del on the content when a new list node allocation fails.
-
-Error in test 3: ft_lstmap(<list: {node: "one"}->{node: "two"}->{node: "three"}->{node: "four"}->{node: "five"}->(null)>, [s => __strlen(s)], [x => free(x)]) NULL check for 1th malloc: 
+Error in test 3: ft_lstmap(<list: {node: "one"}->{node: "two"}->{node: "three"}->{node: "four"}->{node: "five"}->(null)>, [s => __strlen(s)], [x => free(x)]) NULL check for 1th malloc:
 Memory leak: 0x_address - 10 bytes
 You failed to free the memory allocated at:
      in _add_malloc malloc_mock.c:29:8
@@ -132,8 +128,7 @@ You failed to free the memory allocated at:
      in test_lstmap test_lstmap.c:61:6
      in main test_lstmap.c:70:2
 Most likely you are not calling del on the content when a new list node allocation fails.
-
-Error in test 3: ft_lstmap(<list: {node: "one"}->{node: "two"}->{node: "three"}->{node: "four"}->{node: "five"}->(null)>, [s => __strlen(s)], [x => free(x)]) NULL check for 3th malloc: 
+Error in test 3: ft_lstmap(<list: {node: "one"}->{node: "two"}->{node: "three"}->{node: "four"}->{node: "five"}->(null)>, [s => __strlen(s)], [x => free(x)]) NULL check for 3th malloc:
 Memory leak: 0x_address - 10 bytes
 You failed to free the memory allocated at:
      in _add_malloc malloc_mock.c:29:8
@@ -144,8 +139,7 @@ You failed to free the memory allocated at:
      in test_lstmap test_lstmap.c:61:6
      in main test_lstmap.c:70:2
 Most likely you are not calling del on the content when a new list node allocation fails.
-
-Error in test 3: ft_lstmap(<list: {node: "one"}->{node: "two"}->{node: "three"}->{node: "four"}->{node: "five"}->(null)>, [s => __strlen(s)], [x => free(x)]) NULL check for 5th malloc: 
+Error in test 3: ft_lstmap(<list: {node: "one"}->{node: "two"}->{node: "three"}->{node: "four"}->{node: "five"}->(null)>, [s => __strlen(s)], [x => free(x)]) NULL check for 5th malloc:
 Memory leak: 0x_address - 10 bytes
 You failed to free the memory allocated at:
      in _add_malloc malloc_mock.c:29:8
@@ -156,8 +150,7 @@ You failed to free the memory allocated at:
      in test_lstmap test_lstmap.c:61:6
      in main test_lstmap.c:70:2
 Most likely you are not calling del on the content when a new list node allocation fails.
-
-Error in test 3: ft_lstmap(<list: {node: "one"}->{node: "two"}->{node: "three"}->{node: "four"}->{node: "five"}->(null)>, [s => __strlen(s)], [x => free(x)]) NULL check for 7th malloc: 
+Error in test 3: ft_lstmap(<list: {node: "one"}->{node: "two"}->{node: "three"}->{node: "four"}->{node: "five"}->(null)>, [s => __strlen(s)], [x => free(x)]) NULL check for 7th malloc:
 Memory leak: 0x_address - 10 bytes
 You failed to free the memory allocated at:
      in _add_malloc malloc_mock.c:29:8
@@ -168,8 +161,7 @@ You failed to free the memory allocated at:
      in test_lstmap test_lstmap.c:61:6
      in main test_lstmap.c:70:2
 Most likely you are not calling del on the content when a new list node allocation fails.
-
-Error in test 3: ft_lstmap(<list: {node: "one"}->{node: "two"}->{node: "three"}->{node: "four"}->{node: "five"}->(null)>, [s => __strlen(s)], [x => free(x)]) NULL check for 9th malloc: 
+Error in test 3: ft_lstmap(<list: {node: "one"}->{node: "two"}->{node: "three"}->{node: "four"}->{node: "five"}->(null)>, [s => __strlen(s)], [x => free(x)]) NULL check for 9th malloc:
 Memory leak: 0x_address - 10 bytes
 You failed to free the memory allocated at:
      in _add_malloc malloc_mock.c:29:8
@@ -180,13 +172,9 @@ You failed to free the memory allocated at:
      in test_lstmap test_lstmap.c:61:6
      in main test_lstmap.c:70:2
 Most likely you are not calling del on the content when a new list node allocation fails.
-
-
 For ft_split, in /Users/fsoares-/fraaaaa/tests/libft/fsoares/test_split.c:
-
 Error in test 1: ft_split("hello!", 32:' '): Memory problems!
      in sigabort utils.c:58:1
-     in ft_strlcpy ft_strlcpy.c:25:20
      in ft_strlcpy ft_strlcpy.c:25:20
      in ft_substr ft_substr.c:35:10
      in populate ft_split.c:52:2
@@ -194,9 +182,8 @@ Error in test 1: ft_split("hello!", 32:' '): Memory problems!
      in test_single_split test_split.c:59:9
      in test_split test_split.c:79:6
      in main test_split.c:98:2
-
 =================================================================
-==pid==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x_address at pc 0x_address bp 0x_address sp 0x_address
+==<pid>==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x_address at pc 0x_address bp 0x_address sp 0x_address
 WRITE of size 1 at 0x_address thread T0
     #0 0x_address in ft_strlcpy ft_strlcpy.c:25
     #1 0x_address in ft_substr ft_substr.c:34
@@ -206,7 +193,6 @@ WRITE of size 1 at 0x_address thread T0
     #5 0x_address in test_split test_split.c:79
     #6 0x_address in main test_split.c:98
     #7 0x_address in start+0x0 (libdyld.dylib:x86_64+0x1acc8)
-
 0x_address is located 0 bytes to the right of 6-byte region [0x_address,0x_address)
 allocated by thread T0 here:
     #0 0x_address in wrap_malloc+0x9d (libclang_rt.asan_osx_dynamic.dylib:x86_64h+0x4917d)
@@ -218,6 +204,4 @@ allocated by thread T0 here:
     #6 0x_address in test_split test_split.c:79
     #7 0x_address in main test_split.c:98
     #8 0x_address in start+0x0 (libdyld.dylib:x86_64+0x1acc8)
-
 SUMMARY: AddressSanitizer: heap-buffer-overflow ft_strlcpy.c:25 in ft_strlcpy
-

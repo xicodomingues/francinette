@@ -102,11 +102,7 @@ You failed to free the memory allocated at:
   -> in ft_strjoin ft_strjoin.c:22:9
      in test_single_strjoin test_strjoin.c:7:2
      in test_strjoin test_strjoin.c:16:8
-     in main test_strjoin.c:24:2
-
-=====> File /Users/fsoares-/fraaaaa/temp/libft/war-machine/errors.log contents:
+     in main test_strjoin.c:24:2=====> File /Users/fsoares-/fraaaaa/temp/libft/war-machine/errors.log contents:
 Configured with: --prefix=/Applications/Xcode.app/Contents/Developer/usr --with-gxx-include-dir=/Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk/usr/include/c++/4.2.1
-
-
 =====> File /Users/fsoares-/fraaaaa/temp/libft/alelievr/result.log contents:
-ft_strjoin:    [OK] [OK] [OK] [OK] [OK] 
+ft_strjoin:    [OK] [OK] [OK] [OK] [OK]

@@ -64,11 +64,7 @@ ft_lstsize	: 1.OK 2.OK 3.OK
 ft_lstsize      : [OK] [OK]
 ✔ Compiling tests: fsoares (my own)
 ℹ Testing:
-ft_lstsize      : OK
-
-=====> File /Users/fsoares-/fraaaaa/temp/libft/war-machine/errors.log contents:
+ft_lstsize      : OK=====> File /Users/fsoares-/fraaaaa/temp/libft/war-machine/errors.log contents:
 Configured with: --prefix=/Applications/Xcode.app/Contents/Developer/usr --with-gxx-include-dir=/Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk/usr/include/c++/4.2.1
-
-
 =====> File /Users/fsoares-/fraaaaa/temp/libft/alelievr/result.log contents:
-ft_lstsize:    [OK] [OK] 
+ft_lstsize:    [OK] [OK]

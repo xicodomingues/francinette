@@ -117,7 +117,7 @@ Error in test 5: ft_substr("hola", 0, 18446744073709551615): Memory problems!
      in test_substr test_substr.c:17:8
      in main test_substr.c:43:2
 =================================================================
-==pid==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x_address at pc 0x_address bp 0x_address sp 0x_address
+==<pid>==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x_address at pc 0x_address bp 0x_address sp 0x_address
 WRITE of size 1 at 0x_address thread T0
     #0 0x_address in ft_strlcpy ft_strlcpy.c:25
     #1 0x_address in ft_substr ft_substr.c:34
@@ -137,7 +137,7 @@ allocated by thread T0 here:
 SUMMARY: AddressSanitizer: heap-buffer-overflow ft_strlcpy.c:25 in ft_strlcpy=====> File /Users/fsoares-/fraaaaa/temp/libft/war-machine/errors.log contents:
 Configured with: --prefix=/Applications/Xcode.app/Contents/Developer/usr --with-gxx-include-dir=/Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk/usr/include/c++/4.2.1
 =================================================================
-==pid==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x_address at pc 0x_address bp 0x_address sp 0x_address
+==<pid>==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x_address at pc 0x_address bp 0x_address sp 0x_address
 READ of size 1 at 0x_address thread T0
     #0 0x_address in ft_print_result main.c:22
     #1 0x_address in main main.c:41
@@ -181,10 +181,10 @@ Shadow byte legend (one shadow byte represents 8 application bytes):
   Left alloca redzone:     ca
   Right alloca redzone:    cb
   Shadow gap:              cc
-==pid==ABORTING
-/Users/fsoares-/fraaaaa/temp/libft/war-machine/srcs/diff_test.sh: line 16: pid Abort trap: 6           "${PATH_TEST}"/user_exe $k > "${PATH_TEST}"/tests/$(echo ${part}tions)/$(echo $1 | cut -d . -f 1 | sed 's/_bonus//g')/user_output_test${text}$k
+==<pid>==ABORTING
+/Users/fsoares-/fraaaaa/temp/libft/war-machine/srcs/diff_test.sh: line 16: <pid> Abort trap: 6           "${PATH_TEST}"/user_exe $k > "${PATH_TEST}"/tests/$(echo ${part}tions)/$(echo $1 | cut -d . -f 1 | sed 's/_bonus//g')/user_output_test${text}$k
 =================================================================
-==pid==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x_address at pc 0x_address bp 0x_address sp 0x_address
+==<pid>==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x_address at pc 0x_address bp 0x_address sp 0x_address
 READ of size 1 at 0x_address thread T0
     #0 0x_address in ft_print_result main.c:22
     #1 0x_address in main main.c:50
@@ -228,8 +228,8 @@ Shadow byte legend (one shadow byte represents 8 application bytes):
   Left alloca redzone:     ca
   Right alloca redzone:    cb
   Shadow gap:              cc
-==pid==ABORTING
-/Users/fsoares-/fraaaaa/temp/libft/war-machine/srcs/diff_test.sh: line 16: pid Abort trap: 6           "${PATH_TEST}"/user_exe $k > "${PATH_TEST}"/tests/$(echo ${part}tions)/$(echo $1 | cut -d . -f 1 | sed 's/_bonus//g')/user_output_test${text}$k
+==<pid>==ABORTING
+/Users/fsoares-/fraaaaa/temp/libft/war-machine/srcs/diff_test.sh: line 16: <pid> Abort trap: 6           "${PATH_TEST}"/user_exe $k > "${PATH_TEST}"/tests/$(echo ${part}tions)/$(echo $1 | cut -d . -f 1 | sed 's/_bonus//g')/user_output_test${text}$k
 =====> File /Users/fsoares-/fraaaaa/temp/libft/alelievr/result.log contents:
 ft_substr:     [OK] [OK] [OK] [FAILED] [OK] [OK] [OK] [OK] [OK]
 [fail]: your substr did not allocate the good size so the \0 test may be false

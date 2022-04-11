@@ -127,19 +127,14 @@ ft_lstlast      : [TIMEOUT] [TIMEOUT]
 ft_lstlast      : 1.KO Timeout
 Errors found:
 For ft_lstlast, in /Users/fsoares-/fraaaaa/tests/libft/fsoares/test_lstlast.c:
-Error in test 1: ft_lstlast(<list: (null)>): Timeout occurred. You can increase the timeout by executing francinette --timeout <number of seconds>
-
-=====> File /Users/fsoares-/fraaaaa/temp/libft/war-machine/errors.log contents:
+Error in test 1: ft_lstlast(<list: (null)>): Timeout occurred. You can increase the timeout by executing francinette --timeout <number of seconds>=====> File /Users/fsoares-/fraaaaa/temp/libft/war-machine/errors.log contents:
 Configured with: --prefix=/Applications/Xcode.app/Contents/Developer/usr --with-gxx-include-dir=/Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk/usr/include/c++/4.2.1
-/Users/fsoares-/fraaaaa/temp/libft/war-machine/srcs/diff_test.sh: line 16: 20857 Alarm clock: 14         "${PATH_TEST}"/user_exe $k > "${PATH_TEST}"/tests/$(echo ${part}tions)/$(echo $1 | cut -d . -f 1 | sed 's/_bonus//g')/user_output_test${text}$k
-
-
+/Users/fsoares-/fraaaaa/temp/libft/war-machine/srcs/diff_test.sh: line 16: 28864 Alarm clock: 14         "${PATH_TEST}"/user_exe $k > "${PATH_TEST}"/tests/$(echo ${part}tions)/$(echo $1 | cut -d . -f 1 | sed 's/_bonus//g')/user_output_test${text}$k
 =====> File /Users/fsoares-/fraaaaa/temp/libft/alelievr/result.log contents:
 ft_lstlast:    [TIMEOUT] [TIMEOUT] Test code:
 	t_list *l;
 	t_list *expected;
 	t_list *actual;
-
 	l = lstnew(strdup("1"));
 	l->next = lstnew(strdup("2"));
 	l->next->next = lstnew(strdup("3"));
@@ -148,16 +143,12 @@ ft_lstlast:    [TIMEOUT] [TIMEOUT] Test code:
 	if (actual == expected)
 		exit(TEST_SUCCESS);
 	exit(TEST_FAILED);
-
 Test code:
 	t_list *l = ((void *)0);
 	t_list *expected;
 	t_list *actual;
-
 	expected = ((void *)0);
 	actual = ft_lstlast(l);
 	if (actual == expected)
 		exit(TEST_SUCCESS);
 	exit(TEST_FAILED);
-
-
