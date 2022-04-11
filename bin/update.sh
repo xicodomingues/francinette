@@ -7,9 +7,8 @@ fi
 
 cd "$HOME"/francinette || exit
 
-git reset --hard HEAD
-git clean -fdx
-git pull
+git fetch origin
+git reset --hard origin
 git submodule update --init
 
 # activate venv
