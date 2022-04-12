@@ -182,7 +182,19 @@ class BaseExecutor:
 		return list(self.check_errors(output))
 
 	def result(self, has_errors: bool):
+		"""If has_errors return the name of the test
+
+		Args:
+			has_errors (bool): If this test has errors
+
+		Returns:
+			List: The correct output for the execute function
+		"""
 		return [self.name] if has_errors else []
 
-	def show_errors_file(self, file_name, n_lines=20):
-		show_errors_file(self.temp_dir, file_name, "errors.log", n_lines)
+	def show_errors_file(self, file_name, out_file="errors.log", n_lines=20):
+		show_errors_file(self.temp_dir, file_name, out_file, n_lines)
+
+	def execute_in_project_dir(self, command):
+		p = subprocess.run(f"cd ..; {command}", shell=True, capture_output=True, errors="backslashreplace")
+		logger.info(p)

@@ -1,8 +1,10 @@
 import logging
 import re
+import shutil
 
 from halo import Halo
 from testers.BaseExecutor import BaseExecutor
+from utils.ExecutionContext import console
 
 logger = logging.getLogger("px-medic")
 
@@ -22,9 +24,26 @@ class Medic(BaseExecutor):
 
 	def execute(self):
 		Halo(self.get_info_message("Executing tests")).info()
-		output = self.execute_command("bash test.sh m")
-		print()
-		if self.check_errors(output):
-			self.show_errors_file("tester.log", 30)
-			return [self.name]
-		return []
+		m_errors, b_errors = False, False
+		if self.exec_mandatory:
+			self.execute_in_project_dir("make all")
+			output = self.execute_command("bash test.sh m")
+			print()
+			m_errors = self.check_errors(output)
+			if m_errors:
+				shutil.copy("tester.log", "mandatory.log")
+
+		if self.exec_bonus:
+			console.print("[Bonus]", style="purple")
+			self.execute_in_project_dir("make bonus")
+			output = self.execute_command("bash test.sh a")
+			print()
+			b_errors = self.check_errors(output)
+			if b_errors:
+				shutil.copy("tester.log", "bonus.log")
+
+		if m_errors:
+			self.show_errors_file("mandatory.log", "mandatory.log")
+		if b_errors:
+			self.show_errors_file("bonus.log", "bonus.log")
+		return self.result(m_errors or b_errors)
