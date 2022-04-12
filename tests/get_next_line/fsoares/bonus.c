@@ -13,7 +13,7 @@ void populate_expected(char *buffer, int n)
 	buffer[n] = 0;
 }
 
-char *get_line(int line)
+char *__get_line(int line)
 {
 	switch (line)
 	{
@@ -165,7 +165,7 @@ int main(int argn, char **argv)
 		fd = start;
 		while (fd <= end && res)
 		{
-			res = silent_gnl_test(fd, get_line(fds[fd])) && res;
+			res = silent_gnl_test(fd, __get_line(fds[fd])) && res;
 			fds[fd]++;
 			fd++;
 		}
