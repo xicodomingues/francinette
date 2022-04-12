@@ -27,7 +27,7 @@ class Fsoares(BaseExecutor):
 		bonus_tests = ["open, close, open", "2 file descriptors", "multiple fds", "test limit fds"]
 
 		def validate_one_static():
-			static_regex = re.compile(r".*static.*;.*")
+			static_regex = re.compile(r".*\bstatic\b.*;.*")
 			static_count = 0
 
 			def count_in_file(file):
