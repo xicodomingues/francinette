@@ -1,5 +1,6 @@
 import logging
 import os
+import re
 import shutil
 import time
 from dataclasses import dataclass
@@ -8,10 +9,12 @@ from subprocess import CompletedProcess, TimeoutExpired, run
 from typing import List
 
 from halo import Halo
+import pexpect
 from rich import box
 from rich.table import Table
 from testers.BaseExecutor import BaseExecutor
 from utils.ExecutionContext import console, get_timeout
+from utils.LeaksCheck import has_leaks
 from utils.TraceToLine import open_ascii
 from utils.Utils import escape_str, show_errors_str
 
@@ -94,16 +97,18 @@ class Fsoares(BaseExecutor):
 		Halo(self.get_info_message("Executing tests")).info()
 		res_m, res_b = [], []
 		if self.exec_mandatory:
-			self.execute_in_project_dir("make all")
+			self.execute_in_project_dir("make fclean all")
 			res_m = self.execute_batch()
-			res_m += self.test_sleep()
+			#res_m += self.test_sleep()
+			res_m += self.test_leak(False)
 			console.print("\n", style="default")
 
 		if self.exec_bonus:
-			self.execute_in_project_dir("make bonus")
 			console.print("[Bonus]", style="purple")
+			self.execute_in_project_dir("make fclean bonus")
 			res_b = self.execute_batch(True)
-			res_b += self.test_sleep(True)
+			#res_b += self.test_sleep(True)
+			res_b += self.test_leak(True)
 			console.print("\n", style="default")
 
 		has_errors = self.show_test_results(res_m + res_b)
@@ -116,7 +121,6 @@ class Fsoares(BaseExecutor):
 			    TestCase(33, ['infile.txt', "sleep 3", 'sleep 1', 'outfile.txt'], 'Should sleep for 3 seconds'),
 			    TestCase(34, ['infile.txt', "sleep 3", 'sleep 3', 'outfile.txt'], 'Should sleep for 3 seconds')
 			]
-			return [self.__test_sleep(test) for test in tests]
 		else:
 			tests = [
 			    TestCase(40, ['infile.txt', "sleep 1", 'sleep 3', 'sleep 2', 'sleep 1', 'outfile.txt'],
@@ -127,7 +131,27 @@ class Fsoares(BaseExecutor):
 			             'Should sleep for 3 seconds',
 			             input="EOF\nsleep 10\n")
 			]
-			return [self.__test_sleep(test) for test in tests]
+		return [self.__test_sleep(test) for test in tests]
+
+	def test_leak(self, is_bonus=False):
+		output = ""
+		if not is_bonus:
+			output = has_leaks("./pipex infile.txt cat wc output.txt")
+			if output:
+				output = "Leaks for command: [cyan]./pipex infile.txt cat wc output.txt[/cyan]\n" + output
+		else:
+			output1 = has_leaks("./pipex infile.txt cat cat ls cat wc output.txt")
+			if output1:
+				output = "Leaks for command: [cyan]./pipex infile.txt cat cat ls cat wc output.txt[/cyan]\n" + output1	
+			output2 = has_leaks("./pipex here_doc EOF cat wc output.txt", input="line1\nline2\nEOF\n")
+			if output2:
+				output += "\nLeaks for command: [cyan]./pipex here_doc EOF cat wc output.txt[/cyan] with input: 'line1\\nline2\\nEOF\\n' \n" + output2	
+		if output:
+			console.print("Leaks: KO", style="red", end="")
+			return [["leaks", output]]
+		else:
+			console.print("Leaks: OK", style="green", end="")
+			return []
 
 	def __test_sleep(self, test):
 		_, pipex, _ = get_commands(test)
@@ -162,6 +186,9 @@ class Fsoares(BaseExecutor):
 		return result
 
 	def show_error(self, result):
+		if result[0] == "leaks":
+			console.print(result[1])
+			return
 		_, pipex, path = get_commands(result[0])
 		console.print(f"For: [cyan]{pipex}[/cyan]")
 		if result[0].input:
@@ -203,14 +230,14 @@ class Fsoares(BaseExecutor):
 		native, pipex, _ = get_commands(test)
 		#execute native
 		self.reset_test(test)
-		native = run_bash(native, test)
+		native = run_bash(native, test, get_timeout())
 		with open_ascii("outfile.txt") as r:
 			native_outfile = r.read()
 
 		#execute pipex
 		self.reset_test(test)
 		try:
-			pipex = run_bash(pipex, test)
+			pipex = run_bash(pipex, test, get_timeout())
 			with open_ascii("outfile.txt") as r:
 				pipex_outfile = r.read()
 		except TimeoutExpired:
