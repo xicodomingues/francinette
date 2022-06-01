@@ -1,10 +1,10 @@
-## 0.6.0 (2022-04-12)
+## 0.7.0 (2022-06-01)
 
 ### Feat
 
-- **pipex**: Added bonus tests for pipex
-
-## 0.5.0 (2022-04-11)
+- **pipex**: Add leak check
+- Added bonus tests for pipex
+- #1: Added timeouts per project
 
 ### Fix
 
@@ -16,7 +16,7 @@
 
 - **pipex**: Added pipexMedic tester
 - **pipex**: Added pipex-tester to pipex tests
-- **pipex**: Added my pipex tester (mandatory only)
+- Added my pipex tester (mandatory only)
 
 ## 0.1.1 (2022-03-21)
 
