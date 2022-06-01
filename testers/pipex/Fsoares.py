@@ -99,7 +99,7 @@ class Fsoares(BaseExecutor):
 		if self.exec_mandatory:
 			self.execute_in_project_dir("make fclean all")
 			res_m = self.execute_batch()
-			#res_m += self.test_sleep()
+			res_m += self.test_sleep()
 			res_m += self.test_leak(False)
 			console.print("\n", style="default")
 
@@ -107,7 +107,7 @@ class Fsoares(BaseExecutor):
 			console.print("[Bonus]", style="purple")
 			self.execute_in_project_dir("make fclean bonus")
 			res_b = self.execute_batch(True)
-			#res_b += self.test_sleep(True)
+			res_b += self.test_sleep(True)
 			res_b += self.test_leak(True)
 			console.print("\n", style="default")
 
