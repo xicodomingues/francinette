@@ -35,7 +35,7 @@ class Medic(BaseExecutor):
 
 		if self.exec_bonus:
 			console.print("[Bonus]", style="purple")
-			self.execute_in_project_dir("make bonus")
+			self.execute_in_project_dir("make fclean bonus")
 			output = self.execute_command("bash test.sh a")
 			print()
 			b_errors = self.check_errors(output)
