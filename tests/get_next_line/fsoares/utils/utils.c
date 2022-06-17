@@ -88,9 +88,9 @@ void setup_framework(int argn, char **argv)
 int show_res(int res, char *prefix)
 {
 	if (!res)
-		printf(RED "%i.KO%s " NC, g_test++, prefix);
+		printf(RED "%i%s.KO " NC, g_test++, prefix);
 	else
-		printf(GRN "%i.OK%s " NC, g_test++, prefix);
+		printf(GRN "%i%s.OK " NC, g_test++, prefix);
 	fflush(stdout);
 	return res;
 }

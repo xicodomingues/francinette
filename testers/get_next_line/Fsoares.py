@@ -18,7 +18,7 @@ class Fsoares(BaseExecutor):
 	folder = 'fsoares'
 	git_url = 'my own tests'
 	line_regex = re.compile(r"^([^:]+):(.+)$")
-	test_regex = re.compile(r"(\d+)\.([^ ]+)")
+	test_regex = re.compile(r"(\d+)(?:[^ ]+)?\.([^ ]+)")
 
 	def __init__(self, tests_dir, temp_dir, to_execute, missing) -> None:
 		super().__init__(tests_dir, temp_dir, to_execute, missing)
@@ -58,6 +58,7 @@ class Fsoares(BaseExecutor):
 			return errors
 
 		errors = self.execute_make_command("mandatory", self.exec_mandatory)
+		logger.info(f"errors: {errors}")
 		bonus_errors = set(errors).union(self.execute_make_command("bonus", self.exec_bonus, True))
 		bonus_errors = show_errors(bonus_errors)
 		return [self.name] if bonus_errors else []
