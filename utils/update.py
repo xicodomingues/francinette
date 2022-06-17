@@ -48,20 +48,26 @@ def update_paco():
 	settings = get_settings()
 	if settings['paco'].get('do_not_update', False):
 		return
-	if settings['paco'].get('always', False):
-		do_update()
 
 	last_run = settings['paco']['last_run']
 	if last_run and datetime.strptime(last_run, DATETIME_FORMAT) > datetime.now() - timedelta(hours=1):
 		return save_settings(settings)
 	settings['paco']['last_run'] = datetime.strftime(datetime.now(), DATETIME_FORMAT)
 
-	with urlopen(REPO_URL + "utils/version.py", context=ssl.create_default_context(cafile=certifi.where())) as data:
-		new_version = data.read().decode("utf-8").split('"')[1]
+	try:
+		with urlopen(REPO_URL + "utils/version.py", context=ssl.create_default_context(cafile=certifi.where()), timeout=5) as data:
+			new_version = data.read().decode("utf-8").split('"')[1]
+	except:
+		print("Problem checking the last version. Please make sure you have an internet connection")
+		return 
 
 	if (vs.parse(current) >= vs.parse(new_version) or
 	    vs.parse(settings['paco'].get('ignored', '0.0.0')) >= vs.parse(new_version)):
 		return save_settings(settings)
+
+	if settings['paco'].get('always', False):
+		do_update()
+		return
 
 	print("There is a new version of francinette, do you wish to update?")
 	while (True):
