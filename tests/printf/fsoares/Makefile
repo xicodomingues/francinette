@@ -1,5 +1,5 @@
 TIMEOUT		= 10
-CFLAGS		= -g -fsanitize=address -Wall -Wextra
+CFLAGS		= -g -fsanitize=address -Wall -Wextra -Werror
 STRICT		=
 UTILS 		= utils/malloc_mock.c utils/utils.c pf_utils.c
 PRINTF_LIB	= ../__my_srcs/libftprintf.a

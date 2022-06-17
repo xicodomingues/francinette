@@ -32,7 +32,7 @@ void test_s()
 {
 	TEST("s format", {
 		test_printf("%s", "");
-		test_printf("%s", NULL);
+		test_printf("%s", (char *)NULL);
 		test_printf("%s", "some string with %s hehe");
 		test_printf(" %s", "can it handle \t and \n?");
 		test_printf("%sx", "{} al$#@@@^&$$^#^@@^$*((&");
