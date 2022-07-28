@@ -298,6 +298,6 @@ class Fsoares(BaseExecutor):
 		                   capture_output=True,
 		                   shell=True,
 		                   text=True)
-		for file in [line.split(":")[0] for line in p.stdout.splitlines()]:
+		for file in set([line.split(":")[0] for line in p.stdout.splitlines()]):
 			logger.info(f"rewriting main file: {file}")
 			rewrite_main(file)
