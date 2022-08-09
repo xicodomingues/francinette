@@ -160,7 +160,7 @@ class Fsoares(BaseExecutor):
 		result = correctly_received(decode_ascii(server.stdout), message, spinner)
 		if spinner.enabled:
 			spinner.succeed() if result else spinner.fail()
-		return result and server.return_code == 0
+		return result
 
 	def send_multiple_messages(self):
 		with Halo("Multiple messages: ", placement="right") as spinner:
