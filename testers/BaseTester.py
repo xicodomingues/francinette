@@ -40,7 +40,8 @@ class BaseTester:
 		self.temp_dir = info.base_dir / "temp" / self.name
 		self.tests_dir = info.base_dir / "tests" / self.name
 		self.source_dir = info.source_dir
-		set_timeout(self.timeout)
+		if (not info.args.timeout):
+			set_timeout(self.timeout)
 
 	@staticmethod
 	@abc.abstractmethod
