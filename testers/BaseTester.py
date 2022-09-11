@@ -230,7 +230,7 @@ class BaseTester:
 
 		logger.warn(f"missing functions: {missing}")
 		if missing:
-			print(f"\n{TC.B_RED}Missing functions{TC.NC}: {', '.join(missing)}")
+			print(f"\n{TC.B_YELLOW}Missing functions{TC.NC}: {', '.join(missing)}")
 
 		logger.warn(f"errors in functions: {errors}")
 		if error_funcs:
