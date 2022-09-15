@@ -5,7 +5,7 @@
 #include "utils.h"
 #include "color.h"
 
-void *results[100];
+void *results[1000000];
 int res_pos = 0;
 int cur_res_pos = 0;
 

@@ -21,14 +21,13 @@
 			"name": "Launch gnl bonus test",
 			"type": "cppdbg",
 			"request": "launch",
-			"program": "${fileDirname}/bonus.out",
+			"program": "${fileDirname}/test1.out",
 			"args": [],
 			"stopAtEntry": false,
 			"cwd": "${fileDirname}",
 			"environment": [],
 			"externalConsole": false,
 			"MIMode": "lldb",
-			"preLaunchTask": "gnl bonus test"
 		}
 	]
 }

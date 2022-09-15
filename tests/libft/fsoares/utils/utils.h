@@ -87,39 +87,41 @@ struct alloc_node
 #define null_null_check(fn_call, rst)
 #endif
 
-#define TEST_WRAPPER(title, code)                         \
-	{                                                     \
-		int status = 0;                                   \
-		int test = fork();                                \
-		if (test == 0)                                    \
-		{                                                 \
-			code;                                         \
-		}                                                 \
-		else                                              \
-		{                                                 \
-			long total = 0;                               \
-			long interval = 50000;                        \
-			while (total < TIMEOUT * 1000000L)             \
-			{                                             \
-				usleep(interval);                         \
-				int c = waitpid(test, &status, WNOHANG);  \
-				if (c != 0 && WIFEXITED(status))          \
-				{                                         \
-					if (WEXITSTATUS(status) != 0)         \
-						add_to_error_file();              \
-					break;                                \
-				}                                         \
-				total += interval;                        \
-			}                                             \
-			if (total >= TIMEOUT * 1000000L)               \
-			{                                             \
-				if (waitpid(test, &status, WNOHANG) == 0) \
-				{                                         \
-					kill(test, SIGKILL);                  \
-					show_timeout();                       \
-				}                                         \
-			}                                             \
-		}                                                 \
+#define TEST_WRAPPER(title, code)                           \
+	{                                                       \
+		int status = 0;                                     \
+		int test = fork();                                  \
+		if (test == 0)                                      \
+		{                                                   \
+			code;                                           \
+		}                                                   \
+		else                                                \
+		{                                                   \
+			long total = 0;                                 \
+			long interval = 50000;                          \
+			while (total < TIMEOUT * 1000000L)              \
+			{                                               \
+				usleep(interval);                           \
+				int c = waitpid(test, &status, WNOHANG);    \
+				if (c != 0 && WIFEXITED(status))            \
+				{                                           \
+					if (WEXITSTATUS(status) != 0)           \
+						add_to_error_file();                \
+					break;                                  \
+				}                                           \
+				total += interval;                          \
+			}                                               \
+			if (total >= TIMEOUT * 1000000L)                \
+			{                                               \
+				if (waitpid(test, &status, WNOHANG) == 0)   \
+				{                                           \
+					kill(test, SIGKILL);                    \
+					errors_file = fopen("errors.log", "w"); \
+					show_timeout();                         \
+					fclose(errors_file);                    \
+				}                                           \
+			}                                               \
+		}                                                   \
 	}
 
 /**
@@ -144,23 +146,23 @@ struct alloc_node
 			exit(1);                            \
 	})
 
-#define BASE_TEST_OFFSET(offset, title, code)        \
-	TEST_WRAPPER(title, {                            \
-		g_test = 1;                                  \
-		alarm(TIMEOUT);                              \
-		char *_title = title;                        \
+#define BASE_TEST_OFFSET(offset, title, code)         \
+	TEST_WRAPPER(title, {                             \
+		g_test = 1;                                   \
+		alarm(TIMEOUT);                               \
+		char *_title = title;                         \
 		printf(BLU "%-" #offset "s" NC ": ", _title); \
-		fflush(stdout);                              \
-		int res = 1;                                 \
-		errors_file = fopen("errors.log", "w");      \
-		reset_malloc_mock();                         \
-		code;                                        \
-		fclose(errors_file);                         \
-		printf("\n");                                \
-		if (res)                                     \
-			exit(EXIT_SUCCESS);                      \
-		else                                         \
-			exit(1);                                 \
+		fflush(stdout);                               \
+		int res = 1;                                  \
+		errors_file = fopen("errors.log", "w");       \
+		reset_malloc_mock();                          \
+		code;                                         \
+		fclose(errors_file);                          \
+		printf("\n");                                 \
+		if (res)                                      \
+			exit(EXIT_SUCCESS);                       \
+		else                                          \
+			exit(1);                                  \
 	})
 
 #define test_gnl(fd, expected) res = test_gnl_func(fd, expected, _title) && res;

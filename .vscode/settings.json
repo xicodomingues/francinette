@@ -1,6 +1,7 @@
 {
 	"files.associations": {
 		"expected": "text",
+		"*.refactor": "restructuredtext",
 		"unistd.h": "c",
 		"stdint.h": "c",
 		"signal.h": "c",
@@ -47,7 +48,8 @@
 		"system_error": "cpp",
 		"execinfo.h": "c",
 		"pf_utils.h": "c",
-		"ft_printf.h": "c"
+		"ft_printf.h": "c",
+		"filesystem": "c"
 	},
 	"python.linting.enabled": true,
 	"python.linting.pylintPath": "pylint",
