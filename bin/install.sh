@@ -14,7 +14,7 @@ if [ "$(uname)" != "Darwin" ]; then
 	echo "Admin permissions needed to install C compilers, python, and upgrade current packages"
 	sudo apt update
 	sudo apt upgrade
-	sudo apt install gcc clang libpq-dev libbsd-dev libncurses-dev valgrind-y
+	sudo apt install gcc clang libpq-dev libbsd-dev libncurses-dev valgrind -y
 	sudo apt install python-dev python3-pip -y
 	sudo apt install python3-dev python3-venv python3-wheel -y
 	pip3 install wheel
