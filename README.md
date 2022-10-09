@@ -6,13 +6,17 @@ Use `francinette` or `paco` inside a project folder to run it.
 
 Currently has tests for: `libft`, `ft_printf`, `get_next_line`, `minitalk` and `pipex`.
 
+`Francinette` is only tested and confirmed to work on MacOS. Some testers may work on Linux,
+but I give no guaranties of any test working or even compiling.
+
 ## Table of Contents
 1. [Purpose](#purpose)
 2. [Install](#install)
 3. [Update](#update)
 4. [Running](#Running)
-5. [FAQ](#faq)
-6. [Acknowledgments](#acknowledgments)
+5. [Uninstall](#uninstall)
+6. [FAQ](#faq)
+7. [Acknowledgments](#acknowledgments)
 
 
 ## Purpose:
@@ -46,7 +50,7 @@ admin permission to do that.
 bash -c "$(curl -fsSL https://raw.github.com/xicodomingues/francinette/master/bin/install.sh)"
 ```
 
-The francinette folder will be under your `$HOME` directory (`/User/<you_username>/`)
+The francinette folder will be under your `$HOME` directory (`/User/<your_username>/`)
 
 
 ## Update:
@@ -104,6 +108,17 @@ the magic happens.
 
 Log files can be found in: `~/francinette/logs`
 
+
+## Uninstall
+
+To uninstall `francinette` delete the `francinette` folder. It should be located under your `$HOME` directory (`/User/<your_username>/` or `/home/<your_username>/`)
+
+You also need to remove the automatically created aliases. For that open your `~/.zshrc` file and delete the lines:
+
+```
+alias francinette="$HOME"/francinette/tester.sh
+alias paco="$HOME"/francinette/tester.sh
+```
 
 ## FAQ
 
