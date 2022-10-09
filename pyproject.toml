@@ -1,5 +1,5 @@
 [tool.commitizen]
 name = "cz_conventional_commits"
-version = "0.8.3"
+version = "0.8.4"
 version_files = [ "utils/version.py",]
 changelog_file = "doc/CHANGELOG.md"
