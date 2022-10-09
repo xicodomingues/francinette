@@ -7,7 +7,7 @@
 char function[1000];
 char signature[100000];
 int g_offset;
-char escaped[1000];
+char escaped[10000];
 char escaped_div = 2;
 int where_buffer = 0;
 int g_test = 1;

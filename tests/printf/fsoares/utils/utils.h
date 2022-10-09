@@ -30,7 +30,7 @@
 extern char function[1000];
 extern char signature[100000];
 extern int g_offset;
-extern char escaped[1000];
+extern char escaped[10000];
 extern FILE *errors_file;
 extern int g_test;
 extern int child_pid;
