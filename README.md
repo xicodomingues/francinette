@@ -1,6 +1,6 @@
 # Francinette
 
-A small and easy to use testing framework for the 42 projects.
+An easy to use testing framework for the 42 projects.
 
 Use `francinette` or `paco` inside a project folder to run it.
 
