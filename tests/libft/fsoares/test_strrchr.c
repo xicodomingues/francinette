@@ -21,6 +21,7 @@ int test_strrchr(void)
 
 	res = single_test_strrchr(5, "teste", 1024 + 'e') && res;
 	res = single_test_strrchr(6, "teste", 1024) && res;
+	res = single_test_strrchr(7, "pepe y cparlos", 'c') && res;
 
 	return res;
 }
