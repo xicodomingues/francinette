@@ -144,7 +144,7 @@ class WarMachine():
 
 		res = [func for func, res in parsed if res != "OK"]
 		if len(res) != 0:
-			print(f"Abort : {TC.RED}A{TC.NC} Bus error : {TC.RED}B{TC.NC} Segmentation fault : {TC.RED}S{TC.NC} Timeout : {TC.RED}T{TC.NC}\n")
+			print(f"Abort: {TC.RED}A{TC.NC}  Bus error: {TC.RED}B{TC.NC}  Segmentation fault: {TC.RED}S{TC.NC}  Timeout: {TC.RED}T{TC.NC}\n")
 			longer = Path(self.temp_dir, "deepthought")
 			print(f"More information in: {TC.PURPLE}{longer}{TC.NC}")
 			print_file_summary(Path(self.temp_dir, 'errors_color.log'))
