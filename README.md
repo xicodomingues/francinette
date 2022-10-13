@@ -26,10 +26,7 @@ This is designed to function as a kind of `moulinette` that you can execute in l
 That means that by executing `francinette` it will check `norminette`, compile the
 code and execute the tests.
 
-This will give you more time to look at the code when doing a review, instead of
-worrying about compiling and executing tests on the cloned code.
-
-You can also use it as a local test battery, so that you can test your own code.
+You can use it as a local test battery, to test your code.
 
 #### Example execution:
 
@@ -50,7 +47,7 @@ admin permission to do that.
 bash -c "$(curl -fsSL https://raw.github.com/xicodomingues/francinette/master/bin/install.sh)"
 ```
 
-The francinette folder will be under your `$HOME` directory (`/User/<your_username>/`)
+The francinette folder will be under your `$HOME` directory (`/Users/<your_username>/`)
 
 
 ## Update:
@@ -91,8 +88,9 @@ libft $> paco memset isalpha memcpy  # Executes only the specified tests
 ```
 
 The name of the folder is not important. What is important is that you have a `Makefile`
-that contains the name of the project (for example `libft`), or the expected delivery files. If there is no `Makefile` or delivery files are not present
-`francinette` will not know what project to execute.
+that contains the name of the project (for example `libft`), or the expected delivery files. 
+If there is no `Makefile` or delivery files are not present `francinette` will not know 
+what project to execute.
 
 ```
 ~ $> francinette git@repo42.com/intra-uuid-234
@@ -111,9 +109,11 @@ Log files can be found in: `~/francinette/logs`
 
 ## Uninstall
 
-To uninstall `francinette` delete the `francinette` folder. It should be located under your `$HOME` directory (`/User/<your_username>/` or `/home/<your_username>/`)
+To uninstall `francinette` delete the `francinette` folder. It should be located under your
+`$HOME` directory (`/Users/<your_username>/` or `/home/<your_username>/`)
 
-You also need to remove the automatically created aliases. For that open your `~/.zshrc` file and delete the lines:
+You also need to remove the automatically created aliases. For that open your `~/.zshrc` 
+file and delete the lines:
 
 ```
 alias francinette="$HOME"/francinette/tester.sh
@@ -141,7 +141,10 @@ try to fix it and create a pull request for that change!
 
 #### I've installed francinette, but when I try to execute it I get the message: `command not found: francinette`
 
-In the install script I try to set two alias to for `francinette`: `francinette` and `paco`. If you are in MacOS I do that by adding two lines to the `.zshrc` file, and to `.bashrc` in linux. If by some chance you are using other shell, or for some other reason it does not work, You can try to set the aliases yourself, by adding:
+In the install script I try to set two alias to for `francinette`: `francinette` and `paco`. 
+If you are in MacOS I do that by adding two lines to the `.zshrc` file, and to `.bashrc` in 
+linux. If by some chance you are using other shell, or for some other reason it does not work, 
+You can try to set the aliases yourself, by adding:
 
 ```
 alias francinette="$HOME"/francinette/tester.sh

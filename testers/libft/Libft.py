@@ -2,8 +2,10 @@ import logging
 import os
 import re
 import shutil
+from pathlib import Path
 
-from testers.BaseTester import BaseTester
+from halo import Halo
+from testers.BaseTester import BaseTester, run_command
 from testers.libft.Alelievr import Alelievr
 from testers.libft.BaseExecutor import (BONUS_FUNCTIONS, PART_1_FUNCTIONS,
                                         PART_2_FUNCTIONS)
@@ -78,3 +80,16 @@ class Libft(BaseTester):
 		with open(header, "r") as h:
 			funcs_str = [line for line in h.readlines() if func_regex.match(line)]
 			return [func_regex.match(line).group(1) for line in funcs_str]
+			
+	def compile_source(self):
+		os.chdir(os.path.join(self.temp_dir))
+		makefile = Path(self.temp_dir, "Makefile")
+		if not makefile.exists():
+			return
+		command = "make fclean all" + (" bonus" if self.has_bonus() else "")
+		logger.info(f"Calling '{command}' on directory {os.getcwd()}")
+
+		text = f"{TC.CYAN}Executing: {TC.B_WHITE}{command}{TC.NC} " + ("" if self.has_bonus() else "(no bonus)")
+		with Halo(text=text) as spinner:
+			run_command(command, spinner)
+			spinner.succeed()
