@@ -49,7 +49,9 @@
 		"execinfo.h": "c",
 		"pf_utils.h": "c",
 		"ft_printf.h": "c",
-		"filesystem": "c"
+		"filesystem": "c",
+		"get_next_line_bonus.h": "c",
+		"file_utils.h": "c"
 	},
 	"python.linting.enabled": true,
 	"python.linting.pylintPath": "pylint",

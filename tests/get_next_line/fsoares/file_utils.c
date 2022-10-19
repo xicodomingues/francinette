@@ -1,6 +1,18 @@
 #include "file_utils.h"
 #include "../get_next_line.h"
 
+ssize_t read(int fildes, void *buf, size_t nbyte)
+{
+	ssize_t(*libc_read)(int, void *, size_t) =
+		(ssize_t (*)(int, void *, size_t))dlsym(RTLD_NEXT, "read");
+	if (nbyte != BUFFER_SIZE) {
+		fprintf(errors_file, "Please use the read size provided by the compile variable BUFFER_SIZE: %i\n", BUFFER_SIZE);
+		printf(RED "Use the fucking BUFFER_SIZE (%i), instead of what you wanted to read (%zi)...\n" NC, BUFFER_SIZE, nbyte);
+		exit(1);
+	}
+	return libc_read(fildes, buf, nbyte);
+}
+
 int leak_check()
 {
 	int res = 1;
@@ -15,6 +27,43 @@ int test_gnl_func(int fd, char *expected, char *input)
 
 	char *next = get_next_line(fd);
 	int res = same_string(expected, next);
+	if (expected != NULL)
+	{
+		int mem_res = check_mem_size(next, strlen(expected) + 1);
+		if (!mem_res)
+			fprintf(errors_file, "should reserve space for the string: %s\n", escape_str(expected));
+		res = mem_res && res;
+	}
+	show_res(res, "");
+	free(next);
+	return res;
+}
+
+void print_file_content(char * content) {
+	int line = 1;
+	fprintf(errors_file, NC "1: " GRN);
+	while (*content)
+	{
+		if (*content == '\n')
+			fprintf(errors_file, "\\n");
+		fprintf(errors_file, "%c", *content);
+		if (*content == '\n')
+			fprintf(errors_file, NC "%i: " GRN, ++line);
+		content++;
+	}
+}
+
+int test_gnl_func_limits(int fd, char *expected, int line, char *content, char *input)
+{
+	set_signature("get_next_line(%i: %s)", fd, escape_str(input));
+
+	char *next = get_next_line(fd);
+	int res = same_string(expected, next);
+	if (!res) {
+		fprintf(errors_file, "asking for line: %i of file:\n", line + 1);
+		print_file_content(content);
+		fprintf(errors_file, "\n\n");
+	}
 	if (expected != NULL)
 	{
 		int mem_res = check_mem_size(next, strlen(expected) + 1);

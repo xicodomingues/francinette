@@ -58,9 +58,10 @@ def decode_ascii(bytes):
 def show_errors_file(temp_dir: Path, errors_color, errors_log, n_lines=FILE_SHOW_LINES):
 	trace_to_line = TraceToLine(temp_dir, errors_color)
 	lines = trace_to_line.parse_stack_traces()
+	lines = list(filter(lambda x: x != '', lines))
 
 	print(f"[b red]Errors found[/b red]:")
-	[print(Text.from_ansi(line)) for line in list(filter(lambda x: x != '', lines[:n_lines * 4]))[:n_lines]]
+	[print(Text.from_ansi(line)) for line in lines[:n_lines]]
 	if len(lines) > n_lines:
 		dest = (temp_dir / errors_log).resolve()
 		with open_utf8(dest, "w") as log:

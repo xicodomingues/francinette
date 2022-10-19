@@ -38,10 +38,14 @@ int main(int argn, char **argv)
 	printf(BMAG "BUFFER_SIZE" NC ": %i\n", BUFFER_SIZE);
 
 	TEST("open, close, open", {
-		char *name = "lines_around_10.txt";
+		char *name = "open_close_open.txt";
+		char *other = "lines_around_10.txt";
 		int fd = open(name, O_RDONLY);
-		/* 1 */ test_gnl(fd, "0123456789\n");
-		/* 2 */ test_gnl(fd, "012345678\n");
+		int fd2 = open(other, O_RDONLY);
+		/* 1 */ test_gnl(fd, "aaaaaaaaaa\n");
+		/* 2 */ test_gnl(fd2, "0123456789\n");
+		/* 3 */ test_gnl(fd, "bbbbbbbbbb\n");
+		/* 4 */ test_gnl(fd2, "012345678\n");
 		close(fd);
 		char *temp;
 		do
@@ -49,14 +53,17 @@ int main(int argn, char **argv)
 			temp = get_next_line(fd);
 			free(temp);
 		} while (temp != NULL);
-		/* 3 */ test_gnl(fd, NULL);
+		/* 5 */ test_gnl(fd2, "90123456789\n");
+		/* 6 */ test_gnl(fd, NULL);
 		fd = open(name, O_RDONLY);
-		/* 4 */ test_gnl(fd, "0123456789\n");
-		/* 5 */ test_gnl(fd, "012345678\n");
-		/* 6 */ test_gnl(fd, "90123456789\n");
-		/* 7 */ test_gnl(fd, "0123456789\n");
-		/* 8 */ test_gnl(fd, "xxxx\n");
-		/* 9 */ test_gnl(fd, NULL);
+		/* 7 */ test_gnl(fd, "aaaaaaaaaa\n");
+		/* 8 */ test_gnl(fd2, "0123456789\n");
+		/* 9 */ test_gnl(fd, "bbbbbbbbbb\n");
+		/* 10 */ test_gnl(fd, "cccccccccc\n");
+		/* 11 */ test_gnl(fd2, "xxxx\n");
+		/* 12 */ test_gnl(fd2, NULL);
+		/* 13 */ test_gnl(fd, "dddddddddd\n");
+		/* 14 */ test_gnl(fd, NULL);
 	});
 
 	TEST("2 file descriptors", {
