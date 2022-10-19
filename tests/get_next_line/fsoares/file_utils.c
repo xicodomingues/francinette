@@ -17,9 +17,10 @@ int test_gnl_func(int fd, char *expected, char *input)
 	int res = same_string(expected, next);
 	if (expected != NULL)
 	{
-		res = check_mem_size(next, strlen(expected) + 1);
-		if (!res)
+		int mem_res = check_mem_size(next, strlen(expected) + 1);
+		if (!mem_res)
 			fprintf(errors_file, "should reserve space for the string: %s\n", escape_str(expected));
+		res = mem_res && res;
 	}
 	show_res(res, "");
 	free(next);

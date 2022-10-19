@@ -7,8 +7,8 @@
 char function[1000];
 char signature[100000];
 int g_offset;
-char escaped[10000];
-char escaped_div = 2;
+char escaped[100000];
+char escaped_div = 5;
 int where_buffer = 0;
 int g_test = 1;
 int child_pid = -1;
