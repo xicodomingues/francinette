@@ -15,6 +15,7 @@ int test_strtrim()
 	res = single_test_strtrim(4, " . abcd", " ", ". abcd") && res;
 	res = single_test_strtrim(5, "ab cd  f    ", " ", "ab cd  f") && res;
 	res = single_test_strtrim(6, "xxxz  test with x and z and x .  zx  xx z", "z x", "test with x and z and x .") && res;
+	res = single_test_strtrim(7, "   abxfg  ", "x", "   abxfg  ") && res;
 	return res;
 }
 
