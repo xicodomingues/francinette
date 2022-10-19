@@ -1,3 +1,83 @@
+## 0.9.0 (2022-10-19)
+
+### Fix
+
+- **gnl**: Fix bug that wrongly reported tests as ok
+- **libft**: added strtrim test without trimming spaces
+
+### Feat
+
+- **install**: provided install for arch
+
+## 0.8.7 (2022-10-13)
+
+### Fix
+
+- **libft**: compile with all bonus
+- **libft**: added missing corner test case to strrchr
+
+## 0.8.6 (2022-10-11)
+
+### Fix
+
+- **libft**: Updated libft tests
+
+## 0.8.5 (2022-10-09)
+
+### Fix
+
+- **libft**: Fix lifbt-unit-test test on linux
+
+## 0.8.4 (2022-10-09)
+
+### Fix
+
+- Solve problem with escaped buffer in linux
+
+## 0.8.3 (2022-09-15)
+
+### Fix
+
+- **gnl**: Fix problem with programming hanging on strict gnl
+
+## 0.8.2 (2022-08-09)
+
+### Fix
+
+- force bonus on printf and make timeout actually work
+
+## 0.8.1 (2022-08-09)
+
+### Fix
+
+- **minitalk**: ignore exit code of server on communication test
+
+## 0.8.0 (2022-07-28)
+
+### Fix
+
+- **minitalk**: solve repeated main rewrite
+- fix update on always always updating on every run
+- **printf**: fix the last fix
+
+## 0.7.3 (2022-06-17)
+
+### Fix
+
+- **printf**: don't error out on comple, just warn
+
+## 0.7.2 (2022-06-17)
+
+### Fix
+
+- Improve leaks message on gnl
+
+## 0.7.1 (2022-06-15)
+
+### Fix
+
+- **pipex**: Fix problem with bonus testing on pipexMedic
+
 ## 0.7.0 (2022-06-01)
 
 ### Feat
