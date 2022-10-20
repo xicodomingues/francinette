@@ -1,5 +1,5 @@
 #include "file_utils.h"
-#include "../get_next_line_bonus.h"
+#include "../get_next_line.h"
 
 void populate_expected(char *buffer, int n)
 {
