@@ -34,7 +34,7 @@ int test_atoi(void)
 	res = single_test_atoi(17, buffer) && res;
 
 	for (int i = 0; i <= 0xFF; i++) {
-		sprintf(buffer, "%c%i", i, i + 1);
+		sprintf(buffer, "%c %i", i, i + 1);
 		res = single_test_atoi(18 + i, buffer) && res;
 	}
 
