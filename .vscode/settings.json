@@ -77,5 +77,6 @@
 		"rglob",
 		"Tripouille",
 		"Vfurname"
-	]
+	],
+	"python.analysis.typeCheckingMode": "off"
 }

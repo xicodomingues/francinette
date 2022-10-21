@@ -75,11 +75,12 @@ class BaseTester:
 		logger.info(f"Missing: {missing}")
 
 		self.compile_source()
+		forbidden = self.check_forbidden(to_execute)
 		funcs_error = []
 		for tester in testers:
 			funcs_error.append(self.test_using(to_execute, missing, tester))
 		if not self.info.ex_to_execute:
-			self.show_summary(norm_res, missing, funcs_error, to_execute)
+			self.show_summary(norm_res, missing, funcs_error, to_execute, forbidden)
 
 	def test_selector(self):
 		selected_testers = self.info.args.testers
@@ -201,7 +202,7 @@ class BaseTester:
 		logger.info(f"Copying from {tester_dir} to {temp_dir}")
 		shutil.copytree(tester_dir, temp_dir)
 
-	def show_summary(self, norm: str, missing, errors, to_execute):
+	def show_summary(self, norm: str, missing, errors, to_execute, forbiden):
 
 		def get_norm_errors():
 
@@ -218,7 +219,7 @@ class BaseTester:
 		for results in errors:
 			error_funcs = error_funcs.union(results[1])
 
-		has_errors = missing or norm_errors or error_funcs
+		has_errors = missing or norm_errors or error_funcs or forbiden
 		if (not has_errors):
 			print()
 			print(f"{TC.CYAN}╔══════════════════════════════════════════════════════════════════════════════╗")
@@ -229,6 +230,10 @@ class BaseTester:
 			return True
 
 		print(f"\n{TC.B_CYAN}Summary{TC.NC}: {'' if has_bonus() else 'no bonus'}")
+
+		logger.warn(f"forbidden functions: {forbiden}")
+		if forbiden:
+			print(f"\n{TC.B_RED}Forbidden Functions{TC.NC}:", ', '.join(forbiden))
 
 		logger.warn(f"norminette errors: {norm_errors}")
 		if norm_errors:
@@ -246,3 +251,6 @@ class BaseTester:
 		if tests_ok:
 			print(f"\n{TC.B_GREEN}Passed tests{TC.NC}: {', '.join(tests_ok)}")
 		exit(0)
+
+	def check_forbidden(self, to_execute):
+		return []

@@ -7,8 +7,11 @@ import signal
 import subprocess
 import sys
 
+base_print = print
 from rich import print
 from rich.text import Text
+from rich.console import Console
+console = Console()
 
 from utils.TerminalColors import TC
 from utils.TraceToLine import TraceToLine, open_utf8
@@ -80,7 +83,7 @@ def save_err_file(errors: str, temp_dir: Path):
 	with open_utf8('execution.log', 'w') as f:
 		f.writelines([remove_ansi_colors(line) for line in errors.splitlines(True)])
 	dest = (temp_dir / 'execution.log').resolve()
-	print(f"To see the execution log open: [purple]{dest}[/purple]");
+	print(f"To see the execution log open: [purple]{dest}[/purple]")
 
 
 def is_makefile_project(current_path, project_name, project_class):
@@ -108,11 +111,11 @@ def is_mac():
 def escape_str(string):
 	temp = re.sub(r"\\(?!x)", r"\\\\", string)
 	return temp.replace('"', r'\"') \
-		.replace('\t', r'\t') \
-		.replace('\n', r'\n') \
-		.replace('\f', r'\f') \
-		.replace('\v', r'\v') \
-		.replace('\r', r'\r')
+     .replace('\t', r'\t') \
+     .replace('\n', r'\n') \
+     .replace('\f', r'\f') \
+     .replace('\v', r'\v') \
+     .replace('\r', r'\r')
 
 
 def run_filter(command, line_handler):
@@ -127,10 +130,7 @@ def run_filter(command, line_handler):
 	Returns:
 		(bool, str): A tuple with if there was errors and the complete output of the command
 	"""
-	proc = subprocess.Popen(command,
-		                        shell="True",
-		                        errors="backslashreplace",
-		                        stdout=subprocess.PIPE)
+	proc = subprocess.Popen(command, shell="True", errors="backslashreplace", stdout=subprocess.PIPE)
 	output = ""
 	has_errors = False
 	while True:
@@ -141,3 +141,14 @@ def run_filter(command, line_handler):
 		output += line
 	print('\n')
 	return has_errors, output
+
+
+def run_shell(command, msg=None, spinner=None):
+	res = subprocess.run(command, shell="True", errors="backslashreplace", capture_output=True, text=True)
+	logger.info(res)
+	if res.returncode != 0 and msg is not None:
+		if spinner:
+			spinner.fail()
+		base_print(res.stderr)
+		raise Exception(f"Problem compiling forbidden function check. Please contact me under '{TC.B_WHITE}fsoares-{TC.B_RED}' on slack")
+	return res
