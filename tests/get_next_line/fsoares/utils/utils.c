@@ -225,7 +225,7 @@ char *escape_str(char *src)
 {
 	int i, j;
 	where_buffer = (where_buffer + 1) % escaped_div;
-	char *my_bf = escaped + where_buffer * (10000 / escaped_div);
+	char *my_bf = escaped + where_buffer * (100000 / escaped_div);
 	if (src == NULL)
 	{
 		sprintf(my_bf, "<NULL>");
@@ -251,7 +251,7 @@ char *escape_str(char *src)
 			sprintf(my_bf + j++, "\\v");
 		else
 		{
-			sprintf(my_bf + j, "\\x%02x", (unsigned char)src[i]);
+			sprintf(my_bf + j, "\\%03o", (unsigned char)src[i]);
 			j += 3;
 		}
 	}

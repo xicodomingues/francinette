@@ -1,7 +1,21 @@
-## 0.9.0 (2022-10-19)
+## 0.9.3 (2022-10-21)
 
 ### Fix
 
+- **gnl**: Allow reads of size zero
+- **libft**: change atoi character check to have a space to make it easier to understand and easier to copy
+
+## 0.9.2 (2022-10-20)
+
+### Fix
+
+- **gnl**: Import the non bonus header
+
+## 0.9.1 (2022-10-19)
+
+### Fix
+
+- **gnl**: Added some more tests
 - **gnl**: Fix bug that wrongly reported tests as ok
 - **libft**: added strtrim test without trimming spaces
 
