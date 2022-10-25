@@ -1,3 +1,11 @@
+## 0.9.4 (2022-10-25)
+
+### Fix
+
+- **libft**: Fix problem with calloc tests on allevier tests
+- **printf**: Make strict tests work in linux
+- Change way that chars are escaped to use octal
+
 ## 0.9.3 (2022-10-21)
 
 ### Fix
