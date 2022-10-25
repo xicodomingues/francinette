@@ -1,3 +1,6 @@
+#define _GNU_SOURCE  
+#include <stdio.h>
+
 #include "pf_utils.h"
 #include <execinfo.h>
 
