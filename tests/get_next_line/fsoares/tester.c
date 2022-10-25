@@ -160,7 +160,7 @@ int main(int argn, char **argv)
 		/* 3 */ test_gnl(fd, NULL);
 	});
 
-	TEST("open, close, open", {
+	TEST("open_close_open.txt", {
 		char *name = "open_close_open.txt";
 		int fd = open(name, O_RDONLY);
 		/* 1 */ test_gnl(fd, "aaaaaaaaaa\n");
@@ -178,7 +178,7 @@ int main(int argn, char **argv)
 		/* 5 */ test_gnl(fd, "bbbbbbbbbb\n");
 		/* 6 */ test_gnl(fd, "cccccccccc\n");
 		/* 7 */ test_gnl(fd, "dddddddddd\n");
-		/* 9 */ test_gnl(fd, NULL);
+		/* 8 */ test_gnl(fd, NULL);
 		if (res != 1) {
 			fprintf(errors_file, YEL "Probable reason" NC ": You should clear the remaining buffer when a call to read returns -1\n");
 		}

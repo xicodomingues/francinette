@@ -1,3 +1,6 @@
+#define _GNU_SOURCE
+#include <unistd.h>
+
 #include "file_utils.h"
 #include "../get_next_line.h"
 
