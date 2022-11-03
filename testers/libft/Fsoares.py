@@ -81,7 +81,7 @@ class Fsoares():
 				bonus = " list_utils.c" if has_bonus() else ""
 				sanitize = "-fsanitize=address" if is_mac() else ""
 				command = (
-				    f"gcc -g {sanitize} {strict} -D TIMEOUT={get_timeout()} -Wall -Wextra -Werror my_utils.c {bonus} "
+				    f"gcc -g {sanitize} {strict} -D TIMEOUT={get_timeout()} -Wall -Wextra -Werror -Wno-deprecated-declarations my_utils.c {bonus} "
 				    + f"test_{func}.c utils/malloc_mock.c utils/utils.c -L. -lft -o test_{func}.out -ldl")
 				logger.info(f"executing {command}")
 				res = subprocess.run(command, shell=True, capture_output=True, text=True)

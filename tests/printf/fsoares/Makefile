@@ -9,6 +9,10 @@ ifdef EXEC_STRICT
 STRICT		= -D STRICT_MEM
 endif
 
+# SDK headers shipping w/Xcode 14.1 (22/11/01)
+# and later deprecate some functions used here
+CFLAGS		+= -Wno-deprecated-declarations
+
 build_m:
 	-@$(MAKE) -C ../__my_srcs fclean 1> /dev/null
 	-@$(MAKE) -s -C ../__my_srcs all 1> /dev/null
