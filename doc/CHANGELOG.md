@@ -1,3 +1,11 @@
+## 0.9.5 (2022-11-10)
+
+### Fix
+
+- **libft**: Fix problem when Makefile has CRLF line endings
+- **gnl**: maybe fix linux problem with RTLD_NEXT
+- Fix building of some tests with Xcode 14.1
+
 ## 0.9.4 (2022-10-25)
 
 ### Fix
