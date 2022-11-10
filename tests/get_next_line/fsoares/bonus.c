@@ -37,8 +37,8 @@ int main(int argn, char **argv)
 	setup_framework(argn, argv);
 	printf(BMAG "BUFFER_SIZE" NC ": %i\n", BUFFER_SIZE);
 
-	TEST("open, close, open", {
-		char *name = "open_close_open.txt";
+	TEST("open, error, open", {
+		char *name = "read_error.txt";
 		char *other = "lines_around_10.txt";
 		int fd = open(name, O_RDONLY);
 		int fd2 = open(other, O_RDONLY);
@@ -46,15 +46,20 @@ int main(int argn, char **argv)
 		/* 2 */ test_gnl(fd2, "0123456789\n");
 		/* 3 */ test_gnl(fd, "bbbbbbbbbb\n");
 		/* 4 */ test_gnl(fd2, "012345678\n");
+		// next read call will error out
+		next_read_error = 1;
+		if (BUFFER_SIZE > 100) {
+			char *temp;
+			do
+			{
+				temp = get_next_line(fd);
+				free(temp);
+			} while (temp != NULL);
+		}
+		/* 5 */ test_gnl(fd, NULL);
+		next_read_error = 0;
 		close(fd);
-		char *temp;
-		do
-		{
-			temp = get_next_line(fd);
-			free(temp);
-		} while (temp != NULL);
-		/* 5 */ test_gnl(fd2, "90123456789\n");
-		/* 6 */ test_gnl(fd, NULL);
+		/* 6 */ test_gnl(fd2, "90123456789\n");
 		fd = open(name, O_RDONLY);
 		/* 7 */ test_gnl(fd, "aaaaaaaaaa\n");
 		/* 8 */ test_gnl(fd2, "0123456789\n");

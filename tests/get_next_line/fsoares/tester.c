@@ -68,6 +68,34 @@ char *get_line(char *s, int i) {
 	}
 }
 
+int test_limit(char *encoding) {
+	int res = 1;
+	
+	char content[10000];
+	decode(encoding, content);
+	FILE * file = fopen("limits.txt", "w");
+	fprintf(file, "%s", content);
+	fclose(file);
+	reset_malloc_mock();
+	int fd = open("limits.txt", O_RDONLY);
+	int lines = count_lines(content) + 1;
+	for (int i = 0; i < lines; i++) {
+		char *expected = get_line(content, i);
+		res = test_gnl_func_limits(fd, expected, i, content, "limits.txt");
+		if (expected != NULL)
+			free(expected);
+	}
+	close(fd);
+	int no_leaks = leak_check();
+	no_leaks = null_check_gnl("limits.txt") && no_leaks;
+	if (!no_leaks) {
+		fprintf(errors_file, "for file:\n");
+		print_file_content(content);
+		fprintf(errors_file, "\n\n");
+	}
+	return res && no_leaks;
+}
+
 int main(int argn, char **argv)
 {
 	setup_framework(argn, argv);
@@ -141,38 +169,44 @@ int main(int argn, char **argv)
 		/* 6 */ test_gnl(fd, NULL);
 	});
 
-	TEST("giant_line.txt", {
-		int fd = open(_title, O_RDONLY);
-		char expected[20000 + 1];
-		populate_expected(expected, 20000);
-		/* 1 */ test_gnl(fd, expected);
-		/* 2 */ test_gnl(fd, NULL);
-	});
+	if (BUFFER_SIZE != 1) {
+		TEST("giant_line.txt", {
+			int fd = open(_title, O_RDONLY);
+			char expected[20000 + 1];
+			populate_expected(expected, 20000);
+			/* 1 */ test_gnl(fd, expected);
+			/* 2 */ test_gnl(fd, NULL);
+		});
 
-	TEST("giant_line_nl.txt", {
-		int fd = open(_title, O_RDONLY);
-		char expected[20000 + 2];
-		populate_expected(expected, 20000);
-		expected[20000] = '\n';
-		expected[20001] = 0;
-		/* 1 */ test_gnl(fd, expected);
-		/* 2 */ test_gnl(fd, "another line!!!");
-		/* 3 */ test_gnl(fd, NULL);
-	});
+		TEST("giant_line_nl.txt", {
+			int fd = open(_title, O_RDONLY);
+			char expected[20000 + 2];
+			populate_expected(expected, 20000);
+			expected[20000] = '\n';
+			expected[20001] = 0;
+			/* 1 */ test_gnl(fd, expected);
+			/* 2 */ test_gnl(fd, "another line!!!");
+			/* 3 */ test_gnl(fd, NULL);
+		});
+	}
 
-	TEST("open_close_open.txt", {
-		char *name = "open_close_open.txt";
+	TEST("read_error.txt", {
+		char *name = "read_error.txt";
 		int fd = open(name, O_RDONLY);
 		/* 1 */ test_gnl(fd, "aaaaaaaaaa\n");
 		/* 2 */ test_gnl(fd, "bbbbbbbbbb\n");
-		close(fd);
-		char *temp;
-		do
-		{
-			temp = get_next_line(fd);
-			free(temp);
-		} while (temp != NULL);
+		// set the next read call to return -1
+		next_read_error = 1;
+		if (BUFFER_SIZE > 100) {
+			char *temp;
+			do {
+				temp = get_next_line(fd);
+				free(temp);
+			} while (temp != NULL);
+		}
 		/* 3 */ test_gnl(fd, NULL);
+		next_read_error = 0;
+		close(fd);
 		fd = open(name, O_RDONLY);
 		/* 4 */ test_gnl(fd, "aaaaaaaaaa\n");
 		/* 5 */ test_gnl(fd, "bbbbbbbbbb\n");
@@ -180,7 +214,7 @@ int main(int argn, char **argv)
 		/* 7 */ test_gnl(fd, "dddddddddd\n");
 		/* 8 */ test_gnl(fd, NULL);
 		if (res != 1) {
-			fprintf(errors_file, YEL "Probable reason" NC ": You should clear the remaining buffer when a call to read returns -1\n");
+			fprintf(errors_file, YEL "Probable reason" NC ": You should clear the static buffer when a call to read returns -1\n");
 		}
 	});
 
@@ -190,22 +224,17 @@ int main(int argn, char **argv)
 	};
 
 	if (BUFFER_SIZE == 10) {
-		TEST("limits", {
-			char content[10000];
+		/*
+		 * This tests what happens when newlines are close to the BUFFER_SIZE.
+		 * 
+		 * For each of the strings defined in char *tests[18] above, it will create a file with what that string encodes. 
+		 * 
+		 * For example, if the string is: "10\n8\n" it will create a file with 10 chars, a newline, 8 chars and newline.
+		 * Then it will use that file as a test for the get_next_line function
+		 */
+		BASE_TEST("limits", {
 			for (int i = 0; i < 18; i++) {
-				decode(tests[i], content);
-				FILE * file = fopen("limits.txt", "w");
-				fprintf(file, "%s", content);
-				fclose(file);
-				int fd = open("limits.txt", O_RDONLY);
-				int lines = count_lines(content) + 1;
-				for (int i = 0; i < lines; i++) {
-					char *expected = get_line(content, i);
-					test_gnl_limits(fd, expected, i, content);
-					if (expected != NULL)
-						free(expected);
-				}
-				close(fd);
+				res = test_limit(tests[i]) && res;
 			}
 		});
 	}

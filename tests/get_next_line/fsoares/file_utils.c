@@ -4,18 +4,27 @@
 #include "file_utils.h"
 #include "../get_next_line.h"
 
+int next_read_error = 0;
+
 ssize_t read(int fildes, void *buf, size_t nbyte)
 {
 	ssize_t(*libc_read)(int, void *, size_t) =
 		(ssize_t (*)(int, void *, size_t))dlsym(RTLD_NEXT, "read");
 	if (nbyte != BUFFER_SIZE && nbyte != 0) {
 		fprintf(errors_file, "Please use the read size provided by the compile variable BUFFER_SIZE: %i\n", BUFFER_SIZE);
-		printf(RED "Use the fucking BUFFER_SIZE (%i), instead of what you wanted to read (%zi)...\n" NC, BUFFER_SIZE, nbyte);
+		printf(RED "Use the BUFFER_SIZE (%i) on the read calls, instead of what you wanted to read (%zi).\n" NC, BUFFER_SIZE, nbyte);
 		exit(1);
+	}
+	if (next_read_error) {
+		next_read_error = 0;
+		return -1;
 	}
 	return libc_read(fildes, buf, nbyte);
 }
 
+/**
+ * Will return zero if there are leaks, 1 if there are no leaks
+ */
 int leak_check()
 {
 	int res = 1;
@@ -54,6 +63,7 @@ void print_file_content(char * content) {
 			fprintf(errors_file, NC "%i: " GRN, ++line);
 		content++;
 	}
+	fprintf(errors_file, NC);
 }
 
 int test_gnl_func_limits(int fd, char *expected, int line, char *content, char *input)
@@ -131,8 +141,11 @@ int null_check_gnl(char *file)
 				count++;
 		} while (res != NULL && count < 20);
 		close(fd);
-
 		result = check_leaks(NULL) && result;
+		do
+		{
+			res = get_next_line(fd);
+		} while (res != NULL);
 		if (lines == count)
 			result = error("Should exit early and return NULL\n");
 	}
