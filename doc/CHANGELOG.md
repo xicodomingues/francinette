@@ -1,3 +1,9 @@
+## 0.9.6 (2022-11-10)
+
+### Fix
+
+- **gnl**: Improved limits test. Changed on error test
+
 ## 0.9.5 (2022-11-10)
 
 ### Fix
