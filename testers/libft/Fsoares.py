@@ -36,6 +36,9 @@ class Fsoares():
 		self.missing = missing
 		self.tests_dir = os.path.join(tests_dir, self.folder)
 		self.git_url = None
+		# macOS: suppress inconsequential but intrusive
+		# debug messages printed by Apple's libmalloc
+		os.environ['MallocNanoZone'] = '0'
 
 	def execute(self):
 		self.compile_test()

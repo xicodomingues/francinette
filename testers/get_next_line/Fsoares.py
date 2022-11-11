@@ -1,4 +1,5 @@
 import logging
+import os
 import re
 from typing import Set
 
@@ -22,6 +23,9 @@ class Fsoares(BaseExecutor):
 
 	def __init__(self, tests_dir, temp_dir, to_execute, missing) -> None:
 		super().__init__(tests_dir, temp_dir, to_execute, missing)
+		# macOS: suppress inconsequential but intrusive
+		# debug messages printed by Apple's libmalloc
+		os.environ['MallocNanoZone'] = '0'
 
 	def execute(self):
 		bonus_tests = ["open, close, open", "2 file descriptors", "multiple fds", "test limit fds"]

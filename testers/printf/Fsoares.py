@@ -1,6 +1,7 @@
 import itertools
 import logging
 import random
+import os
 import re
 import string
 
@@ -59,6 +60,9 @@ class Fsoares(BaseExecutor):
 		super().__init__(tests_dir, temp_dir, to_execute, missing)
 		if is_strict():
 			get_context().args.timeout = str(int(get_context().args.timeout) * 10);
+		# macOS: suppress inconsequential but intrusive
+		# debug messages printed by Apple's libmalloc
+		os.environ['MallocNanoZone'] = '0'
 
 	def execute(self):
 		text = self.get_info_message("Compiling tests")

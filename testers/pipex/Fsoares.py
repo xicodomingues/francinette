@@ -92,6 +92,9 @@ class Fsoares(BaseExecutor):
 
 	def __init__(self, tests_dir, temp_dir, to_execute, missing) -> None:
 		super().__init__(tests_dir, temp_dir, to_execute, missing)
+		# macOS: suppress inconsequential but intrusive
+		# debug messages printed by Apple's libmalloc
+		os.environ['MallocNanoZone'] = '0'
 
 	def execute(self):
 		Halo(self.get_info_message("Executing tests")).info()
