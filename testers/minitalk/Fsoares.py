@@ -1,5 +1,6 @@
 import logging
 import random
+import os
 import re
 import shutil
 import string
@@ -41,6 +42,9 @@ class BgThread(threading.Thread):
 		self.command = command
 		self.return_code = None
 		threading.Thread.__init__(self)
+		# macOS: suppress inconsequential but intrusive
+		# debug messages printed by Apple's libmalloc
+		os.environ['MallocNanoZone'] = '0'
 
 	def run(self):
 		p = subprocess.Popen(self.command.split(), shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
