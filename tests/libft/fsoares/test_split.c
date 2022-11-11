@@ -89,6 +89,9 @@ int test_split()
 	expected = init_str_array(5, "1", "2a,", "3", "--h", NULL);
 	res = test_single_split(7, "^^^1^^2a,^^^^3^^^^--h^^^^", '^', expected) && res;
 
+	expected = init_str_array(2, "nonempty", NULL);
+	res = test_single_split(8, "nonempty", '\0', expected) && res;
+
 	return res;
 }
 
