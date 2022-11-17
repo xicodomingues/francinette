@@ -9,6 +9,11 @@ logger = logging.getLogger("leak-check")
 
 leaks_regex = re.compile(".* (\d+) leak(?:s)? for (\d+) total.*")
 
+
+class LeakException(Exception):
+	pass
+
+
 class LeakChecker(threading.Thread):
 
 	def __init__(self, command, timeout=1, input=None):
@@ -46,7 +51,7 @@ def has_leaks(command, timeout=1.5, input=None):
 	sleep(1)
 	if not checker.stdout:
 		console.print("\nLeak check was not executed, do it manually\n", style="b yellow")
-		return False
+		raise LeakException()
 	leaks = next(line for line in checker.stdout.splitlines() if leaks_regex.match(line))
 	match = leaks_regex.match(leaks)
 	if match.group(1) != "0":

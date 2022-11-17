@@ -14,7 +14,7 @@ from rich import box
 from rich.table import Table
 from testers.BaseExecutor import BaseExecutor
 from utils.ExecutionContext import console, get_timeout
-from utils.LeaksCheck import has_leaks
+from utils.LeaksCheck import LeakException, has_leaks
 from utils.TraceToLine import open_ascii
 from utils.Utils import escape_str, show_errors_str
 
@@ -54,14 +54,17 @@ def run_bash(command, test, timeout=None):
 			open('heredoc.sh', 'w').write(heredoc)
 			command = "./heredoc.sh"
 
-	return run(command,
-	           capture_output=True,
-	           shell="True",
-	           encoding="ascii",
-	           errors="backslashreplace",
-	           env=my_env,
-	           timeout=timeout,
-	           input=_input)
+	try:
+		return run(command,
+				capture_output=True,
+				shell="True",
+				encoding="ascii",
+				errors="backslashreplace",
+				env=my_env,
+				timeout=timeout,
+				input=_input)
+	except Exception as ex:
+		logger.error(ex)
 
 
 def get_commands(test: TestCase):
@@ -137,23 +140,26 @@ class Fsoares(BaseExecutor):
 		return [self.__test_sleep(test) for test in tests]
 
 	def test_leak(self, is_bonus=False):
-		output = ""
-		if not is_bonus:
-			output = has_leaks("./pipex infile.txt cat wc output.txt")
+		try:
+			output = ""
+			if not is_bonus:
+				output = has_leaks("./pipex infile.txt cat wc output.txt")
+				if output:
+					output = "Leaks for command: [cyan]./pipex infile.txt cat wc output.txt[/cyan]\n" + output
+			else:
+				output1 = has_leaks("./pipex infile.txt cat cat ls cat wc output.txt")
+				if output1:
+					output = "Leaks for command: [cyan]./pipex infile.txt cat cat ls cat wc output.txt[/cyan]\n" + output1	
+				output2 = has_leaks("./pipex here_doc EOF cat wc output.txt", input="line1\nline2\nEOF\n")
+				if output2:
+					output += "\nLeaks for command: [cyan]./pipex here_doc EOF cat wc output.txt[/cyan] with input: 'line1\\nline2\\nEOF\\n' \n" + output2	
 			if output:
-				output = "Leaks for command: [cyan]./pipex infile.txt cat wc output.txt[/cyan]\n" + output
-		else:
-			output1 = has_leaks("./pipex infile.txt cat cat ls cat wc output.txt")
-			if output1:
-				output = "Leaks for command: [cyan]./pipex infile.txt cat cat ls cat wc output.txt[/cyan]\n" + output1	
-			output2 = has_leaks("./pipex here_doc EOF cat wc output.txt", input="line1\nline2\nEOF\n")
-			if output2:
-				output += "\nLeaks for command: [cyan]./pipex here_doc EOF cat wc output.txt[/cyan] with input: 'line1\\nline2\\nEOF\\n' \n" + output2	
-		if output:
-			console.print("Leaks: KO", style="red", end="")
-			return [["leaks", output]]
-		else:
-			console.print("Leaks: OK", style="green", end="")
+				console.print("Leaks: KO", style="red", end="")
+				return [["leaks", output]]
+			else:
+				console.print("Leaks: OK", style="green", end="")
+				return []
+		except LeakException:
 			return []
 
 	def __test_sleep(self, test):
