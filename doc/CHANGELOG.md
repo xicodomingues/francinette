@@ -1,3 +1,16 @@
+## 0.9.8 (2022-11-17)
+
+### Fix
+
+- **ft_split**: Add test with the string terminator + a non-empty string
+- Change strict text to not reference moulinette
+
+## 0.9.7 (2022-11-11)
+
+### Fix
+
+- **libft**: remove spammy messages
+
 ## 0.9.6 (2022-11-10)
 
 ### Fix
