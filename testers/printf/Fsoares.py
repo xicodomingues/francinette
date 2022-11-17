@@ -139,7 +139,7 @@ class Fsoares(BaseExecutor):
 
 		formats = {
 		    'c': ('-', ["'5'", "'x'", r"'\n'"]),
-		    's': ('-.', ['NULL', '""', '"test"', r'"joihwhhgsdkhksdgsdg\t\v\n\r\f\a25252\b6"']),
+		    's': ('-.', ['(char *)NULL', '""', '"test"', r'"joihwhhgsdkhksdgsdg\t\v\n\r\f\a25252\b6"']),
 		    'p': ('-', [
 		        '(void *)0', '(void *)0xABCDE', '(void *)ULONG_MAX', '(void *)LONG_MIN', '(void *)-1', '(void *)-2352'
 		    ]),
