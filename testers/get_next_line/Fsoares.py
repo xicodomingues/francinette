@@ -57,8 +57,7 @@ class Fsoares(BaseExecutor):
 				if not validate_one_static():
 					errors.add("more than one static")
 			if not is_strict() and not errors:
-				print(f"Want some more thorough tests? run '{TC.B_WHITE}francinette --strict{TC.NC}'. " +
-				      f"Moulinette will not do these checks, it's only a matter of pride.")
+				print(f"Want some more thorough tests? run '{TC.B_WHITE}francinette --strict{TC.NC}'.")
 			return errors
 
 		errors = self.execute_make_command("mandatory", self.exec_mandatory)

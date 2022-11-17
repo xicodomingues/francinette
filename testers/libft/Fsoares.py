@@ -164,6 +164,5 @@ class Fsoares():
 			build_error_file(errors)
 			show_errors_file(Path(self.temp_dir), "errors_color.log", "error.log")
 		if not is_strict() and not errors and not self.missing:
-			print(f"Want some more thorough tests? run '{TC.B_WHITE}francinette --strict{TC.NC}'. " +
-				"Moulinette will not do these checks, it's only a matter of pride!")
+			print(f"Want some more thorough tests? run '{TC.B_WHITE}francinette --strict{TC.NC}'.")
 		return errors
