@@ -38,6 +38,9 @@ int test_atoi(void)
 		res = single_test_atoi(18 + i, buffer) && res;
 	}
 
+	res = single_test_atoi(19, "107107107107107107107") && res;
+	res = single_test_atoi(20, "-107107107107107107107") && res;
+
 	return res;
 }
 
