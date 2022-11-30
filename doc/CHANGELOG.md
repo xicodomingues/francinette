@@ -1,3 +1,11 @@
+## 0.9.9 (2022-11-30)
+
+### Fix
+
+- Updated gnl and libft tests from Tripouille
+- **printf**: Add cast to NULL str, related to #18
+- **pipex**: Handle weird exception being thrown
+
 ## 0.9.8 (2022-11-17)
 
 ### Fix
