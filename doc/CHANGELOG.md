@@ -1,3 +1,9 @@
+## 0.9.10 (2022-11-30)
+
+### Fix
+
+- **pipex**: fix weirdly behaving quotes
+
 ## 0.9.9 (2022-11-30)
 
 ### Fix
