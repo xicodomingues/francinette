@@ -153,9 +153,9 @@ class BaseExecutor:
 			makefile = Path(makefile_path).resolve()
 			with open(makefile, 'r') as file:
 				filedata = file.read()
-			new_make = re.sub(r"-\bWall\b", f"-g -fsanitize=address -Wall", filedata)
+			new_make = re.sub(r"-\bWall\b", f"-g -fsanitize=address -Wall -Wno-deprecated-declarations", filedata)
 			if is_linux():
-				new_make = re.sub(r"-\bWall\b", f"-g -Wall", filedata)
+				new_make = re.sub(r"-\bWall\b", f"-g -Wall -Wno-deprecated-declarations", filedata)
 			logger.info(f"added sanitization to makefile {makefile_path}")
 			with open(makefile, 'w') as file:
 				file.write(new_make)
