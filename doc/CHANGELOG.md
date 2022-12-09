@@ -1,3 +1,9 @@
+## 0.9.11 (2022-12-09)
+
+### Fix
+
+- update cleaner, supress deprecated functions warning
+
 ## 0.9.10 (2022-11-30)
 
 ### Fix
