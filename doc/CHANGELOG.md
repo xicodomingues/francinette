@@ -1,3 +1,9 @@
+## 0.9.12 (2022-12-14)
+
+### Fix
+
+- **minitalk**: Fix not ignoring commented mains, added message on mising executables
+
 ## 0.9.11 (2022-12-09)
 
 ### Fix
