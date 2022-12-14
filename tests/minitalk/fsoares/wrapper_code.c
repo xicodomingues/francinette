@@ -1,3 +1,5 @@
+
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <ctype.h>
@@ -28,18 +30,11 @@ struct alloc_node
 #include <dlfcn.h>
 #include <execinfo.h>
 
-#define BRED   "\x1B[1;31m"
-#define RED    "\x1B[0;31m"
-#define BGRN   "\x1B[1;32m"
-#define GRN   "\x1B[0;32m"
-#define YEL   "\x1B[0;33m"
-#define BLU   "\x1B[0;34m"
-#define BMAG   "\x1B[1;35m"
-#define MAG   "\x1B[0;35m"
-#define CYN   "\x1B[0;36m"
-#define BCYN   "\x1B[1;36m"
-#define BWHT   "\x1B[1;37m"
-#define NC    "\x1B[0m"
+#define P__BRED   "\x1B[1;31m"
+#define P__YEL   "\x1B[0;33m"
+#define P__CYN   "\x1B[0;36m"
+#define P__BWHT   "\x1B[1;37m"
+#define P__NC    "\x1B[0m"
 
 void save_traces(char **strings, int nptrs);
 int error(const char *format, ...);
@@ -57,7 +52,7 @@ FILE *errors_file;
 
 void show_signal_msg(char *message, char *resume, int signal)
 {
-	fprintf(errors_file, BRED "Error" NC " in test %i: " CYN "%s" NC ": " BRED "%s"NC"\n",
+	fprintf(errors_file, P__BRED "Error" P__NC " in test %i: " P__CYN "%s" P__NC ": " P__BRED "%s"P__NC"\n",
 			g_test, signature, message);
 
 #ifdef __APPLE__
@@ -70,7 +65,7 @@ void show_signal_msg(char *message, char *resume, int signal)
 	}
 #endif
 
-	printf(YEL "%i.KO %s\n" NC, g_test++, resume);
+	printf(P__YEL "%i.KO %s\n" P__NC, g_test++, resume);
 	exit(signal);
 }
 
@@ -91,7 +86,7 @@ void sigbus(int signal)
 
 void sigalarm(int signal)
 {
-	show_signal_msg(("Timeout occurred. You can increase the timeout by executing " BWHT "francinette --timeout <number of seconds>" NC), "Timeout", signal);
+	show_signal_msg(("Timeout occurred. You can increase the timeout by executing " P__BWHT "francinette --timeout <number of seconds>" P__NC), "Timeout", signal);
 }
 
 void handle_signals()
@@ -126,7 +121,7 @@ int set_signature(const char *format, ...)
 
 int error(const char *format, ...)
 {
-	fprintf(errors_file, BRED "Error" NC " in test %i: " CYN "%s" NC ": ", g_test, signature);
+	fprintf(errors_file, P__BRED "Error" P__NC " in test %i: " P__CYN "%s" P__NC ": ", g_test, signature);
 	va_list args;
 	va_start(args, format);
 	vfprintf(errors_file, format, args);
@@ -351,7 +346,7 @@ void handle_termination(int signal)
 {
 	(void)signal;
 	int res = check_leaks(NULL);
-	printf("=====\n==leaks==: %i\n", res);
+	printf("=====\n==no leaks==: %i\n", res);
 	fflush(stdout);
 	exit(!res);
 }

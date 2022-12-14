@@ -12,7 +12,7 @@ class Minitalk(BaseTester):
 	name = "minitalk"
 	my_tester = Fsoares
 	testers = [Fsoares]
-	timeout = 20
+	timeout = 30
 
 	def __init__(self, info: TestRunInfo) -> None:
 		super().__init__(info)

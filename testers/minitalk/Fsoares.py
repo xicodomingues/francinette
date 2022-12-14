@@ -14,7 +14,7 @@ from halo import Halo
 from testers.BaseExecutor import BaseExecutor
 from utils.ExecutionContext import get_timeout, console
 from utils.TerminalColors import TC
-from utils.Utils import decode_ascii, escape_str, show_errors_file
+from utils.Utils import decode_ascii, escape_str, remove_ansi_colors, show_errors_file
 
 logger = logging.getLogger('mt-fsoares')
 MSG_DELIM = '====='
@@ -71,6 +71,7 @@ class Fsoares(BaseExecutor):
 			self.compile('fclean all', spinner)
 
 		Halo(self.get_info_message("Running tests")).info()
+		self.check_client_and_server_exist()
 		result = True
 		if (self.exec_mandatory):
 			result = self.test_client_server()
@@ -80,10 +81,16 @@ class Fsoares(BaseExecutor):
 			result = self.test_client_server(bonus=True) and result
 		return self.result(not result)
 
+	def check_client_and_server_exist(self):
+		if not (self.temp_dir / '../__my_srcs/server').exists():
+			raise Exception("There is no 'server' executable on the root directory after make")
+		if not (self.temp_dir / '../__my_srcs/client').exists():
+			raise Exception("There is no 'client' executable on the root directory after make")
+
 	def compile(self, command, spinner):
 		output = self.call_make_command(command, True, silent=True, spinner=spinner)
 		if output:
-			raise Exception(f'Problem preprating the testes, please contact me at fsoares- in slack')
+			raise Exception(f'Problem preprating the testes, please contact me at fsoares- in slack or open an issue on github')
 
 	def test_client_server(self, bonus=False):
 		no_leaks = self.test_leaks()
@@ -115,7 +122,9 @@ class Fsoares(BaseExecutor):
 			self.send_message(server, MSG_DELIM + message + MSG_DELIM)
 		finally:
 			kill_proc(server)
-		actual = server.stdout.decode("utf-8", errors="replace").split(MSG_DELIM)[1]
+		received = server.stdout.decode("utf-8", errors="replace")
+		logger.info(f"message received: {received}")
+		actual = remove_ansi_colors(received).split(MSG_DELIM)[1]
 		color = TC.GREEN
 		if (actual != message):
 			color = TC.RED
@@ -158,10 +167,10 @@ class Fsoares(BaseExecutor):
 		try:
 			message = ''.join(random.choices(string.printable, k=5000))
 			spinner = Halo("Sending 5000 characters: ", placement="right").start()
-			self.send_message(server, MSG_DELIM + message + MSG_DELIM, get_timeout())
+			self.send_message(server, MSG_DELIM + message + MSG_DELIM)
 		finally:
 			kill_proc(server)
-		result = correctly_received(decode_ascii(server.stdout), message, spinner)
+		result = correctly_received(remove_ansi_colors(decode_ascii(server.stdout)), message, spinner)
 		if spinner.enabled:
 			spinner.succeed() if result else spinner.fail()
 		return result
@@ -175,7 +184,7 @@ class Fsoares(BaseExecutor):
 					self.send_message(server, MSG_DELIM + message + MSG_DELIM)
 			finally:
 				kill_proc(server)
-			output = decode_ascii(server.stdout)
+			output = remove_ansi_colors(decode_ascii(server.stdout))
 			for message in messages:
 				if message not in output:
 					spinner.fail()
@@ -244,13 +253,13 @@ class Fsoares(BaseExecutor):
 		spinner.succeed() if server.return_code == 0 else spinner.fail()
 		return server.return_code == 0
 
-	def send_message(self, server, message, timeout=3):
+	def send_message(self, server, message):
 		client_path = str((self.temp_dir / '../__my_srcs/client').resolve())
 		client = None
 		try:
 			client = subprocess.run(f'{client_path} {server.pid} {quote(message)}',
 			                        capture_output=True,
-			                        timeout=timeout,
+			                        timeout=get_timeout(),
 			                        shell=True)
 			logger.info(client)
 		except Exception as ex:
@@ -298,7 +307,7 @@ class Fsoares(BaseExecutor):
 				f.writelines(content)
 			logger.info(f"file {file} rewritten")
 
-		p = subprocess.run('grep --include=\*.{c,h} -rnw ../__my_srcs -e "\\bmain\\b"',
+		p = subprocess.run('grep --include=\*.{c,h} -rnw ../__my_srcs -e "\\bmain\\b" | grep -v "//"',
 		                   capture_output=True,
 		                   shell=True,
 		                   text=True)

@@ -122,8 +122,7 @@ def main():
 	parser.add_argument("-tm",
 	                    "--timeout",
 	                    action='store',
-	                    default='10',
-	                    help="The new timeout in seconds (by default is 10)")
+	                    help="The new timeout in seconds")
 	parser.add_argument("-c",
 	                    "--clean",
 	                    action='store_true',
