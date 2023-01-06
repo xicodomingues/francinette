@@ -78,4 +78,5 @@ fi
 # print help
 "$HOME"/francinette/tester.sh --help
 
-echo "Please close this terminal window and open the terminal again for francinette to work"
+# automatically replace current shell with new one.
+exec "$SHELL"
