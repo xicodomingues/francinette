@@ -30,7 +30,7 @@ if [ "$(uname)" != "Darwin" ]; then
 	esac
 fi
 
-cp -r francinette ..
+cp -r francinette "$HOME"
 
 cd "$HOME" || exit
 rm -rf temp_____
