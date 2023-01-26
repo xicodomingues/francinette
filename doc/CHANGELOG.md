@@ -1,3 +1,10 @@
+## 0.9.13 (2023-01-26)
+
+### Fix
+
+- Autorelaunch terminal
+- **libft**: Fix missign file on libft tests
+
 ## 0.9.12 (2022-12-14)
 
 ### Fix
