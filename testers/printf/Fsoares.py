@@ -76,7 +76,7 @@ class Fsoares(BaseExecutor):
 			if not spinner.enabled:
 				raise Exception(f"{TC.RED}Problem compiling the tests{TC.NC}")
 
-		errors = self.check_errors(self.run_tests("./printf.out"))
+		errors = self.check_errors(self.run_tests("./printf.out")) if self.exec_mandatory else []
 		if self.exec_bonus:
 			errors = set(errors).union(self.check_errors(self.run_tests("./printf_b.out", show_message=False)))
 		logger.info(f"errors: {errors}")
