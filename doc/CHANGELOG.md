@@ -1,3 +1,11 @@
+## 0.9.14 (2023-01-27)
+
+### Fix
+
+- updated readme
+- **libft**: strtrim: repeated chars in the set #41
+- **printf**: Fix problem with executing only bonus #39
+
 ## 0.9.13 (2023-01-26)
 
 ### Fix
