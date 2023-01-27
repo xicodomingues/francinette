@@ -22,3 +22,5 @@ if ! pip3 install --disable-pip-version-check -q -r requirements.txt ; then
 fi
 
 echo -e "\033[1;37mFrancinette is updated. You can use it again!\033[0m"
+
+printf "\033[33m... but don't forget, \033[1;37mpaco\033[0;33m is not a replacement for your own tests! \033[0m\n"

@@ -6,8 +6,17 @@ Use `francinette` or `paco` inside a project folder to run it.
 
 Currently has tests for: `libft`, `ft_printf`, `get_next_line`, `minitalk` and `pipex`.
 
-`Francinette` is only tested and confirmed to work on MacOS. Some testers may work on Linux,
-but I give no guaranties of any test working or even compiling.
+`Francinette` is only tested and confirmed to work on MacOS on non ARM chips. Some testers may work on
+Linux and ARM, but I give no guaranties of any test working or even compiling.
+
+## :exclamation: Important note:
+
+If you have little to no experience programming, I highly highly highly recommend that you write
+your own tests first. For example, for `ft_split` try to write a main that tests that your code
+works in most cases. It is also useful to think about corner cases, like what should it return
+if the string is `""` or `"   "` or `"word"`. Don't rely just on `francinette` or other tests.
+
+### :warning: Write your own tests, It's a very essencial part of programming. :warning:
 
 ## Table of Contents
 1. [Purpose](#purpose)
@@ -122,8 +131,7 @@ alias paco="$HOME"/francinette/tester.sh
 
 ## FAQ
 
-If you have any questions I am probably in the barcelona cluster. Also, you can reach me on
-slack under `fsoares-`
+If you have any questions you can create an issue or reach me on slack under `fsoares-`
 
 #### I'm more advanced than the tests you have available. When are you adding more tests?
 
@@ -133,9 +141,24 @@ the project.
 
 #### This test that you put up is incorrect!
 
-Please contact me on slack (under `fsoares-`), or create a new github issue,  indicating for
-what exercise which test fails, and a description of what you think is wrong. You can also
-try to fix it and create a pull request for that change!
+Please create a new github issue, indicating for what exercise which test fails, and a
+description of what you think is wrong. You can also try to fix it and create a pull request
+for that change!
+
+#### What is NULL_CHECK in strict?
+
+This is a way to test if you are protecting your `malloc` calls. This means that it will make
+every call to `malloc` fail and return `NULL` instead of a newly allocated pointer. You need
+to take this into account when programming so that you don't get segmentation faults.
+
+#### The tester for get_next_line is giving me Timeout errors
+
+This is something that is very common. My tester will get slower for every malloc that you do, so if
+you do a lot of mallocs it will probably timeout.
+
+If it timeouts while in the strict mode, don't worry, this one is very very inefficient. I have
+plans to change some things to not make it so horrible, but for the time being, don't worry if
+it gives a Timeout.
 
 ## Troubleshooting
 
