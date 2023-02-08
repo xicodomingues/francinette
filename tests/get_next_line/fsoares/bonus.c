@@ -172,7 +172,11 @@ int main(int argn, char **argv)
 				start = fd;
 			if (fd != -1)
 				end = fd;
-		} while (fd != -1 && fd < 10000);
+			if (end != -1 && fd == -1) {
+				close(end);
+				end = end - 1;
+			}
+		} while (fd != -1 && fd < 1000);
 
 		fd = start;
 		while (fd <= end && res)
