@@ -242,7 +242,7 @@ class BaseTester:
 		if error_funcs:
 			print(f"\n{TC.B_RED}Failed tests{TC.NC}: {', '.join(error_funcs)}")
 
-		tests_ok = [test for test in to_execute if test not in errors]
+		tests_ok = [test for test in to_execute if test not in error_funcs]
 		if tests_ok:
 			print(f"\n{TC.B_GREEN}Passed tests{TC.NC}: {', '.join(tests_ok)}")
 		exit(0)
