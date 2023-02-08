@@ -3,7 +3,7 @@
 
 void *map_length(void *s)
 {
-	char *str = malloc(10);
+	char *str = malloc(30);
 	if (str != NULL)
 		sprintf(str, "__%lX", strlen((char *)s));
 	return str;
