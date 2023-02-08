@@ -116,6 +116,19 @@ t_list **create_list(int n_elems, ...)
 	return header_ptr;
 }
 
+int same_list_bool(t_list **expected, t_list **result)
+{
+	t_list *ex_head = *expected;
+	t_list *res_head = *result;
+
+	while (ex_head && res_head && strcmp(ex_head->content, res_head->content) == 0)
+	{
+		ex_head = ex_head->next;
+		res_head = res_head->next;
+	}
+	return (ex_head == NULL && res_head == NULL);
+}
+
 int same_list(t_list **expected, t_list **result)
 {
 	t_list *ex_head = *expected;
