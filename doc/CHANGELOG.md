@@ -1,3 +1,13 @@
+## 0.9.15 (2023-02-08)
+
+### Fix
+
+- **libft**: Remove add_back dependecy on other tests in libftTester #46
+- Remove function that appears in error and in passed in summary report #52
+- **libft**: Fix possible bug with sprintf #51
+- **gnl**: Open all fds except one so that I can open the errors file
+- **lifbt**: Add multiple options to multiple nodes added in lstadd_front
+
 ## 0.9.14 (2023-01-27)
 
 ### Fix
