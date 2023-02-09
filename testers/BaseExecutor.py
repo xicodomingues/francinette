@@ -7,6 +7,7 @@ import subprocess
 from pathlib import Path
 import sys
 from typing import Set
+import utils.CommandRunner as cr
 
 import pexpect
 from halo import Halo
@@ -196,5 +197,5 @@ class BaseExecutor:
 		show_errors_file(self.temp_dir, file_name, out_file, n_lines)
 
 	def execute_in_project_dir(self, command):
-		p = subprocess.run(f"cd ..; {command}", shell=True, capture_output=True, errors="backslashreplace")
+		p = cr.run(f"cd ..; {command}", 10)
 		logger.info(p)
