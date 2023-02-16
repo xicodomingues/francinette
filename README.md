@@ -16,7 +16,7 @@ your own tests first. For example, for `ft_split` try to write a main that tests
 works in most cases. It is also useful to think about corner cases, like what should it return
 if the string is `""` or `"   "` or `"word"`. Don't rely just on `francinette` or other tests.
 
-### :warning: Write your own tests, It's a very essencial part of programming. :warning:
+### :warning: Write your own tests, It's a very essential part of programming. :warning:
 
 ## Table of Contents
 1. [Purpose](#purpose)
