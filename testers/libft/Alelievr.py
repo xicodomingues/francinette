@@ -51,8 +51,12 @@ class Alelievr():
 			f_init.writelines(lines)
 
 		if platform == "linux" or platform == "linux2":
+			linker_line = "\n\nso:\n\tgcc -nostartfiles -shared -o libft.so "
+			if os.path.exists("../bin"):
+				linker_line += "bin/"
+			linker_line += "*.o\n"
 			with open(Path(self.temp_dir, "..", "__my_srcs", "Makefile"), 'a') as mf:
-				mf.writelines("\n\nso:\n\tgcc -nostartfiles -shared -o libft.so *.o\n")
+				mf.writelines(linker_line)
 
 	def execute_tester(self):
 		os.chdir(self.temp_dir)
