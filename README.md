@@ -179,7 +179,7 @@ it gives a Timeout.
 
 #### I've installed francinette, but when I try to execute it I get the message: `command not found: francinette`
 
-In the install script I try to set two alias to for `francinette`: `francinette` and `paco`. 
+In the install script I try to set three alias for `francinette`: `francinette`, `paco` and `mstest`. 
 If you are in MacOS I do that by adding two lines to the `.zshrc` file, and to `.bashrc` in 
 linux. If by some chance you are using other shell, or for some other reason it does not work, 
 You can try to set the aliases yourself, by adding:
@@ -187,6 +187,7 @@ You can try to set the aliases yourself, by adding:
 ```
 alias francinette="$HOME"/francinette/tester.sh
 alias paco="$HOME"/francinette/tester.sh
+alias mstest="$HOME"/francinette/tests/minishell/42_minishell_tester/tester.sh
 ```
 
 Now it should work. If it does not, don't be afraid to contact me.
@@ -195,6 +196,7 @@ Now it should work. If it does not, don't be afraid to contact me.
 
 * To 42 for providing me this opportunity
 * To [Tripouille](https://github.com/Tripouille) for [libftTester](https://github.com/Tripouille/libftTester), [gnlTester](https://github.com/Tripouille/gnlTester) and [printfTester](https://github.com/Tripouille/printfTester)
+* To [zstenger](https://github.com/zstenger93) for [42_minishell_tester](https://github.com/zstenger93/42_minishell_tester)
 * To [jtoty](https://github.com/jtoty) and [y3ll0w42](https://github.com/y3ll0w42) for [libft-war-machine](https://github.com/y3ll0w42/libft-war-machine)
 * To [alelievr](https://github.com/alelievr) for [libft-unit-test](https://github.com/alelievr/libft-unit-test) and [printf-unit-test](https://github.com/alelievr/printf-unit-test)
 * To [cacharle](https://github.com/cacharle) for [ft_printf_test](https://github.com/cacharle/ft_printf_test)
