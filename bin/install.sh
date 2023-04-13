@@ -75,6 +75,11 @@ if ! grep "paco=" "$RC_FILE" &> /dev/null; then
 	printf "\nalias paco=%s/francinette/tester.sh\n" "$HOME" >> "$RC_FILE"
 fi
 
+if ! grep "mstest=" "$RC_FILE" &> /dev/null; then		
+	echo "mstest alias is not present. Adding it"
+	printf "\nalias mstest=%s/francinette/tests/minishell/42_minishell_tester/tester.sh\n" "$HOME" >> "$RC_FILE"
+fi
+
 # print help
 "$HOME"/francinette/tester.sh --help
 
