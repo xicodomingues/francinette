@@ -23,7 +23,7 @@ if the string is `""` or `"   "` or `"word"`. Don't rely just on `francinette` o
 2. [Install](#install)
 3. [Update](#update)
 4. [Running](#Running)
-5. [Run Minishell Tester](#run-minishell-tester)
+5. [Minishell Tester & How To use](#run-minishell-tester--how-to-use)
 6. [Uninstall](#uninstall)
 7. [FAQ](#faq)
 8. [Acknowledgments](#acknowledgments)
@@ -116,8 +116,43 @@ the magic happens.
 
 Log files can be found in: `~/francinette/logs`
 
-## Run Minishell Tester
+## Run Minishell Tester & How To Use
 
+### Config
+First you should comment out everything what prints to terminal eg "exit" at exit, printf's for debugging etc
+Then modify your main loop:
+You should only read with readline and use your own prompt when you launch the program by yourself typing ./minihsell into the terminal, you can check it this way:
+
+
+```c
+	if (isatty(fileno(stdin)))
+		shell->prompt = readline(shell->terminal_prompt);
+```
+
+Else if it is opened by another program/tester for example then use gnl as follows
+
+```c
+	char *line;
+	line = get_next_line(fileno(stdin));
+	shell->prompt = ft_strtrim(line, "\n");
+	free(line);
+```
+
+So it should look like something like this:
+
+```c
+	if (isatty(fileno(stdin)))
+		shell->prompt = readline(shell->terminal_prompt);
+	else
+	{
+		char *line;
+		line = get_next_line(fileno(stdin));
+		shell->prompt = ft_strtrim(line, "\n");
+		free(line);
+	}
+```
+
+### How to use
 At the root of your minishell you can use the short alias `mstest` and it will show you the
 available options for the tester like for mandatory tests:
 ```bash
