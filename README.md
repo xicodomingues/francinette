@@ -23,7 +23,7 @@ if the string is `""` or `"   "` or `"word"`. Don't rely just on `francinette` o
 2. [Install](#install)
 3. [Update](#update)
 4. [Running](#Running)
-5. [Run Minishell](#run-minishell)
+5. [Run Minishell Tester](#run-minishell-tester)
 6. [Uninstall](#uninstall)
 7. [FAQ](#faq)
 8. [Acknowledgments](#acknowledgments)
@@ -116,10 +116,10 @@ the magic happens.
 
 Log files can be found in: `~/francinette/logs`
 
-## Run Minishell
+## Run Minishell Tester
 
-At the root of zour minishell zou can use the short alias `mstest` nad it will show you the
-available options like for mandatory tests:
+At the root of your minishell you can use the short alias `mstest` and it will show you the
+available options for the tester like for mandatory tests:
 ```bash
 mstest m
 ```
@@ -128,6 +128,8 @@ Or with valgrind:
 ```bash
 mstest vm
 ```
+
+etc.
 
 ## Uninstall
 
