@@ -25,3 +25,6 @@
 [submodule "tests/pipex/pipexMedic"]
 	path = tests/pipex/pipexMedic
 	url = https://github.com/xicodomingues/pipexMedic
+[submodule "tests/minishell/42_minishell_tester"]
+	path = tests/minishell/42_minishell_tester
+	url = https://github.com/zstenger93/42_minishell_tester
