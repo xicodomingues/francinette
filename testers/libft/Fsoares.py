@@ -106,7 +106,11 @@ class Fsoares():
 			if lines[-1] == "":
 				lines = lines[:-1]
 			match = test_regex.match(lines[-1])
-			return (match.group(1), match.group(2), lines)
+
+			if match:
+				return (match.group(1), match.group(2), lines)
+			else:
+				return (func, "No match found", lines)
 
 		def parse_sanitizer(func, output: str):
 			if not output.startswith("================================="):
