@@ -11,7 +11,7 @@ int single_test_putendl(int test_number, char *str, int fd)
 
 int test_putendl_fd()
 {
-	int fd = open("fsoares", O_RDWR | O_CREAT);
+	int fd = open("fsoares", O_RDWR | O_CREAT, S_IRWXU);
 
 	int res = single_test_putendl(1, "", fd);
 	res = single_test_putendl(2, "abcdef", fd) && res;

@@ -11,7 +11,7 @@ int single_test_putstr(int test_number, char *str, int fd)
 
 int test_putstr_fd()
 {
-	int fd = open("fsoares", O_RDWR | O_CREAT);
+	int fd = open("fsoares", O_RDWR | O_CREAT, S_IRWXU);
 
 	int res = single_test_putstr(1, "abcdef", fd);
 	res = single_test_putstr(2, "\n1234", fd) && res;
