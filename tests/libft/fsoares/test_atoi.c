@@ -28,10 +28,14 @@ int test_atoi(void)
 	res = single_test_atoi(13, "1209") && res;
 	res = single_test_atoi(14, "12/3") && res;
 	res = single_test_atoi(15, "12;3") && res;
+	res = single_test_atoi(16, "92233720368547758070") && res;
+	res = single_test_atoi(17, "-92233720368547758080") && res;
+	res = single_test_atoi(18, "9223372036854775806") && res;
+	res = single_test_atoi(19, "-9223372036854775806") && res;
 	sprintf(buffer, "%i", INT_MAX);
-	res = single_test_atoi(16, buffer) && res;
+	res = single_test_atoi(20, buffer) && res;
 	sprintf(buffer, "%i", INT_MIN);
-	res = single_test_atoi(17, buffer) && res;
+	res = single_test_atoi(21, buffer) && res;
 
 	for (int i = 0; i <= 0xFF; i++) {
 		sprintf(buffer, "%c %i", i, i + 1);
