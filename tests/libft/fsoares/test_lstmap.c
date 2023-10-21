@@ -1,4 +1,3 @@
-
 #include "list_utils.h"
 
 void *map_length(void *s)
@@ -16,7 +15,6 @@ void delete(void *content)
 		return;
 	if (str[0] != '_' || str[1] != '_')
 		error("You are not using the " BMAG "del" NC " function correctly\n");
-	free(content);
 }
 
 int test_single_lstmap(int test_number, t_list **initial, t_list **expected)
