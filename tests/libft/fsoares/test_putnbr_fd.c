@@ -32,6 +32,7 @@ int test_putnbr_fd()
 	set_signature_tn(6, "ft_putnbr_fd(%i, fd: %i)", 10000, fd);
 	null_null_check(ft_putnbr_fd(10000, fd), res);
 
+	close(fd);
 	remove("./fsoares");
 	return res;
 }
