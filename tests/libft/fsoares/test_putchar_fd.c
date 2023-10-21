@@ -30,6 +30,7 @@ int test_putchar_fd()
 	set_signature_tn(6, "ft_putchar_fd(%i:%s, fd: %i)", 't', escape_chr('t'), fd);
 	null_null_check(ft_putchar_fd('t', fd), res);
 
+	close(fd);
 	remove("./fsoares");
 	return res;
 }
