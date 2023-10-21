@@ -30,6 +30,7 @@ int test_putendl_fd()
 	set_signature_tn(6, "ft_putendl_fd(\"%s\", fd: %i)", "teste", fd);
 	null_null_check(ft_putendl_fd("teste", fd), res);
 
+	close(fd);
 	remove("./fsoares");
 	return res;
 }
