@@ -1,5 +1,6 @@
 
 #include "my_utils.h"
+#include <errno.h>
 
 int single_test_putnbr(int test_number, int n, int fd)
 {
@@ -12,7 +13,7 @@ int single_test_putnbr(int test_number, int n, int fd)
 
 int test_putnbr_fd()
 {
-	int fd = open("fsoares", O_RDWR | O_CREAT);
+	int fd = open("fsoares", O_RDWR | O_CREAT, 0666);
 
 	int res = single_test_putnbr(1, 0, fd);
 	res = single_test_putnbr(2, 10000043, fd) && res;

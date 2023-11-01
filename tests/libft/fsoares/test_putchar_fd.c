@@ -1,5 +1,6 @@
 
 #include "my_utils.h"
+#include <errno.h>
 
 int single_test_putchar(int test_n, char c, int fd)
 {
@@ -11,7 +12,7 @@ int single_test_putchar(int test_n, char c, int fd)
 
 int test_putchar_fd()
 {
-	int fd = open("fsoares", O_RDWR | O_CREAT);
+	int fd = open("fsoares", O_RDWR | O_CREAT, 0666);
 
 	int res = single_test_putchar(1, 'a', fd);
 	res = single_test_putchar(2, 'x', fd) && res;
