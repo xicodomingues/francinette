@@ -85,7 +85,7 @@ def save_err_file(errors: str, temp_dir: Path):
 
 def is_makefile_project(current_path, project_name, project_class):
 	make_path = current_path / "Makefile"
-	name_matcher = re.compile(rf"^\s*NAME\s*:?=\s*{project_name}\s*$")
+	name_matcher = re.compile(rf"^\s*NAME\s*:{{0,3}}=\s*{project_name}\s*$")
 	logger.info(f"Makefile path: {make_path.resolve()}")
 	if not make_path.exists():
 		return False
