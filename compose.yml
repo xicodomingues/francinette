@@ -1,0 +1,6 @@
+services:
+  francinette:
+    build: ./
+    volumes:
+      - ${PROJ}:/tmp/proj
+    
