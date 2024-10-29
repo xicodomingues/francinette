@@ -60,7 +60,8 @@ dockerize:
 ```
 bash -c "$(curl https://raw.githubusercontent.com/murmurlab/francinette/refs/heads/murmurlab-docker/bin/dockerize/set-alias.bash)" && source ~/.bash_profile
 ```
-
+	cd libft && murminette
+\
 The francinette folder will be under your `$HOME` directory (`/Users/<your_username>/`)
 
 
