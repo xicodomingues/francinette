@@ -1,7 +1,7 @@
 FROM ubuntu:latest
 
 RUN apt update -y && apt upgrade -y
-RUN apt install -y clang python3-full curl zsh python3-pip git
+RUN apt install -y clang python3-full curl zsh python3-pip git valgrind
 RUN apt install -y lsb-release
 RUN <<HERE bash
 	python3 -m venv /root/.venv
