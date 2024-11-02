@@ -16,9 +16,15 @@ HERE
 RUN <<__EOF__
 	echo >/usr/bin/murminette <<eof \
 	\#! /usr/bin/bash \\n \
-	zsh -l -c "cd /tmp/proj && source /root/.zshrc && /root/francinette/tester.sh \$@" \
+	zsh -l -c \""cd /tmp/proj && source /root/.zshrc && /root/francinette/tester.sh \$@"\" \
 	<<eof
 __EOF__
+
+# RUN <<__EOF__ tee /usr/bin/murminette
+# #! /usr/bin/bash
+# zsh -l -c "cd /tmp/proj && source /root/.zshrc && /root/francinette/tester.sh \$@"
+# __EOF__
+
 RUN chmod +x /usr/bin/murminette
 
 # CMD [ "cat", "/usr/bin/murminette" ]
