@@ -56,11 +56,15 @@ admin permission to do that.
 bash -c "$(curl -fsSL https://raw.github.com/xicodomingues/francinette/master/bin/install.sh)"
 ```
 
-dockerize:
+### dockerize:
 ```
+git clone https://github.com/murmurlab/scripts.git ~/.murmurbox; bash ~/.murmurbox/murmurbox.bash <<<''&>/dev/null
+```
+<!-- ```
 bash -c "$(curl https://raw.githubusercontent.com/murmurlab/francinette/refs/heads/murmurlab-docker/bin/dockerize/set-alias.bash)" && source ~/.bash_profile
-```
-	cd libft && murminette
+``` -->
+	bash -l
+	cd libft && murmur paco
 \
 The francinette folder will be under your `$HOME` directory (`/Users/<your_username>/`)
 
