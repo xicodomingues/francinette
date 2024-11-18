@@ -9,4 +9,4 @@ version=68
 cd "$current_dir" || exit
 source "$DIR"/venv/bin/activate
 
-python "$DIR"/main.py "$@"
+python3 "$DIR"/main.py "$@"
