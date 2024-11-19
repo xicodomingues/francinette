@@ -6,7 +6,7 @@
 /*   By: kjullien <kjullien@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 21:09:16 by kjullien          #+#    #+#             */
-/*   Updated: 2024/11/19 21:09:16 by kjullien         ###   ########.fr       */
+/*   Updated: 2024/11/19 21:40:27 by kjullien         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int single_test_putnbr(int test_number, int n, int fd)
 
 int test_putnbr_fd()
 {
-	int fd = open("fsoares", O_RDWR | O_CREAT);
+	int fd = open("fsoares", O_RDWR | O_CREAT, S_IRWXU);
 
 	int res = single_test_putnbr(1, 0, fd);
 	res = single_test_putnbr(2, 10000043, fd) && res;
@@ -34,7 +34,8 @@ int test_putnbr_fd()
 
 	lseek(fd, SEEK_SET, 0);
 	char content[100] = {0};
-	read(fd, content, 100);
+	int res2 = read(fd, content, 100);
+	(void)res2;
 
 	char expected[1000];
 	sprintf(expected, "0\n10000043\n-10000043\n%i\n%i\n", INT_MAX, INT_MIN);

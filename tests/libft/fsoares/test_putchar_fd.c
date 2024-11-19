@@ -6,7 +6,7 @@
 /*   By: kjullien <kjullien@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 21:09:03 by kjullien          #+#    #+#             */
-/*   Updated: 2024/11/19 21:09:03 by kjullien         ###   ########.fr       */
+/*   Updated: 2024/11/19 21:40:32 by kjullien         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int single_test_putchar(int test_n, char c, int fd)
 
 int test_putchar_fd()
 {
-	int fd = open("fsoares", O_RDWR | O_CREAT);
+	int fd = open("fsoares", O_RDWR | O_CREAT, S_IRWXU);
 
 	int res = single_test_putchar(1, 'a', fd);
 	res = single_test_putchar(2, 'x', fd) && res;
@@ -33,7 +33,8 @@ int test_putchar_fd()
 
 	lseek(fd, SEEK_SET, 0);
 	char content[10] = {0};
-	read(fd, content, 10);
+	int res2 = read(fd, content, 10);
+	(void) res2;
 
 	char *expected = "axyz\n";
 	if(strcmp(content, expected) != 0)

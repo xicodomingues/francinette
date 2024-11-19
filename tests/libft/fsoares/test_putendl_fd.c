@@ -6,7 +6,7 @@
 /*   By: kjullien <kjullien@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 21:09:10 by kjullien          #+#    #+#             */
-/*   Updated: 2024/11/19 21:09:10 by kjullien         ###   ########.fr       */
+/*   Updated: 2024/11/19 21:40:24 by kjullien         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int single_test_putendl(int test_number, char *str, int fd)
 
 int test_putendl_fd()
 {
-	int fd = open("fsoares", O_RDWR | O_CREAT);
+	int fd = open("fsoares", O_RDWR | O_CREAT, S_IRWXU);
 
 	int res = single_test_putendl(1, "", fd);
 	res = single_test_putendl(2, "abcdef", fd) && res;
@@ -33,7 +33,8 @@ int test_putendl_fd()
 
 	lseek(fd, SEEK_SET, 0);
 	char content[100] = {0};
-	read(fd, content, 100);
+	int res2 = read(fd, content, 100);
+	(void)res2;
 
 	char *expected = "\nabcdef\n1234\n567\nend!\n";
 	if(strcmp(content, expected) != 0)
