@@ -50,7 +50,7 @@ def run_bash(command, test, timeout=None):
 		if command.startswith("./pipex"):
 			_input = test.input
 		else:
-			heredoc = f"#!/bin/bash\n\n{command}\n{test.input}\n"
+			heredoc = f"#!/usr/bin/env bash\n\n{command}\n{test.input}\n"
 			open('heredoc.sh', 'w').write(heredoc)
 			command = "./heredoc.sh"
 

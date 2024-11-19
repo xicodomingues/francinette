@@ -1,4 +1,6 @@
-# Francinette
+# francinette_reborn
+
+Old one seems unmaintained, we go again.
 
 An easy to use testing framework for the 42 projects.
 

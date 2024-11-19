@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 if [ "$(uname)" != "Darwin" ]; then
 	echo "Admin permissions need to install newer packages"

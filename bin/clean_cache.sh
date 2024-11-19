@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #Author Omar BOUYKOURNE
 #42login : obouykou
 

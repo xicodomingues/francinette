@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # FIXME: Remove after some time (because of the updater)
 
