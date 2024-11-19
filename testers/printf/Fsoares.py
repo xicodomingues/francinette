@@ -84,7 +84,7 @@ class Fsoares(BaseExecutor):
 			show_errors_file(self.temp_dir, "error_color.log", "errors.log", 20)
 		else:
 			if not is_strict():
-				print(f"Want some more thorough tests? run '{TC.B_WHITE}francinette --strict{TC.NC}'.")
+				print(f"Want some more thorough tests? run '{TC.B_WHITE}francinette_reborn --strict{TC.NC}'.")
 		return self.result(errors)
 
 	def gen_tests_mandatory(self):
