@@ -65,7 +65,7 @@ find "$HOME"/Desktop -name .DS_Store -depth -exec /bin/rm {} \; &>/dev/null
 /bin/rm -rf "$HOME"/Desktop/Piscine\ Rules\ *.mp4
 /bin/rm -rf "$HOME"/Desktop/PLAY_ME.webloc
 
-#things related to francinette
+#things related to francinette_reborn
 /bin/rm -rf "$HOME"/francinette_reborn/temp
 
 #calculating the new available storage after cleaning

@@ -5,7 +5,7 @@ cd "$HOME" || exit
 mkdir temp_____
 
 cd temp_____ || exit
-rm -rf francinette
+rm -rf francinette_reborn
 
 # download github
 git clone --recursive https://github.com/jukefr/francinette_reborn.git
