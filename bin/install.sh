@@ -8,7 +8,7 @@ cd temp_____ || exit
 rm -rf francinette
 
 # download github
-git clone --recursive https://github.com/xicodomingues/francinette.git
+git clone --recursive https://github.com/jukefr/francinette_reborn.git
 
 if [ "$(uname)" != "Darwin" ]; then
 	echo "Admin permissions needed to install C compilers, python, and upgrade current packages"

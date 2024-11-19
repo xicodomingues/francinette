@@ -16,7 +16,7 @@ rm -rf francinette
 
 # download github
 echo "Downloading francinette repo..."
-git clone --quiet --recursive https://github.com/xicodomingues/francinette.git 2> /dev/null
+git clone --quiet --recursive https://github.com/jukefr/francinette_reborn.git 2> /dev/null
 
 cp -r francinette .. 2> /dev/null
 

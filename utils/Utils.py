@@ -14,7 +14,7 @@ from utils.TerminalColors import TC
 from utils.TraceToLine import TraceToLine, open_utf8
 
 FILE_SHOW_LINES = 50
-REPO_URL = "https://raw.githubusercontent.com/xicodomingues/francinette/master/"
+REPO_URL = "https://raw.githubusercontent.com/jukefr/francinette_reborn/master/"
 
 logger = logging.getLogger("utils")
 

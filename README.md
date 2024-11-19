@@ -73,7 +73,7 @@ You can also force it from francinette itself:
 If the above does not work you can also execute the command bellow:
 
 ```
-bash -c "$(curl -fsSL https://raw.github.com/xicodomingues/francinette/master/bin/update.sh)"
+bash -c "$(curl -fsSL https://raw.github.com/jukefr/francinette_reborn/master/bin/update.sh)"
 ```
 
 
