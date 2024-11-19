@@ -48,7 +48,7 @@ class WarMachine():
 
 		command = self.get_command()
 		logger.info(f'executing: {command}')
-		proc = subprocess.Popen(['/usr/bin/env bash', '-c', command])
+		proc = subprocess.Popen(['bash', '-c', command])
 		proc.wait()
 		with open("war-machine.stdout") as out:
 			res = [remove_ansi_colors(line) for line in out.readlines()]
