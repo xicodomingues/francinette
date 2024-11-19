@@ -5,7 +5,7 @@ if [ "$(uname)" != "Darwin" ]; then
 	sudo apt install libbsd-dev libncurses-dev
 fi
 
-cd "$HOME"/francinette || exit
+cd "$HOME"/francinette_reborn || exit
 
 git fetch origin
 git reset --hard origin
@@ -17,10 +17,10 @@ git submodule update --init
 echo "Updating python dependencies..."
 # install requirements
 if ! pip3 install --disable-pip-version-check -q -r requirements.txt ; then
-	echo "Problem updating francinette. Contact me (fsoares- on slack)"
+	echo "Problem updating francinette_reborn. Contact me (fsoares- on slack)"
 	exit 1
 fi
 
-echo -e "\033[1;37mFrancinette is updated. You can use it again!\033[0m"
+echo -e "\033[1;37mfrancinette_reborn is updated. You can use it again!\033[0m"
 
 printf "\033[33m... but don't forget, \033[1;37mpaco\033[0;33m is not a replacement for your own tests! \033[0m\n"
