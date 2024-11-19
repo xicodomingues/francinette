@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   test_putendl_fd.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kjullien <kjullien@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/19 21:09:10 by kjullien          #+#    #+#             */
+/*   Updated: 2024/11/19 21:09:10 by kjullien         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 
 #include "my_utils.h"
 
@@ -30,6 +42,7 @@ int test_putendl_fd()
 	set_signature_tn(6, "ft_putendl_fd(\"%s\", fd: %i)", "teste", fd);
 	null_null_check(ft_putendl_fd("teste", fd), res);
 
+	close(fd);
 	remove("./fsoares");
 	return res;
 }

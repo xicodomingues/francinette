@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   test_putstr_fd.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kjullien <kjullien@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/19 21:09:21 by kjullien          #+#    #+#             */
+/*   Updated: 2024/11/19 21:09:21 by kjullien         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 
 #include "my_utils.h"
 
@@ -30,6 +42,7 @@ int test_putstr_fd()
 	set_signature_tn(6, "ft_putstr_fd(\"%s\", fd: %i)", "teste", fd);
 	null_null_check(ft_putstr_fd("teste", fd), res);
 
+	close(fd);
 	remove("./fsoares");
 	return res;
 }

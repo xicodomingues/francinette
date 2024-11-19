@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   test_putchar_fd.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kjullien <kjullien@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/19 21:09:03 by kjullien          #+#    #+#             */
+/*   Updated: 2024/11/19 21:09:03 by kjullien         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 
 #include "my_utils.h"
 
@@ -30,6 +42,7 @@ int test_putchar_fd()
 	set_signature_tn(6, "ft_putchar_fd(%i:%s, fd: %i)", 't', escape_chr('t'), fd);
 	null_null_check(ft_putchar_fd('t', fd), res);
 
+	close(fd);
 	remove("./fsoares");
 	return res;
 }

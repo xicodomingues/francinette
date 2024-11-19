@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   test_putnbr_fd.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kjullien <kjullien@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/19 21:09:16 by kjullien          #+#    #+#             */
+/*   Updated: 2024/11/19 21:09:16 by kjullien         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 
 #include "my_utils.h"
 
@@ -32,6 +44,7 @@ int test_putnbr_fd()
 	set_signature_tn(6, "ft_putnbr_fd(%i, fd: %i)", 10000, fd);
 	null_null_check(ft_putnbr_fd(10000, fd), res);
 
+	close(fd);
 	remove("./fsoares");
 	return res;
 }
