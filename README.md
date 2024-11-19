@@ -55,7 +55,7 @@ In linux it will also download and install the necessary packages for it to run.
 admin permission to do that.
 
 ```
-bash -c "$(curl -fsSL https://raw.github.com/xicodomingues/francinette/master/bin/install.sh)"
+bash -c "$(curl -fsSL https://raw.github.com/jukefr/francinette_reborn/master/bin/install.sh)"
 ```
 
 The francinette folder will be under your `$HOME` directory (`/Users/<your_username>/`)
