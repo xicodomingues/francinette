@@ -1,5 +1,10 @@
 # Francinette
 
+## :exclamation: This repo is long abandoned. It's probably way out of date, and does not work on newer systems. Please seek other alternatives. :exclamation:
+
+# Also: write your own tests!!
+#
+
 An easy to use testing framework for the 42 projects.
 
 Use `francinette` or `paco` inside a project folder to run it.
