@@ -175,9 +175,13 @@ linux. If by some chance you are using other shell, or for some other reason it 
 You can try to set the aliases yourself, by adding:
 
 ```
-alias francinette="$HOME"/francinette/tester.sh
-alias paco="$HOME"/francinette/tester.sh
+alias francinette='~/francinette/tester.sh'
+alias paco='~/francinette/tester.sh'
 ```
+With .zshrc (for .bashrc is the same, but instead of .zshrc type .bashrc):
+1. Open nano ```~/.zshrc```
+2. Add the aliases listed above (francinette & paco)
+3. Reload your shell configuration ```source ~/.zshrc``` 
 
 Now it should work. If it does not, don't be afraid to contact me.
 
